@@ -1,4 +1,4 @@
-/* ===== 全局重置 & 字体 ===== */
+/* ===== 重置 ===== */
 *,
 *::before,
 *::after {
@@ -19,7 +19,7 @@ body {
 }
 
 .container {
-    max-width: 720px;
+    max-width: 560px;
     width: 100%;
     margin: 0 auto;
     display: flex;
@@ -27,7 +27,7 @@ body {
     gap: 1.2rem;
 }
 
-/* ===== 卡片通用 ===== */
+/* ===== 卡片 ===== */
 .calculator-card,
 .accordion-card {
     background: #ffffff;
@@ -36,7 +36,7 @@ body {
     padding: 1.8rem 1.8rem 2rem;
 }
 
-/* ===== 主标题 ===== */
+/* ===== 标题 ===== */
 .calculator-card h1 {
     font-size: 1.8rem;
     font-weight: 700;
@@ -54,11 +54,11 @@ body {
     padding-bottom: 1rem;
 }
 
-/* ===== 表单 ===== */
+/* ===== 表单 — 全部1列 ===== */
 .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
 }
 
 .field {
@@ -66,14 +66,10 @@ body {
     flex-direction: column;
 }
 
-.field.full-width {
-    grid-column: 1 / -1;
-}
-
 .field label {
     font-size: 0.85rem;
     font-weight: 600;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.25rem;
     color: #334155;
 }
 
@@ -117,7 +113,7 @@ body {
 }
 
 .result-item .label {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.04em;
     color: #64748b;
@@ -140,10 +136,9 @@ body {
     color: #2563eb;
 }
 
-/* ===== 折叠卡片标题栏 ===== */
+/* ===== 折叠卡片标题 ===== */
 .accordion-card {
     padding: 0.8rem 1.5rem 0.8rem 1.5rem;
-    cursor: default;
 }
 
 .accordion-header {
@@ -169,10 +164,9 @@ body {
 .accordion-arrow {
     font-size: 0.9rem;
     color: #94a3b8;
-    transition: transform 0.2s;
 }
 
-/* ===== 折叠内容体 ===== */
+/* ===== 折叠内容 ===== */
 .accordion-body {
     padding-top: 0.8rem;
     border-top: 1px solid #eef2f6;
@@ -180,7 +174,7 @@ body {
     display: none;
 }
 
-/* ===== 指标说明内部 ===== */
+/* ===== 指标说明 ===== */
 .info-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -208,7 +202,7 @@ body {
     margin: 0;
 }
 
-/* ===== FAQ条目 ===== */
+/* ===== FAQ ===== */
 .faq-item {
     border-bottom: 1px solid #f0f4f9;
 }
@@ -236,7 +230,6 @@ body {
 .faq-arrow {
     font-size: 0.7rem;
     color: #94a3b8;
-    transition: transform 0.2s;
     flex-shrink: 0;
 }
 
@@ -267,11 +260,6 @@ body {
     .calculator-card,
     .accordion-card {
         padding: 1.2rem 1rem;
-    }
-
-    .form-grid {
-        grid-template-columns: 1fr;
-        gap: 0.7rem;
     }
 
     .results-grid {
