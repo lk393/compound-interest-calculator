@@ -92,39 +92,35 @@ body {
     background: #ffffff;
 }
 
-/* ===== 结果 ===== */
+/* ===== 结果 — 改为1列纵向 ===== */
 .results-grid {
     margin-top: 1.8rem;
     padding-top: 1.5rem;
     border-top: 2px solid #f0f4f9;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
 }
 
 .result-item {
     background: #f8fafc;
     border-radius: 12px;
-    padding: 0.8rem 0.6rem;
-    text-align: center;
+    padding: 0.8rem 1.2rem;
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
 }
 
 .result-item .label {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: #64748b;
-    font-weight: 600;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #475569;
 }
 
 .result-item .value {
     font-size: 1.2rem;
     font-weight: 700;
     color: #0f172a;
-    margin-top: 0.2rem;
 }
 
 .result-item.highlight {
@@ -262,15 +258,6 @@ body {
         padding: 1.2rem 1rem;
     }
 
-    .results-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 0.5rem;
-    }
-
-    .result-item:last-child {
-        grid-column: 1 / -1;
-    }
-
     .info-grid {
         grid-template-columns: 1fr;
     }
@@ -295,14 +282,16 @@ body {
         font-size: 0.85rem;
         padding: 0 0.2rem 0.6rem 1.6rem;
     }
+
+    .result-item {
+        padding: 0.6rem 1rem;
+    }
+
+    .result-item .value {
+        font-size: 1rem;
+    }
 }
 
 @media (max-width: 480px) {
-    .results-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .result-item:last-child {
-        grid-column: auto;
-    }
+    /* 保持1列，无需额外调整 */
 }
