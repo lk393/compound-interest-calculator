@@ -3,107 +3,120 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Compound Interest Calculator</title>
+    <title>Compound Interest Calculator — Free Online Tool</title>
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <main class="calculator">
-        <h1>📈 Compound Interest Calculator</h1>
 
-        <div class="field">
-            <label for="principal">Principal Amount ($)</label>
-            <input type="number" id="principal" value="10000" min="0" step="100" />
-        </div>
+    <div class="container">
+        <!-- ===== 主计算器卡片 ===== -->
+        <main class="calculator-card">
+            <h1>📈 Compound Interest Calculator</h1>
+            <p class="subtitle">Calculate how your savings grow with regular contributions and compound interest.</p>
 
-        <div class="field">
-            <label for="rate">Annual Interest Rate (%)</label>
-            <input type="number" id="rate" value="7" min="0" max="100" step="0.1" />
-        </div>
+            <div class="form-grid">
+                <div class="field">
+                    <label for="principal">Principal Amount ($)</label>
+                    <input type="number" id="principal" value="10000" min="0" step="100" />
+                </div>
 
-        <div class="field">
-            <label for="frequency">Compounding Frequency</label>
-            <select id="frequency">
-                <option value="1">Annually</option>
-                <option value="4">Quarterly</option>
-                <option value="12" selected>Monthly</option>
-                <option value="365">Daily</option>
-            </select>
-        </div>
+                <div class="field">
+                    <label for="rate">Annual Interest Rate (%)</label>
+                    <input type="number" id="rate" value="7" min="0" max="100" step="0.1" />
+                </div>
 
-        <div class="field">
-            <label for="years">Investment Period (Years)</label>
-            <input type="number" id="years" value="10" min="1" max="50" step="1" />
-        </div>
-       
-        <div class="field">
-            <label for="monthly">Monthly Contribution ($)</label>
-            <input type="number" id="monthly" value="500" min="0" step="50" />
-        </div>
+                <div class="field">
+                    <label for="frequency">Compounding Frequency</label>
+                    <select id="frequency">
+                        <option value="1">Annually</option>
+                        <option value="4">Quarterly</option>
+                        <option value="12" selected>Monthly</option>
+                        <option value="365">Daily</option>
+                    </select>
+                </div>
 
-        <div class="results" id="results">
-            <div class="result-item">
-                <span class="label">Final Balance</span>
-                <span class="value" id="final-balance">—</span>
+                <div class="field">
+                    <label for="years">Investment Period (Years)</label>
+                    <input type="number" id="years" value="10" min="1" max="50" step="1" />
+                </div>
+
+                <div class="field full-width">
+                    <label for="monthly">Monthly Contribution ($)</label>
+                    <input type="number" id="monthly" value="500" min="0" step="50" />
+                </div>
             </div>
-            <div class="result-item">
-                <span class="label">Total Interest Earned</span>
-                <span class="value" id="total-interest">—</span>
+
+            <!-- 结果展示 -->
+            <div class="results-grid" id="results">
+                <div class="result-item">
+                    <span class="label">Final Balance</span>
+                    <span class="value" id="final-balance">—</span>
+                </div>
+                <div class="result-item">
+                    <span class="label">Total Interest Earned</span>
+                    <span class="value" id="total-interest">—</span>
+                </div>
+                <div class="result-item highlight">
+                    <span class="label">Effective Annual Rate</span>
+                    <span class="value" id="effective-rate">—</span>
+                </div>
             </div>
-            <div class="result-item">
-                <span class="label">Effective Annual Rate</span>
-                <span class="value" id="effective-rate">—</span>
+        </main>
+
+        <!-- ===== 指标说明 ===== -->
+        <section class="info-card">
+            <h2>📖 Understanding Your Results</h2>
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Final Balance</h3>
+                    <p>The total amount in your account at the end of the investment period. This includes your initial principal, all monthly contributions, and the compound interest earned over time.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Total Interest Earned</h3>
+                    <p>The total compound interest earned on your principal and contributions. This is your final balance minus the total amount you actually deposited (principal + all monthly contributions).</p>
+                </div>
+                <div class="info-block">
+                    <h3>Effective Annual Rate</h3>
+                    <p>The actual annual return you earn, taking into account the effect of compounding frequency. The more frequently interest is compounded, the higher the effective annual rate will be compared to the stated nominal rate.</p>
+                </div>
             </div>
-        </div>
-    </main>
+        </section>
 
-    <!-- ===== 新增：指标说明 & FAQ 区块 ===== -->
-    <section class="info-section">
-        <h2>📖 Understanding Your Results</h2>
-        <div class="info-grid">
-            <div class="info-card">
-                <h3>Final Balance</h3>
-                <p>The total amount in your account at the end of the investment period. This includes your initial principal, all monthly contributions, and the compound interest earned over time.</p>
+        <!-- ===== FAQ ===== -->
+        <section class="faq-card">
+            <h2>❓ Frequently Asked Questions</h2>
+
+            <div class="faq-item">
+                <h3>What is compound interest?</h3>
+                <p>Compound interest is the interest you earn on both your original money (principal) and the interest that has already been added to your account. Over time, this "interest on interest" can significantly grow your savings, making it a powerful tool for long-term wealth building.</p>
             </div>
-            <div class="info-card">
-                <h3>Total Interest Earned</h3>
-                <p>The total compound interest earned on your principal and contributions. This is your final balance minus the total amount you actually deposited (principal + all monthly contributions).</p>
+
+            <div class="faq-item">
+                <h3>How is compound interest calculated?</h3>
+                <p>The formula used is <code>A = P(1 + r/n)^(n*t) + PMT * ((1 + r/n)^(n*t) - 1) / (r/n)</code>. Don't worry about the math — this calculator does it for you! It considers your initial principal (P), monthly contributions (PMT), annual interest rate (r), compounding frequency (n), and investment period (t).</p>
             </div>
-            <div class="info-card">
-                <h3>Effective Annual Rate</h3>
-                <p>The actual annual return you earn, taking into account the effect of compounding frequency. The more frequently interest is compounded, the higher the effective annual rate will be compared to the stated nominal rate.</p>
+
+            <div class="faq-item">
+                <h3>What is the difference between nominal rate and effective annual rate?</h3>
+                <p><strong>Nominal rate</strong> is the stated annual interest rate (e.g., 7% in the calculator above). <strong>Effective annual rate (EAR)</strong> is the actual return you earn after accounting for compounding frequency. For example, a 7% nominal rate compounded monthly gives you an EAR of 7.23%, meaning you earn slightly more than 7% per year.</p>
             </div>
-        </div>
-    </section>
 
-    <section class="faq-section">
-        <h2>❓ Frequently Asked Questions</h2>
+            <div class="faq-item">
+                <h3>How does compounding frequency affect my returns?</h3>
+                <p>More frequent compounding generates higher returns. For example, a $10,000 investment at 7% interest over 10 years would grow to $19,671 with annual compounding, but to $20,096 with monthly compounding. The difference becomes larger over longer periods.</p>
+            </div>
 
-        <div class="faq-item">
-            <h3>What is compound interest?</h3>
-            <p>Compound interest is the interest you earn on both your original money (principal) and the interest that has already been added to your account. Over time, this "interest on interest" can significantly grow your savings, making it a powerful tool for long-term wealth building.</p>
-        </div>
+            <div class="faq-item">
+                <h3>How does monthly contribution impact my final balance?</h3>
+                <p>Consistent monthly contributions can have a dramatic impact. In the example above, $10,000 invested at 7% for 10 years with <strong>no monthly contributions</strong> grows to ~$20,096. Adding <strong>$500/month</strong> increases the final balance to ~$106,639 — over 5x larger!</p>
+            </div>
+        </section>
 
-        <div class="faq-item">
-            <h3>How is compound interest calculated?</h3>
-            <p>The formula used is <code>A = P(1 + r/n)^(n*t) + PMT * ((1 + r/n)^(n*t) - 1) / (r/n)</code>. Don't worry about the math — this calculator does it for you! It considers your initial principal (P), monthly contributions (PMT), annual interest rate (r), compounding frequency (n), and investment period (t).</p>
-        </div>
-
-        <div class="faq-item">
-            <h3>What is the difference between nominal rate and effective annual rate?</h3>
-            <p><strong>Nominal rate</strong> is the stated annual interest rate (e.g., 7% in the calculator above). <strong>Effective annual rate (EAR)</strong> is the actual return you earn after accounting for compounding frequency. For example, a 7% nominal rate compounded monthly gives you an EAR of 7.23%, meaning you earn slightly more than 7% per year.</p>
-        </div>
-
-        <div class="faq-item">
-            <h3>How does compounding frequency affect my returns?</h3>
-            <p>More frequent compounding generates higher returns. For example, a $10,000 investment at 7% interest over 10 years would grow to $19,671 with annual compounding, but to $20,096 with monthly compounding. The difference becomes larger over longer periods.</p>
-        </div>
-
-        <div class="faq-item">
-            <h3>How does monthly contribution impact my final balance?</h3>
-            <p>Consistent monthly contributions can have a dramatic impact. In the example above, $10,000 invested at 7% for 10 years with <strong>no monthly contributions</strong> grows to ~$20,096. Adding <strong>$500/month</strong> increases the final balance to ~$106,639 — over 5x larger!</p>
-        </div>
-    </section>
-    <!-- ===== 新增结束 ===== -->
+        <!-- ===== 页脚（类似对标网站） ===== -->
+        <footer class="site-footer">
+            <p>© 2026 — Compound Interest Calculator · Free Online Tool</p>
+        </footer>
+    </div>
 
     <script src="calculator.js"></script>
 </body>
