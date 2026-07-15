@@ -5,17 +5,26 @@ function calculate() {
     const n = parseInt(document.getElementById('frequency').value);
     const t = parseInt(document.getElementById('years').value);
 
+    const P = parseFloat(document.getElementById('principal').value);
+    const r = parseFloat(document.getElementById('rate').value) / 100;
+    const n = parseInt(document.getElementById('frequency').value);
+    const t = parseInt(document.getElementById('years').value);
+    const M = parseFloat(document.getElementById('monthly').value) || 0;   // 👈 新增这一行
+
     // 如果任何输入无效，停止计算
-    if (isNaN(P) || isNaN(r) || isNaN(n) || isNaN(t) || P < 0 || r < 0 || t < 0) {
+    if (isNaN(P) || isNaN(r) || isNaN(n) || isNaN(t) || isNaN(M) || P < 0 || r < 0 || t < 0 || M < 0) {
         document.getElementById('final-balance').textContent = '—';
         document.getElementById('total-interest').textContent = '—';
         document.getElementById('effective-rate').textContent = '—';
         return;
     }
 
-    // 复利公式：A = P(1 + r/n)^(n*t)[reference:11]
-    const A = P * Math.pow(1 + r / n, n * t);
-    const interest = A - P;
+    // 复利公式（含每月定投）：
+    // 最终金额 = 本金部分 + 定投部分
+    const FV_principal = P * Math.pow(1 + r / n, n * t);
+    const FV_contribution = M * (Math.pow(1 + r / n, n * t) - 1) / (r / n);
+    const A = FV_principal + FV_contribution;
+    const interest = A - P - M * t * 12;
     const effectiveRate = (Math.pow(1 + r / n, n) - 1) * 100;
 
     // 格式化为美元货币
