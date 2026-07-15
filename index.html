@@ -9,7 +9,7 @@
 <body>
 
     <div class="container">
-        <!-- ===== 主计算器卡片 ===== -->
+        <!-- ===== 主计算器卡片（你上传的样式，完全不动） ===== -->
         <main class="calculator-card">
             <h1>📈 Compound Interest Calculator</h1>
             <p class="subtitle">Calculate how your savings grow with regular contributions and compound interest.</p>
@@ -63,61 +63,134 @@
             </div>
         </main>
 
-        <!-- ===== 指标说明 ===== -->
-        <section class="info-card">
-            <h2>📖 Understanding Your Results</h2>
-            <div class="info-grid">
-                <div class="info-block">
-                    <h3>Final Balance</h3>
-                    <p>The total amount in your account at the end of the investment period. This includes your initial principal, all monthly contributions, and the compound interest earned over time.</p>
-                </div>
-                <div class="info-block">
-                    <h3>Total Interest Earned</h3>
-                    <p>The total compound interest earned on your principal and contributions. This is your final balance minus the total amount you actually deposited (principal + all monthly contributions).</p>
-                </div>
-                <div class="info-block">
-                    <h3>Effective Annual Rate</h3>
-                    <p>The actual annual return you earn, taking into account the effect of compounding frequency. The more frequently interest is compounded, the higher the effective annual rate will be compared to the stated nominal rate.</p>
+        <!-- ===== 指标说明（折叠版，简略口语化） ===== -->
+        <section class="accordion-card">
+            <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
+                <h2>📖 结果怎么看</h2>
+                <span class="accordion-arrow" id="infoArrow">▶</span>
+            </div>
+            <div class="accordion-body" id="infoAccordion">
+                <div class="info-grid">
+                    <div class="info-block">
+                        <h3>最终金额</h3>
+                        <p>你账户里最后的总数，包含本金、每月投入和这些年赚的所有利息。</p>
+                    </div>
+                    <div class="info-block">
+                        <h3>总利息</h3>
+                        <p>你赚到的全部利息。用最终金额减去你实际放进去的钱（本金+每月定投）。</p>
+                    </div>
+                    <div class="info-block">
+                        <h3>实际年化率</h3>
+                        <p>考虑到复利频率后真实的年收益率。复利越频繁，这个数会比标称利率高一点。</p>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- ===== FAQ ===== -->
-        <section class="faq-card">
-            <h2>❓ Frequently Asked Questions</h2>
-
-            <div class="faq-item">
-                <h3>What is compound interest?</h3>
-                <p>Compound interest is the interest you earn on both your original money (principal) and the interest that has already been added to your account. Over time, this "interest on interest" can significantly grow your savings, making it a powerful tool for long-term wealth building.</p>
+        <!-- ===== FAQ（折叠版，简略口语化） ===== -->
+        <section class="accordion-card">
+            <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
+                <h2>❓ 常见问题</h2>
+                <span class="accordion-arrow" id="faqArrow">▶</span>
             </div>
+            <div class="accordion-body" id="faqAccordion">
 
-            <div class="faq-item">
-                <h3>How is compound interest calculated?</h3>
-                <p>The formula used is <code>A = P(1 + r/n)^(n*t) + PMT * ((1 + r/n)^(n*t) - 1) / (r/n)</code>. Don't worry about the math — this calculator does it for you! It considers your initial principal (P), monthly contributions (PMT), annual interest rate (r), compounding frequency (n), and investment period (t).</p>
-            </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span class="faq-arrow">▶</span>
+                        <span>复利是啥？</span>
+                    </div>
+                    <div class="faq-answer">就是利滚利。你赚的利息也会继续赚利息，时间越长效果越夸张。</div>
+                </div>
 
-            <div class="faq-item">
-                <h3>What is the difference between nominal rate and effective annual rate?</h3>
-                <p><strong>Nominal rate</strong> is the stated annual interest rate (e.g., 7% in the calculator above). <strong>Effective annual rate (EAR)</strong> is the actual return you earn after accounting for compounding frequency. For example, a 7% nominal rate compounded monthly gives you an EAR of 7.23%, meaning you earn slightly more than 7% per year.</p>
-            </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span class="faq-arrow">▶</span>
+                        <span>公式长什么样？</span>
+                    </div>
+                    <div class="faq-answer">不用管公式，计算器帮你算好了。你只需要填本金、利率、频率、年限和每月投多少就行。</div>
+                </div>
 
-            <div class="faq-item">
-                <h3>How does compounding frequency affect my returns?</h3>
-                <p>More frequent compounding generates higher returns. For example, a $10,000 investment at 7% interest over 10 years would grow to $19,671 with annual compounding, but to $20,096 with monthly compounding. The difference becomes larger over longer periods.</p>
-            </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span class="faq-arrow">▶</span>
+                        <span>标称利率和实际年化率有啥区别？</span>
+                    </div>
+                    <div class="faq-answer">标称利率就是广告上写的那个数。实际年化率是考虑了复利频率后的真实收益。比如标称7%、每月复利，实际年化就是7.23%。</div>
+                </div>
 
-            <div class="faq-item">
-                <h3>How does monthly contribution impact my final balance?</h3>
-                <p>Consistent monthly contributions can have a dramatic impact. In the example above, $10,000 invested at 7% for 10 years with <strong>no monthly contributions</strong> grows to ~$20,096. Adding <strong>$500/month</strong> increases the final balance to ~$106,639 — over 5x larger!</p>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span class="faq-arrow">▶</span>
+                        <span>复利频率影响大吗？</span>
+                    </div>
+                    <div class="faq-answer">有影响，但短期差别不大。1万块投10年，年复利和月复利差几百块。时间越长差距越大。</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span class="faq-arrow">▶</span>
+                        <span>每月定投影响大吗？</span>
+                    </div>
+                    <div class="faq-answer">非常大。1万块投10年不追加，大概变2万。每月加500，直接变10万+。这就是定投的力量。</div>
+                </div>
+
             </div>
         </section>
 
-        <!-- ===== 页脚（类似对标网站） ===== -->
+        <!-- ===== 页脚 ===== -->
         <footer class="site-footer">
             <p>© 2026 — Compound Interest Calculator · Free Online Tool</p>
         </footer>
     </div>
 
     <script src="calculator.js"></script>
+    <script>
+        // ===== 折叠切换逻辑 =====
+
+        // 卡片级折叠（点击标题展开/收起整个卡片内容）
+        function toggleAccordion(id) {
+            const body = document.getElementById(id);
+            const arrow = document.getElementById(id + 'Arrow');
+            if (body.style.display === 'none' || body.style.display === '') {
+                body.style.display = 'block';
+                arrow.textContent = '▼';
+            } else {
+                body.style.display = 'none';
+                arrow.textContent = '▶';
+            }
+        }
+
+        // FAQ条目级折叠（点击问题展开/收起答案）
+        function toggleFaq(el) {
+            const answer = el.nextElementSibling;
+            const arrow = el.querySelector('.faq-arrow');
+            if (answer.style.display === 'none' || answer.style.display === '') {
+                answer.style.display = 'block';
+                arrow.textContent = '▼';
+            } else {
+                answer.style.display = 'none';
+                arrow.textContent = '▶';
+            }
+        }
+
+        // 默认展开第一个卡片（结果解读），FAQ默认收起
+        document.addEventListener('DOMContentLoaded', function() {
+            // 默认展开"结果怎么看"
+            document.getElementById('infoAccordion').style.display = 'block';
+            document.getElementById('infoArrow').textContent = '▼';
+            // 默认收起FAQ
+            document.getElementById('faqAccordion').style.display = 'none';
+            document.getElementById('faqArrow').textContent = '▶';
+            // 所有FAQ答案默认收起
+            document.querySelectorAll('.faq-answer').forEach(function(el) {
+                el.style.display = 'none';
+            });
+            // 所有FAQ箭头默认朝右
+            document.querySelectorAll('.faq-arrow').forEach(function(el) {
+                el.textContent = '▶';
+            });
+        });
+    </script>
 </body>
 </html>
