@@ -3,10 +3,42 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FIRE Number Calculator — Free Online Tool</title>
+    <title>4% Rule Calculator — Free Online Tool</title>
     <link rel="stylesheet" href="style.css" />
     <style>
-        /* ===== FIRE计算器特有样式 ===== */
+        /* ===== 4%法则计算器特有样式 ===== */
+        .mode-selector {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.2rem;
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 0.3rem;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 0.5rem 0.8rem;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mode-btn.active {
+            background: #ffffff;
+            color: #0f172a;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .mode-btn:hover:not(.active) {
+            color: #1e293b;
+        }
+
         .results-summary {
             display: flex;
             flex-direction: column;
@@ -98,29 +130,6 @@
             background: #1d4ed8;
         }
 
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #e9edf2;
-            border-radius: 4px;
-            margin: 0.8rem 0 0.2rem;
-            overflow: hidden;
-        }
-
-        .progress-bar .fill {
-            height: 100%;
-            background: #2563eb;
-            border-radius: 4px;
-            transition: width 0.3s;
-            width: 0%;
-        }
-
-        .progress-label {
-            font-size: 0.8rem;
-            color: #64748b;
-            text-align: right;
-        }
-
         .info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -137,6 +146,10 @@
             .summary-item .value {
                 font-size: 1rem;
             }
+            .mode-btn {
+                font-size: 0.75rem;
+                padding: 0.4rem 0.5rem;
+            }
         }
     </style>
 </head>
@@ -144,44 +157,57 @@
 
 <div class="container">
 
-    <!-- ===== 导航 ===== -->
-        <div class="nav-links">
-            <a href="index.html">📈 Compound Interest</a>
-            <span style="color:#94a3b8;">|</span>
-            <a href="debt-calculator.html">💳 Debt</a>
-            <span style="color:#94a3b8;">|</span>
-            <a href="fire-calculator.html" style="font-weight:700;">🔥 FIRE</a>
-            <span style="color:#94a3b8;">|</span>
-            <a href="four-percent.html">📊 4% Rule</a>
-        </div>
+    <!-- ===== 导航（四个工具） ===== -->
+    <div class="nav-links">
+        <a href="index.html">📈 Compound Interest</a>
+        <span style="color:#94a3b8;">|</span>
+        <a href="debt-calculator.html">💳 Debt</a>
+        <span style="color:#94a3b8;">|</span>
+        <a href="fire-calculator.html">🔥 FIRE</a>
+        <span style="color:#94a3b8;">|</span>
+        <a href="four-percent.html" style="font-weight:700;">📊 4% Rule</a>
+    </div>
 
     <!-- ===== 主卡片 ===== -->
     <main class="calculator-card">
-        <h1>🔥 FIRE Number Calculator</h1>
-        <p class="subtitle">How much do you need to save for financial independence?</p>
+        <h1>📊 4% Rule Calculator</h1>
+        <p class="subtitle">How much can you safely withdraw from your retirement portfolio each year?</p>
 
-        <!-- 输入区域 -->
-        <div class="form-grid">
+        <!-- 模式切换 -->
+        <div class="mode-selector">
+            <button class="mode-btn active" id="mode-spending" onclick="setMode('spending')">
+                💰 Spending → Nest Egg
+            </button>
+            <button class="mode-btn" id="mode-nestegg" onclick="setMode('nestegg')">
+                🏦 Nest Egg → Withdrawal
+            </button>
+        </div>
+
+        <!-- 输入区域（模式1：从年支出推算所需本金） -->
+        <div class="form-grid" id="input-spending">
             <div class="field">
-                <label for="spending">Annual Spending ($)</label>
+                <label for="spending">Annual Spending in Retirement ($)</label>
                 <input type="number" id="spending" value="40000" min="0" step="1000" />
             </div>
-
             <div class="field">
-                <label for="savings">Current Savings ($)</label>
-                <input type="number" id="savings" value="50000" min="0" step="1000" />
+                <label for="withdrawal-rate">Safe Withdrawal Rate (%)</label>
+                <input type="number" id="withdrawal-rate" value="4" min="1" max="10" step="0.1" />
             </div>
+            <div style="margin-top:0.5rem;">
+                <button class="btn" onclick="calculate()">Calculate</button>
+            </div>
+        </div>
 
+        <!-- 输入区域（模式2：从已有本金推算每年可提取金额） -->
+        <div class="form-grid" id="input-nestegg" style="display:none;">
             <div class="field">
-                <label for="return">Expected Return (%)</label>
-                <input type="number" id="return" value="7" min="0" max="20" step="0.1" />
+                <label for="nestegg">Your Nest Egg ($)</label>
+                <input type="number" id="nestegg" value="1000000" min="0" step="10000" />
             </div>
-
             <div class="field">
-                <label for="annual-save">Annual Savings ($)</label>
-                <input type="number" id="annual-save" value="20000" min="0" step="1000" />
+                <label for="withdrawal-rate2">Safe Withdrawal Rate (%)</label>
+                <input type="number" id="withdrawal-rate2" value="4" min="1" max="10" step="0.1" />
             </div>
-
             <div style="margin-top:0.5rem;">
                 <button class="btn" onclick="calculate()">Calculate</button>
             </div>
@@ -189,28 +215,19 @@
 
         <!-- 结果区域 -->
         <div id="results-area" style="margin-top:1.8rem;">
-            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your FIRE Path</h2>
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your 4% Rule Results</h2>
             <div class="results-summary" id="summary">
                 <div class="summary-item">
-                    <span class="label">FIRE Number</span>
-                    <span class="value" id="fire-number">—</span>
+                    <span class="label">Annual Withdrawal</span>
+                    <span class="value" id="result-annual">—</span>
                 </div>
                 <div class="summary-item">
-                    <span class="label">Gap to FIRE</span>
-                    <span class="value" id="fire-gap">—</span>
+                    <span class="label">Monthly Withdrawal</span>
+                    <span class="value" id="result-monthly">—</span>
                 </div>
                 <div class="summary-item highlight">
-                    <span class="label">Years to FIRE</span>
-                    <span class="value" id="fire-years">—</span>
-                </div>
-                <div class="summary-item" style="flex-direction:column; align-items:stretch; gap:0.3rem;">
-                    <div style="display:flex; justify-content:space-between;">
-                        <span class="label">Progress</span>
-                        <span class="value" id="fire-progress-text" style="font-size:0.9rem;">0%</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="fill" id="fire-progress-bar" style="width:0%;"></div>
-                    </div>
+                    <span class="label">Nest Egg Needed</span>
+                    <span class="value" id="result-nestegg">—</span>
                 </div>
             </div>
         </div>
@@ -225,16 +242,16 @@
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
                 <div class="info-block">
-                    <h3>FIRE Number</h3>
-                    <p>Your target savings based on the 4% rule. Multiply your annual spending by 25 — that's what you need to retire early.</p>
+                    <h3>Annual Withdrawal</h3>
+                    <p>How much you can safely withdraw from your portfolio each year without running out of money. Based on the 4% rule.</p>
                 </div>
                 <div class="info-block">
-                    <h3>Gap to FIRE</h3>
-                    <p>How much more you need to save. FIRE Number minus your current savings. This is your remaining journey.</p>
+                    <h3>Monthly Withdrawal</h3>
+                    <p>Your annual withdrawal divided by 12. This is your monthly budget in retirement.</p>
                 </div>
                 <div class="info-block">
-                    <h3>Years to FIRE</h3>
-                    <p>How long it will take with your current savings rate and expected return. Assumes you invest consistently every year.</p>
+                    <h3>Nest Egg Needed</h3>
+                    <p>The total portfolio size you need to support your desired spending. Multiply your annual spending by 25 (or 100 ÷ withdrawal rate).</p>
                 </div>
             </div>
         </div>
@@ -253,31 +270,23 @@
                     <span class="faq-arrow">▶</span>
                     <span>What is the 4% rule?</span>
                 </div>
-                <div class="faq-answer">The 4% rule says you can withdraw 4% of your portfolio each year without running out of money. So your FIRE Number = Annual Spending × 25.</div>
+                <div class="faq-answer">The 4% rule says you can withdraw 4% of your portfolio in the first year of retirement, then adjust for inflation each year. It's designed to last 30+ years based on historical market data.</div>
             </div>
 
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)">
                     <span class="faq-arrow">▶</span>
-                    <span>How accurate is the Years to FIRE estimate?</span>
+                    <span>Where does the 25x rule come from?</span>
                 </div>
-                <div class="faq-answer">It's a good estimate assuming steady returns and consistent savings. Market returns vary, so treat it as a planning guide, not a guarantee.</div>
+                <div class="faq-answer">25x is just another way of saying the 4% rule. If you need $40,000/year, multiply by 25 = $1,000,000. 4% of $1,000,000 = $40,000.</div>
             </div>
 
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)">
                     <span class="faq-arrow">▶</span>
-                    <span>What's a realistic expected return?</span>
+                    <span>Is the 4% rule still safe?</span>
                 </div>
-                <div class="faq-answer">Many use 6-8% for stock-heavy portfolios. 7% is a common historical average after inflation. Use a conservative number for safer planning.</div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>Can I retire earlier than the estimate?</span>
-                </div>
-                <div class="faq-answer">Yes — increase your savings rate, earn higher returns, or reduce your annual spending. Every extra dollar saved brings FIRE closer.</div>
+                <div class="faq-answer">Many still use it as a rule of thumb, but some argue 3-3.5% is safer for longer retirements (40+ years). Use a lower rate if you're retiring early.</div>
             </div>
 
             <div class="faq-item">
@@ -285,7 +294,15 @@
                     <span class="faq-arrow">▶</span>
                     <span>Does this include inflation?</span>
                 </div>
-                <div class="faq-answer">The 4% rule already accounts for inflation. The estimate assumes your spending grows with inflation and your returns are above inflation.</div>
+                <div class="faq-answer">Yes — the 4% rule was designed for a 30-year retirement with inflation adjustments. You increase your withdrawal amount each year with inflation.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span class="faq-arrow">▶</span>
+                    <span>Can I withdraw more than 4%?</span>
+                </div>
+                <div class="faq-answer">You could, but it increases the risk of running out of money. A higher withdrawal rate means a shorter "safe" retirement period or requires more flexibility in your spending.</div>
             </div>
 
         </div>
@@ -293,7 +310,7 @@
 
     <!-- ===== 页脚 ===== -->
     <footer class="site-footer">
-        <p>© 2026 — FIRE Calculator · Free Online Tool</p>
+        <p>© 2026 — 4% Rule Calculator · Free Online Tool</p>
     </footer>
 </div>
 
@@ -323,13 +340,28 @@
         }
     }
 
+    // ===== 模式切换 =====
+    let currentMode = 'spending';
+
+    function setMode(mode) {
+        currentMode = mode;
+        document.querySelectorAll('.mode-btn').forEach(function(btn) {
+            btn.classList.remove('active');
+        });
+        if (mode === 'spending') {
+            document.getElementById('mode-spending').classList.add('active');
+            document.getElementById('input-spending').style.display = 'flex';
+            document.getElementById('input-nestegg').style.display = 'none';
+        } else {
+            document.getElementById('mode-nestegg').classList.add('active');
+            document.getElementById('input-spending').style.display = 'none';
+            document.getElementById('input-nestegg').style.display = 'flex';
+        }
+        calculate();
+    }
+
     // ===== 核心计算 =====
     function calculate() {
-        const spending = parseFloat(document.getElementById('spending').value) || 0;
-        const savings = parseFloat(document.getElementById('savings').value) || 0;
-        const rate = parseFloat(document.getElementById('return').value) || 0;
-        const annualSave = parseFloat(document.getElementById('annual-save').value) || 0;
-
         const fmt = new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD',
@@ -337,42 +369,34 @@
             maximumFractionDigits: 0
         });
 
-        const fireNumber = spending * 25;
-        const gap = Math.max(0, fireNumber - savings);
+        if (currentMode === 'spending') {
+            const spending = parseFloat(document.getElementById('spending').value) || 0;
+            const rate = parseFloat(document.getElementById('withdrawal-rate').value) || 4;
+            const rateDecimal = rate / 100;
 
-        let balance = savings;
-        let years = 0;
-        const maxYears = 100;
-        let reached = false;
+            const nestEggNeeded = spending / rateDecimal;
+            const annualWithdrawal = nestEggNeeded * rateDecimal;
+            const monthlyWithdrawal = annualWithdrawal / 12;
 
-        if (fireNumber <= 0 || (rate <= 0 && annualSave <= 0)) {
-            years = Infinity;
-        } else if (savings >= fireNumber) {
-            years = 0;
-            reached = true;
+            document.getElementById('result-annual').textContent = fmt.format(annualWithdrawal);
+            document.getElementById('result-monthly').textContent = fmt.format(monthlyWithdrawal);
+            document.getElementById('result-nestegg').textContent = fmt.format(nestEggNeeded);
+
         } else {
-            while (balance < fireNumber && years < maxYears) {
-                balance = balance * (1 + rate / 100) + annualSave;
-                years++;
-                if (balance >= fireNumber) {
-                    reached = true;
-                    break;
-                }
-            }
-            if (!reached) {
-                years = Infinity;
-            }
+            const nestEgg = parseFloat(document.getElementById('nestegg').value) || 0;
+            const rate = parseFloat(document.getElementById('withdrawal-rate2').value) || 4;
+            const rateDecimal = rate / 100;
+
+            const annualWithdrawal = nestEgg * rateDecimal;
+            const monthlyWithdrawal = annualWithdrawal / 12;
+
+            document.getElementById('result-annual').textContent = fmt.format(annualWithdrawal);
+            document.getElementById('result-monthly').textContent = fmt.format(monthlyWithdrawal);
+            document.getElementById('result-nestegg').textContent = fmt.format(nestEgg);
         }
-
-        document.getElementById('fire-number').textContent = fmt.format(fireNumber);
-        document.getElementById('fire-gap').textContent = fmt.format(gap);
-        document.getElementById('fire-years').textContent = years === Infinity ? '∞' : years;
-
-        const progress = fireNumber > 0 ? Math.min(100, (savings / fireNumber) * 100) : 0;
-        document.getElementById('fire-progress-text').textContent = progress.toFixed(1) + '%';
-        document.getElementById('fire-progress-bar').style.width = progress + '%';
     }
 
+    // ===== 页面加载 =====
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('infoAccordion').style.display = 'block';
         document.getElementById('infoArrow').textContent = '▼';
@@ -387,6 +411,7 @@
         calculate();
     });
 
+    // 输入变化时自动重新计算
     document.addEventListener('input', function(e) {
         if (e.target.closest('.form-grid')) {
             calculate();
