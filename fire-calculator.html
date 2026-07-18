@@ -6,26 +6,137 @@
     <title>FIRE Number Calculator — Free Online Tool</title>
     <link rel="stylesheet" href="style.css" />
     <style>
-        .results-summary { display:flex; flex-direction:column; gap:0.7rem; margin:1.5rem 0; }
-        .summary-item { background:#f8fafc; border-radius:12px; padding:0.8rem 1.2rem; display:flex; justify-content:space-between; align-items:center; }
-        .summary-item .label { font-size:0.85rem; font-weight:500; color:#475569; }
-        .summary-item .value { font-size:1.2rem; font-weight:700; color:#0f172a; }
-        .summary-item.highlight { background:#eef2ff; border:1px solid #c7d2fe; }
-        .summary-item.highlight .value { color:#2563eb; }
-        .form-grid { display:flex; flex-direction:column; gap:0.9rem; }
-        .field { display:flex; flex-direction:column; }
-        .field label { font-size:0.85rem; font-weight:600; margin-bottom:0.25rem; color:#334155; }
-        .field input, .field select { padding:0.6rem 0.8rem; font-size:1rem; border:1.5px solid #dce1e8; border-radius:10px; background:#fafbfc; transition:border-color 0.2s, box-shadow 0.2s; width:100%; }
-        .field input:focus, .field select:focus { outline:none; border-color:#2563eb; box-shadow:0 0 0 3px rgba(37,99,235,0.15); background:#ffffff; }
-        .btn { background:#2563eb; color:white; border:none; border-radius:10px; padding:0.6rem 1.2rem; font-size:0.95rem; font-weight:600; cursor:pointer; transition:background 0.2s; width:100%; }
-        .btn:hover { background:#1d4ed8; }
-        .progress-bar { width:100%; height:8px; background:#e9edf2; border-radius:4px; margin:0.8rem 0 0.2rem; overflow:hidden; }
-        .progress-bar .fill { height:100%; background:#2563eb; border-radius:4px; transition:width 0.3s; width:0%; }
-        .info-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.8rem; }
-        @media (max-width:640px) {
-            .info-grid { grid-template-columns:1fr; }
-            .summary-item { padding:0.6rem 1rem; }
-            .summary-item .value { font-size:1rem; }
+        /* ===== FIRE计算器特有样式 ===== */
+        .results-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            margin: 1.5rem 0;
+        }
+
+        .summary-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .summary-item .label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #475569;
+        }
+
+        .summary-item .value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .summary-item.highlight {
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+        }
+
+        .summary-item.highlight .value {
+            color: #2563eb;
+        }
+
+        .form-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .field label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: #334155;
+        }
+
+        .field input,
+        .field select {
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem;
+            border: 1.5px solid #dce1e8;
+            border-radius: 10px;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+
+        .field input:focus,
+        .field select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background: #ffffff;
+        }
+
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9edf2;
+            border-radius: 4px;
+            margin: 0.8rem 0 0.2rem;
+            overflow: hidden;
+        }
+
+        .progress-bar .fill {
+            height: 100%;
+            background: #2563eb;
+            border-radius: 4px;
+            transition: width 0.3s;
+            width: 0%;
+        }
+
+        .progress-label {
+            font-size: 0.8rem;
+            color: #64748b;
+            text-align: right;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.8rem;
+        }
+
+        @media (max-width: 640px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            .summary-item {
+                padding: 0.6rem 1rem;
+            }
+            .summary-item .value {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
@@ -34,76 +145,82 @@
 <div class="container">
 
     <!-- ===== 导航 ===== -->
-    <div class="nav-links">
-        <a href="index.html">📈 Compound</a>
-        <span style="color:#94a3b8;">|</span>
-        <a href="debt-calculator.html">💳 Debt</a>
-        <span style="color:#94a3b8;">|</span>
-        <a href="fire-calculator.html" style="font-weight:700;">🔥 FIRE</a>
-        <span style="color:#94a3b8;">|</span>
-        <a href="four-percent.html">📊 4% Rule</a>
-        <span style="color:#94a3b8;">|</span>
-        <a href="coast-fire.html">🏖️ Coast</a>
-    </div>
+        <div class="nav-links">
+            <a href="index.html">📈 Compound</a>
+            <span style="color:#94a3b8;">|</span>
+            <a href="debt-calculator.html">💳 Debt</a>
+            <span style="color:#94a3b8;">|</span>
+            <a href="fire-calculator.html" style="font-weight:700;">🔥 FIRE</a>
+            <span style="color:#94a3b8;">|</span>
+            <a href="four-percent.html">📊 4% Rule</a>
+            <span style="color:#94a3b8;">|</span>
+            <a href="coast-fire.html">🏖️ Coast</a>
+            <span style="color:#94a3b8;">|</span>
+            <a href="extra-payment.html">🏠 Extra</a>
+        </div>
 
+    <!-- ===== 主卡片 ===== -->
     <main class="calculator-card">
         <h1>🔥 FIRE Number Calculator</h1>
         <p class="subtitle">How much do you need to save for financial independence?</p>
 
-        <!-- ===== 科普文 ===== -->
-        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
-            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
-                <strong>FIRE Number Calculator</strong> — This tool calculates how much money you need to achieve
-                financial independence and retire early. The core question it answers is: <em>“How much do I need to
-                save, and how long will it take based on my current progress?”</em> Instead of vague advice like
-                “save more,” this calculator gives you a specific, personalized number and a realistic timeline.
-                It also shows you the gap between where you are now and where you need to be — so you know exactly
-                what it takes to get there.
-            </p>
-        </div>
-
-        <!-- ===== 输入区域 ===== -->
+        <!-- 输入区域 -->
         <div class="form-grid">
             <div class="field">
                 <label for="spending">Annual Spending ($)</label>
                 <input type="number" id="spending" value="40000" min="0" step="1000" />
             </div>
+
             <div class="field">
                 <label for="savings">Current Savings ($)</label>
                 <input type="number" id="savings" value="50000" min="0" step="1000" />
             </div>
+
             <div class="field">
                 <label for="return">Expected Return (%)</label>
                 <input type="number" id="return" value="7" min="0" max="20" step="0.1" />
             </div>
+
             <div class="field">
                 <label for="annual-save">Annual Savings ($)</label>
                 <input type="number" id="annual-save" value="20000" min="0" step="1000" />
             </div>
+
             <div style="margin-top:0.5rem;">
                 <button class="btn" onclick="calculate()">Calculate</button>
             </div>
         </div>
 
-        <!-- ===== 结果区域 ===== -->
+        <!-- 结果区域 -->
         <div id="results-area" style="margin-top:1.8rem;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your FIRE Path</h2>
             <div class="results-summary" id="summary">
-                <div class="summary-item"><span class="label">FIRE Number</span><span class="value" id="fire-number">—</span></div>
-                <div class="summary-item"><span class="label">Gap to FIRE</span><span class="value" id="fire-gap">—</span></div>
-                <div class="summary-item highlight"><span class="label">Years to FIRE</span><span class="value" id="fire-years">—</span></div>
+                <div class="summary-item">
+                    <span class="label">FIRE Number</span>
+                    <span class="value" id="fire-number">—</span>
+                </div>
+                <div class="summary-item">
+                    <span class="label">Gap to FIRE</span>
+                    <span class="value" id="fire-gap">—</span>
+                </div>
+                <div class="summary-item highlight">
+                    <span class="label">Years to FIRE</span>
+                    <span class="value" id="fire-years">—</span>
+                </div>
                 <div class="summary-item" style="flex-direction:column; align-items:stretch; gap:0.3rem;">
                     <div style="display:flex; justify-content:space-between;">
                         <span class="label">Progress</span>
                         <span class="value" id="fire-progress-text" style="font-size:0.9rem;">0%</span>
                     </div>
-                    <div class="progress-bar"><div class="fill" id="fire-progress-bar" style="width:0%;"></div></div>
+                    <div class="progress-bar">
+                        <div class="fill" id="fire-progress-bar" style="width:0%;"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- ===== 折叠说明 ===== -->
+    <!-- ===== 指标说明（折叠） ===== -->
     <section class="accordion-card">
         <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
             <h2>📖 How to read your results</h2>
@@ -127,13 +244,14 @@
         </div>
     </section>
 
-    <!-- ===== FAQ ===== -->
+    <!-- ===== FAQ（折叠） ===== -->
     <section class="accordion-card">
         <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
             <h2>❓ FAQ</h2>
             <span class="accordion-arrow" id="faqArrow">▶</span>
         </div>
         <div class="accordion-body" id="faqAccordion">
+
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)">
                     <span class="faq-arrow">▶</span>
@@ -141,6 +259,7 @@
                 </div>
                 <div class="faq-answer">The 4% rule says you can withdraw 4% of your portfolio each year without running out of money. So your FIRE Number = Annual Spending × 25.</div>
             </div>
+
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)">
                     <span class="faq-arrow">▶</span>
@@ -148,6 +267,7 @@
                 </div>
                 <div class="faq-answer">It's a good estimate assuming steady returns and consistent savings. Market returns vary, so treat it as a planning guide, not a guarantee.</div>
             </div>
+
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)">
                     <span class="faq-arrow">▶</span>
@@ -155,6 +275,7 @@
                 </div>
                 <div class="faq-answer">Many use 6-8% for stock-heavy portfolios. 7% is a common historical average after inflation. Use a conservative number for safer planning.</div>
             </div>
+
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)">
                     <span class="faq-arrow">▶</span>
@@ -162,6 +283,7 @@
                 </div>
                 <div class="faq-answer">Yes — increase your savings rate, earn higher returns, or reduce your annual spending. Every extra dollar saved brings FIRE closer.</div>
             </div>
+
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)">
                     <span class="faq-arrow">▶</span>
@@ -169,22 +291,18 @@
                 </div>
                 <div class="faq-answer">The 4% rule already accounts for inflation. The estimate assumes your spending grows with inflation and your returns are above inflation.</div>
             </div>
+
         </div>
     </section>
 
     <!-- ===== 页脚 ===== -->
     <footer class="site-footer">
-        <p>
-            © 2026 — Smart Finance Tools · Free Online Calculators
-            <br />
-            <a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a>
-            <span style="color:#dce1e8;">|</span>
-            <a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a>
-        </p>
+        <p>© 2026 — FIRE Calculator · Free Online Tool</p>
     </footer>
 </div>
 
 <script>
+    // ===== 折叠切换函数 =====
     function toggleAccordion(id) {
         const body = document.getElementById(id);
         const arrow = document.getElementById(id + 'Arrow');
@@ -196,6 +314,7 @@
             arrow.textContent = '▶';
         }
     }
+
     function toggleFaq(el) {
         const answer = el.nextElementSibling;
         const arrow = el.querySelector('.faq-arrow');
@@ -207,46 +326,75 @@
             arrow.textContent = '▶';
         }
     }
+
+    // ===== 核心计算 =====
     function calculate() {
         const spending = parseFloat(document.getElementById('spending').value) || 0;
         const savings = parseFloat(document.getElementById('savings').value) || 0;
         const rate = parseFloat(document.getElementById('return').value) || 0;
         const annualSave = parseFloat(document.getElementById('annual-save').value) || 0;
-        const fmt = new Intl.NumberFormat('en-US', { style:'currency', currency:'USD', minimumFractionDigits:0, maximumFractionDigits:0 });
+
+        const fmt = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
+
         const fireNumber = spending * 25;
         const gap = Math.max(0, fireNumber - savings);
+
         let balance = savings;
         let years = 0;
         const maxYears = 100;
         let reached = false;
-        if (fireNumber <= 0 || (rate <= 0 && annualSave <= 0)) { years = Infinity; }
-        else if (savings >= fireNumber) { years = 0; reached = true; }
-        else {
+
+        if (fireNumber <= 0 || (rate <= 0 && annualSave <= 0)) {
+            years = Infinity;
+        } else if (savings >= fireNumber) {
+            years = 0;
+            reached = true;
+        } else {
             while (balance < fireNumber && years < maxYears) {
                 balance = balance * (1 + rate / 100) + annualSave;
                 years++;
-                if (balance >= fireNumber) { reached = true; break; }
+                if (balance >= fireNumber) {
+                    reached = true;
+                    break;
+                }
             }
-            if (!reached) years = Infinity;
+            if (!reached) {
+                years = Infinity;
+            }
         }
+
         document.getElementById('fire-number').textContent = fmt.format(fireNumber);
         document.getElementById('fire-gap').textContent = fmt.format(gap);
         document.getElementById('fire-years').textContent = years === Infinity ? '∞' : years;
+
         const progress = fireNumber > 0 ? Math.min(100, (savings / fireNumber) * 100) : 0;
         document.getElementById('fire-progress-text').textContent = progress.toFixed(1) + '%';
         document.getElementById('fire-progress-bar').style.width = progress + '%';
     }
+
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('infoAccordion').style.display = 'block';
         document.getElementById('infoArrow').textContent = '▼';
         document.getElementById('faqAccordion').style.display = 'none';
         document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
-        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
+        document.querySelectorAll('.faq-answer').forEach(function(el) {
+            el.style.display = 'none';
+        });
+        document.querySelectorAll('.faq-arrow').forEach(function(el) {
+            el.textContent = '▶';
+        });
         calculate();
     });
+
     document.addEventListener('input', function(e) {
-        if (e.target.closest('.form-grid')) calculate();
+        if (e.target.closest('.form-grid')) {
+            calculate();
+        }
     });
 </script>
 </body>

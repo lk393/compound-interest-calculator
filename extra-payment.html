@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Extra Payment Calculator — Mortgage Payoff</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .results-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            margin: 1.5rem 0;
+        }
+        .summary-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .summary-item .label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #475569;
+        }
+        .summary-item .value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .summary-item.highlight {
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+        }
+        .summary-item.highlight .value {
+            color: #2563eb;
+        }
+        .summary-item.savings .value {
+            color: #10b981;
+        }
+        .form-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+        }
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+        .field label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: #334155;
+        }
+        .field input {
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem;
+            border: 1.5px solid #dce1e8;
+            border-radius: 10px;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .field input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+            background: #ffffff;
+        }
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+        .btn:hover {
+            background: #1d4ed8;
+        }
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .comparison-box {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .comparison-box h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: #94a3b8;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        .comparison-box .big-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .comparison-box.standard .big-number {
+            color: #64748b;
+        }
+        .comparison-box.extra .big-number {
+            color: #2563eb;
+        }
+        .comparison-box .sub-label {
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+        .schedule-wrapper {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e9edf2;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+        .schedule-table th,
+        .schedule-table td {
+            border: 1px solid #e9edf2;
+            padding: 0.3rem 0.4rem;
+            text-align: right;
+        }
+        .schedule-table th {
+            background: #f1f5f9;
+            font-weight: 600;
+            color: #334155;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        .schedule-table td:first-child {
+            text-align: center;
+        }
+        .schedule-table .highlight-row {
+            background: #eef2ff;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.8rem;
+        }
+        @media (max-width: 640px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            .summary-item {
+                padding: 0.6rem 1rem;
+            }
+            .summary-item .value {
+                font-size: 1rem;
+            }
+            .comparison-box .big-number {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ===== 导航（六个工具） ===== -->
+    <div class="nav-links">
+        <a href="index.html">📈 Compound</a>
+        <span style="color:#94a3b8;">|</span>
+        <a href="debt-calculator.html">💳 Debt</a>
+        <span style="color:#94a3b8;">|</span>
+        <a href="fire-calculator.html">🔥 FIRE</a>
+        <span style="color:#94a3b8;">|</span>
+        <a href="four-percent.html">📊 4% Rule</a>
+        <span style="color:#94a3b8;">|</span>
+        <a href="coast-fire.html">🏖️ Coast</a>
+        <span style="color:#94a3b8;">|</span>
+        <a href="extra-payment.html" style="font-weight:700;">🏠 Extra</a>
+    </div>
+
+    <main class="calculator-card">
+        <h1>🏠 Extra Payment Calculator</h1>
+        <p class="subtitle">See how much you save by paying extra toward your mortgage each month.</p>
+
+        <!-- ===== 科普文 ===== -->
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>Extra Payment Calculator</strong> — This tool shows you the impact of making extra payments
+                on your mortgage. It answers the question: <em>“If I pay an extra $100 each month, how much interest
+                will I save and how much sooner will my mortgage be paid off?”</em> You'll see a clear comparison
+                between your standard payment plan and the accelerated plan with extra payments.
+            </p>
+        </div>
+
+        <!-- ===== 输入区域 ===== -->
+        <div class="form-grid">
+            <div class="field">
+                <label for="loan-amount">Loan Amount ($)</label>
+                <input type="number" id="loan-amount" value="300000" min="0" step="1000" />
+            </div>
+            <div class="field">
+                <label for="interest-rate">Annual Interest Rate (%)</label>
+                <input type="number" id="interest-rate" value="6.5" min="0" max="30" step="0.1" />
+            </div>
+            <div class="field">
+                <label for="loan-term">Loan Term (Years)</label>
+                <input type="number" id="loan-term" value="30" min="1" max="50" step="1" />
+            </div>
+            <div class="field">
+                <label for="extra-payment">Extra Payment Per Month ($)</label>
+                <input type="number" id="extra-payment" value="100" min="0" step="10" />
+            </div>
+            <div style="margin-top:0.5rem;">
+                <button class="btn" onclick="calculate()">Calculate</button>
+            </div>
+        </div>
+
+        <!-- ===== 结果区域 ===== -->
+        <div id="results-area" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Mortgage Payoff Comparison</h2>
+
+            <!-- 对比卡片 -->
+            <div class="comparison-grid" id="comparison-grid">
+                <div class="comparison-box standard">
+                    <h4>📋 Standard Plan</h4>
+                    <div class="big-number" id="standard-payoff">—</div>
+                    <div class="sub-label">Payoff Time</div>
+                    <div class="big-number" style="font-size:1.1rem; margin-top:0.3rem;" id="standard-interest">—</div>
+                    <div class="sub-label">Total Interest</div>
+                </div>
+                <div class="comparison-box extra">
+                    <h4>🚀 With Extra Payments</h4>
+                    <div class="big-number" id="extra-payoff">—</div>
+                    <div class="sub-label">Payoff Time</div>
+                    <div class="big-number" style="font-size:1.1rem; margin-top:0.3rem;" id="extra-interest">—</div>
+                    <div class="sub-label">Total Interest</div>
+                </div>
+            </div>
+
+            <!-- 节省汇总 -->
+            <div class="results-summary" id="summary">
+                <div class="summary-item savings">
+                    <span class="label">💰 Interest Saved</span>
+                    <span class="value" id="interest-saved">—</span>
+                </div>
+                <div class="summary-item highlight">
+                    <span class="label">⏰ Time Saved</span>
+                    <span class="value" id="time-saved">—</span>
+                </div>
+            </div>
+
+            <h3 style="font-size:1rem; margin:1rem 0 0.3rem;">📅 Payment Schedule Comparison</h3>
+            <div class="schedule-wrapper">
+                <table class="schedule-table" id="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>Year</th>
+                            <th>Standard Balance</th>
+                            <th>Standard Interest Paid</th>
+                            <th>Extra Balance</th>
+                            <th>Extra Interest Paid</th>
+                        </tr>
+                    </thead>
+                    <tbody id="schedule-body"></tbody>
+                </table>
+            </div>
+            <p style="font-size:0.75rem; color:#94a3b8; margin-top:0.3rem; text-align:center;">
+                * Assumes consistent extra payments every month. Actual lender terms may vary.
+            </p>
+        </div>
+    </main>
+
+    <!-- ===== 折叠说明 ===== -->
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
+            <h2>📖 How to read your results</h2>
+            <span class="accordion-arrow" id="infoArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="infoAccordion">
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Interest Saved</h3>
+                    <p>The total amount of interest you avoid paying by making extra payments. This is the difference between total interest under the standard plan vs. the extra payment plan.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Time Saved</h3>
+                    <p>How many years (and months) you shave off your mortgage term by making extra payments each month.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Payment Schedule</h3>
+                    <p>The year-by-year comparison shows your remaining balance and cumulative interest paid under both scenarios — standard vs. with extra payments.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FAQ ===== -->
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
+            <h2>❓ FAQ</h2>
+            <span class="accordion-arrow" id="faqArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="faqAccordion">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span class="faq-arrow">▶</span>
+                    <span>How does an extra payment save me money?</span>
+                </div>
+                <div class="faq-answer">Every extra dollar you pay reduces your principal balance. That means less interest accrues on the remaining balance — saving you money and shortening your loan term.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span class="faq-arrow">▶</span>
+                    <span>Is it always worth making extra payments?</span>
+                </div>
+                <div class="faq-answer">Usually yes, if your mortgage rate is above 4-5%. But consider your other financial priorities — high-interest debt or emergency savings should come first.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span class="faq-arrow">▶</span>
+                    <span>Can I make extra payments at any time?</span>
+                </div>
+                <div class="faq-answer">Yes — most mortgages allow extra payments without penalty. However, some loans have prepayment penalties, so check your loan terms first.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span class="faq-arrow">▶</span>
+                    <span>Does the calculation assume I keep paying extra every month?</span>
+                </div>
+                <div class="faq-answer">Yes — it assumes you make the same extra payment consistently each month until the loan is paid off. If you stop early, the savings will be less.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span class="faq-arrow">▶</span>
+                    <span>What's the minimum extra payment I should make?</span>
+                </div>
+                <div class="faq-answer">Even $50/month can make a meaningful difference over 30 years. Use this calculator to see exactly how much — you might be surprised!</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 页脚 ===== -->
+    <footer class="site-footer">
+        <p>
+            © 2026 — Smart Finance Tools · Free Online Calculators
+            <br />
+            <a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a>
+            <span style="color:#dce1e8;">|</span>
+            <a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a>
+        </p>
+    </footer>
+</div>
+
+<script>
+    function toggleAccordion(id) {
+        const body = document.getElementById(id);
+        const arrow = document.getElementById(id + 'Arrow');
+        if (body.style.display === 'none' || body.style.display === '') {
+            body.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            body.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+
+    function toggleFaq(el) {
+        const answer = el.nextElementSibling;
+        const arrow = el.querySelector('.faq-arrow');
+        if (answer.style.display === 'none' || answer.style.display === '') {
+            answer.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            answer.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+
+    function calculate() {
+        const loanAmount = parseFloat(document.getElementById('loan-amount').value) || 0;
+        const annualRate = parseFloat(document.getElementById('interest-rate').value) || 0;
+        const termYears = parseFloat(document.getElementById('loan-term').value) || 30;
+        const extraPayment = parseFloat(document.getElementById('extra-payment').value) || 0;
+
+        const fmt = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
+
+        const monthlyRate = annualRate / 100 / 12;
+        const totalMonths = termYears * 12;
+
+        // 计算标准月供
+        let standardPayment;
+        if (monthlyRate === 0) {
+            standardPayment = loanAmount / totalMonths;
+        } else {
+            standardPayment = loanAmount * monthlyRate * Math.pow(1 + monthlyRate, totalMonths) /
+                (Math.pow(1 + monthlyRate, totalMonths) - 1);
+        }
+
+        // 模拟标准还款
+        let balance1 = loanAmount;
+        let totalInterest1 = 0;
+        let month1 = 0;
+        const schedule1 = [];
+        while (balance1 > 0.01 && month1 < totalMonths) {
+            month1++;
+            const interest = balance1 * monthlyRate;
+            const principal = Math.min(standardPayment - interest, balance1);
+            balance1 -= principal;
+            totalInterest1 += interest;
+            if (month1 % 12 === 0 || balance1 <= 0.01) {
+                schedule1.push({ month: month1, balance: Math.max(0, balance1), interest: totalInterest1 });
+            }
+            if (balance1 < 0.01) break;
+        }
+        const payoffMonths1 = month1;
+
+        // 模拟额外还款
+        let balance2 = loanAmount;
+        let totalInterest2 = 0;
+        let month2 = 0;
+        const schedule2 = [];
+        while (balance2 > 0.01 && month2 < totalMonths) {
+            month2++;
+            const interest = balance2 * monthlyRate;
+            const principal = Math.min(standardPayment + extraPayment - interest, balance2);
+            balance2 -= principal;
+            totalInterest2 += interest;
+            if (month2 % 12 === 0 || balance2 <= 0.01) {
+                schedule2.push({ month: month2, balance: Math.max(0, balance2), interest: totalInterest2 });
+            }
+            if (balance2 < 0.01) break;
+        }
+        const payoffMonths2 = month2;
+
+        // 显示结果
+        document.getElementById('standard-payoff').textContent = `${Math.floor(payoffMonths1 / 12)}y ${payoffMonths1 % 12}m`;
+        document.getElementById('standard-interest').textContent = fmt.format(totalInterest1);
+        document.getElementById('extra-payoff').textContent = `${Math.floor(payoffMonths2 / 12)}y ${payoffMonths2 % 12}m`;
+        document.getElementById('extra-interest').textContent = fmt.format(totalInterest2);
+
+        const interestSaved = totalInterest1 - totalInterest2;
+        const monthsSaved = payoffMonths1 - payoffMonths2;
+        document.getElementById('interest-saved').textContent = fmt.format(interestSaved);
+        document.getElementById('time-saved').textContent = `${Math.floor(monthsSaved / 12)}y ${monthsSaved % 12}m`;
+
+        // 生成年度对比表
+        const tbody = document.getElementById('schedule-body');
+        tbody.innerHTML = '';
+        const maxYears = Math.max(
+            Math.ceil(payoffMonths1 / 12),
+            Math.ceil(payoffMonths2 / 12)
+        );
+        for (let year = 1; year <= maxYears; year++) {
+            const s1 = schedule1.find(s => Math.ceil(s.month / 12) === year) ||
+                schedule1.filter(s => s.month <= year * 12).pop();
+            const s2 = schedule2.find(s => Math.ceil(s.month / 12) === year) ||
+                schedule2.filter(s => s.month <= year * 12).pop();
+            const tr = document.createElement('tr');
+            if (s2 && s2.balance <= 0.01) tr.classList.add('highlight-row');
+            tr.innerHTML = `
+                <td>${year}</td>
+                <td>${s1 ? fmt.format(s1.balance) : '—'}</td>
+                <td>${s1 ? fmt.format(s1.interest) : '—'}</td>
+                <td>${s2 ? fmt.format(s2.balance) : '—'}</td>
+                <td>${s2 ? fmt.format(s2.interest) : '—'}</td>
+            `;
+            tbody.appendChild(tr);
+            if (s2 && s2.balance <= 0.01 && s1 && s1.balance <= 0.01) break;
+        }
+
+        document.getElementById('results-area').style.display = 'block';
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('infoAccordion').style.display = 'block';
+        document.getElementById('infoArrow').textContent = '▼';
+        document.getElementById('faqAccordion').style.display = 'none';
+        document.getElementById('faqArrow').textContent = '▶';
+        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
+        calculate();
+    });
+
+    document.addEventListener('input', function(e) {
+        if (e.target.closest('.form-grid')) calculate();
+    });
+</script>
+</body>
+</html>
