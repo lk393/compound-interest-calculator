@@ -6,156 +6,41 @@
     <title>Debt Snowball / Avalanche Calculator</title>
     <link rel="stylesheet" href="style.css" />
     <style>
-        /* ===== 债务计算器特有样式（不影响复利计算器） ===== */
-        .debt-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1rem 0;
-            font-size: 0.9rem;
-        }
-        .debt-table th,
-        .debt-table td {
-            border-bottom: 1px solid #e9edf2;
-            padding: 0.5rem 0.3rem;
-            text-align: left;
-        }
-        .debt-table th {
-            font-weight: 600;
-            color: #475569;
-        }
-        .debt-table td input {
-            width: 100%;
-            padding: 0.4rem 0.5rem;
-            border: 1px solid #dce1e8;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            background: #fafbfc;
-        }
-        .debt-table td input:focus {
-            outline: none;
-            border-color: #2563eb;
-        }
-        .debt-table .delete-btn {
-            background: #fee2e2;
-            border: none;
-            border-radius: 6px;
-            padding: 0.3rem 0.6rem;
-            cursor: pointer;
-            color: #b91c1c;
-            font-weight: 600;
-        }
-        .debt-table .delete-btn:hover {
-            background: #fecaca;
-        }
-
-        .btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 0.6rem 1.2rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .btn:hover {
-            background: #1d4ed8;
-        }
-        .btn-secondary {
-            background: #e9edf2;
-            color: #1e293b;
-        }
-        .btn-secondary:hover {
-            background: #dce1e8;
-        }
-
-        .strategy-group {
-            display: flex;
-            gap: 1.5rem;
-            margin: 0.5rem 0 1rem 0;
-            flex-wrap: wrap;
-        }
-
-        .results-summary {
-            display: grid;
-            grid-template-columns: 1fr 1fr; /* 两列，但总宽度是一列，手机变一列 */
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-        .summary-item {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 0.8rem;
-            text-align: center;
-        }
-        .summary-item .label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            color: #64748b;
-            font-weight: 600;
-        }
-        .summary-item .value {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #0f172a;
-            margin-top: 0.2rem;
-        }
-        .summary-item.highlight .value {
-            color: #2563eb;
-        }
-
-        .schedule-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
-            margin-top: 1rem;
-        }
-        .schedule-table th,
-        .schedule-table td {
-            border: 1px solid #e9edf2;
-            padding: 0.4rem 0.5rem;
-            text-align: right;
-        }
-        .schedule-table th {
-            background: #f1f5f9;
-            font-weight: 600;
-            color: #334155;
-            position: sticky;
-            top: 0;
-            z-index: 1;
-        }
-        .schedule-table td:first-child {
-            text-align: center;
-            font-weight: 500;
-        }
-        .schedule-wrapper {
-            max-height: 400px;
-            overflow-y: auto;
-            border: 1px solid #e9edf2;
-            border-radius: 8px;
-        }
-
-        /* 债务计算器的输入框统一纵向排列 */
-        .form-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 0.9rem;
-        }
-
-        @media (max-width: 640px) {
-            .results-summary {
-                grid-template-columns: 1fr;
-            }
-            .debt-table th,
-            .debt-table td {
-                padding: 0.3rem 0.2rem;
-                font-size: 0.8rem;
-            }
-            .debt-table td input {
-                font-size: 0.8rem;
-                padding: 0.3rem;
-            }
+        .debt-table { width:100%; border-collapse:collapse; margin:1rem 0; font-size:0.9rem; }
+        .debt-table th, .debt-table td { border-bottom:1px solid #e9edf2; padding:0.5rem 0.3rem; text-align:left; }
+        .debt-table th { font-weight:600; color:#475569; }
+        .debt-table td input { width:100%; padding:0.4rem 0.5rem; border:1px solid #dce1e8; border-radius:6px; font-size:0.85rem; background:#fafbfc; }
+        .debt-table td input:focus { outline:none; border-color:#2563eb; }
+        .debt-table .delete-btn { background:#fee2e2; border:none; border-radius:6px; padding:0.3rem 0.6rem; cursor:pointer; color:#b91c1c; font-weight:600; }
+        .debt-table .delete-btn:hover { background:#fecaca; }
+        .btn { background:#2563eb; color:white; border:none; border-radius:10px; padding:0.6rem 1.2rem; font-size:0.95rem; font-weight:600; cursor:pointer; transition:background 0.2s; }
+        .btn:hover { background:#1d4ed8; }
+        .btn-secondary { background:#e9edf2; color:#1e293b; }
+        .btn-secondary:hover { background:#dce1e8; }
+        .results-summary { display:flex; flex-direction:column; gap:0.7rem; margin:1.5rem 0; }
+        .summary-item { background:#f8fafc; border-radius:12px; padding:0.8rem 1.2rem; display:flex; justify-content:space-between; align-items:center; }
+        .summary-item .label { font-size:0.85rem; font-weight:500; color:#475569; }
+        .summary-item .value { font-size:1.2rem; font-weight:700; color:#0f172a; }
+        .summary-item.highlight { background:#eef2ff; border:1px solid #c7d2fe; }
+        .summary-item.highlight .value { color:#2563eb; }
+        .form-grid { display:flex; flex-direction:column; gap:0.9rem; }
+        .field { display:flex; flex-direction:column; }
+        .field label { font-size:0.85rem; font-weight:600; margin-bottom:0.25rem; color:#334155; }
+        .field input, .field select { padding:0.6rem 0.8rem; font-size:1rem; border:1.5px solid #dce1e8; border-radius:10px; background:#fafbfc; transition:border-color 0.2s, box-shadow 0.2s; width:100%; }
+        .field input:focus, .field select:focus { outline:none; border-color:#2563eb; box-shadow:0 0 0 3px rgba(37,99,235,0.15); background:#ffffff; }
+        .schedule-wrapper { max-height:400px; overflow-y:auto; border:1px solid #e9edf2; border-radius:8px; }
+        .schedule-table { width:100%; border-collapse:collapse; font-size:0.85rem; margin-top:1rem; }
+        .schedule-table th, .schedule-table td { border:1px solid #e9edf2; padding:0.4rem 0.5rem; text-align:right; }
+        .schedule-table th { background:#f1f5f9; font-weight:600; color:#334155; position:sticky; top:0; z-index:1; }
+        .schedule-table td:first-child { text-align:center; font-weight:500; }
+        .info-grid { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:0.8rem; }
+        @media (max-width:640px) {
+            .info-grid { grid-template-columns:1fr; }
+            .debt-table th, .debt-table td { padding:0.3rem 0.2rem; font-size:0.8rem; }
+            .debt-table td input { font-size:0.8rem; padding:0.3rem; }
+            .results-summary { gap:0.5rem; }
+            .summary-item { padding:0.6rem 1rem; }
+            .summary-item .value { font-size:1rem; }
         }
     </style>
 </head>
@@ -163,11 +48,11 @@
 
 <div class="container">
 
-    <!-- ===== 导航（只含工具） ===== -->
+    <!-- ===== 导航 ===== -->
     <div class="nav-links">
         <a href="index.html">📈 Compound</a>
         <span style="color:#94a3b8;">|</span>
-        <a href="debt-calculator.html">💳 Debt</a>
+        <a href="debt-calculator.html" style="font-weight:700;">💳 Debt</a>
         <span style="color:#94a3b8;">|</span>
         <a href="fire-calculator.html">🔥 FIRE</a>
         <span style="color:#94a3b8;">|</span>
@@ -176,12 +61,24 @@
         <a href="coast-fire.html">🏖️ Coast</a>
     </div>
 
-    <!-- ===== 主卡片 ===== -->
     <main class="calculator-card">
-        <h1>💳 Debt Snowball / Avalanche</h1>
+        <h1>💳 Debt Snowball / Avalanche Calculator</h1>
         <p class="subtitle">Pay off your debts faster using the right strategy.</p>
 
-        <!-- 债务表格 -->
+        <!-- ===== 科普文 ===== -->
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>Debt Snowball / Avalanche Calculator</strong> — This tool helps you decide the fastest
+                and most cost-effective way to pay off your debts. It compares two popular strategies — the
+                <em>“snowball”</em> (paying off the smallest balance first) and the <em>“avalanche”</em> (paying
+                off the highest interest rate first). Many people struggle with which approach to take, and even
+                those who have a strategy often don't know how long it will take or how much interest they'll
+                actually pay. This calculator answers both questions clearly, so you can choose a plan you'll
+                actually stick with.
+            </p>
+        </div>
+
+        <!-- ===== 债务表格 ===== -->
         <div style="overflow-x:auto;">
             <table class="debt-table" id="debt-table">
                 <thead>
@@ -194,7 +91,6 @@
                     </tr>
                 </thead>
                 <tbody id="debt-body">
-                    <!-- 默认两行示例 -->
                     <tr>
                         <td><input type="text" class="debt-name" value="Credit Card" /></td>
                         <td><input type="number" class="debt-balance" value="5000" min="0" step="100" /></td>
@@ -217,7 +113,7 @@
             <button class="btn btn-secondary" onclick="addRow()">+ Add Debt</button>
         </div>
 
-        <!-- 额外还款和策略（纵向排列） -->
+        <!-- ===== 输入区域 ===== -->
         <div class="form-grid">
             <div class="field">
                 <label for="extra">Extra Monthly Payment ($)</label>
@@ -235,44 +131,35 @@
             </div>
         </div>
 
-        <!-- 结果区域（初始隐藏） -->
+        <!-- ===== 结果区域 ===== -->
         <div id="results-area" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.2rem; margin-bottom:0.5rem;">📊 Results</h2>
             <div class="results-summary" id="summary"></div>
-
             <h3 style="font-size:1rem; margin:1rem 0 0.3rem;">📅 Payment Schedule</h3>
             <div class="schedule-wrapper">
                 <table class="schedule-table" id="schedule-table">
-                    <thead>
-                        <tr>
-                            <th>Month</th>
-                            <th>Payment</th>
-                            <th>Interest</th>
-                            <th>Balance</th>
-                            <th>Done</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>Month</th><th>Payment</th><th>Interest</th><th>Balance</th><th>Done</th></tr></thead>
                     <tbody id="schedule-body"></tbody>
                 </table>
             </div>
         </div>
     </main>
 
-    <!-- ===== 指标说明（折叠，与复利计算器完全一致） ===== -->
+    <!-- ===== 折叠说明 ===== -->
     <section class="accordion-card">
         <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
             <h2>📖 How to read your results</h2>
             <span class="accordion-arrow" id="infoArrow">▶</span>
         </div>
         <div class="accordion-body" id="infoAccordion">
-            <div class="info-grid">
+            <div class="info-grid" style="grid-template-columns:1fr 1fr 1fr 1fr;">
                 <div class="info-block">
                     <h3>Total Debt</h3>
                     <p>Sum of all your debt balances before interest. This is what you owe right now.</p>
                 </div>
                 <div class="info-block">
                     <h3>Months to Pay</h3>
-                    <p>Number of months it will take to become debt‑free with your extra payment and chosen strategy.</p>
+                    <p>Number of months to become debt‑free with your extra payment and chosen strategy.</p>
                 </div>
                 <div class="info-block">
                     <h3>Total Interest</h3>
@@ -286,14 +173,13 @@
         </div>
     </section>
 
-    <!-- ===== FAQ（折叠，与复利计算器完全一致） ===== -->
+    <!-- ===== FAQ ===== -->
     <section class="accordion-card">
         <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
             <h2>❓ FAQ</h2>
             <span class="accordion-arrow" id="faqArrow">▶</span>
         </div>
         <div class="accordion-body" id="faqAccordion">
-
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)">
                     <span class="faq-arrow">▶</span>
@@ -301,7 +187,6 @@
                 </div>
                 <div class="faq-answer">Snowball targets the smallest balance first (motivating), Avalanche targets the highest rate first (saves more interest). Choose what fits your personality.</div>
             </div>
-
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)">
                     <span class="faq-arrow">▶</span>
@@ -309,7 +194,6 @@
                 </div>
                 <div class="faq-answer">The smallest amount your lender requires each month. You must pay at least this to avoid penalties.</div>
             </div>
-
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)">
                     <span class="faq-arrow">▶</span>
@@ -317,7 +201,6 @@
                 </div>
                 <div class="faq-answer">Every extra dollar you pay reduces the principal faster, cutting down both interest and the total time to get out of debt.</div>
             </div>
-
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)">
                     <span class="faq-arrow">▶</span>
@@ -325,11 +208,9 @@
                 </div>
                 <div class="faq-answer">It uses standard compound interest formulas and assumes payments are made monthly. It's a great planning tool, but actual lender terms may vary.</div>
             </div>
-
         </div>
     </section>
 
-    <!-- ===== 页脚 ===== -->
     <!-- ===== 页脚 ===== -->
     <footer class="site-footer">
         <p>
@@ -342,9 +223,7 @@
     </footer>
 </div>
 
-<script src="calculator.js"></script>
 <script>
-    // ===== 折叠切换函数（与复利计算器相同） =====
     function toggleAccordion(id) {
         const body = document.getElementById(id);
         const arrow = document.getElementById(id + 'Arrow');
@@ -356,7 +235,6 @@
             arrow.textContent = '▶';
         }
     }
-
     function toggleFaq(el) {
         const answer = el.nextElementSibling;
         const arrow = el.querySelector('.faq-arrow');
@@ -368,8 +246,6 @@
             arrow.textContent = '▶';
         }
     }
-
-    // ===== 债务表格操作 =====
     function addRow() {
         const tbody = document.getElementById('debt-body');
         const tr = document.createElement('tr');
@@ -382,7 +258,6 @@
         `;
         tbody.appendChild(tr);
     }
-
     function deleteRow(btn) {
         const tr = btn.closest('tr');
         if (document.getElementById('debt-body').children.length > 1) {
@@ -391,66 +266,35 @@
             alert('You need at least one debt.');
         }
     }
-
-    // ===== 核心计算 =====
     function calculate() {
-        // 读取债务数据
         const names = document.querySelectorAll('.debt-name');
         const balances = document.querySelectorAll('.debt-balance');
         const rates = document.querySelectorAll('.debt-rate');
         const mins = document.querySelectorAll('.debt-min');
-
         const debts = [];
         for (let i = 0; i < names.length; i++) {
             const name = names[i].value.trim() || `Debt ${i+1}`;
             const balance = parseFloat(balances[i].value) || 0;
             const rate = parseFloat(rates[i].value) || 0;
             const min = parseFloat(mins[i].value) || 0;
-            if (balance > 0) {
-                debts.push({ name, balance, rate, min, paid: false });
-            }
+            if (balance > 0) debts.push({ name, balance, rate, min });
         }
-
-        if (debts.length === 0) {
-            alert('Please add at least one debt with a positive balance.');
-            return;
-        }
-
+        if (debts.length === 0) { alert('Please add at least one debt with a positive balance.'); return; }
         const extra = parseFloat(document.getElementById('extra').value) || 0;
         const strategy = document.getElementById('strategy').value;
-
-        // 按策略排序（排序依据）
         const sorted = [...debts];
-        if (strategy === 'snowball') {
-            sorted.sort((a, b) => a.balance - b.balance);
-        } else {
-            sorted.sort((a, b) => b.rate - a.rate);
-        }
-
-        // 模拟每月还款
+        if (strategy === 'snowball') sorted.sort((a, b) => a.balance - b.balance);
+        else sorted.sort((a, b) => b.rate - a.rate);
         let totalBalance = debts.reduce((sum, d) => sum + d.balance, 0);
         let totalInterestPaid = 0;
         let month = 0;
         const schedule = [];
-
-        // 创建副本用于模拟
-        const active = debts.map(d => ({
-            ...d,
-            remaining: d.balance,
-            min: d.min,
-            rate: d.rate
-        }));
-
-        // 总月供（最低还款额之和 + 额外）
+        const active = debts.map(d => ({ ...d, remaining: d.balance, min: d.min, rate: d.rate }));
         const totalMin = active.reduce((sum, d) => sum + d.min, 0);
-
         while (totalBalance > 0.01 && month < 1200) {
             month++;
             let monthlyPayment = totalMin + extra;
-
             let monthInterest = 0;
-
-            // 先支付所有债务的最低还款额，并计算利息
             for (let d of active) {
                 if (d.remaining <= 0.01) continue;
                 const monthlyRate = d.rate / 100 / 12;
@@ -461,8 +305,6 @@
                 d.remaining -= pay;
                 monthlyPayment -= pay;
             }
-
-            // 如果有剩余资金，按策略攻击目标债务
             if (monthlyPayment > 0.01) {
                 for (let d of active) {
                     if (d.remaining > 0.01) {
@@ -474,78 +316,43 @@
                     }
                 }
             }
-
             let currentTotal = active.reduce((sum, d) => sum + d.remaining, 0);
             totalBalance = currentTotal;
             totalInterestPaid += monthInterest;
-
             schedule.push({
                 month,
                 payment: active.reduce((sum, d) => sum + d.min, 0) + extra - monthlyPayment,
                 interest: monthInterest,
                 balance: currentTotal,
             });
-
             if (currentTotal < 0.01) break;
         }
-
-        // 显示结果
         const summaryDiv = document.getElementById('summary');
         const totalPaid = debts.reduce((sum, d) => sum + d.balance, 0) + totalInterestPaid;
         const monthsToPay = schedule.length;
-
         summaryDiv.innerHTML = `
-            <div class="summary-item">
-                <div class="label">Total Debt</div>
-                <div class="value">$${debts.reduce((s,d) => s + d.balance, 0).toFixed(2)}</div>
-            </div>
-            <div class="summary-item highlight">
-                <div class="label">Months to Pay</div>
-                <div class="value">${monthsToPay}</div>
-            </div>
-            <div class="summary-item">
-                <div class="label">Total Interest</div>
-                <div class="value">$${totalInterestPaid.toFixed(2)}</div>
-            </div>
-            <div class="summary-item">
-                <div class="label">Total Paid</div>
-                <div class="value">$${totalPaid.toFixed(2)}</div>
-            </div>
+            <div class="summary-item"><span class="label">Total Debt</span><span class="value">$${debts.reduce((s,d) => s + d.balance, 0).toFixed(2)}</span></div>
+            <div class="summary-item highlight"><span class="label">Months to Pay</span><span class="value">${monthsToPay}</span></div>
+            <div class="summary-item"><span class="label">Total Interest</span><span class="value">$${totalInterestPaid.toFixed(2)}</span></div>
+            <div class="summary-item"><span class="label">Total Paid</span><span class="value">$${totalPaid.toFixed(2)}</span></div>
         `;
-
-        // 显示还款计划表
         const tbody = document.getElementById('schedule-body');
         tbody.innerHTML = '';
         for (let row of schedule) {
             const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${row.month}</td>
-                <td>$${row.payment.toFixed(2)}</td>
-                <td>$${row.interest.toFixed(2)}</td>
-                <td>$${row.balance.toFixed(2)}</td>
-                <td>${row.balance < 0.01 ? '✅' : ''}</td>
-            `;
+            tr.innerHTML = `<td>${row.month}</td><td>$${row.payment.toFixed(2)}</td><td>$${row.interest.toFixed(2)}</td><td>$${row.balance.toFixed(2)}</td><td>${row.balance < 0.01 ? '✅' : ''}</td>`;
             tbody.appendChild(tr);
         }
-
         document.getElementById('results-area').style.display = 'block';
     }
-
-    // 页面加载后自动计算一次
-    window.addEventListener('DOMContentLoaded', function() {
-        // 默认展开“How to read your results”，收起FAQ
+    document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('infoAccordion').style.display = 'block';
         document.getElementById('infoArrow').textContent = '▼';
         document.getElementById('faqAccordion').style.display = 'none';
         document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(function(el) {
-            el.style.display = 'none';
-        });
-        document.querySelectorAll('.faq-arrow').forEach(function(el) {
-            el.textContent = '▶';
-        });
-
-        calculate(); // 自动计算默认示例
+        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
+        calculate();
     });
 </script>
 </body>
