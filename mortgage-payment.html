@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mortgage Payment Calculator — Free Online Tool</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        /* ===== 工具特有样式 ===== */
+        .results-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            margin: 1.5rem 0;
+        }
+        .summary-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .summary-item .label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #475569;
+        }
+        .summary-item .value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .summary-item.highlight {
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+        }
+        .summary-item.highlight .value {
+            color: #2563eb;
+        }
+        .summary-item.positive .value {
+            color: #10b981;
+        }
+
+        .form-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+        }
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+        .field label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: #334155;
+        }
+        .field input {
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem;
+            border: 1.5px solid #dce1e8;
+            border-radius: 10px;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .field input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background: #ffffff;
+        }
+
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+        .btn:hover {
+            background: #1d4ed8;
+        }
+
+        .schedule-wrapper {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e9edf2;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+        .schedule-table th,
+        .schedule-table td {
+            border: 1px solid #e9edf2;
+            padding: 0.3rem 0.5rem;
+            text-align: right;
+        }
+        .schedule-table th {
+            background: #f1f5f9;
+            font-weight: 600;
+            color: #334155;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        .schedule-table td:first-child {
+            text-align: center;
+        }
+        .schedule-table .highlight-row {
+            background: #eef2ff;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.8rem;
+        }
+        @media (max-width: 640px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            .summary-item {
+                padding: 0.6rem 1rem;
+            }
+            .summary-item .value {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ===== 顶部导航（面包屑） ===== -->
+    <div class="top-nav">
+        <a href="index.html" class="back-link">← Back to Home</a>
+        <div class="breadcrumb">📊 <span>Mortgage Payment Calculator</span></div>
+    </div>
+
+    <main class="calculator-card">
+        <h1>🏠 Mortgage Payment Calculator</h1>
+        <p class="subtitle">Calculate your monthly mortgage payment, total interest, and full amortization schedule.</p>
+
+        <!-- ===== 科普文 ===== -->
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>Mortgage Payment Calculator</strong> — This tool calculates your fixed monthly payment
+                for a mortgage using the standard amortization formula. It answers the question:
+                <em>“How much will my monthly payment be, and how much interest will I pay over the life of the loan?”</em>
+                You'll also see a full year‑by‑year amortization schedule showing how your balance decreases over time.
+                Whether you're buying your first home or refinancing, this calculator gives you a clear picture of
+                your financial commitment.
+            </p>
+        </div>
+
+        <!-- ===== 输入区域 ===== -->
+        <div class="form-grid">
+            <div class="field">
+                <label for="loan-amount">Loan Amount ($)</label>
+                <input type="number" id="loan-amount" value="300000" min="0" step="1000" />
+            </div>
+            <div class="field">
+                <label for="interest-rate">Annual Interest Rate (%)</label>
+                <input type="number" id="interest-rate" value="6.5" min="0" max="30" step="0.1" />
+            </div>
+            <div class="field">
+                <label for="loan-term">Loan Term (Years)</label>
+                <input type="number" id="loan-term" value="30" min="1" max="50" step="1" />
+            </div>
+            <div style="margin-top:0.5rem;">
+                <button class="btn" onclick="calculate()">Calculate</button>
+            </div>
+        </div>
+
+        <!-- ===== 结果区域 ===== -->
+        <div id="results-area" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Mortgage Summary</h2>
+
+            <div class="results-summary" id="summary">
+                <div class="summary-item highlight">
+                    <span class="label">Monthly Payment</span>
+                    <span class="value" id="monthly-payment">—</span>
+                </div>
+                <div class="summary-item">
+                    <span class="label">Total Interest</span>
+                    <span class="value" id="total-interest">—</span>
+                </div>
+                <div class="summary-item">
+                    <span class="label">Total Payment</span>
+                    <span class="value" id="total-payment">—</span>
+                </div>
+            </div>
+
+            <h3 style="font-size:1rem; margin:1rem 0 0.3rem;">📅 Amortization Schedule (Year-by-Year)</h3>
+            <div class="schedule-wrapper">
+                <table class="schedule-table" id="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>Year</th>
+                            <th>Balance</th>
+                            <th>Interest Paid</th>
+                            <th>Principal Paid</th>
+                            <th>Remaining</th>
+                        </tr>
+                    </thead>
+                    <tbody id="schedule-body"></tbody>
+                </table>
+            </div>
+            <p style="font-size:0.75rem; color:#94a3b8; margin-top:0.3rem; text-align:center;">
+                * Assumes fixed interest rate and consistent monthly payments.
+            </p>
+        </div>
+    </main>
+
+    <!-- ===== 折叠说明 ===== -->
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
+            <h2>📖 How to read your results</h2>
+            <span class="accordion-arrow" id="infoArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="infoAccordion">
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Monthly Payment</h3>
+                    <p>Your fixed monthly payment includes both principal and interest. This is what you'll pay each month for the entire loan term.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Total Interest</h3>
+                    <p>The total amount of interest you will pay over the full loan term. This shows the true cost of borrowing.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Amortization Schedule</h3>
+                    <p>The year‑by‑year breakdown shows your remaining balance, how much interest you paid each year, and how much principal you reduced.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FAQ ===== -->
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
+            <h2>❓ FAQ</h2>
+            <span class="accordion-arrow" id="faqArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="faqAccordion">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span class="faq-arrow">▶</span>
+                    <span>What is the formula used for the monthly payment?</span>
+                </div>
+                <div class="faq-answer">It uses the standard amortization formula: M = P × r × (1+r)^n / ((1+r)^n − 1), where P is the loan amount, r is the monthly interest rate, and n is the total number of payments.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span class="faq-arrow">▶</span>
+                    <span>What does the amortization schedule show?</span>
+                </div>
+                <div class="faq-answer">It shows how your balance decreases over time. In the early years, most of your payment goes toward interest; later, more goes toward principal.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span class="faq-arrow">▶</span>
+                    <span>Does this include property taxes or insurance?</span>
+                </div>
+                <div class="faq-answer">No — this calculator covers only the principal and interest portion of your mortgage. Property taxes, homeowners insurance, and PMI are not included.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span class="faq-arrow">▶</span>
+                    <span>Can I use this for an adjustable-rate mortgage (ARM)?</span>
+                </div>
+                <div class="faq-answer">This calculator assumes a fixed interest rate. For ARMs, the rate changes over time, so this would only be an estimate for the initial fixed period.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 页脚 ===== -->
+    <footer class="site-footer">
+        <p>
+            © 2026 — Smart Finance Tools · Free Online Calculators
+            <br />
+            <a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a>
+            <span style="color:#dce1e8;">|</span>
+            <a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a>
+        </p>
+    </footer>
+</div>
+
+<script>
+    // ===== 折叠切换函数 =====
+    function toggleAccordion(id) {
+        const body = document.getElementById(id);
+        const arrow = document.getElementById(id + 'Arrow');
+        if (body.style.display === 'none' || body.style.display === '') {
+            body.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            body.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+
+    function toggleFaq(el) {
+        const answer = el.nextElementSibling;
+        const arrow = el.querySelector('.faq-arrow');
+        if (answer.style.display === 'none' || answer.style.display === '') {
+            answer.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            answer.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+
+    // ===== 核心计算 =====
+    function calculate() {
+        const P = parseFloat(document.getElementById('loan-amount').value) || 0;
+        const annualRate = parseFloat(document.getElementById('interest-rate').value) || 0;
+        const years = parseFloat(document.getElementById('loan-term').value) || 30;
+
+        const monthlyRate = annualRate / 100 / 12;
+        const totalMonths = years * 12;
+
+        // 计算月供
+        let monthlyPayment;
+        if (monthlyRate === 0) {
+            monthlyPayment = P / totalMonths;
+        } else {
+            monthlyPayment = P * monthlyRate * Math.pow(1 + monthlyRate, totalMonths) /
+                (Math.pow(1 + monthlyRate, totalMonths) - 1);
+        }
+
+        const totalPayment = monthlyPayment * totalMonths;
+        const totalInterest = totalPayment - P;
+
+        // 格式化货币
+        const fmt = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
+
+        document.getElementById('monthly-payment').textContent = fmt.format(monthlyPayment);
+        document.getElementById('total-interest').textContent = fmt.format(totalInterest);
+        document.getElementById('total-payment').textContent = fmt.format(totalPayment);
+
+        // ===== 生成还款计划表（逐年） =====
+        let balance = P;
+        let cumulativeInterest = 0;
+        const schedule = [];
+
+        for (let year = 1; year <= years; year++) {
+            let yearInterest = 0;
+            let yearPrincipal = 0;
+            for (let month = 1; month <= 12; month++) {
+                if (balance <= 0) break;
+                const interest = balance * monthlyRate;
+                const principal = Math.min(monthlyPayment - interest, balance);
+                balance -= principal;
+                yearInterest += interest;
+                yearPrincipal += principal;
+                if (balance <= 0) break;
+            }
+            cumulativeInterest += yearInterest;
+            const remaining = Math.max(0, balance);
+            schedule.push({
+                year,
+                interest: yearInterest,
+                principal: yearPrincipal,
+                remaining: remaining,
+                cumulativeInterest: cumulativeInterest
+            });
+            if (balance <= 0) break;
+        }
+
+        // 渲染表格
+        const tbody = document.getElementById('schedule-body');
+        tbody.innerHTML = '';
+        for (const row of schedule) {
+            const tr = document.createElement('tr');
+            if (row.remaining <= 0) tr.classList.add('highlight-row');
+            tr.innerHTML = `
+                <td>${row.year}</td>
+                <td>${fmt.format(row.remaining + row.principal)}</td>
+                <td>${fmt.format(row.interest)}</td>
+                <td>${fmt.format(row.principal)}</td>
+                <td>${fmt.format(row.remaining)}</td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        document.getElementById('results-area').style.display = 'block';
+    }
+
+    // ===== 页面加载 =====
+    document.addEventListener('DOMContentLoaded', function() {
+        // 折叠默认状态
+        document.getElementById('infoAccordion').style.display = 'block';
+        document.getElementById('infoArrow').textContent = '▼';
+        document.getElementById('faqAccordion').style.display = 'none';
+        document.getElementById('faqArrow').textContent = '▶';
+        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
+
+        // 自动计算
+        calculate();
+    });
+
+    // 输入变化时自动重新计算
+    document.addEventListener('input', function(e) {
+        if (e.target.closest('.form-grid')) {
+            calculate();
+        }
+    });
+</script>
+
+</body>
+</html>
