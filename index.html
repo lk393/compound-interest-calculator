@@ -58,24 +58,6 @@
             display: block;
         }
 
-        .stats {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            flex-wrap: wrap;
-            margin-bottom: 1.5rem;
-            font-size: 0.9rem;
-            color: #475569;
-        }
-        .stats span {
-            background: #f1f5f9;
-            padding: 0.3rem 1rem;
-            border-radius: 20px;
-        }
-        .stats strong {
-            color: #0f172a;
-        }
-
         .category-section {
             margin-bottom: 2rem;
         }
@@ -180,11 +162,28 @@
             color: #dce1e8;
         }
 
+        /* 底部统计信息 */
+        .footer-stats {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            padding: 0.8rem 0;
+            border-top: 1px solid #e9edf2;
+            margin-top: 0.5rem;
+        }
+        .footer-stats span {
+            margin: 0 0.8rem;
+        }
+        .footer-stats strong {
+            color: #475569;
+        }
+
         @media (max-width: 640px) {
             .hero h1 { font-size: 1.5rem; }
             .tool-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
-            .stats { gap: 0.8rem; font-size: 0.8rem; }
             .nav-links a { font-size: 0.8rem; margin: 0 0.3rem; }
+            .footer-stats { font-size: 0.75rem; }
+            .footer-stats span { margin: 0 0.4rem; }
         }
         @media (max-width: 480px) {
             .tool-grid { grid-template-columns: 1fr 1fr; }
@@ -196,56 +195,47 @@
 
 <div class="container">
 
+    <!-- ===== 导航栏（精简） ===== -->
     <div class="nav-links">
         <a href="index.html" style="font-weight:700;">🏠 Home</a>
         <span class="sep">|</span>
-        <a href="compound-interest.html">📈 Compound</a>
-        <span class="sep">|</span>
-        <a href="debt-calculator.html">💳 Debt</a>
-        <span class="sep">|</span>
-        <a href="fire-calculator.html">🔥 FIRE</a>
-        <span class="sep">|</span>
-        <a href="four-percent.html">📊 4% Rule</a>
-        <span class="sep">|</span>
-        <a href="coast-fire.html">🏖️ Coast</a>
-        <span class="sep">|</span>
-        <a href="extra-payment.html">🏠 Extra</a>
-        <span class="sep">|</span>
-        <a href="sip-calculator.html">📈 SIP</a>
-        <span class="sep">|</span>
-        <a href="life-insurance.html">🛡️ Life</a>
-        <span class="sep">|</span>
-        <a href="about.html">ℹ️ About</a>
-        <span class="sep">|</span>
-        <a href="privacy.html">🔒 Privacy</a>
+        <a href="#tools">📊 所有工具</a>
     </div>
 
     <main class="calculator-card" style="padding-bottom:1.5rem;">
 
+        <!-- ===== 头部 ===== -->
         <div class="hero">
             <h1>🧮 Smart Finance Tools</h1>
             <p>100+ free financial calculators — plan your money with confidence.</p>
         </div>
 
+        <!-- ===== 搜索框 ===== -->
         <div class="search-box">
             <input type="text" id="searchInput" placeholder="Search tools by name or category..." oninput="filterTools()" />
             <button class="clear-btn" id="clearBtn" onclick="clearSearch()">✕</button>
         </div>
 
-        <div class="stats">
+        <!-- ===== 工具列表区域（锚点：tools） ===== -->
+        <div id="tools">
+            <div id="categoriesContainer"></div>
+        </div>
+
+        <!-- ===== 无结果提示 ===== -->
+        <div class="no-results" id="noResults">
+            <p>😕 No tools found. Try a different keyword.</p>
+        </div>
+
+        <!-- ===== 统计信息（底部） ===== -->
+        <div class="footer-stats">
             <span>📊 Total: <strong id="totalCount">100</strong> tools</span>
             <span>✅ Available: <strong id="availableCount">8</strong></span>
             <span>⏳ Coming soon: <strong id="comingCount">92</strong></span>
         </div>
 
-        <div id="categoriesContainer"></div>
-
-        <div class="no-results" id="noResults">
-            <p>😕 No tools found. Try a different keyword.</p>
-        </div>
-
     </main>
 
+    <!-- ===== 页脚 ===== -->
     <footer class="site-footer">
         <p>
             © 2026 — Smart Finance Tools · Free Online Calculators
