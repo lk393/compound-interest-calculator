@@ -4,201 +4,205 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Compound Interest Calculator — Free Online Tool</title>
-    <link rel="stylesheet" href="style.css" />
-    <meta name="google-site-verification" content="0X2_Ohr0INStp0_CAe2AZRb4eSMsiw_WMxKyW1U2bg" />
+       <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<div class="container">
+    <div class="container">
+        <!-- 导航 -->
+        <div class="nav-links">
+            <a href="index.html" style="font-weight:700;">📈 Compound</a>
+            <span style="color:#94a3b8;">|</span>
+            <a href="debt-calculator.html">💳 Debt</a>
+            <span style="color:#94a3b8;">|</span>
+            <a href="fire-calculator.html">🔥 FIRE</a>
+            <span style="color:#94a3b8;">|</span>
+            <a href="four-percent.html">📊 4% Rule</a>
+            <span style="color:#94a3b8;">|</span>
+            <a href="coast-fire.html">🏖️ Coast</a>
+            <span style="color:#94a3b8;">|</span>
+            <a href="extra-payment.html">🏠 Extra</a>
+            <span style="color:#94a3b8;">|</span>
+            <a href="sip-calculator.html">📈 SIP</a>
+            <span style="color:#94a3b8;">|</span>
+            <a href="life-insurance.html">🛡️ Life</a>
+        </div>
+        <!-- ===== 主计算器 ===== -->
+        <main class="calculator-card">
+            <h1>📈 Compound Interest Calculator</h1>
+            <p class="subtitle">Calculate how your savings grow with regular contributions and compound interest.</p>
 
-    <!-- ===== 导航 ===== -->
-    <div class="nav-links">
-        <a href="index.html" style="font-weight:700;">📈 Compound</a>
-        <span style="color:#94a3b8;">|</span>
-        <a href="debt-calculator.html">💳 Debt</a>
-        <span style="color:#94a3b8;">|</span>
-        <a href="fire-calculator.html">🔥 FIRE</a>
-        <span style="color:#94a3b8;">|</span>
-        <a href="four-percent.html">📊 4% Rule</a>
-        <span style="color:#94a3b8;">|</span>
-        <a href="coast-fire.html">🏖️ Coast</a>
+            <!-- 全部1列 -->
+            <div class="form-grid">
+                <div class="field">
+                    <label for="principal">Principal Amount ($)</label>
+                    <input type="number" id="principal" value="10000" min="0" step="100" />
+                </div>
+
+                <div class="field">
+                    <label for="rate">Annual Interest Rate (%)</label>
+                    <input type="number" id="rate" value="7" min="0" max="100" step="0.1" />
+                </div>
+
+                <div class="field">
+                    <label for="frequency">Compounding Frequency</label>
+                    <select id="frequency">
+                        <option value="1">Annually</option>
+                        <option value="4">Quarterly</option>
+                        <option value="12" selected>Monthly</option>
+                        <option value="365">Daily</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="years">Investment Period (Years)</label>
+                    <input type="number" id="years" value="10" min="1" max="50" step="1" />
+                </div>
+
+                <div class="field">
+                    <label for="monthly">Monthly Contribution ($)</label>
+                    <input type="number" id="monthly" value="500" min="0" step="50" />
+                </div>
+            </div>
+
+            <!-- 结果展示 — 1列纵向 -->
+            <div class="results-grid" id="results">
+                <div class="result-item">
+                    <span class="label">Final Balance</span>
+                    <span class="value" id="final-balance">—</span>
+                </div>
+                <div class="result-item">
+                    <span class="label">Total Interest Earned</span>
+                    <span class="value" id="total-interest">—</span>
+                </div>
+                <div class="result-item highlight">
+                    <span class="label">Effective Annual Rate</span>
+                    <span class="value" id="effective-rate">—</span>
+                </div>
+            </div>
+        </main>
+
+        <!-- ===== 指标说明（折叠） ===== -->
+        <section class="accordion-card">
+            <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
+                <h2>📖 How to read your results</h2>
+                <span class="accordion-arrow" id="infoArrow">▶</span>
+            </div>
+            <div class="accordion-body" id="infoAccordion">
+                <div class="info-grid">
+                    <div class="info-block">
+                        <h3>Final Balance</h3>
+                        <p>Your total account value at the end. Includes principal, all contributions, and compounded interest.</p>
+                    </div>
+                    <div class="info-block">
+                        <h3>Total Interest</h3>
+                        <p>All the interest you earned. Final balance minus what you actually deposited (principal + contributions).</p>
+                    </div>
+                    <div class="info-block">
+                        <h3>Effective Annual Rate</h3>
+                        <p>Your true yearly return after compounding. More frequent compounding means this number is slightly higher than the nominal rate.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== FAQ（折叠） ===== -->
+        <section class="accordion-card">
+            <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
+                <h2>❓ FAQ</h2>
+                <span class="accordion-arrow" id="faqArrow">▶</span>
+            </div>
+            <div class="accordion-body" id="faqAccordion">
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span class="faq-arrow">▶</span>
+                        <span>What is compound interest?</span>
+                    </div>
+                    <div class="faq-answer">Interest on interest. Your earnings generate more earnings. The longer the time, the bigger the effect.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span class="faq-arrow">▶</span>
+                        <span>What's the formula?</span>
+                    </div>
+                    <div class="faq-answer">Don't worry about it — the calculator does the math. Just enter your numbers and you're good.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span class="faq-arrow">▶</span>
+                        <span>Nominal rate vs. effective annual rate?</span>
+                    </div>
+                    <div class="faq-answer">Nominal is the advertised rate. Effective annual rate is what you actually earn after compounding. For example, 7% compounded monthly gives you 7.23%.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span class="faq-arrow">▶</span>
+                        <span>Does compounding frequency matter?</span>
+                    </div>
+                    <div class="faq-answer">Yes, but not huge in the short term. $10k over 10 years: annual vs. monthly compounding — a few hundred bucks difference. The gap grows over time.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span class="faq-arrow">▶</span>
+                        <span>How much does monthly contribution matter?</span>
+                    </div>
+                    <div class="faq-answer">A lot. $10k with no extra contributions → ~$20k after 10 years. Add $500/month → ~$106k. That's the power of regular investing.</div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ===== 页脚 ===== -->
+        <footer class="site-footer">
+            <p>© 2026 — Compound Interest Calculator · Free Online Tool</p>
+        </footer>
     </div>
 
-    <main class="calculator-card">
-        <h1>📈 Compound Interest Calculator</h1>
-        <p class="subtitle">Calculate how your savings grow with regular contributions and compound interest.</p>
+    <script src="calculator.js"></script>
+    <script>
+        // ===== 折叠切换 =====
 
-        <!-- ===== 科普文 ===== -->
-        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
-            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
-                <strong>Compound Interest Calculator</strong> — This tool shows you how your money grows over time
-                when you earn interest on both your principal and your accumulated interest. It solves the most
-                common question for savers and investors: <em>“If I save this much every month, what will I have
-                in 10, 20, or 30 years?”</em> Instead of guessing or using complicated spreadsheet formulas, you
-                get a clear answer instantly. Whether you're saving for retirement, a house down payment, or just
-                trying to build wealth, this calculator gives you a realistic target to aim for.
-            </p>
-        </div>
-
-        <!-- ===== 输入区域 ===== -->
-        <div class="form-grid">
-            <div class="field">
-                <label for="principal">Principal Amount ($)</label>
-                <input type="number" id="principal" value="10000" min="0" step="100" />
-            </div>
-            <div class="field">
-                <label for="rate">Annual Interest Rate (%)</label>
-                <input type="number" id="rate" value="7" min="0" max="100" step="0.1" />
-            </div>
-            <div class="field">
-                <label for="frequency">Compounding Frequency</label>
-                <select id="frequency">
-                    <option value="1">Annually</option>
-                    <option value="4">Quarterly</option>
-                    <option value="12" selected>Monthly</option>
-                    <option value="365">Daily</option>
-                </select>
-            </div>
-            <div class="field">
-                <label for="years">Investment Period (Years)</label>
-                <input type="number" id="years" value="10" min="1" max="50" step="1" />
-            </div>
-            <div class="field">
-                <label for="monthly">Monthly Contribution ($)</label>
-                <input type="number" id="monthly" value="500" min="0" step="50" />
-            </div>
-        </div>
-
-        <!-- ===== 结果展示 ===== -->
-        <div class="results-grid" id="results">
-            <div class="result-item">
-                <span class="label">Final Balance</span>
-                <span class="value" id="final-balance">—</span>
-            </div>
-            <div class="result-item">
-                <span class="label">Total Interest Earned</span>
-                <span class="value" id="total-interest">—</span>
-            </div>
-            <div class="result-item highlight">
-                <span class="label">Effective Annual Rate</span>
-                <span class="value" id="effective-rate">—</span>
-            </div>
-        </div>
-    </main>
-
-    <!-- ===== 折叠说明 ===== -->
-    <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
-            <h2>📖 How to read your results</h2>
-            <span class="accordion-arrow" id="infoArrow">▶</span>
-        </div>
-        <div class="accordion-body" id="infoAccordion">
-            <div class="info-grid">
-                <div class="info-block">
-                    <h3>Final Balance</h3>
-                    <p>Your total account value at the end. Includes principal, all contributions, and compounded interest.</p>
-                </div>
-                <div class="info-block">
-                    <h3>Total Interest</h3>
-                    <p>All the interest you earned. Final balance minus what you actually deposited (principal + contributions).</p>
-                </div>
-                <div class="info-block">
-                    <h3>Effective Annual Rate</h3>
-                    <p>Your true yearly return after compounding. More frequent compounding means this number is slightly higher than the nominal rate.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== FAQ ===== -->
-    <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
-            <h2>❓ FAQ</h2>
-            <span class="accordion-arrow" id="faqArrow">▶</span>
-        </div>
-        <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>What is compound interest?</span>
-                </div>
-                <div class="faq-answer">Interest on interest. Your earnings generate more earnings. The longer the time, the bigger the effect.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>What's the formula?</span>
-                </div>
-                <div class="faq-answer">Don't worry about it — the calculator does the math. Just enter your numbers and you're good.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>Nominal rate vs. effective annual rate?</span>
-                </div>
-                <div class="faq-answer">Nominal is the advertised rate. Effective annual rate is what you actually earn after compounding. For example, 7% compounded monthly gives you 7.23%.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>Does compounding frequency matter?</span>
-                </div>
-                <div class="faq-answer">Yes, but not huge in the short term. $10k over 10 years: annual vs. monthly compounding — a few hundred bucks difference. The gap grows over time.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>How much does monthly contribution matter?</span>
-                </div>
-                <div class="faq-answer">A lot. $10k with no extra contributions → ~$20k after 10 years. Add $500/month → ~$106k. That's the power of regular investing.</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== 页脚 ===== -->
-    <footer class="site-footer">
-        <p>
-            © 2026 — Smart Finance Tools · Free Online Calculators
-            <br />
-            <a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a>
-            <span style="color:#dce1e8;">|</span>
-            <a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a>
-        </p>
-    </footer>
-</div>
-
-<script src="calculator.js"></script>
-<script>
-    function toggleAccordion(id) {
-        const body = document.getElementById(id);
-        const arrow = document.getElementById(id + 'Arrow');
-        if (body.style.display === 'none' || body.style.display === '') {
-            body.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            body.style.display = 'none';
-            arrow.textContent = '▶';
+        function toggleAccordion(id) {
+            const body = document.getElementById(id);
+            const arrow = document.getElementById(id + 'Arrow');
+            if (body.style.display === 'none' || body.style.display === '') {
+                body.style.display = 'block';
+                arrow.textContent = '▼';
+            } else {
+                body.style.display = 'none';
+                arrow.textContent = '▶';
+            }
         }
-    }
-    function toggleFaq(el) {
-        const answer = el.nextElementSibling;
-        const arrow = el.querySelector('.faq-arrow');
-        if (answer.style.display === 'none' || answer.style.display === '') {
-            answer.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            answer.style.display = 'none';
-            arrow.textContent = '▶';
+
+        function toggleFaq(el) {
+            const answer = el.nextElementSibling;
+            const arrow = el.querySelector('.faq-arrow');
+            if (answer.style.display === 'none' || answer.style.display === '') {
+                answer.style.display = 'block';
+                arrow.textContent = '▼';
+            } else {
+                answer.style.display = 'none';
+                arrow.textContent = '▶';
+            }
         }
-    }
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('infoAccordion').style.display = 'block';
-        document.getElementById('infoArrow').textContent = '▼';
-        document.getElementById('faqAccordion').style.display = 'none';
-        document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
-        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
-    });
-</script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('infoAccordion').style.display = 'block';
+            document.getElementById('infoArrow').textContent = '▼';
+            document.getElementById('faqAccordion').style.display = 'none';
+            document.getElementById('faqArrow').textContent = '▶';
+            document.querySelectorAll('.faq-answer').forEach(function(el) {
+                el.style.display = 'none';
+            });
+            document.querySelectorAll('.faq-arrow').forEach(function(el) {
+                el.textContent = '▶';
+            });
+        });
+    </script>
 </body>
 </html>
