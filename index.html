@@ -24,7 +24,7 @@
 
         .search-box {
             max-width: 500px;
-            margin: 0 auto 1.5rem;
+            margin: 0 auto 0.8rem;
             position: relative;
         }
         .search-box input {
@@ -56,6 +56,25 @@
         }
         .search-box .clear-btn.visible {
             display: block;
+        }
+
+        /* 网站说明（文案）— 放在搜索框下方 */
+        .site-desc {
+            text-align: center;
+            max-width: 520px;
+            margin: 0 auto 1.5rem;
+        }
+        .site-desc .tagline {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin: 0;
+        }
+        .site-desc .sub {
+            font-size: 0.9rem;
+            color: #475569;
+            margin: 0.2rem 0 0;
+            line-height: 1.5;
         }
 
         .category-section {
@@ -183,6 +202,8 @@
             .nav-links a { font-size: 0.8rem; margin: 0 0.3rem; }
             .footer-stats { font-size: 0.75rem; }
             .footer-stats span { margin: 0 0.4rem; }
+            .site-desc .tagline { font-size: 0.95rem; }
+            .site-desc .sub { font-size: 0.85rem; }
         }
         @media (max-width: 480px) {
             .tool-grid { grid-template-columns: 1fr 1fr; }
@@ -213,6 +234,14 @@
         <div class="search-box">
             <input type="text" id="searchInput" placeholder="Search tools by name or category..." oninput="filterTools()" />
             <button class="clear-btn" id="clearBtn" onclick="clearSearch()">✕</button>
+        </div>
+
+        <!-- ===== 网站说明（文案）— 放在搜索框下方 ===== -->
+        <div class="site-desc">
+            <p class="tagline">Stop guessing. Start planning.</p>
+            <p class="sub">
+                Free calculators for every money decision — savings, loans, investments, retirement, and more.
+            </p>
         </div>
 
         <!-- ===== 工具列表区域（锚点：tools） ===== -->
