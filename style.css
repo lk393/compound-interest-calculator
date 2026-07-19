@@ -309,3 +309,29 @@ body {
 .nav-links a:hover {
     text-decoration: underline;
 }
+/* ===== 顶部面包屑导航 ===== */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0 0.8rem;
+    border-bottom: 1px solid #e9edf2;
+    margin-bottom: 1.2rem;
+}
+.top-nav .back-link {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+.top-nav .back-link:hover {
+    text-decoration: underline;
+}
+.top-nav .breadcrumb {
+    font-size: 0.85rem;
+    color: #94a3b8;
+}
+.top-nav .breadcrumb span {
+    color: #1e293b;
+    font-weight: 500;
+}
