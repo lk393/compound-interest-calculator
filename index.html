@@ -83,7 +83,7 @@
 
         .tool-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 0.6rem;
         }
         .tool-card {
@@ -162,7 +162,6 @@
             color: #dce1e8;
         }
 
-        /* 底部统计信息 */
         .footer-stats {
             text-align: center;
             font-size: 0.85rem;
@@ -180,7 +179,7 @@
 
         @media (max-width: 640px) {
             .hero h1 { font-size: 1.5rem; }
-            .tool-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+            .tool-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
             .nav-links a { font-size: 0.8rem; margin: 0 0.3rem; }
             .footer-stats { font-size: 0.75rem; }
             .footer-stats span { margin: 0 0.4rem; }
@@ -199,7 +198,7 @@
     <div class="nav-links">
         <a href="index.html" style="font-weight:700;">🏠 Home</a>
         <span class="sep">|</span>
-        <a href="#tools">📊 所有工具</a>
+        <a href="#tools">📊 All Tools</a>
     </div>
 
     <main class="calculator-card" style="padding-bottom:1.5rem;">
@@ -249,124 +248,118 @@
 
 <script>
     const toolsData = {
-        '📊 理财与储蓄': [
-            { name: '复利计算器', icon: '📈', link: 'compound-interest.html', status: 'done' },
-            { name: '单利计算器', icon: '🧮', link: '#', status: 'coming' },
-            { name: '定期存款计算器', icon: '🏦', link: '#', status: 'coming' },
-            { name: '零存整取计算器', icon: '💰', link: '#', status: 'coming' },
-            { name: '整存整取计算器', icon: '💵', link: '#', status: 'coming' },
-            { name: '存本取息计算器', icon: '📄', link: '#', status: 'coming' },
-            { name: '储蓄目标规划器', icon: '🎯', link: '#', status: 'coming' },
-            { name: '应急基金计算器', icon: '🛡️', link: '#', status: 'coming' },
-            { name: '50/30/20预算规划器', icon: '📋', link: '#', status: 'coming' },
-            { name: '通胀计算器', icon: '📉', link: '#', status: 'coming' },
-            { name: '净资产计算器', icon: '📊', link: '#', status: 'coming' },
-            { name: '加薪计算器', icon: '💹', link: '#', status: 'coming' },
-            { name: '薪资换算时薪计算器', icon: '⏰', link: '#', status: 'coming' },
-            { name: '按比例薪资计算器', icon: '📐', link: '#', status: 'coming' },
-            { name: '年薪分摊周期换算器', icon: '📅', link: '#', status: 'coming' },
+        '💰 Personal Finance & Savings': [
+            { name: 'Compound Interest Calculator', icon: '📈', link: 'compound-interest.html', status: 'done' },
+            { name: 'Simple Interest Calculator', icon: '🧮', link: '#', status: 'coming' },
+            { name: 'Fixed Deposit Calculator', icon: '🏦', link: '#', status: 'coming' },
+            { name: 'Recurring Deposit Calculator', icon: '💰', link: '#', status: 'coming' },
+            { name: 'Savings Goal Planner', icon: '🎯', link: '#', status: 'coming' },
+            { name: 'Emergency Fund Calculator', icon: '🛡️', link: '#', status: 'coming' },
+            { name: '50/30/20 Budget Planner', icon: '📋', link: '#', status: 'coming' },
+            { name: 'Inflation Calculator', icon: '📉', link: '#', status: 'coming' },
+            { name: 'Net Worth Calculator', icon: '📊', link: '#', status: 'coming' },
+            { name: 'Salary to Hourly Converter', icon: '⏰', link: '#', status: 'coming' },
+            { name: 'Prorated Salary Calculator', icon: '📐', link: '#', status: 'coming' },
+            { name: 'Pay Period Converter', icon: '📅', link: '#', status: 'coming' },
         ],
-        '🏦 贷款与抵押': [
-            { name: '房贷月供计算器', icon: '🏠', link: '#', status: 'coming' },
-            { name: '房贷超额还款计算器', icon: '🚀', link: 'extra-payment.html', status: 'done' },
-            { name: '贷款摊销表生成器', icon: '📑', link: '#', status: 'coming' },
-            { name: '贷款可承受额度计算器', icon: '💳', link: '#', status: 'coming' },
-            { name: '贷款比较计算器', icon: '⚖️', link: '#', status: 'coming' },
-            { name: '车贷计算器', icon: '🚗', link: '#', status: 'coming' },
-            { name: '个人贷款计算器', icon: '👤', link: '#', status: 'coming' },
-            { name: '信用卡还款计算器', icon: '💳', link: '#', status: 'coming' },
-            { name: '贷款再融资计算器', icon: '🔄', link: '#', status: 'coming' },
-            { name: 'APR/APY计算器', icon: '📊', link: '#', status: 'coming' },
-            { name: '债务收入比检查器', icon: '📈', link: '#', status: 'coming' },
-            { name: '债务负担率计算器', icon: '⚖️', link: '#', status: 'coming' },
+        '🏦 Loans & Mortgages': [
+            { name: 'Mortgage Payment Calculator', icon: '🏠', link: '#', status: 'coming' },
+            { name: 'Mortgage Extra Payment Calculator', icon: '🚀', link: 'extra-payment.html', status: 'done' },
+            { name: 'Loan Amortization Calculator', icon: '📑', link: '#', status: 'coming' },
+            { name: 'Affordability Calculator', icon: '💳', link: '#', status: 'coming' },
+            { name: 'Loan Comparison Calculator', icon: '⚖️', link: '#', status: 'coming' },
+            { name: 'Auto Loan Calculator', icon: '🚗', link: '#', status: 'coming' },
+            { name: 'Personal Loan Calculator', icon: '👤', link: '#', status: 'coming' },
+            { name: 'Credit Card Payoff Calculator', icon: '💳', link: '#', status: 'coming' },
+            { name: 'Refinance Calculator', icon: '🔄', link: '#', status: 'coming' },
+            { name: 'APR / APY Calculator', icon: '📊', link: '#', status: 'coming' },
+            { name: 'Debt-to-Income Ratio Checker', icon: '📈', link: '#', status: 'coming' },
         ],
-        '💳 债务管理': [
-            { name: '债务雪球/Avalanche计算器', icon: '⛰️', link: 'debt-calculator.html', status: 'done' },
-            { name: '债务还清时间计算器', icon: '⏳', link: '#', status: 'coming' },
-            { name: '信用卡最低还款计算器', icon: '💳', link: '#', status: 'coming' },
-            { name: '多债务整合计算器', icon: '🔗', link: '#', status: 'coming' },
-            { name: '债务利率比较计算器', icon: '📊', link: '#', status: 'coming' },
-            { name: '债务冻结计算器', icon: '❄️', link: '#', status: 'coming' },
-            { name: '债务清偿策略比较器', icon: '⚖️', link: '#', status: 'coming' },
-            { name: '家庭负债看板', icon: '📋', link: '#', status: 'coming' },
+        '💳 Debt Management': [
+            { name: 'Debt Snowball / Avalanche Calculator', icon: '⛰️', link: 'debt-calculator.html', status: 'done' },
+            { name: 'Debt Payoff Timer', icon: '⏳', link: '#', status: 'coming' },
+            { name: 'Credit Card Minimum Payment Calculator', icon: '💳', link: '#', status: 'coming' },
+            { name: 'Debt Consolidation Calculator', icon: '🔗', link: '#', status: 'coming' },
+            { name: 'Debt Interest Comparison', icon: '📊', link: '#', status: 'coming' },
+            { name: 'Debt Strategy Comparator', icon: '⚖️', link: '#', status: 'coming' },
+            { name: 'Household Debt Dashboard', icon: '📋', link: '#', status: 'coming' },
         ],
-        '📈 投资与回报': [
-            { name: '投资回报率计算器', icon: '📊', link: '#', status: 'coming' },
-            { name: '股息再投资计算器', icon: '🔄', link: '#', status: 'coming' },
-            { name: '投资费用拖累计算器', icon: '📉', link: '#', status: 'coming' },
-            { name: '年化复合增长率计算器', icon: '📈', link: '#', status: 'coming' },
-            { name: '净现值计算器', icon: '💰', link: '#', status: 'coming' },
-            { name: '内部收益率计算器', icon: '📊', link: '#', status: 'coming' },
-            { name: '投资目标规划器', icon: '🎯', link: '#', status: 'coming' },
-            { name: '一次性投资增长计算器', icon: '📈', link: '#', status: 'coming' },
-            { name: '股票回报计算器', icon: '📈', link: '#', status: 'coming' },
-            { name: '历史回测计算器', icon: '⏮️', link: '#', status: 'coming' },
-            { name: '保证金交易计算器', icon: '⚖️', link: '#', status: 'coming' },
-            { name: '加密货币增长计算器', icon: '🪙', link: '#', status: 'coming' },
-            { name: '定投与一次性投入对比器', icon: '⚖️', link: '#', status: 'coming' },
+        '📈 Investment & Returns': [
+            { name: 'Return on Investment (ROI) Calculator', icon: '📊', link: '#', status: 'coming' },
+            { name: 'Dividend Reinvestment (DRIP) Calculator', icon: '🔄', link: '#', status: 'coming' },
+            { name: 'Investment Fee Drag Calculator', icon: '📉', link: '#', status: 'coming' },
+            { name: 'CAGR Calculator', icon: '📈', link: '#', status: 'coming' },
+            { name: 'Net Present Value (NPV) Calculator', icon: '💰', link: '#', status: 'coming' },
+            { name: 'Internal Rate of Return (IRR) Calculator', icon: '📊', link: '#', status: 'coming' },
+            { name: 'Investment Goal Planner', icon: '🎯', link: '#', status: 'coming' },
+            { name: 'Lump Sum Growth Calculator', icon: '📈', link: '#', status: 'coming' },
+            { name: 'Stock Return Calculator', icon: '📈', link: '#', status: 'coming' },
+            { name: 'Backtest Calculator', icon: '⏮️', link: '#', status: 'coming' },
+            { name: 'Margin Trading Calculator', icon: '⚖️', link: '#', status: 'coming' },
+            { name: 'Cryptocurrency Growth Calculator', icon: '🪙', link: '#', status: 'coming' },
+            { name: 'SIP vs Lump Sum Comparator', icon: '⚖️', link: '#', status: 'coming' },
         ],
-        '🏖️ 退休与FIRE': [
-            { name: 'FIRE数字计算器', icon: '🔥', link: 'fire-calculator.html', status: 'done' },
-            { name: 'Coast FIRE计算器', icon: '🏖️', link: 'coast-fire.html', status: 'done' },
-            { name: '4%法则计算器', icon: '📊', link: 'four-percent.html', status: 'done' },
-            { name: '退休储蓄计算器', icon: '💰', link: '#', status: 'coming' },
-            { name: '退休提款计算器', icon: '🏦', link: '#', status: 'coming' },
-            { name: '退休资金需求计算器', icon: '📋', link: '#', status: 'coming' },
-            { name: '401(k)/养老金计算器', icon: '📈', link: '#', status: 'coming' },
-            { name: 'Roth IRA计算器', icon: '📊', link: '#', status: 'coming' },
-            { name: '退休收入替代率计算器', icon: '📈', link: '#', status: 'coming' },
-            { name: '退休年龄计算器', icon: '🎂', link: '#', status: 'coming' },
+        '🏖️ Retirement & FIRE': [
+            { name: 'FIRE Number Calculator', icon: '🔥', link: 'fire-calculator.html', status: 'done' },
+            { name: 'Coast FIRE Calculator', icon: '🏖️', link: 'coast-fire.html', status: 'done' },
+            { name: '4% Rule Calculator', icon: '📊', link: 'four-percent.html', status: 'done' },
+            { name: 'Retirement Savings Calculator', icon: '💰', link: '#', status: 'coming' },
+            { name: 'Retirement Withdrawal Calculator', icon: '🏦', link: '#', status: 'coming' },
+            { name: 'Retirement Need Calculator', icon: '📋', link: '#', status: 'coming' },
+            { name: '401(k) / Pension Calculator', icon: '📈', link: '#', status: 'coming' },
+            { name: 'Roth IRA Calculator', icon: '📊', link: '#', status: 'coming' },
+            { name: 'Income Replacement Ratio Calculator', icon: '📈', link: '#', status: 'coming' },
+            { name: 'Retirement Age Calculator', icon: '🎂', link: '#', status: 'coming' },
         ],
-        '📅 SIP与定投': [
-            { name: 'SIP计算器', icon: '📈', link: 'sip-calculator.html', status: 'done' },
-            { name: '定期存款计算器', icon: '🏦', link: '#', status: 'coming' },
-            { name: 'SIP vs 一次性投入对比器', icon: '⚖️', link: '#', status: 'coming' },
-            { name: 'SIP阶梯增长计算器', icon: '📊', link: '#', status: 'coming' },
-            { name: '定投频率比较器', icon: '📅', link: '#', status: 'coming' },
-            { name: 'SIP目标规划器', icon: '🎯', link: '#', status: 'coming' },
+        '📅 SIP & Systematic Investing': [
+            { name: 'SIP Calculator', icon: '📈', link: 'sip-calculator.html', status: 'done' },
+            { name: 'SIP vs Lump Sum Comparator', icon: '⚖️', link: '#', status: 'coming' },
+            { name: 'Step-up SIP Calculator', icon: '📊', link: '#', status: 'coming' },
+            { name: 'SIP Frequency Comparator', icon: '📅', link: '#', status: 'coming' },
+            { name: 'SIP Goal Planner', icon: '🎯', link: '#', status: 'coming' },
         ],
-        '🛡️ 保险与风控': [
-            { name: '人寿保险需求计算器', icon: '🛡️', link: 'life-insurance.html', status: 'done' },
-            { name: '健康保险需求计算器', icon: '🏥', link: '#', status: 'coming' },
-            { name: '车险保费估算器', icon: '🚗', link: '#', status: 'coming' },
-            { name: '保险覆盖缺口计算器', icon: '📊', link: '#', status: 'coming' },
-            { name: '保险产品比较器', icon: '⚖️', link: '#', status: 'coming' },
-            { name: '保险免税收益计算器', icon: '💰', link: '#', status: 'coming' },
-            { name: '长期护理保险计算器', icon: '🏥', link: '#', status: 'coming' },
-            { name: '残疾收入保险计算器', icon: '🦽', link: '#', status: 'coming' },
+        '🛡️ Insurance & Risk': [
+            { name: 'Life Insurance Needs Calculator', icon: '🛡️', link: 'life-insurance.html', status: 'done' },
+            { name: 'Health Insurance Needs Calculator', icon: '🏥', link: '#', status: 'coming' },
+            { name: 'Car Insurance Estimator', icon: '🚗', link: '#', status: 'coming' },
+            { name: 'Insurance Gap Calculator', icon: '📊', link: '#', status: 'coming' },
+            { name: 'Insurance Product Comparator', icon: '⚖️', link: '#', status: 'coming' },
+            { name: 'Tax-free Insurance Return Calculator', icon: '💰', link: '#', status: 'coming' },
+            { name: 'Long-term Care Insurance Calculator', icon: '🏥', link: '#', status: 'coming' },
+            { name: 'Disability Income Insurance Calculator', icon: '🦽', link: '#', status: 'coming' },
         ],
-        '💰 税务': [
-            { name: '所得税计算器', icon: '📊', link: '#', status: 'coming' },
-            { name: '增值税/GST计算器', icon: '📊', link: '#', status: 'coming' },
-            { name: '资本利得税计算器', icon: '📈', link: '#', status: 'coming' },
-            { name: '有效税率计算器', icon: '📊', link: '#', status: 'coming' },
-            { name: '税务策略规划器', icon: '📋', link: '#', status: 'coming' },
-            { name: '税前/税后收入换算器', icon: '🔄', link: '#', status: 'coming' },
-            { name: '退休账户税后比较器', icon: '⚖️', link: '#', status: 'coming' },
-            { name: '销售税计算器', icon: '🛒', link: '#', status: 'coming' },
-            { name: '房产税计算器', icon: '🏠', link: '#', status: 'coming' },
-            { name: '跨境税务估算器', icon: '🌍', link: '#', status: 'coming' },
+        '💰 Taxes': [
+            { name: 'Income Tax Calculator', icon: '📊', link: '#', status: 'coming' },
+            { name: 'VAT / GST Calculator', icon: '📊', link: '#', status: 'coming' },
+            { name: 'Capital Gains Tax Calculator', icon: '📈', link: '#', status: 'coming' },
+            { name: 'Effective Tax Rate Calculator', icon: '📊', link: '#', status: 'coming' },
+            { name: 'Tax Strategy Planner', icon: '📋', link: '#', status: 'coming' },
+            { name: 'Pre-tax vs Post-tax Converter', icon: '🔄', link: '#', status: 'coming' },
+            { name: 'Retirement Account Tax Comparator', icon: '⚖️', link: '#', status: 'coming' },
+            { name: 'Sales Tax Calculator', icon: '🛒', link: '#', status: 'coming' },
+            { name: 'Property Tax Calculator', icon: '🏠', link: '#', status: 'coming' },
+            { name: 'Cross-border Tax Estimator', icon: '🌍', link: '#', status: 'coming' },
         ],
-        '🏠 购房与租房': [
-            { name: '租房vs买房对比器', icon: '⚖️', link: '#', status: 'coming' },
-            { name: '首付计算器', icon: '💰', link: '#', status: 'coming' },
-            { name: '租金收益率分析器', icon: '📊', link: '#', status: 'coming' },
-            { name: '房产升值计算器', icon: '📈', link: '#', status: 'coming' },
-            { name: '房贷vs现金买房对比器', icon: '⚖️', link: '#', status: 'coming' },
-            { name: '租金vs月供对比器', icon: '📊', link: '#', status: 'coming' },
-            { name: '购房总成本计算器', icon: '📋', link: '#', status: 'coming' },
+        '🏠 Home Buying & Renting': [
+            { name: 'Rent vs Buy Calculator', icon: '⚖️', link: '#', status: 'coming' },
+            { name: 'Down Payment Calculator', icon: '💰', link: '#', status: 'coming' },
+            { name: 'Rental Yield Calculator', icon: '📊', link: '#', status: 'coming' },
+            { name: 'Property Appreciation Calculator', icon: '📈', link: '#', status: 'coming' },
+            { name: 'Mortgage vs Cash Calculator', icon: '⚖️', link: '#', status: 'coming' },
+            { name: 'Rent vs Mortgage Payment Comparator', icon: '📊', link: '#', status: 'coming' },
+            { name: 'Total Home Cost Calculator', icon: '📋', link: '#', status: 'coming' },
         ],
-        '🌍 货币与汇率': [
-            { name: '汇率转换器', icon: '💱', link: '#', status: 'coming' },
-            { name: '国际汇款成本计算器', icon: '💸', link: '#', status: 'coming' },
-            { name: '购买力平价计算器', icon: '⚖️', link: '#', status: 'coming' },
-            { name: '通货膨胀调整换算器', icon: '📉', link: '#', status: 'coming' },
-            { name: '跨境生活成本比较器', icon: '🌍', link: '#', status: 'coming' },
-            { name: '货币换算历史查询器', icon: '📜', link: '#', status: 'coming' },
-            { name: '外汇投资收益计算器', icon: '📈', link: '#', status: 'coming' },
-            { name: '汇率波动影响分析器', icon: '📊', link: '#', status: 'coming' },
-            { name: '多币种预算规划器', icon: '💰', link: '#', status: 'coming' },
-            { name: '黄金/贵金属价格换算器', icon: '🥇', link: '#', status: 'coming' },
+        '🌍 Currency & Exchange': [
+            { name: 'Currency Converter', icon: '💱', link: '#', status: 'coming' },
+            { name: 'International Transfer Cost Calculator', icon: '💸', link: '#', status: 'coming' },
+            { name: 'Purchasing Power Parity Calculator', icon: '⚖️', link: '#', status: 'coming' },
+            { name: 'Inflation-adjusted Currency Converter', icon: '📉', link: '#', status: 'coming' },
+            { name: 'Cross-border Living Cost Comparator', icon: '🌍', link: '#', status: 'coming' },
+            { name: 'Historical Currency Lookup', icon: '📜', link: '#', status: 'coming' },
+            { name: 'Forex Return Calculator', icon: '📈', link: '#', status: 'coming' },
+            { name: 'Exchange Rate Impact Analyzer', icon: '📊', link: '#', status: 'coming' },
+            { name: 'Multi-currency Budget Planner', icon: '💰', link: '#', status: 'coming' },
+            { name: 'Gold / Precious Metals Price Converter', icon: '🥇', link: '#', status: 'coming' },
         ],
     };
 
