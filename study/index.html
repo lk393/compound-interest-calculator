@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>学习成长系统 — 让孩子爱上学习</title>
+    <link rel="stylesheet" href="../style.css" />
+    <style>
+        /* ===== 学习系统专用样式 ===== */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0 0.8rem;
+            border-bottom: 1px solid #e9edf2;
+            margin-bottom: 1.2rem;
+        }
+        .top-nav .back-link {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .top-nav .back-link:hover {
+            text-decoration: underline;
+        }
+        .top-nav .breadcrumb {
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+        .top-nav .breadcrumb span {
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        .study-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+            margin-bottom: 1.2rem;
+        }
+        .study-card h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+        }
+        .study-card p {
+            color: #475569;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+        .stat-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.8rem;
+            text-align: center;
+        }
+        .stat-item .number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .stat-item .label {
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+        .stat-item.highlight .number {
+            color: #2563eb;
+        }
+
+        .progress-chart {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1rem;
+            height: 120px;
+            display: flex;
+            align-items: flex-end;
+            gap: 0.4rem;
+            margin-top: 0.5rem;
+        }
+        .bar {
+            flex: 1;
+            background: #2563eb;
+            border-radius: 4px 4px 0 0;
+            min-height: 4px;
+            transition: height 0.3s;
+            position: relative;
+        }
+        .bar-label {
+            position: absolute;
+            bottom: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.6rem;
+            color: #94a3b8;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background: #1d4ed8;
+        }
+        .btn-secondary {
+            background: #e9edf2;
+            color: #1e293b;
+        }
+        .btn-secondary:hover {
+            background: #dce1e8;
+        }
+
+        .action-row {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .milestone-list {
+            list-style: none;
+            padding: 0;
+            margin: 0.5rem 0 0;
+        }
+        .milestone-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.4rem 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.9rem;
+            color: #334155;
+        }
+        .milestone-list li .icon {
+            font-size: 1.2rem;
+        }
+        .milestone-list li .done {
+            color: #10b981;
+        }
+        .milestone-list li .pending {
+            color: #94a3b8;
+        }
+
+        @media (max-width: 640px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .top-nav {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ===== 顶部导航 ===== -->
+    <div class="top-nav">
+        <a href="../index.html" class="back-link">← 返回首页</a>
+        <div class="breadcrumb">📚 <span>学习成长系统</span></div>
+    </div>
+
+    <!-- ===== 欢迎区域 ===== -->
+    <div class="study-card" style="background: #eef2ff; border-left: 4px solid #2563eb;">
+        <h2>👋 欢迎回来，小勇士！</h2>
+        <p>今天也要加油哦！每完成一项任务，你离「自律小英雄」就更近一步 🦸</p>
+    </div>
+
+    <!-- ===== 统计卡片 ===== -->
+    <div class="stats-grid" id="statsGrid">
+        <div class="stat-item highlight">
+            <div class="number" id="streakDays">0</div>
+            <div class="label">🔥 连续打卡</div>
+        </div>
+        <div class="stat-item">
+            <div class="number" id="totalTasks">0</div>
+            <div class="label">📝 完成任务</div>
+        </div>
+        <div class="stat-item">
+            <div class="number" id="avgAccuracy">0%</div>
+            <div class="label">🎯 平均正确率</div>
+        </div>
+        <div class="stat-item">
+            <div class="number" id="level">Lv.1</div>
+            <div class="label">⭐ 等级</div>
+        </div>
+    </div>
+
+    <!-- ===== 近期正确率趋势 ===== -->
+    <div class="study-card">
+        <h2>📈 最近7天正确率</h2>
+        <div class="progress-chart" id="chartContainer">
+            <!-- JS 会动态渲染 -->
+        </div>
+    </div>
+
+    <!-- ===== 今日任务 + 快捷操作 ===== -->
+    <div class="study-card">
+        <h2>📋 今日任务</h2>
+        <ul class="milestone-list" id="todayTasks">
+            <li><span class="icon">📖</span> 数学练习册 P10-15 <span class="done">✅ 已完成</span></li>
+            <li><span class="icon">📝</span> 语文抄写 第5课 <span class="pending">⏳ 待完成</span></li>
+        </ul>
+
+        <div class="action-row">
+            <a href="upload.html" class="btn">📸 拍照上传作业</a>
+            <a href="progress.html" class="btn btn-secondary">📊 查看成长曲线</a>
+        </div>
+    </div>
+
+    <!-- ===== 最近成就 ===== -->
+    <div class="study-card">
+        <h2>🏅 最近获得的徽章</h2>
+        <ul class="milestone-list" id="recentBadges">
+            <li><span class="icon">🥇</span> 首战告捷 <span style="color:#94a3b8;font-size:0.8rem;">· 3天前</span></li>
+            <li><span class="icon">🔥</span> 七天坚持 <span style="color:#94a3b8;font-size:0.8rem;">· 2天前</span></li>
+        </ul>
+    </div>
+
+    <!-- ===== 页脚 ===== -->
+    <footer class="site-footer" style="margin-top:1.5rem;">
+        <p>© 2026 — 学习成长系统 · 用坚持看见进步</p>
+    </footer>
+</div>
+
+<script>
+    // ===== 模拟数据（后续用 localStorage 替换） =====
+    const mockData = {
+        streakDays: 7,
+        totalTasks: 23,
+        avgAccuracy: 82,
+        level: 3,
+        dailyAccuracy: [60, 70, 75, 80, 85, 90, 88], // 最近7天
+        badges: [
+            { name: '🥇 首战告捷', date: '2026-07-18' },
+            { name: '🔥 七天坚持', date: '2026-07-20' }
+        ]
+    };
+
+    // 渲染统计
+    document.getElementById('streakDays').textContent = mockData.streakDays;
+    document.getElementById('totalTasks').textContent = mockData.totalTasks;
+    document.getElementById('avgAccuracy').textContent = mockData.avgAccuracy + '%';
+    document.getElementById('level').textContent = 'Lv.' + mockData.level;
+
+    // 渲染趋势图
+    const chart = document.getElementById('chartContainer');
+    const max = Math.max(...mockData.dailyAccuracy, 10);
+    chart.innerHTML = mockData.dailyAccuracy.map((val, i) => {
+        const height = (val / max) * 100;
+        return `<div class="bar" style="height:${height}%;"><span class="bar-label">${val}%</span></div>`;
+    }).join('');
+
+    // 渲染徽章
+    const badgeList = document.getElementById('recentBadges');
+    badgeList.innerHTML = mockData.badges.map(b => {
+        return `<li><span class="icon">${b.name.split(' ')[0]}</span> ${b.name.split(' ').slice(1).join(' ')} <span style="color:#94a3b8;font-size:0.8rem;">· ${b.date}</span></li>`;
+    }).join('');
+</script>
+</body>
+</html>
