@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>成长曲线 — 学习成长系统</title>
+    <link rel="stylesheet" href="../style.css" />
+    <style>
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0 0.8rem;
+            border-bottom: 1px solid #e9edf2;
+            margin-bottom: 1.2rem;
+        }
+        .top-nav .back-link {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .top-nav .breadcrumb {
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+        .top-nav .breadcrumb span {
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+            margin-bottom: 1.2rem;
+        }
+        .card h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+        }
+        .card p {
+            color: #475569;
+            font-size: 0.9rem;
+            margin: 0 0 1rem;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .stat-box {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.8rem;
+            text-align: center;
+        }
+        .stat-box .num {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .stat-box .lbl {
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+        .stat-box.highlight .num {
+            color: #2563eb;
+        }
+
+        .chart-container {
+            height: 160px;
+            display: flex;
+            align-items: flex-end;
+            gap: 0.3rem;
+            padding-top: 0.5rem;
+        }
+        .bar-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+            justify-content: flex-end;
+        }
+        .bar-fill {
+            width: 100%;
+            max-width: 32px;
+            border-radius: 4px 4px 0 0;
+            background: #2563eb;
+            min-height: 4px;
+            transition: height 0.4s;
+            position: relative;
+        }
+        .bar-fill .val {
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.65rem;
+            color: #475569;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .bar-label {
+            font-size: 0.6rem;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .record-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .record-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.9rem;
+            color: #334155;
+        }
+        .record-list li .date {
+            color: #94a3b8;
+            font-size: 0.8rem;
+        }
+        .record-list li .score {
+            font-weight: 600;
+        }
+        .record-list li .score.good {
+            color: #10b981;
+        }
+        .record-list li .score.ok {
+            color: #f59e0b;
+        }
+        .record-list li .score.bad {
+            color: #ef4444;
+        }
+        .record-list .empty {
+            color: #94a3b8;
+            text-align: center;
+            padding: 1rem 0;
+        }
+
+        .badge-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-top: 0.5rem;
+        }
+        .badge-item {
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.85rem;
+            color: #334155;
+            border: 1px solid #e9edf2;
+        }
+        .badge-item .icon {
+            margin-right: 0.2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background: #1d4ed8;
+        }
+
+        .action-row {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 640px) {
+            .top-nav {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.3rem;
+            }
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ===== 顶部导航 ===== -->
+    <div class="top-nav">
+        <a href="index.html" class="back-link">← 返回看板</a>
+        <div class="breadcrumb">📊 <span>成长曲线</span></div>
+    </div>
+
+    <!-- ===== 统计概览 ===== -->
+    <div class="card">
+        <h2>📊 学习数据总览</h2>
+        <div class="stats-row" id="statsOverview">
+            <div class="stat-box highlight">
+                <div class="num" id="totalDays">0</div>
+                <div class="lbl">📅 学习天数</div>
+            </div>
+            <div class="stat-box">
+                <div class="num" id="totalTasks">0</div>
+                <div class="lbl">📝 完成任务</div>
+            </div>
+            <div class="stat-box">
+                <div class="num" id="avgAccuracy">0%</div>
+                <div class="lbl">🎯 平均正确率</div>
+            </div>
+            <div class="stat-box">
+                <div class="num" id="bestStreak">0</div>
+                <div class="lbl">🔥 最长连续打卡</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 正确率趋势图 ===== -->
+    <div class="card">
+        <h2>📈 正确率趋势</h2>
+        <p>最近7天每天的作业正确率变化</p>
+        <div class="chart-container" id="chartContainer">
+            <!-- JS动态渲染 -->
+        </div>
+    </div>
+
+    <!-- ===== 学习记录 ===== -->
+    <div class="card">
+        <h2>📋 全部学习记录</h2>
+        <ul class="record-list" id="recordList">
+            <!-- JS动态渲染 -->
+        </ul>
+    </div>
+
+    <!-- ===== 徽章墙 ===== -->
+    <div class="card">
+        <h2>🏅 徽章墙</h2>
+        <div class="badge-grid" id="badgeGrid">
+            <!-- JS动态渲染 -->
+        </div>
+    </div>
+
+    <!-- ===== 操作按钮 ===== -->
+    <div class="action-row">
+        <a href="upload.html" class="btn">📸 继续上传作业</a>
+        <a href="index.html" class="btn" style="background:#e9edf2;color:#1e293b;">📚 返回看板</a>
+    </div>
+
+    <!-- ===== 页脚 ===== -->
+    <footer class="site-footer" style="margin-top:1.5rem;">
+        <p>© 2026 — 学习成长系统 · 用坚持看见进步</p>
+    </footer>
+</div>
+
+<script>
+    // ============================================================
+    //  数据读取
+    // ============================================================
+
+    function getRecords() {
+        return JSON.parse(localStorage.getItem('studyRecords') || '[]');
+    }
+
+    function getStreak() {
+        return JSON.parse(localStorage.getItem('studyStreak') || '{"days":0,"lastDate":null}');
+    }
+
+    // ============================================================
+    //  统计概览
+    // ============================================================
+
+    function renderStats() {
+        const records = getRecords();
+        const streak = getStreak();
+
+        // 去重天数
+        const days = new Set(records.map(r => r.date));
+        const totalDays = days.size;
+
+        const totalTasks = records.length;
+
+        const avg = records.length > 0
+            ? Math.round(records.reduce((s, r) => s + r.accuracy, 0) / records.length)
+            : 0;
+
+        // 最长连续打卡 - 简化：直接用当前连续打卡
+        const bestStreak = streak.days || 0;
+
+        document.getElementById('totalDays').textContent = totalDays;
+        document.getElementById('totalTasks').textContent = totalTasks;
+        document.getElementById('avgAccuracy').textContent = avg + '%';
+        document.getElementById('bestStreak').textContent = bestStreak;
+    }
+
+    // ============================================================
+    //  趋势图
+    // ============================================================
+
+    function renderChart() {
+        const records = getRecords();
+        const container = document.getElementById('chartContainer');
+        container.innerHTML = '';
+
+        if (records.length === 0) {
+            container.innerHTML = '<p style="color:#94a3b8;text-align:center;width:100%;padding:1rem 0;">还没有学习记录，快去上传吧 🚀</p>';
+            return;
+        }
+
+        // 按日期分组，取每天的平均正确率
+        const dailyMap = {};
+        records.forEach(r => {
+            if (!dailyMap[r.date]) dailyMap[r.date] = { total: 0, count: 0 };
+            dailyMap[r.date].total += r.accuracy;
+            dailyMap[r.date].count += 1;
+        });
+
+        // 排序日期
+        const sorted = Object.keys(dailyMap).sort();
+        // 取最近7天
+        const recent = sorted.slice(-7);
+
+        const maxVal = 100;
+
+        recent.forEach(date => {
+            const avg = Math.round(dailyMap[date].total / dailyMap[date].count);
+            const height = Math.max((avg / maxVal) * 100, 4);
+
+            const wrap = document.createElement('div');
+            wrap.className = 'bar-wrap';
+
+            const fill = document.createElement('div');
+            fill.className = 'bar-fill';
+            fill.style.height = height + '%';
+            fill.innerHTML = `<span class="val">${avg}%</span>`;
+
+            const label = document.createElement('div');
+            label.className = 'bar-label';
+            // 显示月/日
+            const parts = date.split('-');
+            label.textContent = parts[1] + '/' + parts[2];
+
+            wrap.appendChild(fill);
+            wrap.appendChild(label);
+            container.appendChild(wrap);
+        });
+    }
+
+    // ============================================================
+    //  学习记录列表
+    // ============================================================
+
+    function renderRecords() {
+        const records = getRecords();
+        const list = document.getElementById('recordList');
+        list.innerHTML = '';
+
+        if (records.length === 0) {
+            list.innerHTML = '<li class="empty">还没有学习记录，开始上传吧 📸</li>';
+            return;
+        }
+
+        // 按时间倒序（最新的在最上面）
+        const sorted = [...records].reverse();
+
+        sorted.forEach(r => {
+            const li = document.createElement('li');
+            const date = r.date || '未知日期';
+
+            let cls = 'score';
+            if (r.accuracy >= 80) cls += ' good';
+            else if (r.accuracy >= 60) cls += ' ok';
+            else cls += ' bad';
+
+            li.innerHTML = `
+                <span>${r.taskName || '未命名'}</span>
+                <span>
+                    <span class="date">${date}</span>
+                    <span class="${cls}">${r.accuracy}% (${r.correct}/${r.total})</span>
+                </span>
+            `;
+            list.appendChild(li);
+        });
+    }
+
+    // ============================================================
+    //  徽章墙
+    // ============================================================
+
+    function renderBadges() {
+        const records = getRecords();
+        const grid = document.getElementById('badgeGrid');
+        grid.innerHTML = '';
+
+        // 计算徽章
+        const badges = [];
+
+        // 1. 首战告捷
+        if (records.length > 0) {
+            badges.push({ icon: '🥇', name: '首战告捷' });
+        }
+
+        // 2. 连续打卡徽章（基于连续打卡天数）
+        const streak = getStreak();
+        if (streak.days >= 7) {
+            badges.push({ icon: '🔥', name: '七天坚持' });
+        }
+        if (streak.days >= 14) {
+            badges.push({ icon: '⚡', name: '两周先锋' });
+        }
+        if (streak.days >= 30) {
+            badges.push({ icon: '👑', name: '三十天王者' });
+        }
+
+        // 3. 满分达人
+        const perfect = records.filter(r => r.accuracy === 100);
+        if (perfect.length >= 1) {
+            badges.push({ icon: '💯', name: '满分达人' });
+        }
+        if (perfect.length >= 5) {
+            badges.push({ icon: '⭐', name: '满分大师' });
+        }
+
+        // 4. 进步之星（连续3天正确率提升）
+        // 简化：如果有3条以上记录且趋势向上
+        if (records.length >= 3) {
+            const sorted = [...records].sort((a, b) => a.date.localeCompare(b.date));
+            const recent3 = sorted.slice(-3);
+            if (recent3.length === 3 &&
+                recent3[0].accuracy < recent3[1].accuracy &&
+                recent3[1].accuracy < recent3[2].accuracy) {
+                badges.push({ icon: '📈', name: '进步之星' });
+            }
+        }
+
+        // 5. 数学小天才（数学类作业平均正确率>90%）
+        const mathRecords = records.filter(r => r.taskName && r.taskName.includes('数学'));
+        if (mathRecords.length >= 3) {
+            const avg = mathRecords.reduce((s, r) => s + r.accuracy, 0) / mathRecords.length;
+            if (avg >= 90) {
+                badges.push({ icon: '🧮', name: '数学小天才' });
+            }
+        }
+
+        // 6. 学习天数徽章
+        const days = new Set(records.map(r => r.date));
+        if (days.size >= 3) {
+            badges.push({ icon: '🌱', name: '习惯萌芽' });
+        }
+        if (days.size >= 10) {
+            badges.push({ icon: '🌿', name: '稳步前行' });
+        }
+        if (days.size >= 20) {
+            badges.push({ icon: '🌳', name: '自律小达人' });
+        }
+
+        // 去重（根据名称）
+        const seen = new Set();
+        const unique = badges.filter(b => {
+            if (seen.has(b.name)) return false;
+            seen.add(b.name);
+            return true;
+        });
+
+        if (unique.length === 0) {
+            grid.innerHTML = '<span style="color:#94a3b8;font-size:0.9rem;">继续学习，解锁更多徽章 🏆</span>';
+            return;
+        }
+
+        unique.forEach(b => {
+            const el = document.createElement('span');
+            el.className = 'badge-item';
+            el.innerHTML = `<span class="icon">${b.icon}</span> ${b.name}`;
+            grid.appendChild(el);
+        });
+    }
+
+    // ============================================================
+    //  清除数据（调试用，可删除）
+    // ============================================================
+
+    // ============================================================
+    //  初始化
+    // ============================================================
+
+    function init() {
+        renderStats();
+        renderChart();
+        renderRecords();
+        renderBadges();
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
