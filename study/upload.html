@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>拍照上传 — 学习成长系统</title>
+    <link rel="stylesheet" href="../style.css" />
+    <style>
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0 0.8rem;
+            border-bottom: 1px solid #e9edf2;
+            margin-bottom: 1.2rem;
+        }
+        .top-nav .back-link {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .top-nav .breadcrumb {
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+        .top-nav .breadcrumb span {
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        .upload-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+            margin-bottom: 1.2rem;
+        }
+        .upload-card h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+        }
+        .upload-card p {
+            color: #475569;
+            font-size: 0.9rem;
+            margin: 0 0 1rem;
+        }
+
+        .upload-area {
+            border: 2px dashed #dce1e8;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #fafbfc;
+        }
+        .upload-area:hover {
+            border-color: #2563eb;
+            background: #eef2ff;
+        }
+        .upload-area .icon {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        .upload-area p {
+            color: #94a3b8;
+            margin: 0;
+        }
+        .upload-area .sub {
+            font-size: 0.8rem;
+            color: #cbd5e1;
+        }
+        .upload-area.dragover {
+            border-color: #2563eb;
+            background: #dbeafe;
+        }
+
+        #preview {
+            margin-top: 1rem;
+            max-width: 100%;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .form-group {
+            margin-top: 1.2rem;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #334155;
+            margin-bottom: 0.3rem;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            border: 1.5px solid #dce1e8;
+            border-radius: 10px;
+            font-size: 1rem;
+            background: #fafbfc;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background: #1d4ed8;
+        }
+        .btn-secondary {
+            background: #e9edf2;
+            color: #1e293b;
+        }
+        .btn-secondary:hover {
+            background: #dce1e8;
+        }
+        .btn-success {
+            background: #10b981;
+        }
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .action-row {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            margin-top: 1.2rem;
+        }
+
+        /* 正确率输入行 */
+        .score-row {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        .score-row .field {
+            flex: 1;
+            min-width: 80px;
+        }
+        .score-row .field label {
+            font-size: 0.8rem;
+            color: #64748b;
+            display: block;
+        }
+        .score-row .field input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1.5px solid #dce1e8;
+            border-radius: 8px;
+            font-size: 1rem;
+            text-align: center;
+        }
+        .score-row .field input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .result-box {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1rem;
+            display: none;
+        }
+        .result-box.show {
+            display: block;
+        }
+        .result-box .big {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #065f46;
+        }
+        .result-box .sub {
+            color: #475569;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 640px) {
+            .top-nav {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.3rem;
+            }
+            .score-row {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .score-row .field {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ===== 顶部导航 ===== -->
+    <div class="top-nav">
+        <a href="index.html" class="back-link">← 返回看板</a>
+        <div class="breadcrumb">📸 <span>拍照上传作业</span></div>
+    </div>
+
+    <!-- ===== 主卡片 ===== -->
+    <div class="upload-card">
+        <h2>📸 拍照上传作业</h2>
+        <p>拍下孩子的作业，标记正确题数，系统会自动记录成长数据 📈</p>
+
+        <!-- 上传区域 -->
+        <div class="upload-area" id="uploadArea">
+            <span class="icon">📷</span>
+            <p>点击上传 或 拖拽照片到这里</p>
+            <span class="sub">支持 JPG / PNG / WebP</span>
+            <input type="file" id="fileInput" accept="image/*" style="display:none;" />
+        </div>
+
+        <!-- 预览 -->
+        <img id="preview" alt="作业预览" />
+
+        <!-- 手动输入区域 -->
+        <div class="form-group">
+            <label for="taskName">📋 作业名称</label>
+            <input type="text" id="taskName" placeholder="例如：数学练习册 P10-15" value="数学练习册" />
+        </div>
+
+        <!-- 正确率输入 -->
+        <div class="score-row">
+            <div class="field">
+                <label>✅ 正确题数</label>
+                <input type="number" id="correctCount" value="6" min="0" />
+            </div>
+            <div class="field">
+                <label>📝 总题数</label>
+                <input type="number" id="totalCount" value="8" min="1" />
+            </div>
+            <div class="field" style="flex:0 0 auto;">
+                <label>&nbsp;</label>
+                <button class="btn btn-success" onclick="submitTask()">提交并记录</button>
+            </div>
+        </div>
+
+        <!-- 结果显示 -->
+        <div class="result-box" id="resultBox">
+            <div class="big" id="resultAccuracy">0%</div>
+            <div class="sub" id="resultMessage">继续加油！</div>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="action-row">
+            <button class="btn btn-secondary" onclick="resetForm()">🔄 重新上传</button>
+            <a href="index.html" class="btn">📊 查看看板</a>
+        </div>
+    </div>
+
+    <!-- ===== 使用说明 ===== -->
+    <div class="upload-card" style="background:#f8fafc;">
+        <h2>💡 使用小贴士</h2>
+        <ul style="color:#475569;font-size:0.9rem;line-height:1.8;padding-left:1.2rem;margin:0;">
+            <li>📸 拍照时尽量光线充足，字迹清晰</li>
+            <li>✏️ 正确题数和总题数手动填写，确保准确</li>
+            <li>📈 提交后数据自动保存，成长曲线实时更新</li>
+            <li>🏆 连续打卡和徽章系统会自动记录</li>
+        </ul>
+    </div>
+
+    <!-- ===== 页脚 ===== -->
+    <footer class="site-footer" style="margin-top:1.5rem;">
+        <p>© 2026 — 学习成长系统 · 用坚持看见进步</p>
+    </footer>
+</div>
+
+<script>
+    // ============================================================
+    //  拍照上传逻辑
+    // ============================================================
+
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    const preview = document.getElementById('preview');
+
+    // 点击上传区域触发文件选择
+    uploadArea.addEventListener('click', () => fileInput.click());
+
+    // 拖拽支持
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+    });
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragover');
+    });
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        if (e.dataTransfer.files.length) {
+            handleFile(e.dataTransfer.files[0]);
+        }
+    });
+
+    // 文件选择
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length) {
+            handleFile(e.target.files[0]);
+        }
+    });
+
+    function handleFile(file) {
+        if (!file.type.startsWith('image/')) {
+            alert('请上传图片文件！');
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+            uploadArea.style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // ============================================================
+    //  提交任务逻辑（核心）
+    // ============================================================
+
+    function submitTask() {
+        const taskName = document.getElementById('taskName').value.trim() || '未命名作业';
+        const correct = parseInt(document.getElementById('correctCount').value) || 0;
+        const total = parseInt(document.getElementById('totalCount').value) || 1;
+
+        if (total <= 0) {
+            alert('总题数至少为1！');
+            return;
+        }
+        if (correct > total) {
+            alert('正确题数不能超过总题数！');
+            return;
+        }
+
+        const accuracy = Math.round((correct / total) * 100);
+        const today = new Date().toISOString().slice(0, 10);
+
+        // 构建记录
+        const record = {
+            date: today,
+            taskName: taskName,
+            correct: correct,
+            total: total,
+            accuracy: accuracy,
+            timestamp: Date.now()
+        };
+
+        // 从 localStorage 读取已有记录
+        let records = JSON.parse(localStorage.getItem('studyRecords') || '[]');
+        records.push(record);
+        localStorage.setItem('studyRecords', JSON.stringify(records));
+
+        // 更新连续打卡
+        updateStreak(today);
+
+        // 显示结果
+        showResult(accuracy, correct, total);
+
+        // 清空文件预览（可选）
+        // 不自动清空，让用户看到已上传的照片
+    }
+
+    function updateStreak(today) {
+        const streak = JSON.parse(localStorage.getItem('studyStreak') || '{"days":0,"lastDate":null}');
+        const lastDate = streak.lastDate;
+
+        if (lastDate === today) {
+            // 今天已打卡，不重复计数
+            return;
+        }
+
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayStr = yesterday.toISOString().slice(0, 10);
+
+        if (lastDate === yesterdayStr) {
+            // 连续打卡
+            streak.days += 1;
+        } else {
+            // 中断或第一天
+            streak.days = 1;
+        }
+        streak.lastDate = today;
+        localStorage.setItem('studyStreak', JSON.stringify(streak));
+    }
+
+    function showResult(accuracy, correct, total) {
+        const box = document.getElementById('resultBox');
+        const accEl = document.getElementById('resultAccuracy');
+        const msgEl = document.getElementById('resultMessage');
+
+        box.classList.add('show');
+        accEl.textContent = accuracy + '%';
+
+        let emoji, msg;
+        if (accuracy === 100) {
+            emoji = '🎉';
+            msg = '完美！全部正确！你是小天才！⭐';
+        } else if (accuracy >= 80) {
+            emoji = '😊';
+            msg = '做得不错！继续加油，你可以更好！💪';
+        } else if (accuracy >= 60) {
+            emoji = '📖';
+            msg = '有进步空间！错题再多练练，明天会更好！';
+        } else {
+            emoji = '💪';
+            msg = '没关系！错题是学习的机会，再来一次！';
+        }
+        msgEl.textContent = emoji + ' ' + msg + ` （${correct}/${total}）`;
+
+        // 滚动到结果区域
+        box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function resetForm() {
+        document.getElementById('fileInput').value = '';
+        preview.style.display = 'none';
+        preview.src = '';
+        uploadArea.style.display = 'block';
+        document.getElementById('taskName').value = '数学练习册';
+        document.getElementById('correctCount').value = 6;
+        document.getElementById('totalCount').value = 8;
+        document.getElementById('resultBox').classList.remove('show');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ============================================================
+    //  初始化
+    // ============================================================
+
+    // 如果 localStorage 中有今日记录，显示提示
+    const today = new Date().toISOString().slice(0, 10);
+    const records = JSON.parse(localStorage.getItem('studyRecords') || '[]');
+    const todayRecords = records.filter(r => r.date === today);
+    if (todayRecords.length > 0) {
+        // 不强制显示，让用户自己决定是否继续上传
+        console.log('今日已上传 ' + todayRecords.length + ' 条记录');
+    }
+</script>
+</body>
+</html>
