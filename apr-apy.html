@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>APR / APY Calculator — Free Online Tool</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .results-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            margin: 1.5rem 0;
+        }
+        .summary-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+        .summary-item.highlight .value { color: #2563eb; }
+
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
+        .field input, .field select {
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem;
+            border: 1.5px solid #dce1e8;
+            border-radius: 10px;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .field input:focus, .field select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background: #ffffff;
+        }
+
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+        .btn:hover { background: #1d4ed8; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
+        @media (max-width: 640px) {
+            .info-grid { grid-template-columns: 1fr; }
+            .summary-item { padding: 0.6rem 1rem; }
+            .summary-item .value { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="top-nav">
+        <a href="index.html" class="back-link">← Back to Home</a>
+        <div class="breadcrumb">📊 <span>APR / APY Calculator</span></div>
+    </div>
+
+    <main class="calculator-card">
+        <h1>📊 APR / APY Calculator</h1>
+        <p class="subtitle">Compare the true cost of borrowing or the real return on your savings.</p>
+
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>APR / APY Calculator</strong> — This tool helps you understand the true cost of borrowing
+                (APR) and the real return on savings (APY). It answers the question: <em>“What's the actual annual
+                interest rate after accounting for compounding and fees?”</em> APR (Annual Percentage Rate) shows
+                the total cost of a loan including fees. APY (Annual Percentage Yield) shows the effective return
+                on an investment with compound interest. Use this to compare loan offers and savings accounts.
+            </p>
+        </div>
+
+        <div class="form-grid">
+            <div class="field">
+                <label for="nominal-rate">Nominal Interest Rate (%)</label>
+                <input type="number" id="nominal-rate" value="6" min="0" step="0.01" />
+            </div>
+            <div class="field">
+                <label for="compounding-frequency">Compounding Frequency</label>
+                <select id="compounding-frequency">
+                    <option value="1">Annually</option>
+                    <option value="2">Semi-annually</option>
+                    <option value="4" selected>Quarterly</option>
+                    <option value="12">Monthly</option>
+                    <option value="26">Bi-weekly</option>
+                    <option value="52">Weekly</option>
+                    <option value="365">Daily</option>
+                    <option value="8760">Hourly</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="fees">Fees ($) <span style="font-weight:400;color:#94a3b8;font-size:0.8rem;">(for APR calculation)</span></label>
+                <input type="number" id="fees" value="0" min="0" step="50" />
+            </div>
+            <div class="field">
+                <label for="loan-amount-apr">Loan Amount ($) <span style="font-weight:400;color:#94a3b8;font-size:0.8rem;">(for APR calculation)</span></label>
+                <input type="number" id="loan-amount-apr" value="10000" min="0" step="100" />
+            </div>
+            <div style="margin-top:0.5rem;">
+                <button class="btn" onclick="calculate()">Calculate</button>
+            </div>
+        </div>
+
+        <div id="results-area" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 APR & APY Results</h2>
+            <div class="results-summary" id="summary">
+                <div class="summary-item highlight">
+                    <span class="label">Annual Percentage Yield (APY)</span>
+                    <span class="value" id="apy">—</span>
+                </div>
+                <div class="summary-item highlight" style="background:#dbeafe;border-color:#93c5fd;">
+                    <span class="label">Annual Percentage Rate (APR)</span>
+                    <span class="value" id="apr">—</span>
+                </div>
+                <div class="summary-item">
+                    <span class="label">Effective Annual Rate (EAR)</span>
+                    <span class="value" id="ear">—</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
+            <h2>📖 How to read your results</h2>
+            <span class="accordion-arrow" id="infoArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="infoAccordion">
+            <div class="info-grid">
+                <div class="info-block"><h3>APY (Annual Percentage Yield)</h3><p>The effective annual return on savings, including the effect of compounding. This is what you actually earn.</p></div>
+                <div class="info-block"><h3>APR (Annual Percentage Rate)</h3><p>The total annual cost of borrowing, including interest plus any fees. This is what you actually pay.</p></div>
+                <div class="info-block"><h3>EAR (Effective Annual Rate)</h3><p>The actual annual interest rate after compounding, without fees. Used for comparing investment returns.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
+            <h2>❓ FAQ</h2>
+            <span class="accordion-arrow" id="faqArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="faqAccordion">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What's the difference between APR and APY?</span></div>
+                <div class="faq-answer">APR is the annual cost of borrowing (interest + fees). APY is the annual return on savings (interest + compounding). APR is typically lower than APY for the same nominal rate due to compounding.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Why does APY increase with more frequent compounding?</span></div>
+                <div class="faq-answer">The more frequently interest is compounded, the more often interest is earned on interest. Daily compounding yields a slightly higher APY than annual compounding at the same nominal rate.</div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
+    </footer>
+</div>
+
+<script>
+    function toggleAccordion(id) {
+        const body = document.getElementById(id);
+        const arrow = document.getElementById(id + 'Arrow');
+        if (body.style.display === 'none' || body.style.display === '') {
+            body.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            body.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+    function toggleFaq(el) {
+        const answer = el.nextElementSibling;
+        const arrow = el.querySelector('.faq-arrow');
+        if (answer.style.display === 'none' || answer.style.display === '') {
+            answer.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            answer.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+    function calculate() {
+        const nominalRate = parseFloat(document.getElementById('nominal-rate').value) || 0;
+        const freq = parseInt(document.getElementById('compounding-frequency').value) || 1;
+        const fees = parseFloat(document.getElementById('fees').value) || 0;
+        const loanAmount = parseFloat(document.getElementById('loan-amount-apr').value) || 1;
+
+        const rateDecimal = nominalRate / 100;
+        const apy = (Math.pow(1 + rateDecimal / freq, freq) - 1) * 100;
+        const ear = apy;
+
+        // APR with fees
+        const totalCost = fees / loanAmount * 100;
+        const apr = nominalRate + totalCost;
+
+        const fmt = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 4 });
+
+        document.getElementById('apy').textContent = fmt.format(apy / 100);
+        document.getElementById('apr').textContent = fmt.format(apr / 100);
+        document.getElementById('ear').textContent = fmt.format(ear / 100);
+
+        document.getElementById('results-area').style.display = 'block';
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('infoAccordion').style.display = 'block';
+        document.getElementById('infoArrow').textContent = '▼';
+        document.getElementById('faqAccordion').style.display = 'none';
+        document.getElementById('faqArrow').textContent = '▶';
+        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
+        calculate();
+    });
+    document.addEventListener('input', function(e) {
+        if (e.target.closest('.form-grid')) { calculate(); }
+    });
+</script>
+</body>
+</html>
