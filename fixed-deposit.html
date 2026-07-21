@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fixed Deposit Calculator — Free Online Tool</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .results-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            margin: 1.5rem 0;
+        }
+        .summary-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+        .summary-item.highlight .value { color: #2563eb; }
+        .summary-item.positive .value { color: #10b981; }
+
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
+        .field input, .field select {
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem;
+            border: 1.5px solid #dce1e8;
+            border-radius: 10px;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .field input:focus, .field select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background: #ffffff;
+        }
+
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+        .btn:hover { background: #1d4ed8; }
+
+        .schedule-wrapper {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e9edf2;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+        .schedule-table th, .schedule-table td {
+            border: 1px solid #e9edf2;
+            padding: 0.3rem 0.5rem;
+            text-align: right;
+        }
+        .schedule-table th {
+            background: #f1f5f9;
+            font-weight: 600;
+            color: #334155;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        .schedule-table td:first-child { text-align: center; }
+        .schedule-table .highlight-row { background: #eef2ff; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
+        @media (max-width: 640px) {
+            .info-grid { grid-template-columns: 1fr; }
+            .summary-item { padding: 0.6rem 1rem; }
+            .summary-item .value { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="top-nav">
+        <a href="index.html" class="back-link">← Back to Home</a>
+        <div class="breadcrumb">📊 <span>Fixed Deposit Calculator</span></div>
+    </div>
+
+    <main class="calculator-card">
+        <h1>🏦 Fixed Deposit Calculator</h1>
+        <p class="subtitle">Calculate the maturity value of your fixed deposit with compound interest.</p>
+
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>Fixed Deposit Calculator</strong> — This tool calculates the maturity amount of a
+                fixed deposit (term deposit) with compound interest. It answers the question:
+                <em>“How much will my fixed deposit grow to at maturity with quarterly compounding?”</em>
+                You'll see the total maturity value, the total interest earned, and a year-by-year breakdown
+                of your deposit's growth.
+            </p>
+        </div>
+
+        <div class="form-grid">
+            <div class="field">
+                <label for="deposit-amount">Deposit Amount ($)</label>
+                <input type="number" id="deposit-amount" value="10000" min="0" step="500" />
+            </div>
+            <div class="field">
+                <label for="fd-rate">Annual Interest Rate (%)</label>
+                <input type="number" id="fd-rate" value="5.5" min="0" step="0.1" />
+            </div>
+            <div class="field">
+                <label for="fd-tenure">Tenure (Years)</label>
+                <input type="number" id="fd-tenure" value="5" min="1" max="20" step="0.5" />
+            </div>
+            <div class="field">
+                <label for="fd-frequency">Compounding Frequency</label>
+                <select id="fd-frequency">
+                    <option value="1">Annually</option>
+                    <option value="2">Semi-annually</option>
+                    <option value="4" selected>Quarterly</option>
+                    <option value="12">Monthly</option>
+                </select>
+            </div>
+            <div style="margin-top:0.5rem;">
+                <button class="btn" onclick="calculate()">Calculate</button>
+            </div>
+        </div>
+
+        <div id="results-area" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Fixed Deposit Results</h2>
+            <div class="results-summary" id="summary">
+                <div class="summary-item highlight">
+                    <span class="label">Maturity Value</span>
+                    <span class="value" id="maturity-value">—</span>
+                </div>
+                <div class="summary-item">
+                    <span class="label">Total Interest Earned</span>
+                    <span class="value" id="fd-total-interest">—</span>
+                </div>
+                <div class="summary-item positive">
+                    <span class="label">Effective Annual Rate (EAR)</span>
+                    <span class="value" id="fd-ear">—</span>
+                </div>
+            </div>
+            <h3 style="font-size:1rem; margin:1rem 0 0.3rem;">📅 Year-by-Year Growth</h3>
+            <div class="schedule-wrapper">
+                <table class="schedule-table" id="schedule-table">
+                    <thead><tr><th>Year</th><th>Balance</th><th>Interest Earned (Year)</th><th>Cumulative Interest</th></tr></thead>
+                    <tbody id="schedule-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
+            <h2>📖 How to read your results</h2>
+            <span class="accordion-arrow" id="infoArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="infoAccordion">
+            <div class="info-grid">
+                <div class="info-block"><h3>Maturity Value</h3><p>The total amount you will receive at maturity — your deposit plus all compounded interest.</p></div>
+                <div class="info-block"><h3>Total Interest Earned</h3><p>The total interest earned over the entire tenure. This is the difference between maturity value and your deposit.</p></div>
+                <div class="info-block"><h3>Effective Annual Rate (EAR)</h3><p>The actual annual return accounting for compounding frequency. Higher compounding frequency = higher EAR.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
+            <h2>❓ FAQ</h2>
+            <span class="accordion-arrow" id="faqArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="faqAccordion">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is a fixed deposit?</span></div>
+                <div class="faq-answer">A fixed deposit (also called a term deposit or time deposit) is a savings account where you deposit a lump sum for a fixed period at a guaranteed interest rate.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Is the interest guaranteed?</span></div>
+                <div class="faq-answer">Yes — fixed deposits typically offer a guaranteed fixed interest rate for the entire tenure, making them one of the safest investment options.</div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
+    </footer>
+</div>
+
+<script>
+    function toggleAccordion(id) {
+        const body = document.getElementById(id);
+        const arrow = document.getElementById(id + 'Arrow');
+        if (body.style.display === 'none' || body.style.display === '') {
+            body.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            body.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+    function toggleFaq(el) {
+        const answer = el.nextElementSibling;
+        const arrow = el.querySelector('.faq-arrow');
+        if (answer.style.display === 'none' || answer.style.display === '') {
+            answer.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            answer.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+    function calculate() {
+        const deposit = parseFloat(document.getElementById('deposit-amount').value) || 0;
+        const rate = parseFloat(document.getElementById('fd-rate').value) || 0;
+        const tenure = parseFloat(document.getElementById('fd-tenure').value) || 1;
+        const freq = parseInt(document.getElementById('fd-frequency').value) || 4;
+
+        const rateDecimal = rate / 100;
+        const periods = tenure * freq;
+        const ratePerPeriod = rateDecimal / freq;
+
+        const maturity = deposit * Math.pow(1 + ratePerPeriod, periods);
+        const totalInterest = maturity - deposit;
+        const ear = (Math.pow(1 + ratePerPeriod, freq) - 1) * 100;
+
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        const pct = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        document.getElementById('maturity-value').textContent = fmt.format(maturity);
+        document.getElementById('fd-total-interest').textContent = fmt.format(totalInterest);
+        document.getElementById('fd-ear').textContent = pct.format(ear / 100);
+
+        const tbody = document.getElementById('schedule-body');
+        tbody.innerHTML = '';
+        let balance = deposit;
+        let cumInterest = 0;
+        for (let year = 1; year <= Math.ceil(tenure); year++) {
+            let yearInterest = 0;
+            for (let p = 0; p < freq; p++) {
+                const interest = balance * ratePerPeriod;
+                yearInterest += interest;
+                balance += interest;
+            }
+            cumInterest += yearInterest;
+            const tr = document.createElement('tr');
+            if (year === Math.ceil(tenure)) tr.classList.add('highlight-row');
+            tr.innerHTML = `<td>${year}</td><td>${fmt.format(balance)}</td><td>${fmt.format(yearInterest)}</td><td>${fmt.format(cumInterest)}</td>`;
+            tbody.appendChild(tr);
+        }
+        document.getElementById('results-area').style.display = 'block';
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('infoAccordion').style.display = 'block';
+        document.getElementById('infoArrow').textContent = '▼';
+        document.getElementById('faqAccordion').style.display = 'none';
+        document.getElementById('faqArrow').textContent = '▶';
+        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
+        calculate();
+    });
+    document.addEventListener('input', function(e) {
+        if (e.target.closest('.form-grid')) { calculate(); }
+    });
+</script>
+</body>
+</html>
