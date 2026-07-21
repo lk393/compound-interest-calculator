@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Retirement Savings Calculator — Free Online Tool</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .results-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            margin: 1.5rem 0;
+        }
+        .summary-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .summary-item .label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #475569;
+        }
+        .summary-item .value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .summary-item.highlight {
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+        }
+        .summary-item.highlight .value {
+            color: #2563eb;
+        }
+        .summary-item.positive .value {
+            color: #10b981;
+        }
+
+        .form-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+        }
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+        .field label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: #334155;
+        }
+        .field input {
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem;
+            border: 1.5px solid #dce1e8;
+            border-radius: 10px;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .field input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background: #ffffff;
+        }
+
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+        .btn:hover {
+            background: #1d4ed8;
+        }
+
+        .schedule-wrapper {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e9edf2;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+        .schedule-table th,
+        .schedule-table td {
+            border: 1px solid #e9edf2;
+            padding: 0.3rem 0.5rem;
+            text-align: right;
+        }
+        .schedule-table th {
+            background: #f1f5f9;
+            font-weight: 600;
+            color: #334155;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        .schedule-table td:first-child {
+            text-align: center;
+        }
+        .schedule-table .highlight-row {
+            background: #eef2ff;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.8rem;
+        }
+        @media (max-width: 640px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            .summary-item {
+                padding: 0.6rem 1rem;
+            }
+            .summary-item .value {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ===== 顶部导航（面包屑） ===== -->
+    <div class="top-nav">
+        <a href="index.html" class="back-link">← Back to Home</a>
+        <div class="breadcrumb">📊 <span>Retirement Savings Calculator</span></div>
+    </div>
+
+    <main class="calculator-card">
+        <h1>🏦 Retirement Savings Calculator</h1>
+        <p class="subtitle">See how your retirement savings grow over time with monthly contributions and compound returns.</p>
+
+        <!-- ===== 科普文 ===== -->
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>Retirement Savings Calculator</strong> — This tool projects the future value of
+                your retirement savings based on your current age, retirement age, current savings, and
+                monthly contributions. It answers the question: <em>“If I save this much each month,
+                how much will I have when I retire?”</em> You'll see a year‑by‑year projection showing
+                how your savings grow over time with the power of compound returns. Whether you're just
+                starting to save or already have a nest egg, this calculator helps you plan for a secure
+                retirement.
+            </p>
+        </div>
+
+        <!-- ===== 输入区域 ===== -->
+        <div class="form-grid">
+            <div class="field">
+                <label for="current-age">Current Age</label>
+                <input type="number" id="current-age" value="30" min="18" max="80" step="1" />
+            </div>
+            <div class="field">
+                <label for="retire-age">Retirement Age</label>
+                <input type="number" id="retire-age" value="65" min="30" max="90" step="1" />
+            </div>
+            <div class="field">
+                <label for="current-savings">Current Savings ($)</label>
+                <input type="number" id="current-savings" value="10000" min="0" step="1000" />
+            </div>
+            <div class="field">
+                <label for="monthly-contribution">Monthly Contribution ($)</label>
+                <input type="number" id="monthly-contribution" value="500" min="0" step="50" />
+            </div>
+            <div class="field">
+                <label for="return-rate">Expected Annual Return (%)</label>
+                <input type="number" id="return-rate" value="7" min="0" max="20" step="0.1" />
+            </div>
+            <div style="margin-top:0.5rem;">
+                <button class="btn" onclick="calculate()">Calculate</button>
+            </div>
+        </div>
+
+        <!-- ===== 结果区域 ===== -->
+        <div id="results-area" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Retirement Projection</h2>
+
+            <div class="results-summary" id="summary">
+                <div class="summary-item highlight">
+                    <span class="label">Projected Savings at Retirement</span>
+                    <span class="value" id="final-value">—</span>
+                </div>
+                <div class="summary-item">
+                    <span class="label">Total Contributions</span>
+                    <span class="value" id="total-contributions">—</span>
+                </div>
+                <div class="summary-item positive">
+                    <span class="label">Total Investment Returns</span>
+                    <span class="value" id="total-returns">—</span>
+                </div>
+                <div class="summary-item">
+                    <span class="label">Return on Investment (ROI)</span>
+                    <span class="value" id="roi">—</span>
+                </div>
+            </div>
+
+            <h3 style="font-size:1rem; margin:1rem 0 0.3rem;">📅 Year-by-Year Growth</h3>
+            <div class="schedule-wrapper">
+                <table class="schedule-table" id="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>Age</th>
+                            <th>Balance</th>
+                            <th>Annual Contribution</th>
+                            <th>Annual Return</th>
+                        </tr>
+                    </thead>
+                    <tbody id="schedule-body"></tbody>
+                </table>
+            </div>
+            <p style="font-size:0.75rem; color:#94a3b8; margin-top:0.3rem; text-align:center;">
+                * Assumes consistent monthly contributions and steady annual returns.
+            </p>
+        </div>
+    </main>
+
+    <!-- ===== 折叠说明 ===== -->
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
+            <h2>📖 How to read your results</h2>
+            <span class="accordion-arrow" id="infoArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="infoAccordion">
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Projected Savings</h3>
+                    <p>The total amount you'll have by retirement age, including all your contributions and the compounded investment returns.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Total Contributions</h3>
+                    <p>The total amount you contributed out of pocket — your current savings plus all monthly contributions over the years.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Total Investment Returns</h3>
+                    <p>The total earnings generated by your investments. This is the difference between your projected savings and your total contributions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FAQ ===== -->
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
+            <h2>❓ FAQ</h2>
+            <span class="accordion-arrow" id="faqArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="faqAccordion">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span class="faq-arrow">▶</span>
+                    <span>How realistic is the projected return?</span>
+                </div>
+                <div class="faq-answer">A 7% annual return is a common historical average for stock-heavy portfolios. Use a lower rate (5-6%) for more conservative estimates.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span class="faq-arrow">▶</span>
+                    <span>Does this include inflation?</span>
+                </div>
+                <div class="faq-answer">No — this calculation shows nominal dollars. To adjust for inflation, use a lower expected return (e.g., 5% instead of 7%) to see your purchasing power.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span class="faq-arrow">▶</span>
+                    <span>What if I increase my contributions later?</span>
+                </div>
+                <div class="faq-answer">This calculator assumes consistent monthly contributions. You can try different scenarios by adjusting the monthly contribution amount and recalculating.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span class="faq-arrow">▶</span>
+                    <span>How do I know if I'm saving enough?</span>
+                </div>
+                <div class="faq-answer">Compare your projected savings to your target retirement number. A common rule of thumb is to aim for 25x your annual retirement expenses (the 4% rule).</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 页脚 ===== -->
+    <footer class="site-footer">
+        <p>
+            © 2026 — Smart Finance Tools · Free Online Calculators
+            <br />
+            <a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a>
+            <span style="color:#dce1e8;">|</span>
+            <a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a>
+        </p>
+    </footer>
+</div>
+
+<script>
+    // ===== 折叠切换函数 =====
+    function toggleAccordion(id) {
+        const body = document.getElementById(id);
+        const arrow = document.getElementById(id + 'Arrow');
+        if (body.style.display === 'none' || body.style.display === '') {
+            body.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            body.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+
+    function toggleFaq(el) {
+        const answer = el.nextElementSibling;
+        const arrow = el.querySelector('.faq-arrow');
+        if (answer.style.display === 'none' || answer.style.display === '') {
+            answer.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            answer.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+
+    // ===== 核心计算 =====
+    function calculate() {
+        const currentAge = parseFloat(document.getElementById('current-age').value) || 30;
+        const retireAge = parseFloat(document.getElementById('retire-age').value) || 65;
+        const currentSavings = parseFloat(document.getElementById('current-savings').value) || 0;
+        const monthlyContrib = parseFloat(document.getElementById('monthly-contribution').value) || 0;
+        const annualReturn = parseFloat(document.getElementById('return-rate').value) || 0;
+
+        const years = Math.max(0, retireAge - currentAge);
+        const months = years * 12;
+        const monthlyRate = annualReturn / 100 / 12;
+
+        const fmt = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
+
+        const pct = new Intl.NumberFormat('en-US', {
+            style: 'percent',
+            minimumFractionDigits: 1,
+            maximumFractionDigits: 1
+        });
+
+        // 计算未来价值（月底投入）
+        let futureValue;
+        if (months > 0 && monthlyRate > 0) {
+            // 当前储蓄复利增长 + 每月定投的未来价值
+            const fvSavings = currentSavings * Math.pow(1 + monthlyRate, months);
+            const fvContrib = monthlyContrib * (Math.pow(1 + monthlyRate, months) - 1) / monthlyRate;
+            futureValue = fvSavings + fvContrib;
+        } else if (months > 0 && monthlyRate === 0) {
+            futureValue = currentSavings + monthlyContrib * months;
+        } else {
+            futureValue = currentSavings;
+        }
+
+        const totalContributions = currentSavings + monthlyContrib * months;
+        const totalReturns = futureValue - totalContributions;
+        const roi = totalContributions > 0 ? totalReturns / totalContributions : 0;
+
+        document.getElementById('final-value').textContent = fmt.format(futureValue);
+        document.getElementById('total-contributions').textContent = fmt.format(totalContributions);
+        document.getElementById('total-returns').textContent = fmt.format(totalReturns);
+        document.getElementById('roi').textContent = pct.format(roi);
+
+        // ===== 逐年生成 =====
+        const tbody = document.getElementById('schedule-body');
+        tbody.innerHTML = '';
+
+        let balance = currentSavings;
+        for (let year = 1; year <= years; year++) {
+            const yearContrib = monthlyContrib * 12;
+            let yearReturn = 0;
+            // 按月计算每年的增长（避免年化简单化）
+            let yearBalance = balance;
+            for (let m = 0; m < 12; m++) {
+                const monthlyRet = yearBalance * monthlyRate;
+                yearReturn += monthlyRet;
+                yearBalance += monthlyRet + monthlyContrib;
+            }
+            balance = yearBalance;
+
+            const tr = document.createElement('tr');
+            if (year === years) tr.classList.add('highlight-row');
+            tr.innerHTML = `
+                <td>${currentAge + year}</td>
+                <td>${fmt.format(balance)}</td>
+                <td>${fmt.format(yearContrib)}</td>
+                <td>${fmt.format(yearReturn)}</td>
+            `;
+            tbody.appendChild(tr);
+
+            if (year === years) break;
+        }
+
+        document.getElementById('results-area').style.display = 'block';
+    }
+
+    // ===== 页面加载 =====
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('infoAccordion').style.display = 'block';
+        document.getElementById('infoArrow').textContent = '▼';
+        document.getElementById('faqAccordion').style.display = 'none';
+        document.getElementById('faqArrow').textContent = '▶';
+        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
+        calculate();
+    });
+
+    document.addEventListener('input', function(e) {
+        if (e.target.closest('.form-grid')) {
+            calculate();
+        }
+    });
+</script>
+</body>
+</html>
