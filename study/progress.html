@@ -183,7 +183,6 @@
             color: var(--primary);
         }
 
-        /* ===== 科目筛选 ===== */
         .filter-row {
             display: flex;
             gap: 0.5rem;
@@ -312,7 +311,6 @@
             color: var(--primary);
         }
 
-        /* ===== 导出弹窗 ===== */
         .export-modal {
             display: none;
             position: fixed;
@@ -438,7 +436,6 @@
         </div>
         <p style="font-size:0.9rem;color:var(--gray-500);">每次作业中标记的错题都会汇总在这里</p>
 
-        <!-- ===== 筛选行（科目筛选 + 复习状态） ===== -->
         <div class="filter-row">
             <span class="filter-label">📚 科目:</span>
             <select id="subjectFilter" onchange="renderErrors()">
@@ -466,12 +463,25 @@
         <div class="badge-grid" id="badgeGrid"><span style="color:var(--gray-400);font-size:0.9rem;">加载中...</span></div>
     </div>
 
+    <!-- ===== 数据管理（备份/恢复） ===== -->
+    <div class="card">
+        <h2>💾 数据管理</h2>
+        <p style="font-size:0.85rem;color:var(--gray-500);">定期备份数据，防止意外丢失</p>
+        <div class="action-row" style="margin-top:0.5rem;">
+            <button class="btn btn-secondary" onclick="exportData()">📥 导出备份</button>
+            <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">📤 导入备份</button>
+            <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)" />
+        </div>
+        <p style="font-size:0.75rem;color:var(--gray-400);margin-top:0.5rem;">
+            💡 建议每次学习数据较多时导出备份，更换设备时可导入恢复
+        </p>
+    </div>
+
     <div style="display:flex; gap:0.8rem; flex-wrap:wrap; margin-top:0.5rem;">
         <a href="upload.html" class="btn">📸 继续上传作业</a>
         <a href="index.html" class="btn btn-secondary">📚 返回看板</a>
     </div>
 
-    <!-- ===== 导出弹窗 ===== -->
     <div class="export-modal" id="exportModal">
         <div class="modal-content">
             <h3>📤 导出错题</h3>
@@ -616,7 +626,7 @@
     }
 
     // ============================================================
-    //  错题本（含科目分类）
+    //  错题本
     // ============================================================
 
     function getErrors() {
@@ -708,13 +718,11 @@
         let errors = getErrors();
         const container = document.getElementById('errorList');
 
-        // 科目筛选
         const subjectFilter = document.getElementById('subjectFilter').value;
         if (subjectFilter !== 'all') {
             errors = errors.filter(e => e.subject === subjectFilter);
         }
 
-        // 状态筛选
         if (currentErrorView === 'pending') errors = errors.filter(e => !e.reviewed);
         else if (currentErrorView === 'done') errors = errors.filter(e => e.reviewed);
 
@@ -806,7 +814,6 @@
         navigator.clipboard.writeText(textarea.value).then(() => {
             alert('✅ 已复制到剪贴板！');
         }).catch(() => {
-            // 降级方案
             document.execCommand('copy');
             alert('✅ 已复制到剪贴板！');
         });
@@ -848,6 +855,79 @@
             return;
         }
         grid.innerHTML = unique.map(b => `<span class="badge-item"><span class="icon">${b.icon}</span> ${b.name}</span>`).join('');
+    }
+
+    // ============================================================
+    //  数据备份与恢复
+    // ============================================================
+
+    function exportData() {
+        const data = {
+            version: '1.0',
+            exportedAt: new Date().toISOString(),
+            childName: localStorage.getItem('childName') || '',
+            studyRecords: JSON.parse(localStorage.getItem('studyRecords') || '[]'),
+            studyStreak: JSON.parse(localStorage.getItem('studyStreak') || '{"days":0,"lastDate":null}'),
+            studyTasks: JSON.parse(localStorage.getItem('studyTasks') || '[]')
+        };
+
+        const name = data.childName || '小勇士';
+        const date = new Date().toISOString().slice(0, 10);
+        const filename = `${name}_学习数据_${date}.json`;
+
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        alert('✅ 数据已导出！\n\n文件名: ' + filename + '\n请妥善保存此文件。');
+    }
+
+    function importData(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+
+                if (!data.version || !data.studyRecords) {
+                    alert('❌ 无效的备份文件，请检查文件格式。');
+                    return;
+                }
+
+                const confirmMsg = `⚠️ 恢复数据将覆盖当前所有数据！
+
+📊 备份信息：
+👤 孩子: ${data.childName || '未命名'}
+📝 记录数: ${data.studyRecords.length} 条
+📋 任务数: ${data.studyTasks ? data.studyTasks.length : 0} 条
+📅 导出时间: ${data.exportedAt || '未知'}
+
+确定要恢复吗？`;
+
+                if (!confirm(confirmMsg)) return;
+
+                if (data.childName) localStorage.setItem('childName', data.childName);
+                localStorage.setItem('studyRecords', JSON.stringify(data.studyRecords || []));
+                localStorage.setItem('studyStreak', JSON.stringify(data.studyStreak || '{"days":0,"lastDate":null}'));
+                if (data.studyTasks) localStorage.setItem('studyTasks', JSON.stringify(data.studyTasks));
+
+                alert('✅ 数据恢复成功！页面即将刷新。');
+                location.reload();
+
+            } catch (err) {
+                alert('❌ 解析备份文件失败，请确认文件格式正确。\n\n错误信息: ' + err.message);
+            }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
     }
 
     // ============================================================
