@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="../style.css" />
     <link rel="stylesheet" href="study-style.css" />
     <style>
-        /* ===== 今日任务特殊样式 ===== */
         .task-item {
             display: flex;
             align-items: center;
@@ -144,18 +143,14 @@
     <!-- ===== 近期正确率趋势 ===== -->
     <div class="card">
         <h2>📈 最近7天正确率</h2>
-        <div class="progress-chart" id="chartContainer">
-            <!-- JS 会动态渲染 -->
-        </div>
+        <div class="progress-chart" id="chartContainer"></div>
     </div>
 
     <!-- ===== 今日任务 ===== -->
     <div class="card">
         <h2>📋 今日任务 <span id="taskProgress" class="task-progress"></span></h2>
         <div id="taskListContainer">
-            <div id="taskList" class="task-list">
-                <!-- JS 动态渲染 -->
-            </div>
+            <div id="taskList" class="task-list"></div>
         </div>
         <div class="add-task-row">
             <input type="text" id="newTaskInput" placeholder="输入新任务，如：数学练习册 P10-15" />
@@ -173,6 +168,20 @@
         <ul class="task-list" id="recentBadges">
             <li style="color:var(--gray-400); padding:0.3rem 0;">继续学习，解锁更多徽章 🏆</li>
         </ul>
+    </div>
+
+    <!-- ===== 数据管理（备份/恢复） ===== -->
+    <div class="card">
+        <h2>💾 数据管理</h2>
+        <p style="font-size:0.85rem;color:var(--gray-500);">定期备份数据，防止意外丢失</p>
+        <div class="action-row" style="margin-top:0.5rem;">
+            <button class="btn btn-secondary" onclick="exportData()">📥 导出备份</button>
+            <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">📤 导入备份</button>
+            <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)" />
+        </div>
+        <p style="font-size:0.75rem;color:var(--gray-400);margin-top:0.5rem;">
+            💡 建议每次学习数据较多时导出备份，更换设备时可导入恢复
+        </p>
     </div>
 
     <!-- ===== 页脚 ===== -->
@@ -238,7 +247,6 @@
         const list = document.getElementById('taskList');
         const progress = document.getElementById('taskProgress');
 
-        // 按日期过滤今日任务
         const today = new Date().toISOString().slice(0, 10);
         const todayTasks = tasks.filter(t => t.date === today);
 
@@ -283,8 +291,6 @@
     function toggleTask(index) {
         const tasks = getTasks();
         const today = new Date().toISOString().slice(0, 10);
-        const todayTasks = tasks.filter(t => t.date === today);
-        // 找到实际在数组中的位置
         let realIndex = -1;
         let count = 0;
         for (let i = 0; i < tasks.length; i++) {
@@ -298,7 +304,6 @@
             saveTasks(tasks);
             renderTasks();
             updateStats();
-            // 如果所有任务都完成，增加打卡
             const todayTasksNow = tasks.filter(t => t.date === today);
             if (todayTasksNow.every(t => t.done)) {
                 updateStreak(today);
@@ -332,13 +337,10 @@
     function updateStreak(today) {
         const streak = JSON.parse(localStorage.getItem('studyStreak') || '{"days":0,"lastDate":null}');
         const lastDate = streak.lastDate;
-
         if (lastDate === today) return;
-
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
         const yesterdayStr = yesterday.toISOString().slice(0, 10);
-
         if (lastDate === yesterdayStr) {
             streak.days += 1;
         } else {
@@ -379,9 +381,7 @@
         document.getElementById('avgAccuracy').textContent = avg + '%';
         document.getElementById('level').textContent = 'Lv.' + level;
 
-        // 渲染趋势图
         renderChart(records);
-        // 渲染徽章
         renderBadges(records, streak);
     }
 
@@ -441,6 +441,79 @@
         list.innerHTML = unique.slice(0, 5).map(b =>
             `<li><span class="icon">${b.icon}</span> ${b.name}</li>`
         ).join('');
+    }
+
+    // ============================================================
+    //  数据备份与恢复
+    // ============================================================
+
+    function exportData() {
+        const data = {
+            version: '1.0',
+            exportedAt: new Date().toISOString(),
+            childName: localStorage.getItem('childName') || '',
+            studyRecords: JSON.parse(localStorage.getItem('studyRecords') || '[]'),
+            studyStreak: JSON.parse(localStorage.getItem('studyStreak') || '{"days":0,"lastDate":null}'),
+            studyTasks: JSON.parse(localStorage.getItem('studyTasks') || '[]')
+        };
+
+        const name = data.childName || '小勇士';
+        const date = new Date().toISOString().slice(0, 10);
+        const filename = `${name}_学习数据_${date}.json`;
+
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        alert('✅ 数据已导出！\n\n文件名: ' + filename + '\n请妥善保存此文件。');
+    }
+
+    function importData(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+
+                if (!data.version || !data.studyRecords) {
+                    alert('❌ 无效的备份文件，请检查文件格式。');
+                    return;
+                }
+
+                const confirmMsg = `⚠️ 恢复数据将覆盖当前所有数据！
+
+📊 备份信息：
+👤 孩子: ${data.childName || '未命名'}
+📝 记录数: ${data.studyRecords.length} 条
+📋 任务数: ${data.studyTasks ? data.studyTasks.length : 0} 条
+📅 导出时间: ${data.exportedAt || '未知'}
+
+确定要恢复吗？`;
+
+                if (!confirm(confirmMsg)) return;
+
+                if (data.childName) localStorage.setItem('childName', data.childName);
+                localStorage.setItem('studyRecords', JSON.stringify(data.studyRecords || []));
+                localStorage.setItem('studyStreak', JSON.stringify(data.studyStreak || '{"days":0,"lastDate":null}'));
+                if (data.studyTasks) localStorage.setItem('studyTasks', JSON.stringify(data.studyTasks));
+
+                alert('✅ 数据恢复成功！页面即将刷新。');
+                location.reload();
+
+            } catch (err) {
+                alert('❌ 解析备份文件失败，请确认文件格式正确。\n\n错误信息: ' + err.message);
+            }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
     }
 
     // ============================================================
