@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Retirement Need Calculator — Free Online Tool</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .results-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            margin: 1.5rem 0;
+        }
+        .summary-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+        .summary-item.highlight .value { color: #2563eb; }
+        .summary-item.positive .value { color: #10b981; }
+
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
+        .field input {
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem;
+            border: 1.5px solid #dce1e8;
+            border-radius: 10px;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .field input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background: #ffffff;
+        }
+
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+        .btn:hover { background: #1d4ed8; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
+        @media (max-width: 640px) {
+            .info-grid { grid-template-columns: 1fr; }
+            .summary-item { padding: 0.6rem 1rem; }
+            .summary-item .value { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="top-nav">
+        <a href="index.html" class="back-link">← Back to Home</a>
+        <div class="breadcrumb">📊 <span>Retirement Need Calculator</span></div>
+    </div>
+
+    <main class="calculator-card">
+        <h1>📋 Retirement Need Calculator</h1>
+        <p class="subtitle">Calculate how much you need in retirement to maintain your desired lifestyle.</p>
+
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>Retirement Need Calculator</strong> — This tool calculates how much money you need
+                to have saved by retirement to support your desired lifestyle. It answers the question:
+                <em>“How much do I need in total savings to generate enough income for a 30-year retirement?”</em>
+                You'll see your total retirement need, the income shortfall, and the savings target using
+                the 4% rule.
+            </p>
+        </div>
+
+        <div class="form-grid">
+            <div class="field">
+                <label for="desired-income">Desired Annual Income in Retirement ($)</label>
+                <input type="number" id="desired-income" value="50000" min="0" step="1000" />
+            </div>
+            <div class="field">
+                <label for="social-security">Social Security / Pension Income ($)</label>
+                <input type="number" id="social-security" value="15000" min="0" step="500" />
+            </div>
+            <div class="field">
+                <label for="other-income">Other Retirement Income ($)</label>
+                <input type="number" id="other-income" value="5000" min="0" step="500" />
+            </div>
+            <div class="field">
+                <label for="withdrawal-rate-rn">Safe Withdrawal Rate (%)</label>
+                <input type="number" id="withdrawal-rate-rn" value="4" min="2" max="8" step="0.1" />
+            </div>
+            <div style="margin-top:0.5rem;">
+                <button class="btn" onclick="calculate()">Calculate</button>
+            </div>
+        </div>
+
+        <div id="results-area" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Retirement Need</h2>
+            <div class="results-summary" id="summary">
+                <div class="summary-item highlight">
+                    <span class="label">Total Retirement Need</span>
+                    <span class="value" id="total-need-rn">—</span>
+                </div>
+                <div class="summary-item">
+                    <span class="label">Annual Shortfall</span>
+                    <span class="value" id="annual-shortfall">—</span>
+                </div>
+                <div class="summary-item">
+                    <span class="label">Target Savings</span>
+                    <span class="value" id="target-savings">—</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
+            <h2>📖 How to read your results</h2>
+            <span class="accordion-arrow" id="infoArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="infoAccordion">
+            <div class="info-grid">
+                <div class="info-block"><h3>Total Retirement Need</h3><p>The total amount you need to have saved by retirement to generate your desired income, using the safe withdrawal rate.</p></div>
+                <div class="info-block"><h3>Annual Shortfall</h3><p>The amount you need to cover from your savings each year after accounting for social security and other income.</p></div>
+                <div class="info-block"><h3>Target Savings</h3><p>The amount you need to accumulate before retirement to generate enough income to cover your shortfall.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
+            <h2>❓ FAQ</h2>
+            <span class="accordion-arrow" id="faqArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="faqAccordion">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is a safe withdrawal rate?</span></div>
+                <div class="faq-answer">The safe withdrawal rate is the percentage of your retirement savings you can withdraw each year without running out of money. The classic 4% rule is based on a 30-year retirement period.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Should I include inflation?</span></div>
+                <div class="faq-answer">Yes — the 4% rule assumes you adjust your withdrawals for inflation each year. This calculator uses today's dollars as a baseline estimate.</div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
+    </footer>
+</div>
+
+<script>
+    function toggleAccordion(id) {
+        const body = document.getElementById(id);
+        const arrow = document.getElementById(id + 'Arrow');
+        if (body.style.display === 'none' || body.style.display === '') {
+            body.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            body.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+    function toggleFaq(el) {
+        const answer = el.nextElementSibling;
+        const arrow = el.querySelector('.faq-arrow');
+        if (answer.style.display === 'none' || answer.style.display === '') {
+            answer.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            answer.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+    function calculate() {
+        const desiredIncome = parseFloat(document.getElementById('desired-income').value) || 0;
+        const ssIncome = parseFloat(document.getElementById('social-security').value) || 0;
+        const otherIncome = parseFloat(document.getElementById('other-income').value) || 0;
+        const withdrawalRate = parseFloat(document.getElementById('withdrawal-rate-rn').value) || 4;
+
+        const totalOtherIncome = ssIncome + otherIncome;
+        const shortfall = Math.max(0, desiredIncome - totalOtherIncome);
+        const targetSavings = shortfall / (withdrawalRate / 100);
+        const totalNeed = desiredIncome / (withdrawalRate / 100);
+
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+        document.getElementById('total-need-rn').textContent = fmt.format(totalNeed);
+        document.getElementById('annual-shortfall').textContent = fmt.format(shortfall);
+        document.getElementById('target-savings').textContent = fmt.format(targetSavings);
+
+        document.getElementById('results-area').style.display = 'block';
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('infoAccordion').style.display = 'block';
+        document.getElementById('infoArrow').textContent = '▼';
+        document.getElementById('faqAccordion').style.display = 'none';
+        document.getElementById('faqArrow').textContent = '▶';
+        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
+        calculate();
+    });
+    document.addEventListener('input', function(e) {
+        if (e.target.closest('.form-grid')) { calculate(); }
+    });
+</script>
+</body>
+</html>
