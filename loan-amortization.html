@@ -1,1 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Loan Amortization Calculator — Free Online Tool</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .results-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            margin: 1.5rem 0;
+        }
+        .summary-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .summary-item .label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #475569;
+        }
+        .summary-item .value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .summary-item.highlight {
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+        }
+        .summary-item.highlight .value {
+            color: #2563eb;
+        }
 
+        .form-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+        }
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+        .field label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: #334155;
+        }
+        .field input,
+        .field select {
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem;
+            border: 1.5px solid #dce1e8;
+            border-radius: 10px;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .field input:focus,
+        .field select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background: #ffffff;
+        }
+
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+        .btn:hover {
+            background: #1d4ed8;
+        }
+
+        .schedule-wrapper {
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #e9edf2;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+        .schedule-table th,
+        .schedule-table td {
+            border: 1px solid #e9edf2;
+            padding: 0.25rem 0.4rem;
+            text-align: right;
+        }
+        .schedule-table th {
+            background: #f1f5f9;
+            font-weight: 600;
+            color: #334155;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        .schedule-table td:first-child {
+            text-align: center;
+        }
+        .schedule-table .highlight-row {
+            background: #eef2ff;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1rem 0 0.5rem;
+        }
+        .view-toggle button {
+            padding: 0.3rem 0.8rem;
+            border: 1.5px solid #dce1e8;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #64748b;
+            transition: all 0.2s;
+        }
+        .view-toggle button.active {
+            border-color: #2563eb;
+            background: #eef2ff;
+            color: #2563eb;
+        }
+        .view-toggle button:hover:not(.active) {
+            border-color: #94a3b8;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.8rem;
+        }
+        @media (max-width: 640px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            .summary-item {
+                padding: 0.6rem 1rem;
+            }
+            .summary-item .value {
+                font-size: 1rem;
+            }
+            .schedule-table {
+                font-size: 0.7rem;
+            }
+            .schedule-table th,
+            .schedule-table td {
+                padding: 0.15rem 0.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ===== 顶部导航（面包屑） ===== -->
+    <div class="top-nav">
+        <a href="index.html" class="back-link">← Back to Home</a>
+        <div class="breadcrumb">📊 <span>Loan Amortization Calculator</span></div>
+    </div>
+
+    <main class="calculator-card">
+        <h1>📑 Loan Amortization Calculator</h1>
+        <p class="subtitle">See exactly how your loan payments are split between principal and interest over time.</p>
+
+        <!-- ===== 科普文 ===== -->
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>Loan Amortization Calculator</strong> — This tool generates a complete payment schedule
+                for any fixed-rate loan. It answers the question: <em>“How much of each payment goes toward
+                interest vs. principal, and how does my balance decrease over time?”</em> You'll see a detailed
+                amortization table showing every payment, the interest portion, the principal portion, and the
+                remaining balance. Use it to understand your mortgage, car loan, or any other fixed-rate loan.
+            </p>
+        </div>
+
+        <!-- ===== 输入区域 ===== -->
+        <div class="form-grid">
+            <div class="field">
+                <label for="loan-amount">Loan Amount ($)</label>
+                <input type="number" id="loan-amount" value="300000" min="0" step="1000" />
+            </div>
+            <div class="field">
+                <label for="interest-rate">Annual Interest Rate (%)</label>
+                <input type="number" id="interest-rate" value="6.5" min="0" max="30" step="0.1" />
+            </div>
+            <div class="field">
+                <label for="loan-term">Loan Term (Years)</label>
+                <input type="number" id="loan-term" value="30" min="1" max="50" step="1" />
+            </div>
+            <div class="field">
+                <label for="payment-frequency">Payment Frequency</label>
+                <select id="payment-frequency">
+                    <option value="12">Monthly</option>
+                    <option value="4">Quarterly</option>
+                    <option value="2">Semi-annually</option>
+                    <option value="1">Annually</option>
+                </select>
+            </div>
+            <div style="margin-top:0.5rem;">
+                <button class="btn" onclick="calculate()">Generate Amortization Schedule</button>
+            </div>
+        </div>
+
+        <!-- ===== 结果区域 ===== -->
+        <div id="results-area" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Amortization Summary</h2>
+
+            <div class="results-summary" id="summary">
+                <div class="summary-item highlight">
+                    <span class="label">Payment per Period</span>
+                    <span class="value" id="period-payment">—</span>
+                </div>
+                <div class="summary-item">
+                    <span class="label">Total Interest</span>
+                    <span class="value" id="total-interest">—</span>
+                </div>
+                <div class="summary-item">
+                    <span class="label">Total Payment</span>
+                    <span class="value" id="total-payment">—</span>
+                </div>
+            </div>
+
+            <div class="view-toggle">
+                <button class="active" id="btn-monthly" onclick="setView('monthly')">Monthly View</button>
+                <button id="btn-yearly" onclick="setView('yearly')">Yearly Summary</button>
+            </div>
+
+            <div class="schedule-wrapper" id="schedule-wrapper">
+                <table class="schedule-table" id="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Payment</th>
+                            <th>Interest</th>
+                            <th>Principal</th>
+                            <th>Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody id="schedule-body"></tbody>
+                </table>
+            </div>
+            <p style="font-size:0.75rem; color:#94a3b8; margin-top:0.3rem; text-align:center;">
+                * Assumes fixed interest rate and consistent payments throughout the loan term.
+            </p>
+        </div>
+    </main>
+
+    <!-- ===== 折叠说明 ===== -->
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
+            <h2>📖 How to read your results</h2>
+            <span class="accordion-arrow" id="infoArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="infoAccordion">
+            <div class="info-grid">
+                <div class="info-block">
+                    <h3>Payment per Period</h3>
+                    <p>Your fixed payment amount for each period (monthly, quarterly, etc.). This stays the same throughout the loan term.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Amortization Table</h3>
+                    <p>Each row shows one payment period: the payment amount, how much goes to interest, how much reduces your principal, and your remaining balance.</p>
+                </div>
+                <div class="info-block">
+                    <h3>Principal vs. Interest</h3>
+                    <p>In early payments, most goes to interest. Over time, more goes to principal. The amortization table shows this shift clearly.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FAQ ===== -->
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
+            <h2>❓ FAQ</h2>
+            <span class="accordion-arrow" id="faqArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="faqAccordion">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span class="faq-arrow">▶</span>
+                    <span>What is amortization?</span>
+                </div>
+                <div class="faq-answer">Amortization is the process of paying off a loan over time through regular payments. Each payment covers both interest and principal, with the balance gradually decreasing to zero.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span class="faq-arrow">▶</span>
+                    <span>Why do I pay more interest at the beginning?</span>
+                </div>
+                <div class="faq-answer">Because interest is calculated on your remaining balance. Early on, the balance is high, so interest is high. As you pay down principal, interest decreases.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span class="faq-arrow">▶</span>
+                    <span>What if I make extra payments?</span>
+                </div>
+                <div class="faq-answer">Extra payments reduce your principal faster, which saves on interest and shortens your loan term. This calculator shows the standard schedule without extra payments.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span class="faq-arrow">▶</span>
+                    <span>Can I use this for any type of loan?</span>
+                </div>
+                <div class="faq-answer">Yes — mortgages, car loans, personal loans, student loans. Any fixed-rate loan with regular payments can be amortized using this calculator.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 页脚 ===== -->
+    <footer class="site-footer">
+        <p>
+            © 2026 — Smart Finance Tools · Free Online Calculators
+            <br />
+            <a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a>
+            <span style="color:#dce1e8;">|</span>
+            <a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a>
+        </p>
+    </footer>
+</div>
+
+<script>
+    // ===== 折叠切换函数 =====
+    function toggleAccordion(id) {
+        const body = document.getElementById(id);
+        const arrow = document.getElementById(id + 'Arrow');
+        if (body.style.display === 'none' || body.style.display === '') {
+            body.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            body.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+
+    function toggleFaq(el) {
+        const answer = el.nextElementSibling;
+        const arrow = el.querySelector('.faq-arrow');
+        if (answer.style.display === 'none' || answer.style.display === '') {
+            answer.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            answer.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+
+    let currentView = 'monthly';
+    let scheduleData = [];
+
+    function setView(view) {
+        currentView = view;
+        document.querySelectorAll('.view-toggle button').forEach(b => b.classList.remove('active'));
+        if (view === 'monthly') {
+            document.getElementById('btn-monthly').classList.add('active');
+        } else {
+            document.getElementById('btn-yearly').classList.add('active');
+        }
+        renderSchedule();
+    }
+
+    // ===== 核心计算 =====
+    function calculate() {
+        const P = parseFloat(document.getElementById('loan-amount').value) || 0;
+        const annualRate = parseFloat(document.getElementById('interest-rate').value) || 0;
+        const years = parseFloat(document.getElementById('loan-term').value) || 30;
+        const freq = parseInt(document.getElementById('payment-frequency').value) || 12;
+
+        const periods = years * freq;
+        const ratePerPeriod = annualRate / 100 / freq;
+
+        let payment;
+        if (ratePerPeriod === 0) {
+            payment = P / periods;
+        } else {
+            payment = P * ratePerPeriod * Math.pow(1 + ratePerPeriod, periods) /
+                (Math.pow(1 + ratePerPeriod, periods) - 1);
+        }
+
+        const totalPayment = payment * periods;
+        const totalInterest = totalPayment - P;
+
+        const fmt = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+
+        document.getElementById('period-payment').textContent = fmt.format(payment);
+        document.getElementById('total-interest').textContent = fmt.format(totalInterest);
+        document.getElementById('total-payment').textContent = fmt.format(totalPayment);
+
+        // ===== 生成摊销表 =====
+        scheduleData = [];
+        let balance = P;
+        for (let i = 1; i <= periods; i++) {
+            const interest = balance * ratePerPeriod;
+            const principal = Math.min(payment - interest, balance);
+            balance -= principal;
+            scheduleData.push({
+                period: i,
+                payment: payment,
+                interest: interest,
+                principal: principal,
+                balance: Math.max(0, balance)
+            });
+            if (balance <= 0.01) break;
+        }
+
+        document.getElementById('results-area').style.display = 'block';
+        renderSchedule();
+    }
+
+    function renderSchedule() {
+        const tbody = document.getElementById('schedule-body');
+        tbody.innerHTML = '';
+
+        const fmt = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+
+        if (currentView === 'yearly') {
+            // 按年汇总
+            let yearlyData = [];
+            let year = 1;
+            let yearInterest = 0;
+            let yearPrincipal = 0;
+            let yearPayment = 0;
+            let lastBalance = 0;
+
+            for (const row of scheduleData) {
+                yearInterest += row.interest;
+                yearPrincipal += row.principal;
+                yearPayment += row.payment;
+                if (row.period % 12 === 0 || row.period === scheduleData.length) {
+                    yearlyData.push({
+                        year: year,
+                        payment: yearPayment,
+                        interest: yearInterest,
+                        principal: yearPrincipal,
+                        balance: row.balance
+                    });
+                    year++;
+                    yearInterest = 0;
+                    yearPrincipal = 0;
+                    yearPayment = 0;
+                }
+                if (row.balance <= 0.01) {
+                    // 如果提前还清，确保最后一年被记录
+                    if (yearlyData.length === 0 || yearlyData[yearlyData.length-1].year !== year-1) {
+                        yearlyData.push({
+                            year: year-1,
+                            payment: yearPayment,
+                            interest: yearInterest,
+                            principal: yearPrincipal,
+                            balance: 0
+                        });
+                    }
+                    break;
+                }
+            }
+
+            for (const row of yearlyData) {
+                const tr = document.createElement('tr');
+                if (row.balance <= 0.01) tr.classList.add('highlight-row');
+                tr.innerHTML = `
+                    <td>${row.year}</td>
+                    <td>${fmt.format(row.payment)}</td>
+                    <td>${fmt.format(row.interest)}</td>
+                    <td>${fmt.format(row.principal)}</td>
+                    <td>${fmt.format(Math.max(0, row.balance))}</td>
+                `;
+                tbody.appendChild(tr);
+            }
+        } else {
+            // 每月展示
+            for (const row of scheduleData) {
+                const tr = document.createElement('tr');
+                if (row.balance <= 0.01) tr.classList.add('highlight-row');
+                tr.innerHTML = `
+                    <td>${row.period}</td>
+                    <td>${fmt.format(row.payment)}</td>
+                    <td>${fmt.format(row.interest)}</td>
+                    <td>${fmt.format(row.principal)}</td>
+                    <td>${fmt.format(Math.max(0, row.balance))}</td>
+                `;
+                tbody.appendChild(tr);
+            }
+        }
+    }
+
+    // ===== 页面加载 =====
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('infoAccordion').style.display = 'block';
+        document.getElementById('infoArrow').textContent = '▼';
+        document.getElementById('faqAccordion').style.display = 'none';
+        document.getElementById('faqArrow').textContent = '▶';
+        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
+        calculate();
+    });
+
+    document.addEventListener('input', function(e) {
+        if (e.target.closest('.form-grid')) {
+            calculate();
+        }
+    });
+</script>
+</body>
+</html>
