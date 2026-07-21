@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../style.css" />
     <link rel="stylesheet" href="study-style.css" />
     <style>
+        /* ===== 上传区域 ===== */
         .upload-area {
             border: 2px dashed var(--gray-300);
             border-radius: 12px;
@@ -14,7 +15,7 @@
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
-            background: #fafbfc;
+            background: var(--gray-50);
         }
         .upload-area:hover {
             border-color: var(--primary);
@@ -31,20 +32,122 @@
         }
         .upload-area .sub {
             font-size: 0.8rem;
-            color: #cbd5e1;
+            color: var(--gray-300);
         }
         .upload-area.dragover {
             border-color: var(--primary);
             background: #dbeafe;
         }
 
-        #preview {
+        /* ===== 照片预览 + 标记区 ===== */
+        .photo-container {
+            position: relative;
             margin-top: 1rem;
-            max-width: 100%;
-            border-radius: 12px;
             display: none;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #f8fafc;
+            border: 2px solid var(--gray-200);
+            cursor: crosshair;
+            user-select: none;
+        }
+        .photo-container.active {
+            display: block;
+        }
+        .photo-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            pointer-events: none;
+        }
+        .photo-container .click-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            cursor: crosshair;
+            z-index: 2;
         }
 
+        /* ===== 标记点 ===== */
+        .marker {
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.85);
+            border: 2px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            transform: translate(-50%, -50%);
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.15s;
+        }
+        .marker:hover {
+            transform: translate(-50%, -50%) scale(1.15);
+        }
+        .marker .delete-marker {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #ef4444;
+            border: 1px solid white;
+            color: white;
+            font-size: 9px;
+            line-height: 14px;
+            text-align: center;
+            cursor: pointer;
+            display: none;
+        }
+        .marker:hover .delete-marker {
+            display: block;
+        }
+
+        /* ===== 标记提示 ===== */
+        .marker-hint {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--gray-500);
+            padding: 0.3rem 0 0.5rem;
+        }
+        .marker-hint .count {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* ===== 错题预览列表 ===== */
+        .error-preview-list {
+            margin-top: 0.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+        .error-preview-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 20px;
+            padding: 0.2rem 0.6rem;
+            font-size: 0.8rem;
+            color: #991b1b;
+        }
+        .error-preview-tag .num {
+            font-weight: 600;
+        }
+
+        /* ===== 表单 ===== */
         .form-group {
             margin-top: 1.2rem;
         }
@@ -55,8 +158,7 @@
             color: var(--gray-700);
             margin-bottom: 0.3rem;
         }
-        .form-group input,
-        .form-group textarea {
+        .form-group input {
             width: 100%;
             padding: 0.6rem 0.8rem;
             border: 1.5px solid var(--gray-300);
@@ -65,19 +167,9 @@
             background: #fafbfc;
             transition: border-color 0.2s;
         }
-        .form-group input:focus,
-        .form-group textarea:focus {
+        .form-group input:focus {
             outline: none;
             border-color: var(--primary);
-        }
-        .form-group textarea {
-            min-height: 60px;
-            resize: vertical;
-            font-family: inherit;
-        }
-        .form-group .hint {
-            font-size: 0.75rem;
-            color: var(--gray-400);
         }
 
         .score-row {
@@ -109,6 +201,7 @@
             border-color: var(--primary);
         }
 
+        /* ===== 操作按钮 ===== */
         .btn {
             display: inline-block;
             background: var(--primary);
@@ -138,14 +231,25 @@
         .btn-success:hover {
             background: #059669;
         }
+        .btn-sm {
+            padding: 0.3rem 0.8rem;
+            font-size: 0.8rem;
+        }
+        .btn-danger {
+            background: var(--danger);
+        }
+        .btn-danger:hover {
+            background: #dc2626;
+        }
 
         .action-row {
             display: flex;
             gap: 0.8rem;
             flex-wrap: wrap;
-            margin-top: 1rem;
+            margin-top: 1.2rem;
         }
 
+        /* ===== 结果弹窗 ===== */
         .result-box {
             background: #f0fdf4;
             border: 1px solid #bbf7d0;
@@ -163,74 +267,11 @@
             color: #065f46;
         }
         .result-box .sub {
-            color: var(--gray-500);
+            color: var(--gray-600);
             font-size: 0.9rem;
         }
 
-        .child-name-display {
-            text-align: right;
-            font-size: 0.85rem;
-            color: var(--gray-400);
-            margin-bottom: -0.5rem;
-        }
-
-        .card {
-            background: white;
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
-            margin-bottom: 1.2rem;
-        }
-        .card:last-child {
-            margin-bottom: 0;
-        }
-        .card h2 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--gray-900);
-            margin-bottom: 0.5rem;
-        }
-        .card p {
-            color: var(--gray-500);
-            font-size: 0.9rem;
-            margin: 0 0 1rem;
-        }
-
-        .top-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.5rem 0 0.8rem;
-            border-bottom: 1px solid var(--gray-200);
-            margin-bottom: 1.2rem;
-        }
-        .top-nav .back-link {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-        .top-nav .back-link:hover {
-            text-decoration: underline;
-        }
-        .top-nav .breadcrumb {
-            font-size: 0.85rem;
-            color: var(--gray-400);
-        }
-        .top-nav .breadcrumb span {
-            color: var(--gray-800);
-            font-weight: 500;
-        }
-
-        .container {
-            max-width: 560px;
-            width: 100%;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 1.2rem;
-        }
-
+        /* ===== 响应式 ===== */
         @media (max-width: 640px) {
             .top-nav {
                 flex-direction: column;
@@ -243,6 +284,19 @@
             }
             .score-row .field {
                 width: 100%;
+            }
+            .marker {
+                width: 24px;
+                height: 24px;
+                font-size: 9px;
+            }
+            .marker .delete-marker {
+                width: 14px;
+                height: 14px;
+                font-size: 8px;
+                line-height: 12px;
+                top: -5px;
+                right: -5px;
             }
         }
     </style>
@@ -258,14 +312,14 @@
     </div>
 
     <!-- ===== 当前使用者 ===== -->
-    <div class="child-name-display">
+    <div style="text-align:right; font-size:0.85rem; color:var(--gray-400); margin-bottom:-0.5rem;">
         👤 <span id="childNameDisplay">小勇士</span>
     </div>
 
     <!-- ===== 主卡片 ===== -->
     <div class="card">
         <h2>📸 拍照上传作业</h2>
-        <p>拍下孩子的作业，标记正确题数，系统会自动记录成长数据 📈</p>
+        <p>拍下孩子的作业，点击照片标记错题位置，系统会自动记录 📈</p>
 
         <!-- 上传区域 -->
         <div class="upload-area" id="uploadArea">
@@ -275,10 +329,28 @@
             <input type="file" id="fileInput" accept="image/*" style="display:none;" />
         </div>
 
-        <!-- 预览 -->
-        <img id="preview" alt="作业预览" />
+        <!-- ===== 照片 + 标记区 ===== -->
+        <div class="photo-container" id="photoContainer">
+            <img id="preview" alt="作业预览" />
+            <div class="click-overlay" id="clickOverlay"></div>
+            <!-- 标记点由 JS 动态生成 -->
+        </div>
 
-        <!-- 手动输入区域 -->
+        <!-- 标记提示 -->
+        <div class="marker-hint" id="markerHint" style="display:none;">
+            💡 点击照片上<span style="color:#ef4444;">做错的位置</span>添加标记 · 已标记 <span class="count" id="markerCount">0</span> 处错题
+        </div>
+
+        <!-- 错题预览 -->
+        <div id="errorPreviewArea" style="display:none;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.3rem;">
+                <span style="font-size:0.85rem; font-weight:500; color:var(--gray-700);">📝 已标记错题</span>
+                <button class="btn btn-danger btn-sm" onclick="clearAllMarkers()">清除全部</button>
+            </div>
+            <div class="error-preview-list" id="errorPreviewList"></div>
+        </div>
+
+        <!-- 作业名称 -->
         <div class="form-group">
             <label for="taskName">📋 作业名称</label>
             <input type="text" id="taskName" placeholder="例如：数学练习册 P10-15" value="数学练习册" />
@@ -296,41 +368,32 @@
             </div>
         </div>
 
-        <!-- ===== 错题记录 ===== -->
-        <div class="form-group">
-            <label for="wrongQuestions">📝 错题记录（选填）</label>
-            <textarea id="wrongQuestions" placeholder="输入孩子做错的题目，用逗号或换行分隔。例如：25×4=100, 应用题第3题, 单位换算"></textarea>
-            <span class="hint">💡 每道错题用逗号或换行分隔，系统会自动保存到错题本</span>
-        </div>
-
         <!-- 提交按钮 -->
         <div style="margin-top:1rem;">
-            <button class="btn btn-success" onclick="submitTask()" style="width:100%;">✅ 提交并记录</button>
+            <button class="btn btn-success" onclick="submitTask()" style="width:100%;">📤 提交并记录</button>
         </div>
 
-        <!-- 结果显示 -->
+        <!-- 结果展示 -->
         <div class="result-box" id="resultBox">
             <div class="big" id="resultAccuracy">0%</div>
             <div class="sub" id="resultMessage">继续加油！</div>
-            <div class="sub" id="resultWrongCount" style="margin-top:0.3rem;"></div>
         </div>
 
         <!-- 操作按钮 -->
         <div class="action-row">
             <button class="btn btn-secondary" onclick="resetForm()">🔄 重新上传</button>
-            <a href="index.html" class="btn">📊 查看看板</a>
+            <a href="index.html" class="btn btn-secondary">📊 查看看板</a>
         </div>
     </div>
 
     <!-- ===== 使用说明 ===== -->
     <div class="card" style="background:var(--gray-50);">
         <h2>💡 使用小贴士</h2>
-        <ul style="color:var(--gray-500);font-size:0.9rem;line-height:1.8;padding-left:1.2rem;margin:0;">
+        <ul style="color:var(--gray-600);font-size:0.9rem;line-height:1.8;padding-left:1.2rem;margin:0;">
             <li>📸 拍照时尽量光线充足，字迹清晰</li>
-            <li>✏️ 正确题数和总题数手动填写，确保准确</li>
-            <li>📝 错题记录会自动积累到错题本，方便复习</li>
-            <li>📈 提交后数据自动保存，成长曲线实时更新</li>
-            <li>🏆 连续打卡和徽章系统会自动记录</li>
+            <li>👆 上传照片后，<strong>点击照片上做错的位置</strong>，系统自动标记</li>
+            <li>🔴 红色标记点代表错题，悬停可删除</li>
+            <li>📈 提交后数据自动保存，错题自动汇总到错题本</li>
         </ul>
     </div>
 
@@ -342,20 +405,134 @@
 
 <script>
     // ============================================================
-    //  读取孩子名字
+    //  数据管理
     // ============================================================
 
     function getChildName() {
         return localStorage.getItem('childName') || '小勇士';
     }
 
+    function getRecords() {
+        return JSON.parse(localStorage.getItem('studyRecords') || '[]');
+    }
+
     // ============================================================
-    //  拍照上传逻辑
+    //  标记点管理
+    // ============================================================
+
+    let markers = [];  // 存储 { x: 百分比, y: 百分比, id: 序号 }
+
+    function getImageCoords(e) {
+        const container = document.getElementById('photoContainer');
+        const img = document.getElementById('preview');
+        const rect = container.getBoundingClientRect();
+
+        // 获取点击位置相对于容器百分比
+        let x = (e.clientX - rect.left) / rect.width;
+        let y = (e.clientY - rect.top) / rect.height;
+
+        // 限制在 0-100% 范围内
+        x = Math.max(0, Math.min(1, x));
+        y = Math.max(0, Math.min(1, y));
+
+        return { x, y };
+    }
+
+    function addMarker(e) {
+        const coords = getImageCoords(e);
+        const id = markers.length + 1;
+        markers.push({ x: coords.x, y: coords.y, id: id });
+        renderMarkers();
+        updateErrorPreview();
+    }
+
+    function removeMarker(id) {
+        markers = markers.filter(m => m.id !== id);
+        renderMarkers();
+        updateErrorPreview();
+    }
+
+    function clearAllMarkers() {
+        if (markers.length === 0) return;
+        if (confirm('确定要清除所有标记吗？')) {
+            markers = [];
+            renderMarkers();
+            updateErrorPreview();
+        }
+    }
+
+    function renderMarkers() {
+        const container = document.getElementById('photoContainer');
+        // 移除旧标记点（保留 img 和 overlay）
+        container.querySelectorAll('.marker').forEach(el => el.remove());
+
+        // 显示/隐藏提示
+        const hint = document.getElementById('markerHint');
+        const previewArea = document.getElementById('errorPreviewArea');
+        const countEl = document.getElementById('markerCount');
+
+        if (markers.length === 0) {
+            hint.style.display = 'none';
+            previewArea.style.display = 'none';
+            return;
+        }
+
+        hint.style.display = 'block';
+        previewArea.style.display = 'block';
+        countEl.textContent = markers.length;
+
+        // 为每个标记点创建DOM元素
+        markers.forEach(m => {
+            const el = document.createElement('div');
+            el.className = 'marker';
+            el.style.left = (m.x * 100) + '%';
+            el.style.top = (m.y * 100) + '%';
+            el.textContent = m.id;
+
+            // 删除按钮
+            const del = document.createElement('span');
+            del.className = 'delete-marker';
+            del.textContent = '✕';
+            del.onclick = function(e) {
+                e.stopPropagation();
+                removeMarker(m.id);
+            };
+            el.appendChild(del);
+
+            // 标记点本身点击删除（或保留）
+            el.onclick = function(e) {
+                e.stopPropagation();
+                // 点击标记点不删除，用删除按钮
+            };
+
+            container.appendChild(el);
+        });
+    }
+
+    function updateErrorPreview() {
+        const list = document.getElementById('errorPreviewList');
+        if (markers.length === 0) {
+            list.innerHTML = '';
+            return;
+        }
+
+        list.innerHTML = markers.map(m =>
+            `<span class="error-preview-tag">
+                <span class="num">#${m.id}</span> 待复习
+                <span style="cursor:pointer;opacity:0.6;margin-left:0.2rem;" onclick="removeMarker(${m.id})">✕</span>
+            </span>`
+        ).join('');
+    }
+
+    // ============================================================
+    //  照片上传
     // ============================================================
 
     const uploadArea = document.getElementById('uploadArea');
     const fileInput = document.getElementById('fileInput');
     const preview = document.getElementById('preview');
+    const photoContainer = document.getElementById('photoContainer');
+    const clickOverlay = document.getElementById('clickOverlay');
 
     uploadArea.addEventListener('click', () => fileInput.click());
 
@@ -388,21 +565,36 @@
         const reader = new FileReader();
         reader.onload = (e) => {
             preview.src = e.target.result;
-            preview.style.display = 'block';
+            photoContainer.classList.add('active');
             uploadArea.style.display = 'none';
+
+            // 照片加载完成后，确保点击事件工作
+            preview.onload = function() {
+                // 重新渲染标记点（适配图片尺寸变化）
+                renderMarkers();
+            };
+
+            // 清空旧标记
+            markers = [];
+            renderMarkers();
+            updateErrorPreview();
+            document.getElementById('markerHint').style.display = 'none';
+            document.getElementById('errorPreviewArea').style.display = 'none';
         };
         reader.readAsDataURL(file);
     }
 
+    // 点击照片添加标记
+    clickOverlay.addEventListener('click', addMarker);
+
     // ============================================================
-    //  提交任务逻辑
+    //  提交任务
     // ============================================================
 
     function submitTask() {
         const taskName = document.getElementById('taskName').value.trim() || '未命名作业';
         const correct = parseInt(document.getElementById('correctCount').value) || 0;
         const total = parseInt(document.getElementById('totalCount').value) || 1;
-        const wrongText = document.getElementById('wrongQuestions').value.trim();
 
         if (total <= 0) {
             alert('总题数至少为1！');
@@ -416,13 +608,17 @@
         const accuracy = Math.round((correct / total) * 100);
         const today = new Date().toISOString().slice(0, 10);
 
-        // ===== 保存学习记录 =====
+        // 生成错题描述：标记点自动生成"待复习"条目
+        const errors = markers.map((m, idx) => `第${idx+1}处 待复习`);
+
         const record = {
             date: today,
             taskName: taskName,
             correct: correct,
             total: total,
             accuracy: accuracy,
+            errors: errors,
+            markerCount: markers.length,
             timestamp: Date.now()
         };
 
@@ -430,30 +626,14 @@
         records.push(record);
         localStorage.setItem('studyRecords', JSON.stringify(records));
 
-        // ===== 保存错题 =====
-        if (wrongText) {
-            const wrongs = wrongText.split(/[,，\n\r]+/).map(s => s.trim()).filter(s => s.length > 0);
-            if (wrongs.length > 0) {
-                let wrongList = JSON.parse(localStorage.getItem('studyWrongs') || '[]');
-                wrongs.forEach(w => {
-                    wrongList.push({
-                        id: Date.now() + Math.random() * 1000,
-                        text: w,
-                        date: today,
-                        taskName: taskName,
-                        mastered: false
-                    });
-                });
-                localStorage.setItem('studyWrongs', JSON.stringify(wrongList));
-            }
-        }
-
-        // ===== 更新打卡 =====
         updateStreak(today);
 
-        // ===== 显示结果 =====
-        const wrongCount = wrongText ? wrongText.split(/[,，\n\r]+/).filter(s => s.trim().length > 0).length : 0;
-        showResult(accuracy, correct, total, wrongCount);
+        // 清空标记
+        markers = [];
+        renderMarkers();
+        updateErrorPreview();
+
+        showResult(accuracy, correct, total);
     }
 
     function updateStreak(today) {
@@ -475,11 +655,10 @@
         localStorage.setItem('studyStreak', JSON.stringify(streak));
     }
 
-    function showResult(accuracy, correct, total, wrongCount) {
+    function showResult(accuracy, correct, total) {
         const box = document.getElementById('resultBox');
         const accEl = document.getElementById('resultAccuracy');
         const msgEl = document.getElementById('resultMessage');
-        const wrongEl = document.getElementById('resultWrongCount');
 
         box.classList.add('show');
         accEl.textContent = accuracy + '%';
@@ -500,27 +679,23 @@
         }
         msgEl.textContent = emoji + ' ' + msg + ` （${correct}/${total}）`;
 
-        if (wrongCount > 0) {
-            wrongEl.textContent = `📝 记录了 ${wrongCount} 道错题，在「成长曲线」中查看复习`;
-            wrongEl.style.color = '#f59e0b';
-        } else {
-            wrongEl.textContent = '🎯 没有错题记录，继续保持！';
-            wrongEl.style.color = 'var(--gray-400)';
-        }
-
         box.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     function resetForm() {
         document.getElementById('fileInput').value = '';
-        preview.style.display = 'none';
         preview.src = '';
+        photoContainer.classList.remove('active');
         uploadArea.style.display = 'block';
         document.getElementById('taskName').value = '数学练习册';
         document.getElementById('correctCount').value = 6;
         document.getElementById('totalCount').value = 8;
-        document.getElementById('wrongQuestions').value = '';
         document.getElementById('resultBox').classList.remove('show');
+        markers = [];
+        renderMarkers();
+        updateErrorPreview();
+        document.getElementById('markerHint').style.display = 'none';
+        document.getElementById('errorPreviewArea').style.display = 'none';
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -530,6 +705,14 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('childNameDisplay').textContent = getChildName();
+
+        // 检查今天是否已有记录
+        const today = new Date().toISOString().slice(0, 10);
+        const records = getRecords();
+        const todayRecords = records.filter(r => r.date === today);
+        if (todayRecords.length > 0) {
+            console.log('今日已上传 ' + todayRecords.length + ' 条记录');
+        }
     });
 </script>
 </body>
