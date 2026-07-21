@@ -183,8 +183,13 @@
 
     <!-- ===== 欢迎区域 ===== -->
     <div class="study-card" style="background: #eef2ff; border-left: 4px solid #2563eb;">
-        <h2>👋 欢迎回来，小勇士！</h2>
-        <p>今天也要加油哦！每完成一项任务，你离「自律小英雄」就更近一步 🦸</p>
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap;">
+            <div>
+                <h2 id="greeting">👋 欢迎回来，小勇士！</h2>
+                <p id="subGreeting">今天也要加油哦！每完成一项任务，你离「自律小英雄」就更近一步 🦸</p>
+            </div>
+            <button onclick="editName()" style="background:none;border:none;color:#2563eb;cursor:pointer;font-size:0.85rem;padding:0.2rem 0.5rem;">✏️ 改名</button>
+        </div>
     </div>
 
     <!-- ===== 统计卡片 ===== -->
