@@ -424,14 +424,11 @@
 
     function getImageCoords(e) {
         const container = document.getElementById('photoContainer');
-        const img = document.getElementById('preview');
         const rect = container.getBoundingClientRect();
 
-        // 获取点击位置相对于容器百分比
         let x = (e.clientX - rect.left) / rect.width;
         let y = (e.clientY - rect.top) / rect.height;
 
-        // 限制在 0-100% 范围内
         x = Math.max(0, Math.min(1, x));
         y = Math.max(0, Math.min(1, y));
 
@@ -463,10 +460,8 @@
 
     function renderMarkers() {
         const container = document.getElementById('photoContainer');
-        // 移除旧标记点（保留 img 和 overlay）
         container.querySelectorAll('.marker').forEach(el => el.remove());
 
-        // 显示/隐藏提示
         const hint = document.getElementById('markerHint');
         const previewArea = document.getElementById('errorPreviewArea');
         const countEl = document.getElementById('markerCount');
@@ -481,7 +476,6 @@
         previewArea.style.display = 'block';
         countEl.textContent = markers.length;
 
-        // 为每个标记点创建DOM元素
         markers.forEach(m => {
             const el = document.createElement('div');
             el.className = 'marker';
@@ -489,7 +483,6 @@
             el.style.top = (m.y * 100) + '%';
             el.textContent = m.id;
 
-            // 删除按钮
             const del = document.createElement('span');
             del.className = 'delete-marker';
             del.textContent = '✕';
@@ -499,10 +492,8 @@
             };
             el.appendChild(del);
 
-            // 标记点本身点击删除（或保留）
             el.onclick = function(e) {
                 e.stopPropagation();
-                // 点击标记点不删除，用删除按钮
             };
 
             container.appendChild(el);
@@ -568,13 +559,10 @@
             photoContainer.classList.add('active');
             uploadArea.style.display = 'none';
 
-            // 照片加载完成后，确保点击事件工作
             preview.onload = function() {
-                // 重新渲染标记点（适配图片尺寸变化）
                 renderMarkers();
             };
 
-            // 清空旧标记
             markers = [];
             renderMarkers();
             updateErrorPreview();
@@ -584,7 +572,6 @@
         reader.readAsDataURL(file);
     }
 
-    // 点击照片添加标记
     clickOverlay.addEventListener('click', addMarker);
 
     // ============================================================
@@ -608,7 +595,6 @@
         const accuracy = Math.round((correct / total) * 100);
         const today = new Date().toISOString().slice(0, 10);
 
-        // 生成错题描述：标记点自动生成"待复习"条目
         const errors = markers.map((m, idx) => `第${idx+1}处 待复习`);
 
         const record = {
@@ -628,7 +614,6 @@
 
         updateStreak(today);
 
-        // 清空标记
         markers = [];
         renderMarkers();
         updateErrorPreview();
@@ -705,14 +690,6 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('childNameDisplay').textContent = getChildName();
-
-        // 检查今天是否已有记录
-        const today = new Date().toISOString().slice(0, 10);
-        const records = getRecords();
-        const todayRecords = records.filter(r => r.date === today);
-        if (todayRecords.length > 0) {
-            console.log('今日已上传 ' + todayRecords.length + ' 条记录');
-        }
     });
 </script>
 </body>
