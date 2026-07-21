@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="../style.css" />
     <link rel="stylesheet" href="study-style.css" />
     <style>
-        /* ===== 上传区域 ===== */
         .upload-area {
             border: 2px dashed var(--gray-300);
             border-radius: 12px;
@@ -39,7 +38,6 @@
             background: #dbeafe;
         }
 
-        /* ===== 照片预览 + 标记区 ===== */
         .photo-container {
             position: relative;
             margin-top: 1rem;
@@ -70,7 +68,6 @@
             z-index: 2;
         }
 
-        /* ===== 标记点 ===== */
         .marker {
             position: absolute;
             width: 28px;
@@ -113,7 +110,6 @@
             display: block;
         }
 
-        /* ===== 标记提示 ===== */
         .marker-hint {
             text-align: center;
             font-size: 0.85rem;
@@ -125,7 +121,6 @@
             color: var(--primary);
         }
 
-        /* ===== 错题预览列表 ===== */
         .error-preview-list {
             margin-top: 0.5rem;
             display: flex;
@@ -147,7 +142,6 @@
             font-weight: 600;
         }
 
-        /* ===== 表单 ===== */
         .form-group {
             margin-top: 1.2rem;
         }
@@ -158,7 +152,8 @@
             color: var(--gray-700);
             margin-bottom: 0.3rem;
         }
-        .form-group input {
+        .form-group input,
+        .form-group select {
             width: 100%;
             padding: 0.6rem 0.8rem;
             border: 1.5px solid var(--gray-300);
@@ -167,7 +162,8 @@
             background: #fafbfc;
             transition: border-color 0.2s;
         }
-        .form-group input:focus {
+        .form-group input:focus,
+        .form-group select:focus {
             outline: none;
             border-color: var(--primary);
         }
@@ -201,7 +197,6 @@
             border-color: var(--primary);
         }
 
-        /* ===== 操作按钮 ===== */
         .btn {
             display: inline-block;
             background: var(--primary);
@@ -249,7 +244,6 @@
             margin-top: 1.2rem;
         }
 
-        /* ===== 结果弹窗 ===== */
         .result-box {
             background: #f0fdf4;
             border: 1px solid #bbf7d0;
@@ -271,7 +265,6 @@
             font-size: 0.9rem;
         }
 
-        /* ===== 响应式 ===== */
         @media (max-width: 640px) {
             .top-nav {
                 flex-direction: column;
@@ -305,23 +298,19 @@
 
 <div class="container">
 
-    <!-- ===== 顶部导航 ===== -->
     <div class="top-nav">
         <a href="index.html" class="back-link">← 返回看板</a>
         <div class="breadcrumb">📸 <span>拍照上传作业</span></div>
     </div>
 
-    <!-- ===== 当前使用者 ===== -->
     <div style="text-align:right; font-size:0.85rem; color:var(--gray-400); margin-bottom:-0.5rem;">
         👤 <span id="childNameDisplay">小勇士</span>
     </div>
 
-    <!-- ===== 主卡片 ===== -->
     <div class="card">
         <h2>📸 拍照上传作业</h2>
         <p>拍下孩子的作业，点击照片标记错题位置，系统会自动记录 📈</p>
 
-        <!-- 上传区域 -->
         <div class="upload-area" id="uploadArea">
             <span class="icon">📷</span>
             <p>点击上传 或 拖拽照片到这里</p>
@@ -329,19 +318,15 @@
             <input type="file" id="fileInput" accept="image/*" style="display:none;" />
         </div>
 
-        <!-- ===== 照片 + 标记区 ===== -->
         <div class="photo-container" id="photoContainer">
             <img id="preview" alt="作业预览" />
             <div class="click-overlay" id="clickOverlay"></div>
-            <!-- 标记点由 JS 动态生成 -->
         </div>
 
-        <!-- 标记提示 -->
         <div class="marker-hint" id="markerHint" style="display:none;">
             💡 点击照片上<span style="color:#ef4444;">做错的位置</span>添加标记 · 已标记 <span class="count" id="markerCount">0</span> 处错题
         </div>
 
-        <!-- 错题预览 -->
         <div id="errorPreviewArea" style="display:none;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.3rem;">
                 <span style="font-size:0.85rem; font-weight:500; color:var(--gray-700);">📝 已标记错题</span>
@@ -350,13 +335,24 @@
             <div class="error-preview-list" id="errorPreviewList"></div>
         </div>
 
-        <!-- 作业名称 -->
+        <!-- ===== 作业名称 ===== -->
         <div class="form-group">
             <label for="taskName">📋 作业名称</label>
             <input type="text" id="taskName" placeholder="例如：数学练习册 P10-15" value="数学练习册" />
         </div>
 
-        <!-- 正确率输入 -->
+        <!-- ===== 科目选择（新增） ===== -->
+        <div class="form-group">
+            <label for="subjectSelect">📚 科目</label>
+            <select id="subjectSelect">
+                <option value="数学">📐 数学</option>
+                <option value="语文">📖 语文</option>
+                <option value="英语">🔤 英语</option>
+                <option value="科学">🔬 科学</option>
+                <option value="其他">📌 其他</option>
+            </select>
+        </div>
+
         <div class="score-row">
             <div class="field">
                 <label>✅ 正确题数</label>
@@ -368,70 +364,51 @@
             </div>
         </div>
 
-        <!-- 提交按钮 -->
         <div style="margin-top:1rem;">
             <button class="btn btn-success" onclick="submitTask()" style="width:100%;">📤 提交并记录</button>
         </div>
 
-        <!-- 结果展示 -->
         <div class="result-box" id="resultBox">
             <div class="big" id="resultAccuracy">0%</div>
             <div class="sub" id="resultMessage">继续加油！</div>
         </div>
 
-        <!-- 操作按钮 -->
         <div class="action-row">
             <button class="btn btn-secondary" onclick="resetForm()">🔄 重新上传</button>
             <a href="index.html" class="btn btn-secondary">📊 查看看板</a>
         </div>
     </div>
 
-    <!-- ===== 使用说明 ===== -->
     <div class="card" style="background:var(--gray-50);">
         <h2>💡 使用小贴士</h2>
         <ul style="color:var(--gray-600);font-size:0.9rem;line-height:1.8;padding-left:1.2rem;margin:0;">
             <li>📸 拍照时尽量光线充足，字迹清晰</li>
             <li>👆 上传照片后，<strong>点击照片上做错的位置</strong>，系统自动标记</li>
             <li>🔴 红色标记点代表错题，悬停可删除</li>
+            <li>📚 选择科目后，错题本可按科目分类查看</li>
             <li>📈 提交后数据自动保存，错题自动汇总到错题本</li>
         </ul>
     </div>
 
-    <!-- ===== 页脚 ===== -->
     <footer style="text-align:center; color:var(--gray-400); font-size:0.75rem; padding:0.5rem 0; border-top:1px solid var(--gray-200); margin-top:0.5rem;">
         <p>© 2026 — 学习成长系统 · 用坚持看见进步</p>
     </footer>
 </div>
 
 <script>
-    // ============================================================
-    //  数据管理
-    // ============================================================
-
     function getChildName() {
         return localStorage.getItem('childName') || '小勇士';
     }
 
-    function getRecords() {
-        return JSON.parse(localStorage.getItem('studyRecords') || '[]');
-    }
-
-    // ============================================================
-    //  标记点管理
-    // ============================================================
-
-    let markers = [];  // 存储 { x: 百分比, y: 百分比, id: 序号 }
+    let markers = [];
 
     function getImageCoords(e) {
         const container = document.getElementById('photoContainer');
         const rect = container.getBoundingClientRect();
-
         let x = (e.clientX - rect.left) / rect.width;
         let y = (e.clientY - rect.top) / rect.height;
-
         x = Math.max(0, Math.min(1, x));
         y = Math.max(0, Math.min(1, y));
-
         return { x, y };
     }
 
@@ -461,7 +438,6 @@
     function renderMarkers() {
         const container = document.getElementById('photoContainer');
         container.querySelectorAll('.marker').forEach(el => el.remove());
-
         const hint = document.getElementById('markerHint');
         const previewArea = document.getElementById('errorPreviewArea');
         const countEl = document.getElementById('markerCount');
@@ -491,11 +467,6 @@
                 removeMarker(m.id);
             };
             el.appendChild(del);
-
-            el.onclick = function(e) {
-                e.stopPropagation();
-            };
-
             container.appendChild(el);
         });
     }
@@ -506,7 +477,6 @@
             list.innerHTML = '';
             return;
         }
-
         list.innerHTML = markers.map(m =>
             `<span class="error-preview-tag">
                 <span class="num">#${m.id}</span> 待复习
@@ -515,10 +485,6 @@
         ).join('');
     }
 
-    // ============================================================
-    //  照片上传
-    // ============================================================
-
     const uploadArea = document.getElementById('uploadArea');
     const fileInput = document.getElementById('fileInput');
     const preview = document.getElementById('preview');
@@ -526,26 +492,15 @@
     const clickOverlay = document.getElementById('clickOverlay');
 
     uploadArea.addEventListener('click', () => fileInput.click());
-
-    uploadArea.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadArea.classList.add('dragover');
-    });
-    uploadArea.addEventListener('dragleave', () => {
-        uploadArea.classList.remove('dragover');
-    });
+    uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+    uploadArea.addEventListener('dragleave', () => { uploadArea.classList.remove('dragover'); });
     uploadArea.addEventListener('drop', (e) => {
         e.preventDefault();
         uploadArea.classList.remove('dragover');
-        if (e.dataTransfer.files.length) {
-            handleFile(e.dataTransfer.files[0]);
-        }
+        if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
     });
-
     fileInput.addEventListener('change', (e) => {
-        if (e.target.files.length) {
-            handleFile(e.target.files[0]);
-        }
+        if (e.target.files.length) handleFile(e.target.files[0]);
     });
 
     function handleFile(file) {
@@ -558,11 +513,6 @@
             preview.src = e.target.result;
             photoContainer.classList.add('active');
             uploadArea.style.display = 'none';
-
-            preview.onload = function() {
-                renderMarkers();
-            };
-
             markers = [];
             renderMarkers();
             updateErrorPreview();
@@ -574,23 +524,14 @@
 
     clickOverlay.addEventListener('click', addMarker);
 
-    // ============================================================
-    //  提交任务
-    // ============================================================
-
     function submitTask() {
         const taskName = document.getElementById('taskName').value.trim() || '未命名作业';
+        const subject = document.getElementById('subjectSelect').value;
         const correct = parseInt(document.getElementById('correctCount').value) || 0;
         const total = parseInt(document.getElementById('totalCount').value) || 1;
 
-        if (total <= 0) {
-            alert('总题数至少为1！');
-            return;
-        }
-        if (correct > total) {
-            alert('正确题数不能超过总题数！');
-            return;
-        }
+        if (total <= 0) { alert('总题数至少为1！'); return; }
+        if (correct > total) { alert('正确题数不能超过总题数！'); return; }
 
         const accuracy = Math.round((correct / total) * 100);
         const today = new Date().toISOString().slice(0, 10);
@@ -600,6 +541,7 @@
         const record = {
             date: today,
             taskName: taskName,
+            subject: subject,
             correct: correct,
             total: total,
             accuracy: accuracy,
@@ -624,13 +566,10 @@
     function updateStreak(today) {
         const streak = JSON.parse(localStorage.getItem('studyStreak') || '{"days":0,"lastDate":null}');
         const lastDate = streak.lastDate;
-
         if (lastDate === today) return;
-
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
         const yesterdayStr = yesterday.toISOString().slice(0, 10);
-
         if (lastDate === yesterdayStr) {
             streak.days += 1;
         } else {
@@ -644,26 +583,14 @@
         const box = document.getElementById('resultBox');
         const accEl = document.getElementById('resultAccuracy');
         const msgEl = document.getElementById('resultMessage');
-
         box.classList.add('show');
         accEl.textContent = accuracy + '%';
-
         let emoji, msg;
-        if (accuracy === 100) {
-            emoji = '🎉';
-            msg = '完美！全部正确！你是小天才！⭐';
-        } else if (accuracy >= 80) {
-            emoji = '😊';
-            msg = '做得不错！继续加油，你可以更好！💪';
-        } else if (accuracy >= 60) {
-            emoji = '📖';
-            msg = '有进步空间！错题再多练练，明天会更好！';
-        } else {
-            emoji = '💪';
-            msg = '没关系！错题是学习的机会，再来一次！';
-        }
+        if (accuracy === 100) { emoji = '🎉'; msg = '完美！全部正确！你是小天才！⭐'; }
+        else if (accuracy >= 80) { emoji = '😊'; msg = '做得不错！继续加油，你可以更好！💪'; }
+        else if (accuracy >= 60) { emoji = '📖'; msg = '有进步空间！错题再多练练，明天会更好！'; }
+        else { emoji = '💪'; msg = '没关系！错题是学习的机会，再来一次！'; }
         msgEl.textContent = emoji + ' ' + msg + ` （${correct}/${total}）`;
-
         box.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
@@ -673,6 +600,7 @@
         photoContainer.classList.remove('active');
         uploadArea.style.display = 'block';
         document.getElementById('taskName').value = '数学练习册';
+        document.getElementById('subjectSelect').value = '数学';
         document.getElementById('correctCount').value = 6;
         document.getElementById('totalCount').value = 8;
         document.getElementById('resultBox').classList.remove('show');
@@ -683,10 +611,6 @@
         document.getElementById('errorPreviewArea').style.display = 'none';
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-
-    // ============================================================
-    //  初始化
-    // ============================================================
 
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('childNameDisplay').textContent = getChildName();
