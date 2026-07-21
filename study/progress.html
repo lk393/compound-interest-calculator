@@ -215,6 +215,11 @@
         <div class="breadcrumb">📊 <span>成长曲线</span></div>
     </div>
 
+    <!-- ===== 当前使用者 ===== -->
+    <div style="text-align:right; font-size:0.85rem; color:#94a3b8; margin-bottom:-0.5rem;">
+        👤 <span id="childNameDisplay">小勇士</span>
+    </div>
+
     <!-- ===== 统计概览 ===== -->
     <div class="card">
         <h2>📊 学习数据总览</h2>
@@ -289,6 +294,14 @@
     }
 
     // ============================================================
+    //  读取孩子名字
+    // ============================================================
+
+    function getChildName() {
+        return localStorage.getItem('childName') || '小勇士';
+    }
+
+    // ============================================================
     //  统计概览
     // ============================================================
 
@@ -296,17 +309,12 @@
         const records = getRecords();
         const streak = getStreak();
 
-        // 去重天数
         const days = new Set(records.map(r => r.date));
         const totalDays = days.size;
-
         const totalTasks = records.length;
-
         const avg = records.length > 0
             ? Math.round(records.reduce((s, r) => s + r.accuracy, 0) / records.length)
             : 0;
-
-        // 最长连续打卡 - 简化：直接用当前连续打卡
         const bestStreak = streak.days || 0;
 
         document.getElementById('totalDays').textContent = totalDays;
@@ -329,7 +337,6 @@
             return;
         }
 
-        // 按日期分组，取每天的平均正确率
         const dailyMap = {};
         records.forEach(r => {
             if (!dailyMap[r.date]) dailyMap[r.date] = { total: 0, count: 0 };
@@ -337,11 +344,8 @@
             dailyMap[r.date].count += 1;
         });
 
-        // 排序日期
         const sorted = Object.keys(dailyMap).sort();
-        // 取最近7天
         const recent = sorted.slice(-7);
-
         const maxVal = 100;
 
         recent.forEach(date => {
@@ -358,7 +362,6 @@
 
             const label = document.createElement('div');
             label.className = 'bar-label';
-            // 显示月/日
             const parts = date.split('-');
             label.textContent = parts[1] + '/' + parts[2];
 
@@ -382,13 +385,10 @@
             return;
         }
 
-        // 按时间倒序（最新的在最上面）
         const sorted = [...records].reverse();
-
         sorted.forEach(r => {
             const li = document.createElement('li');
             const date = r.date || '未知日期';
-
             let cls = 'score';
             if (r.accuracy >= 80) cls += ' good';
             else if (r.accuracy >= 60) cls += ' ok';
@@ -414,15 +414,12 @@
         const grid = document.getElementById('badgeGrid');
         grid.innerHTML = '';
 
-        // 计算徽章
         const badges = [];
 
-        // 1. 首战告捷
         if (records.length > 0) {
             badges.push({ icon: '🥇', name: '首战告捷' });
         }
 
-        // 2. 连续打卡徽章（基于连续打卡天数）
         const streak = getStreak();
         if (streak.days >= 7) {
             badges.push({ icon: '🔥', name: '七天坚持' });
@@ -434,7 +431,6 @@
             badges.push({ icon: '👑', name: '三十天王者' });
         }
 
-        // 3. 满分达人
         const perfect = records.filter(r => r.accuracy === 100);
         if (perfect.length >= 1) {
             badges.push({ icon: '💯', name: '满分达人' });
@@ -443,8 +439,6 @@
             badges.push({ icon: '⭐', name: '满分大师' });
         }
 
-        // 4. 进步之星（连续3天正确率提升）
-        // 简化：如果有3条以上记录且趋势向上
         if (records.length >= 3) {
             const sorted = [...records].sort((a, b) => a.date.localeCompare(b.date));
             const recent3 = sorted.slice(-3);
@@ -455,16 +449,6 @@
             }
         }
 
-        // 5. 数学小天才（数学类作业平均正确率>90%）
-        const mathRecords = records.filter(r => r.taskName && r.taskName.includes('数学'));
-        if (mathRecords.length >= 3) {
-            const avg = mathRecords.reduce((s, r) => s + r.accuracy, 0) / mathRecords.length;
-            if (avg >= 90) {
-                badges.push({ icon: '🧮', name: '数学小天才' });
-            }
-        }
-
-        // 6. 学习天数徽章
         const days = new Set(records.map(r => r.date));
         if (days.size >= 3) {
             badges.push({ icon: '🌱', name: '习惯萌芽' });
@@ -476,7 +460,6 @@
             badges.push({ icon: '🌳', name: '自律小达人' });
         }
 
-        // 去重（根据名称）
         const seen = new Set();
         const unique = badges.filter(b => {
             if (seen.has(b.name)) return false;
@@ -498,14 +481,11 @@
     }
 
     // ============================================================
-    //  清除数据（调试用，可删除）
-    // ============================================================
-
-    // ============================================================
     //  初始化
     // ============================================================
 
     function init() {
+        document.getElementById('childNameDisplay').textContent = getChildName();
         renderStats();
         renderChart();
         renderRecords();
