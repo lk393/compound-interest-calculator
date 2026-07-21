@@ -181,7 +181,7 @@
         <div class="breadcrumb">📚 <span>学习成长系统</span></div>
     </div>
 
-    <!-- ===== 欢迎区域 ===== -->
+    <!-- ===== 欢迎区域（含名字） ===== -->
     <div class="study-card" style="background: #eef2ff; border-left: 4px solid #2563eb;">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap;">
             <div>
@@ -250,38 +250,178 @@
 </div>
 
 <script>
-    // ===== 模拟数据（后续用 localStorage 替换） =====
+    // ============================================================
+    //  数据管理
+    // ============================================================
+
+    function getRecords() {
+        return JSON.parse(localStorage.getItem('studyRecords') || '[]');
+    }
+
+    function getStreak() {
+        return JSON.parse(localStorage.getItem('studyStreak') || '{"days":0,"lastDate":null}');
+    }
+
+    // ============================================================
+    //  孩子名字管理
+    // ============================================================
+
+    function getChildName() {
+        return localStorage.getItem('childName') || '小勇士';
+    }
+
+    function setChildName(name) {
+        localStorage.setItem('childName', name);
+        updateGreeting();
+    }
+
+    function updateGreeting() {
+        const name = getChildName();
+        document.getElementById('greeting').textContent = `👋 欢迎回来，${name}！`;
+        document.getElementById('subGreeting').textContent = `今天也要加油哦！每完成一项任务，你离「自律小英雄」就更近一步 🦸`;
+    }
+
+    function editName() {
+        const current = getChildName();
+        const newName = prompt('请输入孩子的名字：', current);
+        if (newName && newName.trim()) {
+            setChildName(newName.trim());
+        }
+    }
+
+    // ============================================================
+    //  模拟数据（无真实数据时展示）
+    // ============================================================
+
     const mockData = {
         streakDays: 7,
         totalTasks: 23,
         avgAccuracy: 82,
         level: 3,
-        dailyAccuracy: [60, 70, 75, 80, 85, 90, 88], // 最近7天
+        dailyAccuracy: [60, 70, 75, 80, 85, 90, 88],
         badges: [
             { name: '🥇 首战告捷', date: '2026-07-18' },
             { name: '🔥 七天坚持', date: '2026-07-20' }
         ]
     };
 
-    // 渲染统计
-    document.getElementById('streakDays').textContent = mockData.streakDays;
-    document.getElementById('totalTasks').textContent = mockData.totalTasks;
-    document.getElementById('avgAccuracy').textContent = mockData.avgAccuracy + '%';
-    document.getElementById('level').textContent = 'Lv.' + mockData.level;
+    // ============================================================
+    //  渲染函数
+    // ============================================================
 
-    // 渲染趋势图
-    const chart = document.getElementById('chartContainer');
-    const max = Math.max(...mockData.dailyAccuracy, 10);
-    chart.innerHTML = mockData.dailyAccuracy.map((val, i) => {
-        const height = (val / max) * 100;
-        return `<div class="bar" style="height:${height}%;"><span class="bar-label">${val}%</span></div>`;
-    }).join('');
+    function renderStats() {
+        const records = getRecords();
+        const streak = getStreak();
 
-    // 渲染徽章
-    const badgeList = document.getElementById('recentBadges');
-    badgeList.innerHTML = mockData.badges.map(b => {
-        return `<li><span class="icon">${b.name.split(' ')[0]}</span> ${b.name.split(' ').slice(1).join(' ')} <span style="color:#94a3b8;font-size:0.8rem;">· ${b.date}</span></li>`;
-    }).join('');
+        if (records.length === 0) {
+            // 使用模拟数据
+            document.getElementById('streakDays').textContent = mockData.streakDays;
+            document.getElementById('totalTasks').textContent = mockData.totalTasks;
+            document.getElementById('avgAccuracy').textContent = mockData.avgAccuracy + '%';
+            document.getElementById('level').textContent = 'Lv.' + mockData.level;
+            return;
+        }
+
+        const days = new Set(records.map(r => r.date));
+        const totalDays = days.size;
+        const totalTasks = records.length;
+        const avg = Math.round(records.reduce((s, r) => s + r.accuracy, 0) / records.length);
+        const bestStreak = streak.days || 0;
+
+        // 计算等级（简化）
+        let level = 1;
+        if (totalTasks >= 5) level = 2;
+        if (totalTasks >= 15) level = 3;
+        if (totalTasks >= 30) level = 4;
+        if (totalTasks >= 50) level = 5;
+        if (totalTasks >= 80) level = 6;
+
+        document.getElementById('streakDays').textContent = bestStreak;
+        document.getElementById('totalTasks').textContent = totalTasks;
+        document.getElementById('avgAccuracy').textContent = avg + '%';
+        document.getElementById('level').textContent = 'Lv.' + level;
+    }
+
+    function renderChart() {
+        const records = getRecords();
+        const container = document.getElementById('chartContainer');
+        container.innerHTML = '';
+
+        let data = [];
+        if (records.length === 0) {
+            data = mockData.dailyAccuracy;
+        } else {
+            // 按日期分组，取最近7天
+            const dailyMap = {};
+            records.forEach(r => {
+                if (!dailyMap[r.date]) dailyMap[r.date] = { total: 0, count: 0 };
+                dailyMap[r.date].total += r.accuracy;
+                dailyMap[r.date].count += 1;
+            });
+            const sorted = Object.keys(dailyMap).sort();
+            const recent = sorted.slice(-7);
+            data = recent.map(date => Math.round(dailyMap[date].total / dailyMap[date].count));
+            if (data.length === 0) data = mockData.dailyAccuracy;
+        }
+
+        const max = Math.max(...data, 10);
+        data.forEach(val => {
+            const height = (val / max) * 100;
+            const bar = document.createElement('div');
+            bar.className = 'bar';
+            bar.style.height = height + '%';
+            bar.innerHTML = `<span class="bar-label">${val}%</span>`;
+            container.appendChild(bar);
+        });
+    }
+
+    function renderBadges() {
+        const records = getRecords();
+        const list = document.getElementById('recentBadges');
+        list.innerHTML = '';
+
+        let badges = [];
+        if (records.length === 0) {
+            badges = mockData.badges;
+        } else {
+            // 简单徽章逻辑
+            if (records.length > 0) badges.push({ name: '🥇 首战告捷', date: records[0].date });
+            const streak = getStreak();
+            if (streak.days >= 7) badges.push({ name: '🔥 七天坚持', date: streak.lastDate });
+            if (streak.days >= 14) badges.push({ name: '⚡ 两周先锋', date: streak.lastDate });
+            if (records.filter(r => r.accuracy === 100).length > 0) badges.push({ name: '💯 满分达人', date: records[records.length-1].date });
+            // 去重
+            const seen = new Set();
+            badges = badges.filter(b => {
+                if (seen.has(b.name)) return false;
+                seen.add(b.name);
+                return true;
+            });
+            badges = badges.slice(0, 5);
+        }
+
+        if (badges.length === 0) {
+            list.innerHTML = '<li style="color:#94a3b8;text-align:center;padding:0.5rem 0;">继续学习，解锁更多徽章 🏆</li>';
+            return;
+        }
+
+        badges.forEach(b => {
+            const li = document.createElement('li');
+            li.innerHTML = `<span class="icon">${b.name.split(' ')[0]}</span> ${b.name.split(' ').slice(1).join(' ')} <span style="color:#94a3b8;font-size:0.8rem;">· ${b.date}</span>`;
+            list.appendChild(li);
+        });
+    }
+
+    // ============================================================
+    //  初始化
+    // ============================================================
+
+    document.addEventListener('DOMContentLoaded', function() {
+        updateGreeting();
+        renderStats();
+        renderChart();
+        renderBadges();
+    });
 </script>
 </body>
 </html>
