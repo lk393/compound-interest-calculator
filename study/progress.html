@@ -5,80 +5,120 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>成长曲线 — 学习成长系统</title>
     <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="study-style.css" />
     <style>
-        .top-nav {
+        /* ===== 标签页切换 ===== */
+        .tab-bar {
+            display: flex;
+            gap: 0.3rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--gray-200);
+            padding-bottom: 0.3rem;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 0.4rem 1rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: var(--gray-400);
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .tab-btn.active {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+        .tab-btn:hover:not(.active) {
+            color: var(--gray-600);
+            background: var(--gray-50);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        /* ===== 错题本样式 ===== */
+        .error-item {
+            background: #fef2f2;
+            border-radius: 10px;
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.6rem;
+            border-left: 3px solid #ef4444;
+        }
+        .error-item .error-date {
+            font-size: 0.75rem;
+            color: var(--gray-400);
+        }
+        .error-item .error-task {
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--gray-700);
+        }
+        .error-item .error-text {
+            font-size: 0.9rem;
+            color: var(--gray-600);
+            margin-top: 0.2rem;
+        }
+        .error-empty {
+            color: var(--gray-400);
+            text-align: center;
+            padding: 1.5rem 0;
+        }
+
+        /* ===== 学习记录列表 ===== */
+        .task-list {
+            list-style: none;
+            padding: 0;
+            margin: 0.5rem 0 0;
+        }
+        .task-list li {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.5rem 0 0.8rem;
-            border-bottom: 1px solid #e9edf2;
-            margin-bottom: 1.2rem;
-        }
-        .top-nav .back-link {
-            color: #2563eb;
-            text-decoration: none;
-            font-weight: 500;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--gray-100);
             font-size: 0.9rem;
+            color: var(--gray-700);
         }
-        .top-nav .breadcrumb {
+        .task-list li .date {
+            color: var(--gray-400);
+            font-size: 0.8rem;
+        }
+
+        /* ===== 徽章墙 ===== */
+        .badge-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-top: 0.5rem;
+        }
+        .badge-item {
+            background: var(--gray-50);
+            border-radius: 20px;
+            padding: 0.3rem 0.8rem;
             font-size: 0.85rem;
-            color: #94a3b8;
+            color: var(--gray-700);
+            border: 1px solid var(--gray-200);
         }
-        .top-nav .breadcrumb span {
-            color: #1e293b;
-            font-weight: 500;
-        }
-
-        .card {
-            background: white;
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
-            margin-bottom: 1.2rem;
-        }
-        .card h2 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #0f172a;
-            margin-bottom: 0.5rem;
-        }
-        .card p {
-            color: #475569;
-            font-size: 0.9rem;
-            margin: 0 0 1rem;
+        .badge-item .icon {
+            margin-right: 0.2rem;
         }
 
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 0.8rem;
-            margin-bottom: 0.5rem;
-        }
-        .stat-box {
-            background: #f8fafc;
+        /* ===== 进度条 ===== */
+        .progress-chart {
+            background: var(--gray-50);
             border-radius: 12px;
-            padding: 0.8rem;
-            text-align: center;
-        }
-        .stat-box .num {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #0f172a;
-        }
-        .stat-box .lbl {
-            font-size: 0.75rem;
-            color: #94a3b8;
-        }
-        .stat-box.highlight .num {
-            color: #2563eb;
-        }
-
-        .chart-container {
-            height: 160px;
+            padding: 1rem;
+            height: 120px;
             display: flex;
             align-items: flex-end;
-            gap: 0.3rem;
-            padding-top: 0.5rem;
+            gap: 0.4rem;
+            margin-top: 0.5rem;
         }
         .bar-wrap {
             flex: 1;
@@ -92,7 +132,7 @@
             width: 100%;
             max-width: 32px;
             border-radius: 4px 4px 0 0;
-            background: #2563eb;
+            background: var(--primary);
             min-height: 4px;
             transition: height 0.4s;
             position: relative;
@@ -103,104 +143,52 @@
             left: 50%;
             transform: translateX(-50%);
             font-size: 0.65rem;
-            color: #475569;
+            color: var(--gray-500);
             font-weight: 500;
             white-space: nowrap;
         }
         .bar-label {
             font-size: 0.6rem;
-            color: #94a3b8;
+            color: var(--gray-400);
             margin-top: 4px;
         }
 
-        .record-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .record-list li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #f1f5f9;
-            font-size: 0.9rem;
-            color: #334155;
-        }
-        .record-list li .date {
-            color: #94a3b8;
-            font-size: 0.8rem;
-        }
-        .record-list li .score {
-            font-weight: 600;
-        }
-        .record-list li .score.good {
-            color: #10b981;
-        }
-        .record-list li .score.ok {
-            color: #f59e0b;
-        }
-        .record-list li .score.bad {
-            color: #ef4444;
-        }
-        .record-list .empty {
-            color: #94a3b8;
-            text-align: center;
-            padding: 1rem 0;
-        }
-
-        .badge-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.6rem;
-            margin-top: 0.5rem;
-        }
-        .badge-item {
-            background: #f8fafc;
-            border-radius: 20px;
-            padding: 0.3rem 0.8rem;
-            font-size: 0.85rem;
-            color: #334155;
-            border: 1px solid #e9edf2;
-        }
-        .badge-item .icon {
-            margin-right: 0.2rem;
-        }
-
-        .btn {
-            display: inline-block;
-            background: #2563eb;
-            color: white;
-            padding: 0.6rem 1.2rem;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: background 0.2s;
-            border: none;
-            cursor: pointer;
-        }
-        .btn:hover {
-            background: #1d4ed8;
-        }
-
-        .action-row {
-            display: flex;
+        /* ===== 统计行 ===== */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
             gap: 0.8rem;
-            flex-wrap: wrap;
-            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .stat-box {
+            background: var(--gray-50);
+            border-radius: 12px;
+            padding: 0.8rem;
+            text-align: center;
+        }
+        .stat-box .num {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+        .stat-box .lbl {
+            font-size: 0.75rem;
+            color: var(--gray-400);
+        }
+        .stat-box.highlight .num {
+            color: var(--primary);
         }
 
         @media (max-width: 640px) {
-            .top-nav {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.3rem;
-            }
             .stats-row {
                 grid-template-columns: repeat(2, 1fr);
+            }
+            .tab-btn {
+                font-size: 0.75rem;
+                padding: 0.3rem 0.6rem;
+            }
+            .tab-bar {
+                gap: 0.2rem;
             }
         }
     </style>
@@ -216,7 +204,7 @@
     </div>
 
     <!-- ===== 当前使用者 ===== -->
-    <div style="text-align:right; font-size:0.85rem; color:#94a3b8; margin-bottom:-0.5rem;">
+    <div style="text-align:right; font-size:0.85rem; color:var(--gray-400); margin-bottom:-0.5rem;">
         👤 <span id="childNameDisplay">小勇士</span>
     </div>
 
@@ -243,39 +231,56 @@
         </div>
     </div>
 
-    <!-- ===== 正确率趋势图 ===== -->
-    <div class="card">
+    <!-- ===== 标签页切换 ===== -->
+    <div class="tab-bar">
+        <button class="tab-btn active" data-tab="trend" onclick="switchTab('trend')">📈 正确率趋势</button>
+        <button class="tab-btn" data-tab="records" onclick="switchTab('records')">📋 学习记录</button>
+        <button class="tab-btn" data-tab="errors" onclick="switchTab('errors')">📝 错题本</button>
+        <button class="tab-btn" data-tab="badges" onclick="switchTab('badges')">🏅 徽章墙</button>
+    </div>
+
+    <!-- ===== 内容区：趋势 ===== -->
+    <div class="card tab-content active" id="tab-trend">
         <h2>📈 正确率趋势</h2>
         <p>最近7天每天的作业正确率变化</p>
-        <div class="chart-container" id="chartContainer">
-            <!-- JS动态渲染 -->
+        <div class="progress-chart" id="chartContainer">
+            <p style="color:var(--gray-400);text-align:center;width:100%;padding:1rem 0;">加载中...</p>
         </div>
     </div>
 
-    <!-- ===== 学习记录 ===== -->
-    <div class="card">
+    <!-- ===== 内容区：学习记录 ===== -->
+    <div class="card tab-content" id="tab-records">
         <h2>📋 全部学习记录</h2>
-        <ul class="record-list" id="recordList">
-            <!-- JS动态渲染 -->
+        <ul class="task-list" id="recordList">
+            <li style="color:var(--gray-400);padding:1rem 0;text-align:center;">加载中...</li>
         </ul>
     </div>
 
-    <!-- ===== 徽章墙 ===== -->
-    <div class="card">
+    <!-- ===== 内容区：错题本 ===== -->
+    <div class="card tab-content" id="tab-errors">
+        <h2>📝 错题本 <span id="errorCount" style="font-size:0.85rem;color:var(--gray-400);font-weight:400;"></span></h2>
+        <p style="font-size:0.9rem;color:var(--gray-500);">每次作业中标记的错题都会汇总在这里</p>
+        <div id="errorList">
+            <div class="error-empty">加载中...</div>
+        </div>
+    </div>
+
+    <!-- ===== 内容区：徽章墙 ===== -->
+    <div class="card tab-content" id="tab-badges">
         <h2>🏅 徽章墙</h2>
         <div class="badge-grid" id="badgeGrid">
-            <!-- JS动态渲染 -->
+            <span style="color:var(--gray-400);font-size:0.9rem;">加载中...</span>
         </div>
     </div>
 
     <!-- ===== 操作按钮 ===== -->
-    <div class="action-row">
+    <div style="display:flex; gap:0.8rem; flex-wrap:wrap; margin-top:0.5rem;">
         <a href="upload.html" class="btn">📸 继续上传作业</a>
-        <a href="index.html" class="btn" style="background:#e9edf2;color:#1e293b;">📚 返回看板</a>
+        <a href="index.html" class="btn btn-secondary">📚 返回看板</a>
     </div>
 
     <!-- ===== 页脚 ===== -->
-    <footer class="site-footer" style="margin-top:1.5rem;">
+    <footer style="text-align:center; color:var(--gray-400); font-size:0.75rem; padding:0.5rem 0; border-top:1px solid var(--gray-200); margin-top:1.5rem;">
         <p>© 2026 — 学习成长系统 · 用坚持看见进步</p>
     </footer>
 </div>
@@ -293,12 +298,21 @@
         return JSON.parse(localStorage.getItem('studyStreak') || '{"days":0,"lastDate":null}');
     }
 
-    // ============================================================
-    //  读取孩子名字
-    // ============================================================
-
     function getChildName() {
         return localStorage.getItem('childName') || '小勇士';
+    }
+
+    // ============================================================
+    //  标签页切换
+    // ============================================================
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        const target = document.getElementById('tab-' + tabId);
+        if (target) target.classList.add('active');
+        const btn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
+        if (btn) btn.classList.add('active');
     }
 
     // ============================================================
@@ -333,7 +347,7 @@
         container.innerHTML = '';
 
         if (records.length === 0) {
-            container.innerHTML = '<p style="color:#94a3b8;text-align:center;width:100%;padding:1rem 0;">还没有学习记录，快去上传吧 🚀</p>';
+            container.innerHTML = '<p style="color:var(--gray-400);text-align:center;width:100%;padding:1rem 0;">还没有学习记录，快去上传吧 🚀</p>';
             return;
         }
 
@@ -347,6 +361,11 @@
         const sorted = Object.keys(dailyMap).sort();
         const recent = sorted.slice(-7);
         const maxVal = 100;
+
+        if (recent.length === 0) {
+            container.innerHTML = '<p style="color:var(--gray-400);text-align:center;width:100%;padding:1rem 0;">暂无数据</p>';
+            return;
+        }
 
         recent.forEach(date => {
             const avg = Math.round(dailyMap[date].total / dailyMap[date].count);
@@ -381,7 +400,7 @@
         list.innerHTML = '';
 
         if (records.length === 0) {
-            list.innerHTML = '<li class="empty">还没有学习记录，开始上传吧 📸</li>';
+            list.innerHTML = '<li style="color:var(--gray-400);padding:1rem 0;text-align:center;">还没有学习记录，开始上传吧 📸</li>';
             return;
         }
 
@@ -389,20 +408,52 @@
         sorted.forEach(r => {
             const li = document.createElement('li');
             const date = r.date || '未知日期';
-            let cls = 'score';
-            if (r.accuracy >= 80) cls += ' good';
-            else if (r.accuracy >= 60) cls += ' ok';
-            else cls += ' bad';
-
+            const color = r.accuracy >= 80 ? 'var(--success)' : r.accuracy >= 60 ? 'var(--warning)' : 'var(--danger)';
             li.innerHTML = `
                 <span>${r.taskName || '未命名'}</span>
                 <span>
                     <span class="date">${date}</span>
-                    <span class="${cls}">${r.accuracy}% (${r.correct}/${r.total})</span>
+                    <span style="font-weight:600;color:${color};">${r.accuracy}% (${r.correct}/${r.total})</span>
                 </span>
             `;
             list.appendChild(li);
         });
+    }
+
+    // ============================================================
+    //  错题本
+    // ============================================================
+
+    function renderErrors() {
+        const records = getRecords();
+        const container = document.getElementById('errorList');
+        const countEl = document.getElementById('errorCount');
+
+        // 提取所有有错题的记录
+        const errorRecords = records.filter(r => r.errors && r.errors.length > 0);
+
+        if (errorRecords.length === 0) {
+            container.innerHTML = '<div class="error-empty">🎉 还没有错题，继续保持！</div>';
+            countEl.textContent = '';
+            return;
+        }
+
+        // 统计错题总数
+        let totalErrors = 0;
+        errorRecords.forEach(r => totalErrors += r.errors.length);
+        countEl.textContent = `(共 ${totalErrors} 道错题)`;
+
+        // 按时间倒序排列
+        const sorted = [...errorRecords].reverse();
+        container.innerHTML = sorted.map(r => {
+            const date = r.date || '未知日期';
+            return r.errors.map(err => `
+                <div class="error-item">
+                    <div class="error-date">${date} · ${r.taskName || '未命名作业'}</div>
+                    <div class="error-text">📌 ${err}</div>
+                </div>
+            `).join('');
+        }).join('');
     }
 
     // ============================================================
@@ -412,53 +463,20 @@
     function renderBadges() {
         const records = getRecords();
         const grid = document.getElementById('badgeGrid');
-        grid.innerHTML = '';
-
         const badges = [];
 
-        if (records.length > 0) {
-            badges.push({ icon: '🥇', name: '首战告捷' });
-        }
-
+        if (records.length > 0) badges.push({ icon: '🥇', name: '首战告捷' });
         const streak = getStreak();
-        if (streak.days >= 7) {
-            badges.push({ icon: '🔥', name: '七天坚持' });
-        }
-        if (streak.days >= 14) {
-            badges.push({ icon: '⚡', name: '两周先锋' });
-        }
-        if (streak.days >= 30) {
-            badges.push({ icon: '👑', name: '三十天王者' });
-        }
-
-        const perfect = records.filter(r => r.accuracy === 100);
-        if (perfect.length >= 1) {
-            badges.push({ icon: '💯', name: '满分达人' });
-        }
-        if (perfect.length >= 5) {
-            badges.push({ icon: '⭐', name: '满分大师' });
-        }
-
-        if (records.length >= 3) {
-            const sorted = [...records].sort((a, b) => a.date.localeCompare(b.date));
-            const recent3 = sorted.slice(-3);
-            if (recent3.length === 3 &&
-                recent3[0].accuracy < recent3[1].accuracy &&
-                recent3[1].accuracy < recent3[2].accuracy) {
-                badges.push({ icon: '📈', name: '进步之星' });
-            }
-        }
+        if (streak.days >= 7) badges.push({ icon: '🔥', name: '七天坚持' });
+        if (streak.days >= 14) badges.push({ icon: '⚡', name: '两周先锋' });
+        if (streak.days >= 30) badges.push({ icon: '👑', name: '三十天王者' });
+        if (records.filter(r => r.accuracy === 100).length > 0) badges.push({ icon: '💯', name: '满分达人' });
+        if (records.filter(r => r.errors && r.errors.length > 0).length > 0) badges.push({ icon: '📝', name: '错题猎人' });
 
         const days = new Set(records.map(r => r.date));
-        if (days.size >= 3) {
-            badges.push({ icon: '🌱', name: '习惯萌芽' });
-        }
-        if (days.size >= 10) {
-            badges.push({ icon: '🌿', name: '稳步前行' });
-        }
-        if (days.size >= 20) {
-            badges.push({ icon: '🌳', name: '自律小达人' });
-        }
+        if (days.size >= 3) badges.push({ icon: '🌱', name: '习惯萌芽' });
+        if (days.size >= 10) badges.push({ icon: '🌿', name: '稳步前行' });
+        if (days.size >= 20) badges.push({ icon: '🌳', name: '自律小达人' });
 
         const seen = new Set();
         const unique = badges.filter(b => {
@@ -468,16 +486,13 @@
         });
 
         if (unique.length === 0) {
-            grid.innerHTML = '<span style="color:#94a3b8;font-size:0.9rem;">继续学习，解锁更多徽章 🏆</span>';
+            grid.innerHTML = '<span style="color:var(--gray-400);font-size:0.9rem;">继续学习，解锁更多徽章 🏆</span>';
             return;
         }
 
-        unique.forEach(b => {
-            const el = document.createElement('span');
-            el.className = 'badge-item';
-            el.innerHTML = `<span class="icon">${b.icon}</span> ${b.name}`;
-            grid.appendChild(el);
-        });
+        grid.innerHTML = unique.map(b =>
+            `<span class="badge-item"><span class="icon">${b.icon}</span> ${b.name}</span>`
+        ).join('');
     }
 
     // ============================================================
@@ -489,6 +504,7 @@
         renderStats();
         renderChart();
         renderRecords();
+        renderErrors();
         renderBadges();
     }
 
