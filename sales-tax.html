@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sales Tax Calculator — Free Online Tool</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .results-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            margin: 1.5rem 0;
+        }
+        .summary-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+        .summary-item.highlight .value { color: #2563eb; }
+
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
+        .field input {
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem;
+            border: 1.5px solid #dce1e8;
+            border-radius: 10px;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .field input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background: #ffffff;
+        }
+
+        .mode-selector {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.2rem;
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 0.3rem;
+        }
+        .mode-btn {
+            flex: 1;
+            padding: 0.5rem 0.8rem;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .mode-btn.active {
+            background: #ffffff;
+            color: #0f172a;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .mode-btn:hover:not(.active) { color: #1e293b; }
+
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+        .btn:hover { background: #1d4ed8; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
+        @media (max-width: 640px) {
+            .info-grid { grid-template-columns: 1fr; }
+            .summary-item { padding: 0.6rem 1rem; }
+            .summary-item .value { font-size: 1rem; }
+            .mode-btn { font-size: 0.75rem; padding: 0.4rem 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="top-nav">
+        <a href="index.html" class="back-link">← Back to Home</a>
+        <div class="breadcrumb">📊 <span>Sales Tax Calculator</span></div>
+    </div>
+
+    <main class="calculator-card">
+        <h1>🛒 Sales Tax Calculator</h1>
+        <p class="subtitle">Calculate the total price including sales tax or find the pre-tax amount.</p>
+
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>Sales Tax Calculator</strong> — This tool helps you calculate sales tax in two ways:
+                <em>“What is the total price including tax?”</em> and <em>“What was the pre-tax amount given
+                the total price?”</em> It answers these questions for any sales tax rate, making it useful
+                for shopping, invoicing, and expense tracking.
+            </p>
+        </div>
+
+        <div class="mode-selector">
+            <button class="mode-btn active" id="mode-include" onclick="setMode('include')">💰 Price → Total with Tax</button>
+            <button class="mode-btn" id="mode-exclude" onclick="setMode('exclude')">💳 Total → Pre-tax Price</button>
+        </div>
+
+        <div class="form-grid" id="input-include">
+            <div class="field">
+                <label for="price">Price ($)</label>
+                <input type="number" id="price" value="100" min="0" step="1" />
+            </div>
+            <div class="field">
+                <label for="tax-rate-st">Sales Tax Rate (%)</label>
+                <input type="number" id="tax-rate-st" value="8.5" min="0" step="0.1" />
+            </div>
+            <div style="margin-top:0.5rem;">
+                <button class="btn" onclick="calculate()">Calculate</button>
+            </div>
+        </div>
+
+        <div class="form-grid" id="input-exclude" style="display:none;">
+            <div class="field">
+                <label for="total-with-tax">Total Price (Including Tax) ($)</label>
+                <input type="number" id="total-with-tax" value="108.50" min="0" step="0.01" />
+            </div>
+            <div class="field">
+                <label for="tax-rate-st2">Sales Tax Rate (%)</label>
+                <input type="number" id="tax-rate-st2" value="8.5" min="0" step="0.1" />
+            </div>
+            <div style="margin-top:0.5rem;">
+                <button class="btn" onclick="calculate()">Calculate</button>
+            </div>
+        </div>
+
+        <div id="results-area" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Sales Tax Results</h2>
+            <div class="results-summary" id="summary">
+                <div class="summary-item highlight">
+                    <span class="label" id="result-label1">Total Price</span>
+                    <span class="value" id="result1">—</span>
+                </div>
+                <div class="summary-item">
+                    <span class="label" id="result-label2">Sales Tax Amount</span>
+                    <span class="value" id="result2">—</span>
+                </div>
+                <div class="summary-item">
+                    <span class="label" id="result-label3">Pre-tax Price</span>
+                    <span class="value" id="result3">—</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
+            <h2>📖 How to read your results</h2>
+            <span class="accordion-arrow" id="infoArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="infoAccordion">
+            <div class="info-grid">
+                <div class="info-block"><h3>Total Price</h3><p>The final price including sales tax. This is what you actually pay at checkout.</p></div>
+                <div class="info-block"><h3>Sales Tax Amount</h3><p>The amount of tax you're paying on the purchase.</p></div>
+                <div class="info-block"><h3>Pre-tax Price</h3><p>The original price before sales tax was added.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
+            <h2>❓ FAQ</h2>
+            <span class="accordion-arrow" id="faqArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="faqAccordion">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the typical sales tax rate?</span></div>
+                <div class="faq-answer">Sales tax rates vary by state and country. In the US, state rates range from 0% to 10%, with local additions in some areas.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Is sales tax the same everywhere?</span></div>
+                <div class="faq-answer">No — rates vary by jurisdiction and some items (like groceries or clothing) may be exempt from sales tax in certain locations.</div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
+    </footer>
+</div>
+
+<script>
+    function toggleAccordion(id) {
+        const body = document.getElementById(id);
+        const arrow = document.getElementById(id + 'Arrow');
+        if (body.style.display === 'none' || body.style.display === '') {
+            body.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            body.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+    function toggleFaq(el) {
+        const answer = el.nextElementSibling;
+        const arrow = el.querySelector('.faq-arrow');
+        if (answer.style.display === 'none' || answer.style.display === '') {
+            answer.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            answer.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+
+    let currentMode = 'include';
+
+    function setMode(mode) {
+        currentMode = mode;
+        document.querySelectorAll('.mode-btn').forEach(function(btn) { btn.classList.remove('active'); });
+        if (mode === 'include') {
+            document.getElementById('mode-include').classList.add('active');
+            document.getElementById('input-include').style.display = 'flex';
+            document.getElementById('input-exclude').style.display = 'none';
+        } else {
+            document.getElementById('mode-exclude').classList.add('active');
+            document.getElementById('input-include').style.display = 'none';
+            document.getElementById('input-exclude').style.display = 'flex';
+        }
+        calculate();
+    }
+
+    function calculate() {
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        if (currentMode === 'include') {
+            const price = parseFloat(document.getElementById('price').value) || 0;
+            const rate = parseFloat(document.getElementById('tax-rate-st').value) || 0;
+            const taxAmount = price * (rate / 100);
+            const total = price + taxAmount;
+
+            document.getElementById('result-label1').textContent = 'Total Price';
+            document.getElementById('result-label2').textContent = 'Sales Tax Amount';
+            document.getElementById('result-label3').textContent = 'Pre-tax Price';
+            document.getElementById('result1').textContent = fmt.format(total);
+            document.getElementById('result2').textContent = fmt.format(taxAmount);
+            document.getElementById('result3').textContent = fmt.format(price);
+        } else {
+            const totalWithTax = parseFloat(document.getElementById('total-with-tax').value) || 0;
+            const rate = parseFloat(document.getElementById('tax-rate-st2').value) || 0;
+            const preTax = totalWithTax / (1 + rate / 100);
+            const taxAmount = totalWithTax - preTax;
+
+            document.getElementById('result-label1').textContent = 'Pre-tax Price';
+            document.getElementById('result-label2').textContent = 'Sales Tax Amount';
+            document.getElementById('result-label3').textContent = 'Total Price';
+            document.getElementById('result1').textContent = fmt.format(preTax);
+            document.getElementById('result2').textContent = fmt.format(taxAmount);
+            document.getElementById('result3').textContent = fmt.format(totalWithTax);
+        }
+
+        document.getElementById('results-area').style.display = 'block';
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('infoAccordion').style.display = 'block';
+        document.getElementById('infoArrow').textContent = '▼';
+        document.getElementById('faqAccordion').style.display = 'none';
+        document.getElementById('faqArrow').textContent = '▶';
+        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
+        calculate();
+    });
+
+    document.addEventListener('input', function(e) {
+        if (e.target.closest('.form-grid')) { calculate(); }
+    });
+</script>
+</body>
+</html>
