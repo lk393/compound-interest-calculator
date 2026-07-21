@@ -42,13 +42,22 @@
             display: block;
         }
 
-        /* ===== 错题本样式 ===== */
+        /* ===== 错题复习样式 ===== */
         .error-item {
             background: #fef2f2;
             border-radius: 10px;
             padding: 0.8rem 1rem;
             margin-bottom: 0.6rem;
             border-left: 3px solid #ef4444;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .error-item .error-info {
+            flex: 1;
+            min-width: 150px;
         }
         .error-item .error-date {
             font-size: 0.75rem;
@@ -64,10 +73,105 @@
             color: var(--gray-600);
             margin-top: 0.2rem;
         }
+        .error-item .error-actions {
+            display: flex;
+            gap: 0.4rem;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .error-item.reviewed {
+            background: #f0fdf4;
+            border-left-color: #10b981;
+            opacity: 0.75;
+        }
+        .error-item.reviewed .error-text {
+            text-decoration: line-through;
+            color: var(--gray-400);
+        }
+
         .error-empty {
             color: var(--gray-400);
             text-align: center;
             padding: 1.5rem 0;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.7rem;
+            font-size: 0.75rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        .btn-review {
+            background: var(--primary);
+            color: white;
+        }
+        .btn-review:hover {
+            background: #1d4ed8;
+        }
+        .btn-review.done {
+            background: var(--success);
+        }
+        .btn-review.done:hover {
+            background: #059669;
+        }
+        .btn-delete-error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .btn-delete-error:hover {
+            background: #fecaca;
+        }
+
+        .review-stats {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 0.8rem;
+            flex-wrap: wrap;
+            font-size: 0.85rem;
+            color: var(--gray-600);
+        }
+        .review-stats span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .review-stats .num-pending {
+            color: #ef4444;
+            font-weight: 600;
+        }
+        .review-stats .num-done {
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        .error-sub-tabs {
+            display: flex;
+            gap: 0.3rem;
+            margin-bottom: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .error-sub-tab {
+            padding: 0.25rem 0.8rem;
+            border: 1px solid var(--gray-200);
+            border-radius: 20px;
+            background: none;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            transition: all 0.2s;
+        }
+        .error-sub-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        .error-sub-tab:hover:not(.active) {
+            border-color: var(--primary);
+            color: var(--primary);
         }
 
         /* ===== 学习记录列表 ===== */
@@ -190,6 +294,13 @@
             .tab-bar {
                 gap: 0.2rem;
             }
+            .error-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .error-item .error-actions {
+                justify-content: flex-end;
+            }
         }
     </style>
 </head>
@@ -256,10 +367,24 @@
         </ul>
     </div>
 
-    <!-- ===== 内容区：错题本 ===== -->
+    <!-- ===== 内容区：错题本（含复习功能） ===== -->
     <div class="card tab-content" id="tab-errors">
-        <h2>📝 错题本 <span id="errorCount" style="font-size:0.85rem;color:var(--gray-400);font-weight:400;"></span></h2>
-        <p style="font-size:0.9rem;color:var(--gray-500);">每次作业中标记的错题都会汇总在这里</p>
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+            <h2 style="margin:0;">📝 错题本</h2>
+            <div class="review-stats" id="reviewStats">
+                <span>⏳ 待复习: <span class="num-pending" id="pendingCount">0</span></span>
+                <span>✅ 已掌握: <span class="num-done" id="doneCount">0</span></span>
+            </div>
+        </div>
+        <p style="font-size:0.9rem;color:var(--gray-500);">每次作业中标记的错题都会汇总在这里，点击"已复习"标记为已掌握</p>
+
+        <!-- 错题子标签 -->
+        <div class="error-sub-tabs">
+            <button class="error-sub-tab active" data-view="all" onclick="switchErrorView('all')">📋 全部</button>
+            <button class="error-sub-tab" data-view="pending" onclick="switchErrorView('pending')">⏳ 待复习</button>
+            <button class="error-sub-tab" data-view="done" onclick="switchErrorView('done')">✅ 已掌握</button>
+        </div>
+
         <div id="errorList">
             <div class="error-empty">加载中...</div>
         </div>
@@ -294,6 +419,10 @@
         return JSON.parse(localStorage.getItem('studyRecords') || '[]');
     }
 
+    function saveRecords(records) {
+        localStorage.setItem('studyRecords', JSON.stringify(records));
+    }
+
     function getStreak() {
         return JSON.parse(localStorage.getItem('studyStreak') || '{"days":0,"lastDate":null}');
     }
@@ -306,6 +435,8 @@
     //  标签页切换
     // ============================================================
 
+    let currentErrorView = 'all';
+
     function switchTab(tabId) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -313,6 +444,17 @@
         if (target) target.classList.add('active');
         const btn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
         if (btn) btn.classList.add('active');
+        if (tabId === 'errors') {
+            renderErrors();
+        }
+    }
+
+    function switchErrorView(view) {
+        currentErrorView = view;
+        document.querySelectorAll('.error-sub-tab').forEach(el => el.classList.remove('active'));
+        const btn = document.querySelector(`.error-sub-tab[data-view="${view}"]`);
+        if (btn) btn.classList.add('active');
+        renderErrors();
     }
 
     // ============================================================
@@ -421,38 +563,145 @@
     }
 
     // ============================================================
-    //  错题本
+    //  错题本（含复习功能）
     // ============================================================
 
-    function renderErrors() {
+    function getErrors() {
         const records = getRecords();
+        const result = [];
+        records.forEach(r => {
+            if (r.errors && r.errors.length > 0) {
+                r.errors.forEach(err => {
+                    // 兼容旧数据：如果 err 是字符串，转为对象
+                    if (typeof err === 'string') {
+                        result.push({
+                            date: r.date,
+                            taskName: r.taskName || '未命名作业',
+                            text: err,
+                            reviewed: false,
+                            recordIndex: records.indexOf(r),
+                            errorIndex: r.errors.indexOf(err)
+                        });
+                    } else {
+                        result.push({
+                            date: r.date,
+                            taskName: r.taskName || '未命名作业',
+                            text: err.text || '待复习',
+                            reviewed: err.reviewed || false,
+                            recordIndex: records.indexOf(r),
+                            errorIndex: r.errors.indexOf(err)
+                        });
+                    }
+                });
+            }
+        });
+        return result;
+    }
+
+    function toggleReview(errorKey) {
+        const records = getRecords();
+        let found = false;
+        records.forEach(r => {
+            if (r.errors && r.errors.length > 0) {
+                r.errors.forEach((err, idx) => {
+                    // 匹配：通过日期 + 任务名 + 错题文本
+                    if (r.date === errorKey.date &&
+                        r.taskName === errorKey.taskName &&
+                        (typeof err === 'string' ? err === errorKey.text : err.text === errorKey.text)) {
+                        if (typeof err === 'string') {
+                            // 旧格式字符串，转为对象
+                            r.errors[idx] = { text: err, reviewed: true };
+                        } else {
+                            r.errors[idx].reviewed = !err.reviewed;
+                        }
+                        found = true;
+                    }
+                });
+            }
+        });
+        if (found) {
+            saveRecords(records);
+            renderErrors();
+            updateReviewStats();
+        }
+    }
+
+    function deleteError(errorKey) {
+        if (!confirm('确定要删除这条错题吗？')) return;
+        const records = getRecords();
+        records.forEach(r => {
+            if (r.errors && r.errors.length > 0) {
+                r.errors = r.errors.filter((err, idx) => {
+                    if (r.date === errorKey.date &&
+                        r.taskName === errorKey.taskName) {
+                        if (typeof err === 'string') {
+                            return err !== errorKey.text;
+                        } else {
+                            return err.text !== errorKey.text;
+                        }
+                    }
+                    return true;
+                });
+            }
+        });
+        saveRecords(records);
+        renderErrors();
+        updateReviewStats();
+    }
+
+    function updateReviewStats() {
+        const errors = getErrors();
+        const pending = errors.filter(e => !e.reviewed).length;
+        const done = errors.filter(e => e.reviewed).length;
+        document.getElementById('pendingCount').textContent = pending;
+        document.getElementById('doneCount').textContent = done;
+    }
+
+    function renderErrors() {
+        let errors = getErrors();
         const container = document.getElementById('errorList');
-        const countEl = document.getElementById('errorCount');
 
-        // 提取所有有错题的记录
-        const errorRecords = records.filter(r => r.errors && r.errors.length > 0);
+        // 根据视图过滤
+        if (currentErrorView === 'pending') {
+            errors = errors.filter(e => !e.reviewed);
+        } else if (currentErrorView === 'done') {
+            errors = errors.filter(e => e.reviewed);
+        }
 
-        if (errorRecords.length === 0) {
-            container.innerHTML = '<div class="error-empty">🎉 还没有错题，继续保持！</div>';
-            countEl.textContent = '';
+        // 按时间倒序
+        errors.sort((a, b) => b.date.localeCompare(a.date));
+
+        if (errors.length === 0) {
+            const msg = currentErrorView === 'pending' ? '🎉 所有错题都已掌握！继续保持！' :
+                        currentErrorView === 'done' ? '📝 还没有已掌握的错题，开始复习吧！' :
+                        '🎉 还没有错题，继续保持！';
+            container.innerHTML = `<div class="error-empty">${msg}</div>`;
             return;
         }
 
-        // 统计错题总数
-        let totalErrors = 0;
-        errorRecords.forEach(r => totalErrors += r.errors.length);
-        countEl.textContent = `(共 ${totalErrors} 道错题)`;
+        container.innerHTML = errors.map(e => {
+            const reviewed = e.reviewed;
+            const statusText = reviewed ? '✅ 已掌握' : '⏳ 待复习';
+            const btnText = reviewed ? '🔄 重新复习' : '✅ 已复习';
+            const btnClass = reviewed ? 'btn-review done' : 'btn-review';
 
-        // 按时间倒序排列
-        const sorted = [...errorRecords].reverse();
-        container.innerHTML = sorted.map(r => {
-            const date = r.date || '未知日期';
-            return r.errors.map(err => `
-                <div class="error-item">
-                    <div class="error-date">${date} · ${r.taskName || '未命名作业'}</div>
-                    <div class="error-text">📌 ${err}</div>
+            return `
+                <div class="error-item ${reviewed ? 'reviewed' : ''}">
+                    <div class="error-info">
+                        <div class="error-date">${e.date} · ${e.taskName}</div>
+                        <div class="error-text">📌 ${e.text}</div>
+                        <div style="font-size:0.75rem;color:var(--gray-400);margin-top:0.2rem;">${statusText}</div>
+                    </div>
+                    <div class="error-actions">
+                        <button class="btn-sm ${btnClass}" onclick="toggleReview({date:'${e.date}', taskName:'${e.taskName}', text:'${e.text.replace(/'/g, "\\'")}'})">
+                            ${btnText}
+                        </button>
+                        <button class="btn-sm btn-delete-error" onclick="deleteError({date:'${e.date}', taskName:'${e.taskName}', text:'${e.text.replace(/'/g, "\\'")}'})">
+                            🗑️
+                        </button>
+                    </div>
                 </div>
-            `).join('');
+            `;
         }).join('');
     }
 
@@ -472,6 +721,11 @@
         if (streak.days >= 30) badges.push({ icon: '👑', name: '三十天王者' });
         if (records.filter(r => r.accuracy === 100).length > 0) badges.push({ icon: '💯', name: '满分达人' });
         if (records.filter(r => r.errors && r.errors.length > 0).length > 0) badges.push({ icon: '📝', name: '错题猎人' });
+        // 复习徽章：有错题且全部已复习
+        const allErrors = getErrors();
+        if (allErrors.length > 0 && allErrors.every(e => e.reviewed)) {
+            badges.push({ icon: '🧠', name: '复习大师' });
+        }
 
         const days = new Set(records.map(r => r.date));
         if (days.size >= 3) badges.push({ icon: '🌱', name: '习惯萌芽' });
@@ -505,6 +759,7 @@
         renderChart();
         renderRecords();
         renderErrors();
+        updateReviewStats();
         renderBadges();
     }
 
