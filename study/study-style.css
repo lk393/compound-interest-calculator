@@ -1,1 +1,325 @@
+/* ===== 学习系统独立样式 ===== */
 
+/* 复用全局 */
+:root {
+    --primary: #2563eb;
+    --primary-light: #eef2ff;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e9edf2;
+    --gray-300: #dce1e8;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --gray-800: #1e293b;
+    --gray-900: #0f172a;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: #f2f5f9;
+    color: var(--gray-800);
+    padding: 2rem 1rem;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.container {
+    max-width: 560px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+/* ===== 卡片 ===== */
+.card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    margin-bottom: 1.2rem;
+}
+.card:last-child {
+    margin-bottom: 0;
+}
+.card h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: 0.5rem;
+}
+.card p {
+    color: var(--gray-500);
+    font-size: 0.9rem;
+    margin: 0 0 1rem;
+}
+
+/* ===== 顶部导航 ===== */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0 0.8rem;
+    border-bottom: 1px solid var(--gray-200);
+    margin-bottom: 1.2rem;
+}
+.top-nav .back-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+.top-nav .back-link:hover {
+    text-decoration: underline;
+}
+.top-nav .breadcrumb {
+    font-size: 0.85rem;
+    color: var(--gray-400);
+}
+.top-nav .breadcrumb span {
+    color: var(--gray-800);
+    font-weight: 500;
+}
+
+/* ===== 按钮 ===== */
+.btn {
+    display: inline-block;
+    background: var(--primary);
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: background 0.2s;
+    border: none;
+    cursor: pointer;
+}
+.btn:hover {
+    background: #1d4ed8;
+}
+.btn-secondary {
+    background: var(--gray-100);
+    color: var(--gray-700);
+}
+.btn-secondary:hover {
+    background: var(--gray-200);
+}
+.btn-success {
+    background: var(--success);
+}
+.btn-success:hover {
+    background: #059669;
+}
+.btn-sm {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.8rem;
+}
+.btn-danger {
+    background: var(--danger);
+}
+.btn-danger:hover {
+    background: #dc2626;
+}
+.btn-warning {
+    background: var(--warning);
+}
+.btn-warning:hover {
+    background: #d97706;
+}
+
+/* ===== 统计网格 ===== */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+}
+.stat-item {
+    background: var(--gray-50);
+    border-radius: 12px;
+    padding: 0.8rem;
+    text-align: center;
+}
+.stat-item .number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--gray-900);
+}
+.stat-item .label {
+    font-size: 0.75rem;
+    color: var(--gray-400);
+}
+.stat-item.highlight .number {
+    color: var(--primary);
+}
+
+/* ===== 统计行 ===== */
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.8rem;
+    margin-bottom: 0.5rem;
+}
+.stat-box {
+    background: var(--gray-50);
+    border-radius: 12px;
+    padding: 0.8rem;
+    text-align: center;
+}
+.stat-box .num {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--gray-900);
+}
+.stat-box .lbl {
+    font-size: 0.75rem;
+    color: var(--gray-400);
+}
+.stat-box.highlight .num {
+    color: var(--primary);
+}
+
+/* ===== 列表 ===== */
+.task-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
+}
+.task-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--gray-100);
+    font-size: 0.9rem;
+    color: var(--gray-700);
+}
+.task-list li .done {
+    color: var(--success);
+}
+.task-list li .pending {
+    color: var(--gray-400);
+}
+.task-list li .icon {
+    font-size: 1.2rem;
+}
+
+/* ===== 徽章 ===== */
+.badge-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+}
+.badge-item {
+    background: var(--gray-50);
+    border-radius: 20px;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.85rem;
+    color: var(--gray-700);
+    border: 1px solid var(--gray-200);
+}
+.badge-item .icon {
+    margin-right: 0.2rem;
+}
+
+/* ===== 表单 ===== */
+.form-group {
+    margin-top: 1.2rem;
+}
+.form-group label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--gray-700);
+    margin-bottom: 0.3rem;
+}
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 1.5px solid var(--gray-300);
+    border-radius: 10px;
+    font-size: 1rem;
+    background: #fafbfc;
+    transition: border-color 0.2s;
+}
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+.form-group textarea {
+    min-height: 60px;
+    resize: vertical;
+    font-family: inherit;
+}
+
+/* ===== 操作行 ===== */
+.action-row {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+/* ===== 进度条 ===== */
+.progress-chart {
+    background: var(--gray-50);
+    border-radius: 12px;
+    padding: 1rem;
+    height: 120px;
+    display: flex;
+    align-items: flex-end;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+}
+.bar {
+    flex: 1;
+    background: var(--primary);
+    border-radius: 4px 4px 0 0;
+    min-height: 4px;
+    transition: height 0.3s;
+    position: relative;
+}
+.bar-label {
+    position: absolute;
+    bottom: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.6rem;
+    color: var(--gray-400);
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 640px) {
+    body { padding: 1rem 0.6rem; }
+    .card { padding: 1.2rem 1rem; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .top-nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.3rem;
+    }
+}
+@media (max-width: 480px) {
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+}
