@@ -256,9 +256,9 @@
 
         <!-- ===== 统计信息（底部） ===== -->
         <div class="footer-stats">
-            <span>📊 Total: <strong id="totalCount">93</strong> tools</span>
-            <span>✅ Available: <strong id="availableCount">21</strong></span>
-            <span>⏳ Coming soon: <strong id="comingCount">72</strong></span>
+            <span>📊 Total: <strong id="totalCount">100</strong> tools</span>
+            <span>✅ Available: <strong id="availableCount">31</strong></span>
+            <span>⏳ Coming soon: <strong id="comingCount">69</strong></span>
         </div>
 
     </main>
@@ -279,15 +279,15 @@
     const toolsData = {
         '💰 Personal Finance & Savings': [
             { name: 'Compound Interest Calculator', icon: '📈', link: 'compound-interest.html', status: 'done' },
-            { name: 'Simple Interest Calculator', icon: '🧮', link: '#', status: 'coming' },
-            { name: 'Fixed Deposit Calculator', icon: '🏦', link: '#', status: 'coming' },
-            { name: 'Recurring Deposit Calculator', icon: '💰', link: '#', status: 'coming' },
-            { name: 'Savings Goal Planner', icon: '🎯', link: '#', status: 'coming' },
-            { name: 'Emergency Fund Calculator', icon: '🛡️', link: '#', status: 'coming' },
-            { name: '50/30/20 Budget Planner', icon: '📋', link: '#', status: 'coming' },
+            { name: 'Simple Interest Calculator', icon: '🧮', link: 'simple-interest.html', status: 'done' },
+            { name: 'Fixed Deposit Calculator', icon: '🏦', link: 'fixed-deposit.html', status: 'done' },
+            { name: 'Savings Goal Planner', icon: '🎯', link: 'savings-goal.html', status: 'done' },
+            { name: 'Emergency Fund Calculator', icon: '🛡️', link: 'emergency-fund.html', status: 'done' },
             { name: 'Inflation Calculator', icon: '📉', link: 'inflation-calculator.html', status: 'done' },
             { name: 'Net Worth Calculator', icon: '📊', link: 'net-worth.html', status: 'done' },
             { name: 'Lump Sum Growth Calculator', icon: '📈', link: 'lump-sum-growth.html', status: 'done' },
+            { name: 'Recurring Deposit Calculator', icon: '💰', link: '#', status: 'coming' },
+            { name: '50/30/20 Budget Planner', icon: '📋', link: '#', status: 'coming' },
             { name: 'Salary to Hourly Converter', icon: '⏰', link: '#', status: 'coming' },
             { name: 'Prorated Salary Calculator', icon: '📐', link: '#', status: 'coming' },
             { name: 'Pay Period Converter', icon: '📅', link: '#', status: 'coming' },
@@ -298,11 +298,11 @@
             { name: 'Loan Amortization Calculator', icon: '📑', link: 'loan-amortization.html', status: 'done' },
             { name: 'Loan Comparison Calculator', icon: '⚖️', link: 'loan-comparison.html', status: 'done' },
             { name: 'Auto Loan Calculator', icon: '🚗', link: 'auto-loan.html', status: 'done' },
-            { name: 'Affordability Calculator', icon: '💳', link: '#', status: 'coming' },
+            { name: 'Affordability Calculator', icon: '💳', link: 'affordability.html', status: 'done' },
+            { name: 'APR / APY Calculator', icon: '📊', link: 'apr-apy.html', status: 'done' },
             { name: 'Personal Loan Calculator', icon: '👤', link: '#', status: 'coming' },
             { name: 'Credit Card Payoff Calculator', icon: '💳', link: '#', status: 'coming' },
             { name: 'Refinance Calculator', icon: '🔄', link: '#', status: 'coming' },
-            { name: 'APR / APY Calculator', icon: '📊', link: '#', status: 'coming' },
             { name: 'Debt-to-Income Ratio Checker', icon: '📈', link: '#', status: 'coming' },
         ],
         '💳 Debt Management': [
@@ -317,7 +317,7 @@
         '📈 Investment & Returns': [
             { name: 'Return on Investment (ROI) Calculator', icon: '📊', link: 'roi-calculator.html', status: 'done' },
             { name: 'Investment Goal Planner', icon: '🎯', link: 'investment-goal.html', status: 'done' },
-            { name: 'Dividend Reinvestment (DRIP) Calculator', icon: '🔄', link: '#', status: 'coming' },
+            { name: 'Dividend Reinvestment (DRIP) Calculator', icon: '🔄', link: 'drip-calculator.html', status: 'done' },
             { name: 'Investment Fee Drag Calculator', icon: '📉', link: '#', status: 'coming' },
             { name: 'CAGR Calculator', icon: '📈', link: '#', status: 'coming' },
             { name: 'Net Present Value (NPV) Calculator', icon: '💰', link: '#', status: 'coming' },
@@ -335,10 +335,10 @@
             { name: 'Retirement Savings Calculator', icon: '🏦', link: 'retirement-savings.html', status: 'done' },
             { name: 'Retirement Withdrawal Calculator', icon: '🏦', link: 'retirement-withdrawal.html', status: 'done' },
             { name: '401(k) / Pension Calculator', icon: '📈', link: '401k-calculator.html', status: 'done' },
-            { name: 'Retirement Need Calculator', icon: '📋', link: '#', status: 'coming' },
+            { name: 'Retirement Age Calculator', icon: '🎂', link: 'retirement-age.html', status: 'done' },
+            { name: 'Retirement Need Calculator', icon: '📋', link: 'retirement-need.html', status: 'done' },
             { name: 'Roth IRA Calculator', icon: '📊', link: '#', status: 'coming' },
             { name: 'Income Replacement Ratio Calculator', icon: '📈', link: '#', status: 'coming' },
-            { name: 'Retirement Age Calculator', icon: '🎂', link: '#', status: 'coming' },
         ],
         '📅 SIP & Systematic Investing': [
             { name: 'SIP Calculator', icon: '📈', link: 'sip-calculator.html', status: 'done' },
@@ -358,6 +358,7 @@
             { name: 'Disability Income Insurance Calculator', icon: '🦽', link: '#', status: 'coming' },
         ],
         '💰 Taxes': [
+            { name: 'Sales Tax Calculator', icon: '🛒', link: 'sales-tax.html', status: 'done' },
             { name: 'Income Tax Calculator', icon: '📊', link: '#', status: 'coming' },
             { name: 'VAT / GST Calculator', icon: '📊', link: '#', status: 'coming' },
             { name: 'Capital Gains Tax Calculator', icon: '📈', link: '#', status: 'coming' },
@@ -365,7 +366,6 @@
             { name: 'Tax Strategy Planner', icon: '📋', link: '#', status: 'coming' },
             { name: 'Pre-tax vs Post-tax Converter', icon: '🔄', link: '#', status: 'coming' },
             { name: 'Retirement Account Tax Comparator', icon: '⚖️', link: '#', status: 'coming' },
-            { name: 'Sales Tax Calculator', icon: '🛒', link: '#', status: 'coming' },
             { name: 'Property Tax Calculator', icon: '🏠', link: '#', status: 'coming' },
             { name: 'Cross-border Tax Estimator', icon: '🌍', link: '#', status: 'coming' },
         ],
