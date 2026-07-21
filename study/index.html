@@ -5,169 +5,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>学习成长系统 — 让孩子爱上学习</title>
     <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="study-style.css" />
     <style>
-        /* ===== 学习系统专用样式 ===== */
-        .top-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.5rem 0 0.8rem;
-            border-bottom: 1px solid #e9edf2;
-            margin-bottom: 1.2rem;
-        }
-        .top-nav .back-link {
-            color: #2563eb;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-        .top-nav .back-link:hover {
-            text-decoration: underline;
-        }
-        .top-nav .breadcrumb {
-            font-size: 0.85rem;
-            color: #94a3b8;
-        }
-        .top-nav .breadcrumb span {
-            color: #1e293b;
-            font-weight: 500;
-        }
-
-        .study-card {
-            background: white;
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
-            margin-bottom: 1.2rem;
-        }
-        .study-card h2 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #0f172a;
-            margin-bottom: 0.5rem;
-        }
-        .study-card p {
-            color: #475569;
-            font-size: 0.9rem;
-            margin: 0;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 0.8rem;
-            margin-bottom: 1.5rem;
-        }
-        .stat-item {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 0.8rem;
-            text-align: center;
-        }
-        .stat-item .number {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #0f172a;
-        }
-        .stat-item .label {
-            font-size: 0.75rem;
-            color: #94a3b8;
-        }
-        .stat-item.highlight .number {
-            color: #2563eb;
-        }
-
-        .progress-chart {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 1rem;
-            height: 120px;
-            display: flex;
-            align-items: flex-end;
-            gap: 0.4rem;
-            margin-top: 0.5rem;
-        }
-        .bar {
-            flex: 1;
-            background: #2563eb;
-            border-radius: 4px 4px 0 0;
-            min-height: 4px;
-            transition: height 0.3s;
-            position: relative;
-        }
-        .bar-label {
-            position: absolute;
-            bottom: -18px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.6rem;
-            color: #94a3b8;
-        }
-
-        .btn {
-            display: inline-block;
-            background: #2563eb;
-            color: white;
-            padding: 0.6rem 1.2rem;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: background 0.2s;
-            border: none;
-            cursor: pointer;
-        }
-        .btn:hover {
-            background: #1d4ed8;
-        }
-        .btn-secondary {
-            background: #e9edf2;
-            color: #1e293b;
-        }
-        .btn-secondary:hover {
-            background: #dce1e8;
-        }
-
-        .action-row {
-            display: flex;
-            gap: 0.8rem;
-            flex-wrap: wrap;
-            margin-top: 1rem;
-        }
-
-        .milestone-list {
-            list-style: none;
-            padding: 0;
-            margin: 0.5rem 0 0;
-        }
-        .milestone-list li {
+        /* ===== 今日任务特殊样式 ===== */
+        .task-item {
             display: flex;
             align-items: center;
             gap: 0.6rem;
-            padding: 0.4rem 0;
-            border-bottom: 1px solid #f1f5f9;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        .task-item:last-child {
+            border-bottom: none;
+        }
+        .task-item .task-check {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--gray-300);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+            background: white;
+        }
+        .task-item .task-check.done {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+            font-size: 12px;
+        }
+        .task-item .task-text {
+            flex: 1;
             font-size: 0.9rem;
-            color: #334155;
+            color: var(--gray-700);
         }
-        .milestone-list li .icon {
-            font-size: 1.2rem;
+        .task-item .task-text.done {
+            text-decoration: line-through;
+            color: var(--gray-400);
         }
-        .milestone-list li .done {
-            color: #10b981;
+        .task-item .task-delete {
+            background: none;
+            border: none;
+            color: var(--gray-400);
+            cursor: pointer;
+            font-size: 0.8rem;
+            padding: 0.2rem 0.4rem;
         }
-        .milestone-list li .pending {
-            color: #94a3b8;
+        .task-item .task-delete:hover {
+            color: var(--danger);
+        }
+        .add-task-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .add-task-row input {
+            flex: 1;
+            padding: 0.5rem 0.7rem;
+            border: 1.5px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        .add-task-row input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .add-task-row button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .add-task-row button:hover {
+            background: #1d4ed8;
         }
 
-        @media (max-width: 640px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .top-nav {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.3rem;
-            }
+        .task-empty {
+            color: var(--gray-400);
+            font-size: 0.85rem;
+            padding: 0.3rem 0;
+        }
+
+        .task-progress {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            margin-top: 0.3rem;
         }
     </style>
 </head>
@@ -181,14 +110,14 @@
         <div class="breadcrumb">📚 <span>学习成长系统</span></div>
     </div>
 
-    <!-- ===== 欢迎区域（含名字） ===== -->
-    <div class="study-card" style="background: #eef2ff; border-left: 4px solid #2563eb;">
+    <!-- ===== 欢迎区域 ===== -->
+    <div class="card" style="background: var(--primary-light); border-left: 4px solid var(--primary);">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap;">
             <div>
                 <h2 id="greeting">👋 欢迎回来，小勇士！</h2>
-                <p id="subGreeting">今天也要加油哦！每完成一项任务，你离「自律小英雄」就更近一步 🦸</p>
+                <p id="subGreeting" style="margin:0.2rem 0 0;">今天也要加油哦！每完成一项任务，你离「自律小英雄」就更近一步 🦸</p>
             </div>
-            <button onclick="editName()" style="background:none;border:none;color:#2563eb;cursor:pointer;font-size:0.85rem;padding:0.2rem 0.5rem;">✏️ 改名</button>
+            <button onclick="editName()" style="background:none;border:none;color:var(--primary);cursor:pointer;font-size:0.85rem;padding:0.2rem 0.5rem;">✏️ 改名</button>
         </div>
     </div>
 
@@ -213,38 +142,41 @@
     </div>
 
     <!-- ===== 近期正确率趋势 ===== -->
-    <div class="study-card">
+    <div class="card">
         <h2>📈 最近7天正确率</h2>
         <div class="progress-chart" id="chartContainer">
             <!-- JS 会动态渲染 -->
         </div>
     </div>
 
-    <!-- ===== 今日任务 + 快捷操作 ===== -->
-    <div class="study-card">
-        <h2>📋 今日任务</h2>
-        <ul class="milestone-list" id="todayTasks">
-            <li><span class="icon">📖</span> 数学练习册 P10-15 <span class="done">✅ 已完成</span></li>
-            <li><span class="icon">📝</span> 语文抄写 第5课 <span class="pending">⏳ 待完成</span></li>
-        </ul>
-
-        <div class="action-row">
+    <!-- ===== 今日任务 ===== -->
+    <div class="card">
+        <h2>📋 今日任务 <span id="taskProgress" class="task-progress"></span></h2>
+        <div id="taskListContainer">
+            <div id="taskList" class="task-list">
+                <!-- JS 动态渲染 -->
+            </div>
+        </div>
+        <div class="add-task-row">
+            <input type="text" id="newTaskInput" placeholder="输入新任务，如：数学练习册 P10-15" />
+            <button onclick="addTask()">添加</button>
+        </div>
+        <div class="action-row" style="margin-top:0.8rem;">
             <a href="upload.html" class="btn">📸 拍照上传作业</a>
-            <a href="progress.html" class="btn btn-secondary">📊 查看成长曲线</a>
+            <a href="progress.html" class="btn btn-secondary">📊 成长曲线</a>
         </div>
     </div>
 
     <!-- ===== 最近成就 ===== -->
-    <div class="study-card">
+    <div class="card">
         <h2>🏅 最近获得的徽章</h2>
-        <ul class="milestone-list" id="recentBadges">
-            <li><span class="icon">🥇</span> 首战告捷 <span style="color:#94a3b8;font-size:0.8rem;">· 3天前</span></li>
-            <li><span class="icon">🔥</span> 七天坚持 <span style="color:#94a3b8;font-size:0.8rem;">· 2天前</span></li>
+        <ul class="task-list" id="recentBadges">
+            <li style="color:var(--gray-400); padding:0.3rem 0;">继续学习，解锁更多徽章 🏆</li>
         </ul>
     </div>
 
     <!-- ===== 页脚 ===== -->
-    <footer class="site-footer" style="margin-top:1.5rem;">
+    <footer style="text-align:center; color:var(--gray-400); font-size:0.75rem; padding:0.5rem 0; border-top:1px solid var(--gray-200); margin-top:0.5rem;">
         <p>© 2026 — 学习成长系统 · 用坚持看见进步</p>
     </footer>
 </div>
@@ -260,6 +192,14 @@
 
     function getStreak() {
         return JSON.parse(localStorage.getItem('studyStreak') || '{"days":0,"lastDate":null}');
+    }
+
+    function getTasks() {
+        return JSON.parse(localStorage.getItem('studyTasks') || '[]');
+    }
+
+    function saveTasks(tasks) {
+        localStorage.setItem('studyTasks', JSON.stringify(tasks));
     }
 
     // ============================================================
@@ -290,45 +230,143 @@
     }
 
     // ============================================================
-    //  模拟数据（无真实数据时展示）
+    //  今日任务管理
     // ============================================================
 
-    const mockData = {
-        streakDays: 7,
-        totalTasks: 23,
-        avgAccuracy: 82,
-        level: 3,
-        dailyAccuracy: [60, 70, 75, 80, 85, 90, 88],
-        badges: [
-            { name: '🥇 首战告捷', date: '2026-07-18' },
-            { name: '🔥 七天坚持', date: '2026-07-20' }
-        ]
-    };
+    function renderTasks() {
+        const tasks = getTasks();
+        const list = document.getElementById('taskList');
+        const progress = document.getElementById('taskProgress');
 
-    // ============================================================
-    //  渲染函数
-    // ============================================================
+        // 按日期过滤今日任务
+        const today = new Date().toISOString().slice(0, 10);
+        const todayTasks = tasks.filter(t => t.date === today);
 
-    function renderStats() {
-        const records = getRecords();
-        const streak = getStreak();
-
-        if (records.length === 0) {
-            // 使用模拟数据
-            document.getElementById('streakDays').textContent = mockData.streakDays;
-            document.getElementById('totalTasks').textContent = mockData.totalTasks;
-            document.getElementById('avgAccuracy').textContent = mockData.avgAccuracy + '%';
-            document.getElementById('level').textContent = 'Lv.' + mockData.level;
+        if (todayTasks.length === 0) {
+            list.innerHTML = '<li class="task-empty">今天还没有任务，添加一个吧 📝</li>';
+            progress.textContent = '';
             return;
         }
+
+        const total = todayTasks.length;
+        const done = todayTasks.filter(t => t.done).length;
+        progress.textContent = `(${done}/${total} 已完成)`;
+
+        list.innerHTML = todayTasks.map((task, index) => `
+            <li class="task-item">
+                <div class="task-check ${task.done ? 'done' : ''}" onclick="toggleTask(${index})">
+                    ${task.done ? '✓' : ''}
+                </div>
+                <span class="task-text ${task.done ? 'done' : ''}">${task.text}</span>
+                <button class="task-delete" onclick="deleteTask(${index})">✕</button>
+            </li>
+        `).join('');
+    }
+
+    function addTask() {
+        const input = document.getElementById('newTaskInput');
+        const text = input.value.trim();
+        if (!text) {
+            alert('请输入任务内容！');
+            return;
+        }
+
+        const tasks = getTasks();
+        const today = new Date().toISOString().slice(0, 10);
+        tasks.push({ date: today, text: text, done: false });
+        saveTasks(tasks);
+        input.value = '';
+        renderTasks();
+        updateStats();
+    }
+
+    function toggleTask(index) {
+        const tasks = getTasks();
+        const today = new Date().toISOString().slice(0, 10);
+        const todayTasks = tasks.filter(t => t.date === today);
+        // 找到实际在数组中的位置
+        let realIndex = -1;
+        let count = 0;
+        for (let i = 0; i < tasks.length; i++) {
+            if (tasks[i].date === today) {
+                if (count === index) { realIndex = i; break; }
+                count++;
+            }
+        }
+        if (realIndex !== -1) {
+            tasks[realIndex].done = !tasks[realIndex].done;
+            saveTasks(tasks);
+            renderTasks();
+            updateStats();
+            // 如果所有任务都完成，增加打卡
+            const todayTasksNow = tasks.filter(t => t.date === today);
+            if (todayTasksNow.every(t => t.done)) {
+                updateStreak(today);
+            }
+        }
+    }
+
+    function deleteTask(index) {
+        const tasks = getTasks();
+        const today = new Date().toISOString().slice(0, 10);
+        let realIndex = -1;
+        let count = 0;
+        for (let i = 0; i < tasks.length; i++) {
+            if (tasks[i].date === today) {
+                if (count === index) { realIndex = i; break; }
+                count++;
+            }
+        }
+        if (realIndex !== -1) {
+            tasks.splice(realIndex, 1);
+            saveTasks(tasks);
+            renderTasks();
+            updateStats();
+        }
+    }
+
+    // ============================================================
+    //  打卡更新
+    // ============================================================
+
+    function updateStreak(today) {
+        const streak = JSON.parse(localStorage.getItem('studyStreak') || '{"days":0,"lastDate":null}');
+        const lastDate = streak.lastDate;
+
+        if (lastDate === today) return;
+
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayStr = yesterday.toISOString().slice(0, 10);
+
+        if (lastDate === yesterdayStr) {
+            streak.days += 1;
+        } else {
+            streak.days = 1;
+        }
+        streak.lastDate = today;
+        localStorage.setItem('studyStreak', JSON.stringify(streak));
+    }
+
+    // ============================================================
+    //  统计与渲染
+    // ============================================================
+
+    function updateStats() {
+        const records = getRecords();
+        const streak = getStreak();
+        const tasks = getTasks();
+        const today = new Date().toISOString().slice(0, 10);
+        const todayTasks = tasks.filter(t => t.date === today);
 
         const days = new Set(records.map(r => r.date));
         const totalDays = days.size;
         const totalTasks = records.length;
-        const avg = Math.round(records.reduce((s, r) => s + r.accuracy, 0) / records.length);
+        const avg = records.length > 0
+            ? Math.round(records.reduce((s, r) => s + r.accuracy, 0) / records.length)
+            : 0;
         const bestStreak = streak.days || 0;
 
-        // 计算等级（简化）
         let level = 1;
         if (totalTasks >= 5) level = 2;
         if (totalTasks >= 15) level = 3;
@@ -340,18 +378,20 @@
         document.getElementById('totalTasks').textContent = totalTasks;
         document.getElementById('avgAccuracy').textContent = avg + '%';
         document.getElementById('level').textContent = 'Lv.' + level;
+
+        // 渲染趋势图
+        renderChart(records);
+        // 渲染徽章
+        renderBadges(records, streak);
     }
 
-    function renderChart() {
-        const records = getRecords();
+    function renderChart(records) {
         const container = document.getElementById('chartContainer');
         container.innerHTML = '';
 
-        let data = [];
-        if (records.length === 0) {
-            data = mockData.dailyAccuracy;
-        } else {
-            // 按日期分组，取最近7天
+        let data = [60, 70, 75, 80, 85, 90, 88];
+
+        if (records.length > 0) {
             const dailyMap = {};
             records.forEach(r => {
                 if (!dailyMap[r.date]) dailyMap[r.date] = { total: 0, count: 0 };
@@ -360,8 +400,9 @@
             });
             const sorted = Object.keys(dailyMap).sort();
             const recent = sorted.slice(-7);
-            data = recent.map(date => Math.round(dailyMap[date].total / dailyMap[date].count));
-            if (data.length === 0) data = mockData.dailyAccuracy;
+            if (recent.length > 0) {
+                data = recent.map(date => Math.round(dailyMap[date].total / dailyMap[date].count));
+            }
         }
 
         const max = Math.max(...data, 10);
@@ -375,41 +416,31 @@
         });
     }
 
-    function renderBadges() {
-        const records = getRecords();
+    function renderBadges(records, streak) {
         const list = document.getElementById('recentBadges');
-        list.innerHTML = '';
+        const badges = [];
 
-        let badges = [];
-        if (records.length === 0) {
-            badges = mockData.badges;
-        } else {
-            // 简单徽章逻辑
-            if (records.length > 0) badges.push({ name: '🥇 首战告捷', date: records[0].date });
-            const streak = getStreak();
-            if (streak.days >= 7) badges.push({ name: '🔥 七天坚持', date: streak.lastDate });
-            if (streak.days >= 14) badges.push({ name: '⚡ 两周先锋', date: streak.lastDate });
-            if (records.filter(r => r.accuracy === 100).length > 0) badges.push({ name: '💯 满分达人', date: records[records.length-1].date });
-            // 去重
-            const seen = new Set();
-            badges = badges.filter(b => {
-                if (seen.has(b.name)) return false;
-                seen.add(b.name);
-                return true;
-            });
-            badges = badges.slice(0, 5);
-        }
+        if (records.length > 0) badges.push({ icon: '🥇', name: '首战告捷' });
+        if (streak.days >= 7) badges.push({ icon: '🔥', name: '七天坚持' });
+        if (streak.days >= 14) badges.push({ icon: '⚡', name: '两周先锋' });
+        if (streak.days >= 30) badges.push({ icon: '👑', name: '三十天王者' });
+        if (records.filter(r => r.accuracy === 100).length > 0) badges.push({ icon: '💯', name: '满分达人' });
 
-        if (badges.length === 0) {
-            list.innerHTML = '<li style="color:#94a3b8;text-align:center;padding:0.5rem 0;">继续学习，解锁更多徽章 🏆</li>';
+        const seen = new Set();
+        const unique = badges.filter(b => {
+            if (seen.has(b.name)) return false;
+            seen.add(b.name);
+            return true;
+        });
+
+        if (unique.length === 0) {
+            list.innerHTML = '<li style="color:var(--gray-400);padding:0.3rem 0;">继续学习，解锁更多徽章 🏆</li>';
             return;
         }
 
-        badges.forEach(b => {
-            const li = document.createElement('li');
-            li.innerHTML = `<span class="icon">${b.name.split(' ')[0]}</span> ${b.name.split(' ').slice(1).join(' ')} <span style="color:#94a3b8;font-size:0.8rem;">· ${b.date}</span>`;
-            list.appendChild(li);
-        });
+        list.innerHTML = unique.slice(0, 5).map(b =>
+            `<li><span class="icon">${b.icon}</span> ${b.name}</li>`
+        ).join('');
     }
 
     // ============================================================
@@ -418,9 +449,8 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         updateGreeting();
-        renderStats();
-        renderChart();
-        renderBadges();
+        renderTasks();
+        updateStats();
     });
 </script>
 </body>
