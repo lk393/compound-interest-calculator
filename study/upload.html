@@ -147,7 +147,6 @@
             margin-top: 1.2rem;
         }
 
-        /* 正确率输入行 */
         .score-row {
             display: flex;
             gap: 1rem;
@@ -228,6 +227,11 @@
         <div class="breadcrumb">📸 <span>拍照上传作业</span></div>
     </div>
 
+    <!-- ===== 当前使用者 ===== -->
+    <div style="text-align:right; font-size:0.85rem; color:#94a3b8; margin-bottom:-0.5rem;">
+        👤 <span id="childNameDisplay">小勇士</span>
+    </div>
+
     <!-- ===== 主卡片 ===== -->
     <div class="upload-card">
         <h2>📸 拍照上传作业</h2>
@@ -298,6 +302,14 @@
 
 <script>
     // ============================================================
+    //  读取孩子名字
+    // ============================================================
+
+    function getChildName() {
+        return localStorage.getItem('childName') || '小勇士';
+    }
+
+    // ============================================================
     //  拍照上传逻辑
     // ============================================================
 
@@ -305,10 +317,8 @@
     const fileInput = document.getElementById('fileInput');
     const preview = document.getElementById('preview');
 
-    // 点击上传区域触发文件选择
     uploadArea.addEventListener('click', () => fileInput.click());
 
-    // 拖拽支持
     uploadArea.addEventListener('dragover', (e) => {
         e.preventDefault();
         uploadArea.classList.add('dragover');
@@ -324,7 +334,6 @@
         }
     });
 
-    // 文件选择
     fileInput.addEventListener('change', (e) => {
         if (e.target.files.length) {
             handleFile(e.target.files[0]);
@@ -366,7 +375,6 @@
         const accuracy = Math.round((correct / total) * 100);
         const today = new Date().toISOString().slice(0, 10);
 
-        // 构建记录
         const record = {
             date: today,
             taskName: taskName,
@@ -376,39 +384,27 @@
             timestamp: Date.now()
         };
 
-        // 从 localStorage 读取已有记录
         let records = JSON.parse(localStorage.getItem('studyRecords') || '[]');
         records.push(record);
         localStorage.setItem('studyRecords', JSON.stringify(records));
 
-        // 更新连续打卡
         updateStreak(today);
-
-        // 显示结果
         showResult(accuracy, correct, total);
-
-        // 清空文件预览（可选）
-        // 不自动清空，让用户看到已上传的照片
     }
 
     function updateStreak(today) {
         const streak = JSON.parse(localStorage.getItem('studyStreak') || '{"days":0,"lastDate":null}');
         const lastDate = streak.lastDate;
 
-        if (lastDate === today) {
-            // 今天已打卡，不重复计数
-            return;
-        }
+        if (lastDate === today) return;
 
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
         const yesterdayStr = yesterday.toISOString().slice(0, 10);
 
         if (lastDate === yesterdayStr) {
-            // 连续打卡
             streak.days += 1;
         } else {
-            // 中断或第一天
             streak.days = 1;
         }
         streak.lastDate = today;
@@ -439,7 +435,6 @@
         }
         msgEl.textContent = emoji + ' ' + msg + ` （${correct}/${total}）`;
 
-        // 滚动到结果区域
         box.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
@@ -459,14 +454,9 @@
     //  初始化
     // ============================================================
 
-    // 如果 localStorage 中有今日记录，显示提示
-    const today = new Date().toISOString().slice(0, 10);
-    const records = JSON.parse(localStorage.getItem('studyRecords') || '[]');
-    const todayRecords = records.filter(r => r.date === today);
-    if (todayRecords.length > 0) {
-        // 不强制显示，让用户自己决定是否继续上传
-        console.log('今日已上传 ' + todayRecords.length + ' 条记录');
-    }
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('childNameDisplay').textContent = getChildName();
+    });
 </script>
 </body>
 </html>
