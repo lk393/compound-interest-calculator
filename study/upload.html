@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="../style.css" />
     <link rel="stylesheet" href="study-style.css" />
     <style>
-        /* ===== 上传区域 ===== */
         .upload-area {
             border: 2px dashed var(--gray-300);
             border-radius: 12px;
@@ -266,7 +265,6 @@
             font-size: 0.9rem;
         }
 
-        /* ===== 成功弹窗（Toast） ===== */
         .success-toast {
             position: fixed;
             top: 20px;
@@ -294,6 +292,23 @@
         }
         .success-toast .icon {
             font-size: 1.5rem;
+        }
+
+        .child-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: flex-end;
+            font-size: 0.85rem;
+            color: var(--gray-500);
+            margin-bottom: 0.3rem;
+            padding: 0.2rem 0.5rem;
+            background: var(--gray-50);
+            border-radius: 8px;
+        }
+        .child-indicator .name {
+            font-weight: 600;
+            color: var(--primary);
         }
 
         @media (max-width: 640px) {
@@ -348,9 +363,9 @@
         <div class="breadcrumb">📸 <span>拍照上传作业</span></div>
     </div>
 
-    <!-- ===== 当前使用者 ===== -->
-    <div style="text-align:right; font-size:0.85rem; color:var(--gray-400); margin-bottom:-0.5rem;">
-        👤 <span id="childNameDisplay">小勇士</span>
+    <!-- ===== 当前孩子指示 ===== -->
+    <div class="child-indicator">
+        👤 当前: <span class="name" id="childNameDisplay">小勇士</span>
     </div>
 
     <!-- ===== 主卡片 ===== -->
@@ -454,18 +469,79 @@
 
 <script>
     // ============================================================
-    //  数据管理
+    //  多孩子数据管理（复制自 index.html）
     // ============================================================
 
-    function getChildName() {
-        return localStorage.getItem('childName') || '小勇士';
+    function getChildren() {
+        return JSON.parse(localStorage.getItem('studyChildren') || '[]');
     }
 
-    let markers = [];
+    function getCurrentChildId() {
+        return localStorage.getItem('studyCurrentChild') || null;
+    }
+
+    function getCurrentChild() {
+        const children = getChildren();
+        const id = getCurrentChildId();
+        if (!id) return null;
+        return children.find(c => c.id === id) || null;
+    }
+
+    function getChildData(childId) {
+        const key = 'studyData_' + childId;
+        const raw = localStorage.getItem(key);
+        if (raw) {
+            try { return JSON.parse(raw); } catch(e) {}
+        }
+        return { records: [], streak: { days: 0, lastDate: null }, tasks: [] };
+    }
+
+    function saveChildData(childId, data) {
+        localStorage.setItem('studyData_' + childId, JSON.stringify(data));
+    }
+
+    function getCurrentData() {
+        const child = getCurrentChild();
+        if (!child) return { records: [], streak: { days: 0, lastDate: null }, tasks: [] };
+        return getChildData(child.id);
+    }
+
+    function saveCurrentData(data) {
+        const child = getCurrentChild();
+        if (!child) return;
+        saveChildData(child.id, data);
+    }
+
+    function getRecords() {
+        return getCurrentData().records || [];
+    }
+
+    function saveRecords(records) {
+        const data = getCurrentData();
+        data.records = records;
+        saveCurrentData(data);
+    }
+
+    function getStreak() {
+        return getCurrentData().streak || { days: 0, lastDate: null };
+    }
+
+    function saveStreak(streak) {
+        const data = getCurrentData();
+        data.streak = streak;
+        saveCurrentData(data);
+    }
+
+    function getChildName() {
+        const child = getCurrentChild();
+        return child ? child.name : '小勇士';
+    }
 
     // ============================================================
     //  标记点管理
     // ============================================================
+
+    let markers = [];
 
     function getImageCoords(e) {
         const container = document.getElementById('photoContainer');
@@ -641,25 +717,24 @@
             timestamp: Date.now()
         };
 
-        let records = JSON.parse(localStorage.getItem('studyRecords') || '[]');
-        records.push(record);
-        localStorage.setItem('studyRecords', JSON.stringify(records));
+        // 获取当前孩子的数据
+        const data = getCurrentData();
+        data.records.push(record);
+        saveCurrentData(data);
 
+        // 更新打卡
         updateStreak(today);
 
         markers = [];
         renderMarkers();
         updateErrorPreview();
 
-        // ===== 显示成功弹窗 =====
         showSuccessToast();
-
-        // 显示结果
         showResult(accuracy, correct, total);
     }
 
     function updateStreak(today) {
-        const streak = JSON.parse(localStorage.getItem('studyStreak') || '{"days":0,"lastDate":null}');
+        const streak = getStreak();
         const lastDate = streak.lastDate;
         if (lastDate === today) return;
         const yesterday = new Date();
@@ -671,7 +746,7 @@
             streak.days = 1;
         }
         streak.lastDate = today;
-        localStorage.setItem('studyStreak', JSON.stringify(streak));
+        saveStreak(streak);
     }
 
     function showResult(accuracy, correct, total) {
