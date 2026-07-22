@@ -97,6 +97,75 @@
             color: var(--gray-500);
             margin-top: 0.3rem;
         }
+
+        /* ===== 孩子管理 ===== */
+        .child-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+            padding: 0.5rem 0.8rem;
+            background: var(--gray-50);
+            border-radius: 10px;
+            border: 1px solid var(--gray-200);
+        }
+        .child-selector .label {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+            font-weight: 500;
+        }
+        .child-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.25rem 0.7rem;
+            border-radius: 20px;
+            border: 1.5px solid var(--gray-300);
+            background: white;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--gray-600);
+            transition: all 0.2s;
+        }
+        .child-tag:hover {
+            border-color: var(--primary);
+        }
+        .child-tag.active {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .child-tag .remove {
+            font-size: 0.7rem;
+            opacity: 0.5;
+            cursor: pointer;
+            margin-left: 0.1rem;
+        }
+        .child-tag .remove:hover {
+            opacity: 1;
+            color: var(--danger);
+        }
+        .child-add-btn {
+            padding: 0.25rem 0.7rem;
+            border: 1.5px dashed var(--gray-300);
+            border-radius: 20px;
+            background: none;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--gray-400);
+            transition: all 0.2s;
+        }
+        .child-add-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .child-selector .hint {
+            font-size: 0.7rem;
+            color: var(--gray-400);
+            margin-left: auto;
+        }
     </style>
 </head>
 <body>
@@ -109,6 +178,16 @@
         <div class="breadcrumb">📚 <span>学习成长系统</span></div>
     </div>
 
+    <!-- ===== 孩子选择器 ===== -->
+    <div class="card" style="padding:0.6rem 1rem;">
+        <div class="child-selector" id="childSelector">
+            <span class="label">👤 孩子:</span>
+            <div id="childTags"></div>
+            <button class="child-add-btn" onclick="addChild()">+ 添加</button>
+            <span class="hint" id="childHint">点击名字切换</span>
+        </div>
+    </div>
+
     <!-- ===== 欢迎区域 ===== -->
     <div class="card" style="background: var(--primary-light); border-left: 4px solid var(--primary);">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap;">
@@ -116,7 +195,6 @@
                 <h2 id="greeting">👋 欢迎回来，小勇士！</h2>
                 <p id="subGreeting" style="margin:0.2rem 0 0;">今天也要加油哦！每完成一项任务，你离「自律小英雄」就更近一步 🦸</p>
             </div>
-            <button onclick="editName()" style="background:none;border:none;color:var(--primary);cursor:pointer;font-size:0.85rem;padding:0.2rem 0.5rem;">✏️ 改名</button>
         </div>
     </div>
 
@@ -170,7 +248,7 @@
         </ul>
     </div>
 
-    <!-- ===== 数据管理（备份/恢复） ===== -->
+    <!-- ===== 数据管理 ===== -->
     <div class="card">
         <h2>💾 数据管理</h2>
         <p style="font-size:0.85rem;color:var(--gray-500);">定期备份数据，防止意外丢失</p>
@@ -192,50 +270,165 @@
 
 <script>
     // ============================================================
-    //  数据管理
+    //  多孩子数据管理
     // ============================================================
 
+    function getChildren() {
+        return JSON.parse(localStorage.getItem('studyChildren') || '[]');
+    }
+
+    function saveChildren(children) {
+        localStorage.setItem('studyChildren', JSON.stringify(children));
+    }
+
+    function getCurrentChildId() {
+        return localStorage.getItem('studyCurrentChild') || null;
+    }
+
+    function setCurrentChildId(id) {
+        localStorage.setItem('studyCurrentChild', id);
+    }
+
+    function getCurrentChild() {
+        const children = getChildren();
+        const id = getCurrentChildId();
+        if (!id) return null;
+        return children.find(c => c.id === id) || null;
+    }
+
+    function getChildData(childId) {
+        const key = 'studyData_' + childId;
+        const raw = localStorage.getItem(key);
+        if (raw) {
+            try { return JSON.parse(raw); } catch(e) {}
+        }
+        return { records: [], streak: { days: 0, lastDate: null }, tasks: [] };
+    }
+
+    function saveChildData(childId, data) {
+        localStorage.setItem('studyData_' + childId, JSON.stringify(data));
+    }
+
+    function addChild(name) {
+        const children = getChildren();
+        const id = Date.now().toString(36);
+        children.push({ id, name, createdAt: new Date().toISOString() });
+        saveChildren(children);
+        setCurrentChildId(id);
+        // 初始化空数据
+        saveChildData(id, { records: [], streak: { days: 0, lastDate: null }, tasks: [] });
+        renderChildSelector();
+        refreshAll();
+        return id;
+    }
+
+    function removeChild(id) {
+        if (!confirm('确定要删除这个孩子的所有学习数据吗？此操作不可恢复！')) return;
+        let children = getChildren();
+        children = children.filter(c => c.id !== id);
+        saveChildren(children);
+        localStorage.removeItem('studyData_' + id);
+        if (getCurrentChildId() === id) {
+            if (children.length > 0) {
+                setCurrentChildId(children[0].id);
+            } else {
+                setCurrentChildId(null);
+            }
+        }
+        renderChildSelector();
+        refreshAll();
+    }
+
+    function switchChild(id) {
+        if (id === getCurrentChildId()) return;
+        setCurrentChildId(id);
+        renderChildSelector();
+        refreshAll();
+    }
+
+    // ============================================================
+    //  当前孩子数据读写
+    // ============================================================
+
+    function getCurrentData() {
+        const child = getCurrentChild();
+        if (!child) return { records: [], streak: { days: 0, lastDate: null }, tasks: [] };
+        return getChildData(child.id);
+    }
+
+    function saveCurrentData(data) {
+        const child = getCurrentChild();
+        if (!child) return;
+        saveChildData(child.id, data);
+    }
+
     function getRecords() {
-        return JSON.parse(localStorage.getItem('studyRecords') || '[]');
+        return getCurrentData().records || [];
+    }
+
+    function saveRecords(records) {
+        const data = getCurrentData();
+        data.records = records;
+        saveCurrentData(data);
     }
 
     function getStreak() {
-        return JSON.parse(localStorage.getItem('studyStreak') || '{"days":0,"lastDate":null}');
+        return getCurrentData().streak || { days: 0, lastDate: null };
+    }
+
+    function saveStreak(streak) {
+        const data = getCurrentData();
+        data.streak = streak;
+        saveCurrentData(data);
     }
 
     function getTasks() {
-        return JSON.parse(localStorage.getItem('studyTasks') || '[]');
+        return getCurrentData().tasks || [];
     }
 
     function saveTasks(tasks) {
-        localStorage.setItem('studyTasks', JSON.stringify(tasks));
+        const data = getCurrentData();
+        data.tasks = tasks;
+        saveCurrentData(data);
     }
 
     // ============================================================
-    //  孩子名字管理
+    //  孩子名字管理（兼容旧版）
     // ============================================================
 
     function getChildName() {
-        return localStorage.getItem('childName') || '小勇士';
+        const child = getCurrentChild();
+        return child ? child.name : '小勇士';
     }
 
-    function setChildName(name) {
-        localStorage.setItem('childName', name);
-        updateGreeting();
-    }
+    // ============================================================
+    //  渲染孩子选择器
+    // ============================================================
 
-    function updateGreeting() {
-        const name = getChildName();
-        document.getElementById('greeting').textContent = `👋 欢迎回来，${name}！`;
-        document.getElementById('subGreeting').textContent = `今天也要加油哦！每完成一项任务，你离「自律小英雄」就更近一步 🦸`;
-    }
+    function renderChildSelector() {
+        const container = document.getElementById('childTags');
+        const children = getChildren();
+        const currentId = getCurrentChildId();
 
-    function editName() {
-        const current = getChildName();
-        const newName = prompt('请输入孩子的名字：', current);
-        if (newName && newName.trim()) {
-            setChildName(newName.trim());
+        container.innerHTML = '';
+
+        if (children.length === 0) {
+            container.innerHTML = '<span style="color:var(--gray-400);font-size:0.85rem;">请添加孩子</span>';
+            return;
         }
+
+        children.forEach(child => {
+            const tag = document.createElement('span');
+            tag.className = 'child-tag' + (child.id === currentId ? ' active' : '');
+            tag.innerHTML = `${child.name} ${child.id === currentId ? '✓' : ''}`;
+            tag.onclick = () => switchChild(child.id);
+            // 右键或长按删除（仅当有多个孩子时）
+            if (children.length > 1) {
+                tag.title = '点击切换 · 双击删除';
+                tag.ondblclick = () => removeChild(child.id);
+            }
+            container.appendChild(tag);
+        });
     }
 
     // ============================================================
@@ -335,7 +528,7 @@
     // ============================================================
 
     function updateStreak(today) {
-        const streak = JSON.parse(localStorage.getItem('studyStreak') || '{"days":0,"lastDate":null}');
+        const streak = getStreak();
         const lastDate = streak.lastDate;
         if (lastDate === today) return;
         const yesterday = new Date();
@@ -347,7 +540,7 @@
             streak.days = 1;
         }
         streak.lastDate = today;
-        localStorage.setItem('studyStreak', JSON.stringify(streak));
+        saveStreak(streak);
     }
 
     // ============================================================
@@ -444,20 +637,39 @@
     }
 
     // ============================================================
-    //  数据备份与恢复
+    //  刷新全部
+    // ============================================================
+
+    function refreshAll() {
+        // 更新问候语
+        const name = getChildName();
+        document.getElementById('greeting').textContent = `👋 欢迎回来，${name}！`;
+        document.getElementById('subGreeting').textContent = `今天也要加油哦！每完成一项任务，你离「自律小英雄」就更近一步 🦸`;
+        // 更新统计和任务
+        renderTasks();
+        updateStats();
+    }
+
+    // ============================================================
+    //  数据备份与恢复（兼容多孩子）
     // ============================================================
 
     function exportData() {
+        const children = getChildren();
+        const allData = {};
+        children.forEach(child => {
+            allData[child.id] = getChildData(child.id);
+        });
+
         const data = {
-            version: '1.0',
+            version: '2.0',
             exportedAt: new Date().toISOString(),
-            childName: localStorage.getItem('childName') || '',
-            studyRecords: JSON.parse(localStorage.getItem('studyRecords') || '[]'),
-            studyStreak: JSON.parse(localStorage.getItem('studyStreak') || '{"days":0,"lastDate":null}'),
-            studyTasks: JSON.parse(localStorage.getItem('studyTasks') || '[]')
+            children: children,
+            currentChildId: getCurrentChildId(),
+            data: allData
         };
 
-        const name = data.childName || '小勇士';
+        const name = children.length > 0 ? children[0].name : '学习系统';
         const date = new Date().toISOString().slice(0, 10);
         const filename = `${name}_学习数据_${date}.json`;
 
@@ -471,7 +683,7 @@
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
 
-        alert('✅ 数据已导出！\n\n文件名: ' + filename + '\n请妥善保存此文件。');
+        alert('✅ 数据已导出！\n\n文件名: ' + filename + '\n包含 ' + children.length + ' 个孩子的数据');
     }
 
     function importData(event) {
@@ -483,7 +695,7 @@
             try {
                 const data = JSON.parse(e.target.result);
 
-                if (!data.version || !data.studyRecords) {
+                if (!data.version || !data.children || !data.data) {
                     alert('❌ 无效的备份文件，请检查文件格式。');
                     return;
                 }
@@ -491,19 +703,26 @@
                 const confirmMsg = `⚠️ 恢复数据将覆盖当前所有数据！
 
 📊 备份信息：
-👤 孩子: ${data.childName || '未命名'}
-📝 记录数: ${data.studyRecords.length} 条
-📋 任务数: ${data.studyTasks ? data.studyTasks.length : 0} 条
+👶 孩子数: ${data.children.length} 个
 📅 导出时间: ${data.exportedAt || '未知'}
+当前孩子: ${data.children.map(c => c.name).join('、')}
 
 确定要恢复吗？`;
 
                 if (!confirm(confirmMsg)) return;
 
-                if (data.childName) localStorage.setItem('childName', data.childName);
-                localStorage.setItem('studyRecords', JSON.stringify(data.studyRecords || []));
-                localStorage.setItem('studyStreak', JSON.stringify(data.studyStreak || '{"days":0,"lastDate":null}'));
-                if (data.studyTasks) localStorage.setItem('studyTasks', JSON.stringify(data.studyTasks));
+                // 恢复数据
+                saveChildren(data.children);
+                data.children.forEach(child => {
+                    if (data.data[child.id]) {
+                        saveChildData(child.id, data.data[child.id]);
+                    }
+                });
+                if (data.currentChildId) {
+                    setCurrentChildId(data.currentChildId);
+                } else if (data.children.length > 0) {
+                    setCurrentChildId(data.children[0].id);
+                }
 
                 alert('✅ 数据恢复成功！页面即将刷新。');
                 location.reload();
@@ -521,9 +740,19 @@
     // ============================================================
 
     document.addEventListener('DOMContentLoaded', function() {
-        updateGreeting();
-        renderTasks();
-        updateStats();
+        // 如果没有孩子，创建一个默认的
+        const children = getChildren();
+        if (children.length === 0) {
+            addChild('小勇士');
+        } else {
+            // 确保当前孩子有效
+            const currentId = getCurrentChildId();
+            if (!currentId || !children.find(c => c.id === currentId)) {
+                setCurrentChildId(children[0].id);
+            }
+        }
+        renderChildSelector();
+        refreshAll();
     });
 </script>
 </body>
