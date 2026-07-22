@@ -6,6 +6,8 @@
     <title>拍照上传 — 学习成长系统</title>
     <link rel="stylesheet" href="../style.css" />
     <link rel="stylesheet" href="study-style.css" />
+    <!-- 引入 Tesseract.js OCR 库 -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         .upload-area {
             border: 2px dashed var(--gray-300);
@@ -141,6 +143,12 @@
         .error-preview-tag .num {
             font-weight: 600;
         }
+        .error-preview-tag .content {
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
 
         .form-group {
             margin-top: 1.2rem;
@@ -236,6 +244,17 @@
         .btn-danger:hover {
             background: #dc2626;
         }
+        .btn-ocr {
+            background: #8b5cf6;
+            color: white;
+        }
+        .btn-ocr:hover {
+            background: #7c3aed;
+        }
+        .btn-ocr:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
 
         .action-row {
             display: flex;
@@ -311,6 +330,156 @@
             color: var(--primary);
         }
 
+        /* ===== OCR 识别状态 ===== */
+        .ocr-status {
+            display: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .ocr-status.show {
+            display: flex;
+        }
+        .ocr-status.loading {
+            background: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
+        }
+        .ocr-status.success {
+            background: #f0fdf4;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
+        }
+        .ocr-status.error {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+        .ocr-status .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #bae6fd;
+            border-top: 2px solid #0369a1;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .auto-detect-hint {
+            font-size: 0.8rem;
+            color: var(--gray-400);
+            margin-top: 0.2rem;
+        }
+
+        /* ===== 错题输入弹窗（识别结果确认） ===== */
+        .error-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+        .error-modal.show {
+            display: flex;
+        }
+        .error-modal .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .error-modal .modal-content h3 {
+            margin-top: 0;
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .error-modal .modal-content .hint {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+            margin-bottom: 0.8rem;
+        }
+        .error-modal .modal-content .recognized-text {
+            background: var(--gray-50);
+            border: 1.5px solid var(--gray-200);
+            border-radius: 10px;
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            min-height: 44px;
+            word-break: break-all;
+        }
+        .error-modal .modal-content .recognized-text .label {
+            font-size: 0.75rem;
+            color: var(--gray-400);
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+        .error-modal .modal-content .recognized-text .text {
+            font-weight: 500;
+        }
+        .error-modal .modal-content input {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            border: 1.5px solid var(--gray-300);
+            border-radius: 10px;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .error-modal .modal-content input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .error-modal .modal-content .modal-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+        .error-modal .modal-content .modal-actions button {
+            padding: 0.4rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .error-modal .modal-content .modal-actions .confirm {
+            background: var(--primary);
+            color: white;
+        }
+        .error-modal .modal-content .modal-actions .confirm:hover {
+            background: #1d4ed8;
+        }
+        .error-modal .modal-content .modal-actions .cancel {
+            background: var(--gray-200);
+            color: var(--gray-700);
+        }
+        .error-modal .modal-content .modal-actions .cancel:hover {
+            background: var(--gray-300);
+        }
+        .error-modal .modal-content .modal-actions .retry {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+        .error-modal .modal-content .modal-actions .retry:hover {
+            background: #bae6fd;
+        }
+
         @media (max-width: 640px) {
             .top-nav {
                 flex-direction: column;
@@ -344,6 +513,12 @@
                 width: 90%;
                 justify-content: center;
             }
+            .error-modal .modal-content {
+                padding: 1rem;
+            }
+            .error-preview-tag .content {
+                max-width: 80px;
+            }
         }
     </style>
 </head>
@@ -355,6 +530,24 @@
     <div class="success-toast" id="successToast">
         <span class="icon">🎉</span>
         <span>提交成功！继续加油哦 💪</span>
+    </div>
+
+    <!-- ===== 错题输入弹窗（含OCR识别结果） ===== -->
+    <div class="error-modal" id="errorModal">
+        <div class="modal-content">
+            <h3>📝 错题内容</h3>
+            <p class="hint" id="modalHint">点击确认使用识别结果，或手动修改后确认</p>
+            <div class="recognized-text" id="recognizedText">
+                <span class="label">🤖 识别结果</span>
+                <span class="text" id="recognizedContent">—</span>
+            </div>
+            <input type="text" id="errorContentInput" placeholder="或手动输入错题内容，如：3+2=4" />
+            <div class="modal-actions">
+                <button class="cancel" onclick="closeErrorModal()">取消</button>
+                <button class="retry" id="retryOcrBtn" onclick="retryOcr()">🔄 重新识别</button>
+                <button class="confirm" onclick="confirmError()">✅ 确认添加</button>
+            </div>
+        </div>
     </div>
 
     <!-- ===== 顶部导航 ===== -->
@@ -371,7 +564,7 @@
     <!-- ===== 主卡片 ===== -->
     <div class="card">
         <h2>📸 拍照上传作业</h2>
-        <p>拍下孩子的作业，点击照片标记错题位置，系统会自动记录 📈</p>
+        <p>拍下孩子的作业，<strong>点击照片标记错题位置</strong>，系统会自动识别错题内容 📈</p>
 
         <!-- 上传区域 -->
         <div class="upload-area" id="uploadArea">
@@ -385,6 +578,12 @@
         <div class="photo-container" id="photoContainer">
             <img id="preview" alt="作业预览" />
             <div class="click-overlay" id="clickOverlay"></div>
+        </div>
+
+        <!-- OCR 状态 -->
+        <div class="ocr-status" id="ocrStatus">
+            <span class="spinner" id="ocrSpinner"></span>
+            <span id="ocrStatusText">正在识别图片中的文字...</span>
         </div>
 
         <!-- 标记提示 -->
@@ -431,6 +630,10 @@
             </div>
         </div>
 
+        <div class="auto-detect-hint">
+            💡 点击照片上的错题位置，系统会自动识别该位置的文字内容
+        </div>
+
         <!-- 提交按钮 -->
         <div style="margin-top:1rem;">
             <button class="btn btn-success" onclick="submitTask()" style="width:100%;">📤 提交并记录</button>
@@ -454,10 +657,10 @@
         <h2>💡 使用小贴士</h2>
         <ul style="color:var(--gray-600);font-size:0.9rem;line-height:1.8;padding-left:1.2rem;margin:0;">
             <li>📸 拍照时尽量光线充足，字迹清晰</li>
-            <li>👆 上传照片后，<strong>点击照片上做错的位置</strong>，系统自动标记</li>
-            <li>🔴 红色标记点代表错题，悬停可删除</li>
+            <li>👆 上传照片后，<strong>点击照片上做错的位置</strong>，系统自动识别文字</li>
+            <li>🤖 识别结果自动填入，家长只需点击确认即可</li>
+            <li>✏️ 如果识别不准确，可以手动修改再确认</li>
             <li>📚 选择科目后，错题本可按科目分类查看</li>
-            <li>📈 提交后数据自动保存，错题自动汇总到错题本</li>
         </ul>
     </div>
 
@@ -469,7 +672,7 @@
 
 <script>
     // ============================================================
-    //  多孩子数据管理（复制自 index.html）
+    //  多孩子数据管理
     // ============================================================
 
     function getChildren() {
@@ -512,36 +715,127 @@
         saveChildData(child.id, data);
     }
 
-    function getRecords() {
-        return getCurrentData().records || [];
-    }
-
-    function saveRecords(records) {
-        const data = getCurrentData();
-        data.records = records;
-        saveCurrentData(data);
-    }
-
-    function getStreak() {
-        return getCurrentData().streak || { days: 0, lastDate: null };
-    }
-
-    function saveStreak(streak) {
-        const data = getCurrentData();
-        data.streak = streak;
-        saveCurrentData(data);
-    }
-
     function getChildName() {
         const child = getCurrentChild();
         return child ? child.name : '小勇士';
     }
 
     // ============================================================
-    //  标记点管理
+    //  OCR 文字识别
+    // ============================================================
+
+    let currentOcrText = '';
+    let currentClickCoords = null;
+    let isOcrRunning = false;
+
+    async function recognizeTextFromImage(imageDataUrl, clickX, clickY) {
+        if (isOcrRunning) return;
+        isOcrRunning = true;
+
+        const statusEl = document.getElementById('ocrStatus');
+        const statusText = document.getElementById('ocrStatusText');
+        const spinner = document.getElementById('ocrSpinner');
+
+        statusEl.className = 'ocr-status show loading';
+        statusText.textContent = '🤖 正在识别错题文字...';
+
+        try {
+            // 使用 Tesseract.js 识别
+            const result = await Tesseract.recognize(imageDataUrl, 'chi_sim+eng', {
+                logger: function(m) {
+                    if (m.status === 'recognizing text') {
+                        statusText.textContent = `🤖 识别中... ${Math.round(m.progress * 100)}%`;
+                    }
+                }
+            });
+
+            const recognized = result.data.text.trim();
+
+            if (recognized && recognized.length > 0) {
+                // 提取点击位置附近的文字（简化：取整个识别结果的前几行）
+                const lines = recognized.split('\n').filter(line => line.trim().length > 0);
+                // 取最可能的那一行（根据点击位置无法精确定位，取第一行或包含数字的行）
+                let bestMatch = lines[0] || recognized;
+
+                // 如果有多行，尝试找包含数字或等号的行（数学题特征）
+                const mathLine = lines.find(line => /[\d=+\-×÷*]/.test(line));
+                if (mathLine) {
+                    bestMatch = mathLine;
+                }
+
+                // 限制长度
+                if (bestMatch.length > 100) {
+                    bestMatch = bestMatch.substring(0, 100) + '...';
+                }
+
+                currentOcrText = bestMatch;
+                statusEl.className = 'ocr-status show success';
+                statusText.textContent = `✅ 识别成功：${bestMatch}`;
+
+                // 显示在弹窗中
+                document.getElementById('recognizedContent').textContent = bestMatch;
+                document.getElementById('errorContentInput').value = bestMatch;
+
+                // 自动打开弹窗
+                currentClickCoords = { x: clickX, y: clickY };
+                document.getElementById('errorModal').classList.add('show');
+                document.getElementById('modalHint').textContent = '点击确认使用识别结果，或手动修改后确认';
+
+            } else {
+                currentOcrText = '';
+                statusEl.className = 'ocr-status show error';
+                statusText.textContent = '❌ 未识别到文字，请手动输入';
+
+                // 仍然打开弹窗，让用户手动输入
+                document.getElementById('recognizedContent').textContent = '未识别到内容';
+                document.getElementById('errorContentInput').value = '';
+                currentClickCoords = { x: clickX, y: clickY };
+                document.getElementById('errorModal').classList.add('show');
+                document.getElementById('modalHint').textContent = '系统未能识别到文字，请手动输入错题内容';
+            }
+
+        } catch (err) {
+            console.error('OCR Error:', err);
+            statusEl.className = 'ocr-status show error';
+            statusText.textContent = '❌ 识别失败，请手动输入';
+
+            // 打开弹窗让用户手动输入
+            document.getElementById('recognizedContent').textContent = '识别失败';
+            document.getElementById('errorContentInput').value = '';
+            currentClickCoords = { x: clickX, y: clickY };
+            document.getElementById('errorModal').classList.add('show');
+            document.getElementById('modalHint').textContent = '识别失败，请手动输入错题内容';
+        }
+
+        isOcrRunning = false;
+
+        // 3秒后自动隐藏状态
+        setTimeout(() => {
+            if (statusEl.className.includes('success') || statusEl.className.includes('error')) {
+                statusEl.className = 'ocr-status show';
+                setTimeout(() => {
+                    statusEl.classList.remove('show');
+                }, 2000);
+            }
+        }, 3000);
+    }
+
+    function retryOcr() {
+        // 如果有保存的图片和坐标，重新识别
+        const preview = document.getElementById('preview');
+        if (preview.src && currentClickCoords) {
+            recognizeTextFromImage(preview.src, currentClickCoords.x, currentClickCoords.y);
+        } else {
+            alert('请先上传照片并点击标记位置');
+        }
+    }
+
+    // ============================================================
+    //  标记点管理（支持 OCR 识别）
     // ============================================================
 
     let markers = [];
+    let pendingMarkerCoords = null;
 
     function getImageCoords(e) {
         const container = document.getElementById('photoContainer');
@@ -555,11 +849,60 @@
 
     function addMarker(e) {
         const coords = getImageCoords(e);
+        pendingMarkerCoords = coords;
+
+        // 获取当前图片进行OCR识别
+        const preview = document.getElementById('preview');
+        if (preview.src && preview.src.startsWith('data:image')) {
+            // 显示识别状态
+            recognizeTextFromImage(preview.src, coords.x, coords.y);
+        } else {
+            // 没有图片，直接弹出输入框
+            document.getElementById('recognizedContent').textContent = '请上传照片';
+            document.getElementById('errorContentInput').value = '';
+            document.getElementById('errorModal').classList.add('show');
+            document.getElementById('modalHint').textContent = '请手动输入错题内容';
+        }
+    }
+
+    function confirmError() {
+        const input = document.getElementById('errorContentInput');
+        const content = input.value.trim();
+        if (!content) {
+            alert('请输入错题内容！');
+            return;
+        }
+
+        // 如果是从OCR识别来的，使用点击坐标；否则使用pending坐标
+        const coords = currentClickCoords || pendingMarkerCoords;
         const id = markers.length + 1;
-        markers.push({ x: coords.x, y: coords.y, id: id });
+        markers.push({
+            x: coords ? coords.x : 0.5,
+            y: coords ? coords.y : 0.5,
+            id: id,
+            content: content
+        });
+
+        currentClickCoords = null;
+        pendingMarkerCoords = null;
+        closeErrorModal();
         renderMarkers();
         updateErrorPreview();
     }
+
+    function closeErrorModal() {
+        document.getElementById('errorModal').classList.remove('show');
+        currentClickCoords = null;
+        pendingMarkerCoords = null;
+        // 隐藏OCR状态
+        document.getElementById('ocrStatus').classList.remove('show');
+    }
+
+    document.getElementById('errorContentInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            confirmError();
+        }
+    });
 
     function removeMarker(id) {
         markers = markers.filter(m => m.id !== id);
@@ -608,6 +951,9 @@
                 removeMarker(m.id);
             };
             el.appendChild(del);
+
+            el.title = m.content || `第${m.id}处错题`;
+
             container.appendChild(el);
         });
     }
@@ -620,7 +966,8 @@
         }
         list.innerHTML = markers.map(m =>
             `<span class="error-preview-tag">
-                <span class="num">#${m.id}</span> 待复习
+                <span class="num">#${m.id}</span>
+                <span class="content">${m.content || '待复习'}</span>
                 <span style="cursor:pointer;opacity:0.6;margin-left:0.2rem;" onclick="removeMarker(${m.id})">✕</span>
             </span>`
         ).join('');
@@ -703,7 +1050,7 @@
         const accuracy = Math.round((correct / total) * 100);
         const today = new Date().toISOString().slice(0, 10);
 
-        const errors = markers.map((m, idx) => `第${idx+1}处 待复习`);
+        const errors = markers.map(m => m.content || `第${m.id}处 待复习`);
 
         const record = {
             date: today,
@@ -717,12 +1064,10 @@
             timestamp: Date.now()
         };
 
-        // 获取当前孩子的数据
         const data = getCurrentData();
         data.records.push(record);
         saveCurrentData(data);
 
-        // 更新打卡
         updateStreak(today);
 
         markers = [];
@@ -747,6 +1092,16 @@
         }
         streak.lastDate = today;
         saveStreak(streak);
+    }
+
+    function getStreak() {
+        return getCurrentData().streak || { days: 0, lastDate: null };
+    }
+
+    function saveStreak(streak) {
+        const data = getCurrentData();
+        data.streak = streak;
+        saveCurrentData(data);
     }
 
     function showResult(accuracy, correct, total) {
@@ -779,6 +1134,7 @@
         updateErrorPreview();
         document.getElementById('markerHint').style.display = 'none';
         document.getElementById('errorPreviewArea').style.display = 'none';
+        document.getElementById('ocrStatus').classList.remove('show');
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -788,6 +1144,9 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('childNameDisplay').textContent = getChildName();
+        document.getElementById('errorModal').addEventListener('click', function(e) {
+            if (e.target === this) closeErrorModal();
+        });
     });
 </script>
 </body>
