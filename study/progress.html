@@ -358,6 +358,23 @@
             flex-wrap: wrap;
         }
 
+        .child-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: flex-end;
+            font-size: 0.85rem;
+            color: var(--gray-500);
+            margin-bottom: 0.3rem;
+            padding: 0.2rem 0.5rem;
+            background: var(--gray-50);
+            border-radius: 8px;
+        }
+        .child-indicator .name {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
         @media (max-width: 640px) {
             .stats-row {
                 grid-template-columns: repeat(2, 1fr);
@@ -391,8 +408,9 @@
         <div class="breadcrumb">📊 <span>成长曲线</span></div>
     </div>
 
-    <div style="text-align:right; font-size:0.85rem; color:var(--gray-400); margin-bottom:-0.5rem;">
-        👤 <span id="childNameDisplay">小勇士</span>
+    <!-- ===== 当前孩子指示 ===== -->
+    <div class="child-indicator">
+        👤 当前: <span class="name" id="childNameDisplay">小勇士</span>
     </div>
 
     <div class="card">
@@ -463,7 +481,7 @@
         <div class="badge-grid" id="badgeGrid"><span style="color:var(--gray-400);font-size:0.9rem;">加载中...</span></div>
     </div>
 
-    <!-- ===== 数据管理（备份/恢复） ===== -->
+    <!-- ===== 数据管理 ===== -->
     <div class="card">
         <h2>💾 数据管理</h2>
         <p style="font-size:0.85rem;color:var(--gray-500);">定期备份数据，防止意外丢失</p>
@@ -501,23 +519,72 @@
 
 <script>
     // ============================================================
-    //  数据读取
+    //  多孩子数据管理
     // ============================================================
 
+    function getChildren() {
+        return JSON.parse(localStorage.getItem('studyChildren') || '[]');
+    }
+
+    function getCurrentChildId() {
+        return localStorage.getItem('studyCurrentChild') || null;
+    }
+
+    function getCurrentChild() {
+        const children = getChildren();
+        const id = getCurrentChildId();
+        if (!id) return null;
+        return children.find(c => c.id === id) || null;
+    }
+
+    function getChildData(childId) {
+        const key = 'studyData_' + childId;
+        const raw = localStorage.getItem(key);
+        if (raw) {
+            try { return JSON.parse(raw); } catch(e) {}
+        }
+        return { records: [], streak: { days: 0, lastDate: null }, tasks: [] };
+    }
+
+    function saveChildData(childId, data) {
+        localStorage.setItem('studyData_' + childId, JSON.stringify(data));
+    }
+
+    function getCurrentData() {
+        const child = getCurrentChild();
+        if (!child) return { records: [], streak: { days: 0, lastDate: null }, tasks: [] };
+        return getChildData(child.id);
+    }
+
+    function saveCurrentData(data) {
+        const child = getCurrentChild();
+        if (!child) return;
+        saveChildData(child.id, data);
+    }
+
     function getRecords() {
-        return JSON.parse(localStorage.getItem('studyRecords') || '[]');
+        return getCurrentData().records || [];
     }
 
     function saveRecords(records) {
-        localStorage.setItem('studyRecords', JSON.stringify(records));
+        const data = getCurrentData();
+        data.records = records;
+        saveCurrentData(data);
     }
 
     function getStreak() {
-        return JSON.parse(localStorage.getItem('studyStreak') || '{"days":0,"lastDate":null}');
+        return getCurrentData().streak || { days: 0, lastDate: null };
+    }
+
+    function saveStreak(streak) {
+        const data = getCurrentData();
+        data.streak = streak;
+        saveCurrentData(data);
     }
 
     function getChildName() {
-        return localStorage.getItem('childName') || '小勇士';
+        const child = getCurrentChild();
+        return child ? child.name : '小勇士';
     }
 
     // ============================================================
@@ -858,20 +925,25 @@
     }
 
     // ============================================================
-    //  数据备份与恢复
+    //  数据备份与恢复（多孩子兼容）
     // ============================================================
 
     function exportData() {
+        const children = getChildren();
+        const allData = {};
+        children.forEach(child => {
+            allData[child.id] = getChildData(child.id);
+        });
+
         const data = {
-            version: '1.0',
+            version: '2.0',
             exportedAt: new Date().toISOString(),
-            childName: localStorage.getItem('childName') || '',
-            studyRecords: JSON.parse(localStorage.getItem('studyRecords') || '[]'),
-            studyStreak: JSON.parse(localStorage.getItem('studyStreak') || '{"days":0,"lastDate":null}'),
-            studyTasks: JSON.parse(localStorage.getItem('studyTasks') || '[]')
+            children: children,
+            currentChildId: getCurrentChildId(),
+            data: allData
         };
 
-        const name = data.childName || '小勇士';
+        const name = children.length > 0 ? children[0].name : '学习系统';
         const date = new Date().toISOString().slice(0, 10);
         const filename = `${name}_学习数据_${date}.json`;
 
@@ -885,7 +957,7 @@
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
 
-        alert('✅ 数据已导出！\n\n文件名: ' + filename + '\n请妥善保存此文件。');
+        alert('✅ 数据已导出！\n\n文件名: ' + filename + '\n包含 ' + children.length + ' 个孩子的数据');
     }
 
     function importData(event) {
@@ -897,7 +969,7 @@
             try {
                 const data = JSON.parse(e.target.result);
 
-                if (!data.version || !data.studyRecords) {
+                if (!data.version || !data.children || !data.data) {
                     alert('❌ 无效的备份文件，请检查文件格式。');
                     return;
                 }
@@ -905,19 +977,25 @@
                 const confirmMsg = `⚠️ 恢复数据将覆盖当前所有数据！
 
 📊 备份信息：
-👤 孩子: ${data.childName || '未命名'}
-📝 记录数: ${data.studyRecords.length} 条
-📋 任务数: ${data.studyTasks ? data.studyTasks.length : 0} 条
+👶 孩子数: ${data.children.length} 个
 📅 导出时间: ${data.exportedAt || '未知'}
+当前孩子: ${data.children.map(c => c.name).join('、')}
 
 确定要恢复吗？`;
 
                 if (!confirm(confirmMsg)) return;
 
-                if (data.childName) localStorage.setItem('childName', data.childName);
-                localStorage.setItem('studyRecords', JSON.stringify(data.studyRecords || []));
-                localStorage.setItem('studyStreak', JSON.stringify(data.studyStreak || '{"days":0,"lastDate":null}'));
-                if (data.studyTasks) localStorage.setItem('studyTasks', JSON.stringify(data.studyTasks));
+                saveChildren(data.children);
+                data.children.forEach(child => {
+                    if (data.data[child.id]) {
+                        saveChildData(child.id, data.data[child.id]);
+                    }
+                });
+                if (data.currentChildId) {
+                    setCurrentChildId(data.currentChildId);
+                } else if (data.children.length > 0) {
+                    setCurrentChildId(data.children[0].id);
+                }
 
                 alert('✅ 数据恢复成功！页面即将刷新。');
                 location.reload();
