@@ -41,52 +41,14 @@
             display: block;
         }
 
+        /* ===== 错题本 - 可点击展开 ===== */
         .error-item {
             background: #fef2f2;
             border-radius: 10px;
-            padding: 0.8rem 1rem;
             margin-bottom: 0.6rem;
             border-left: 3px solid #ef4444;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.5rem;
+            overflow: hidden;
         }
-        .error-item .error-info {
-            flex: 1;
-            min-width: 150px;
-        }
-        .error-item .error-date {
-            font-size: 0.75rem;
-            color: var(--gray-400);
-        }
-        .error-item .error-task {
-            font-weight: 500;
-            font-size: 0.9rem;
-            color: var(--gray-700);
-        }
-        .error-item .error-text {
-            font-size: 0.9rem;
-            color: var(--gray-600);
-            margin-top: 0.2rem;
-        }
-        .error-item .error-actions {
-            display: flex;
-            gap: 0.4rem;
-            align-items: center;
-            flex-shrink: 0;
-        }
-        .error-item .error-subject {
-            display: inline-block;
-            font-size: 0.7rem;
-            background: var(--gray-200);
-            padding: 0.1rem 0.5rem;
-            border-radius: 10px;
-            color: var(--gray-600);
-            margin-right: 0.3rem;
-        }
-
         .error-item.reviewed {
             background: #f0fdf4;
             border-left-color: #10b981;
@@ -97,10 +59,104 @@
             color: var(--gray-400);
         }
 
-        .error-empty {
+        .error-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            user-select: none;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .error-header:hover {
+            background: rgba(0,0,0,0.03);
+        }
+        .error-header .error-info {
+            flex: 1;
+            min-width: 150px;
+        }
+        .error-header .error-date {
+            font-size: 0.75rem;
             color: var(--gray-400);
-            text-align: center;
-            padding: 1.5rem 0;
+        }
+        .error-header .error-task {
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--gray-700);
+        }
+        .error-header .error-text-preview {
+            font-size: 0.9rem;
+            color: var(--gray-600);
+            margin-top: 0.1rem;
+        }
+        .error-header .error-subject {
+            display: inline-block;
+            font-size: 0.7rem;
+            background: var(--gray-200);
+            padding: 0.1rem 0.5rem;
+            border-radius: 10px;
+            color: var(--gray-600);
+            margin-right: 0.3rem;
+        }
+        .error-header .error-actions {
+            display: flex;
+            gap: 0.4rem;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .error-header .error-status {
+            font-size: 0.75rem;
+            color: var(--gray-400);
+            white-space: nowrap;
+        }
+        .error-header .error-toggle {
+            color: var(--gray-400);
+            font-size: 0.8rem;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+        .error-header .error-toggle.open {
+            transform: rotate(180deg);
+        }
+
+        /* ===== 错题详情（展开内容） ===== */
+        .error-detail {
+            display: none;
+            padding: 0 1rem 1rem 1rem;
+            border-top: 1px solid #f1f5f9;
+            margin-top: 0.3rem;
+        }
+        .error-detail.open {
+            display: block;
+        }
+        .error-detail .detail-row {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.3rem 0;
+            font-size: 0.9rem;
+            color: var(--gray-600);
+        }
+        .error-detail .detail-row .label {
+            font-weight: 500;
+            color: var(--gray-500);
+            min-width: 60px;
+        }
+        .error-detail .detail-row .value {
+            flex: 1;
+        }
+        .error-detail .detail-row .value .error-content {
+            background: #f8fafc;
+            padding: 0.5rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--gray-700);
+            border: 1px solid var(--gray-200);
+            margin-top: 0.2rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+            min-height: 40px;
+            font-family: inherit;
         }
 
         .btn-sm {
@@ -138,6 +194,12 @@
         }
         .btn-export:hover {
             background: var(--gray-300);
+        }
+
+        .error-empty {
+            color: var(--gray-400);
+            text-align: center;
+            padding: 1.5rem 0;
         }
 
         .review-stats {
@@ -386,12 +448,13 @@
             .tab-bar {
                 gap: 0.2rem;
             }
-            .error-item {
+            .error-header {
                 flex-direction: column;
                 align-items: stretch;
             }
-            .error-item .error-actions {
+            .error-header .error-actions {
                 justify-content: flex-end;
+                margin-top: 0.3rem;
             }
             .export-modal .modal-content {
                 padding: 1rem;
@@ -408,7 +471,6 @@
         <div class="breadcrumb">📊 <span>成长曲线</span></div>
     </div>
 
-    <!-- ===== 当前孩子指示 ===== -->
     <div class="child-indicator">
         👤 当前: <span class="name" id="childNameDisplay">小勇士</span>
     </div>
@@ -452,7 +514,7 @@
             <span>⏳ 待复习: <span class="num-pending" id="pendingCount">0</span></span>
             <span>✅ 已掌握: <span class="num-done" id="doneCount">0</span></span>
         </div>
-        <p style="font-size:0.9rem;color:var(--gray-500);">每次作业中标记的错题都会汇总在这里</p>
+        <p style="font-size:0.9rem;color:var(--gray-500);">每次作业中标记的错题都会汇总在这里，<strong>点击错题可查看详情</strong></p>
 
         <div class="filter-row">
             <span class="filter-label">📚 科目:</span>
@@ -481,7 +543,6 @@
         <div class="badge-grid" id="badgeGrid"><span style="color:var(--gray-400);font-size:0.9rem;">加载中...</span></div>
     </div>
 
-    <!-- ===== 数据管理 ===== -->
     <div class="card">
         <h2>💾 数据管理</h2>
         <p style="font-size:0.85rem;color:var(--gray-500);">定期备份数据，防止意外丢失</p>
@@ -693,7 +754,7 @@
     }
 
     // ============================================================
-    //  错题本
+    //  错题本（可点击展开）
     // ============================================================
 
     function getErrors() {
@@ -709,6 +770,7 @@
                             subject: r.subject || '其他',
                             text: err,
                             reviewed: false,
+                            expanded: false,
                             recordIndex: records.indexOf(r),
                             errorIndex: r.errors.indexOf(err)
                         });
@@ -719,6 +781,7 @@
                             subject: r.subject || '其他',
                             text: err.text || '待复习',
                             reviewed: err.reviewed || false,
+                            expanded: false,
                             recordIndex: records.indexOf(r),
                             errorIndex: r.errors.indexOf(err)
                         });
@@ -729,13 +792,50 @@
         return result;
     }
 
-    function toggleReview(errorKey) {
+    function toggleError(index) {
+        const allErrors = getErrors();
+        // 应用筛选后的列表
+        const filtered = getFilteredErrors(allErrors);
+        if (index >= 0 && index < filtered.length) {
+            // 需要找到该错题在原始列表中的位置
+            const error = filtered[index];
+            // 通过日期、任务名、文本匹配
+            const errors = getErrors();
+            const target = errors.find(e =>
+                e.date === error.date &&
+                e.taskName === error.taskName &&
+                e.text === error.text
+            );
+            if (target) {
+                target.expanded = !target.expanded;
+                // 重新渲染
+                renderErrors();
+            }
+        }
+    }
+
+    function getFilteredErrors(errors) {
+        const subjectFilter = document.getElementById('subjectFilter').value;
+        let filtered = errors;
+        if (subjectFilter !== 'all') {
+            filtered = filtered.filter(e => e.subject === subjectFilter);
+        }
+        if (currentErrorView === 'pending') {
+            filtered = filtered.filter(e => !e.reviewed);
+        } else if (currentErrorView === 'done') {
+            filtered = filtered.filter(e => e.reviewed);
+        }
+        return filtered;
+    }
+
+    function toggleReviewFromError(errorKey) {
         const records = getRecords();
         let found = false;
         records.forEach(r => {
             if (r.errors && r.errors.length > 0) {
                 r.errors.forEach((err, idx) => {
-                    if (r.date === errorKey.date && r.taskName === errorKey.taskName &&
+                    if (r.date === errorKey.date &&
+                        r.taskName === errorKey.taskName &&
                         (typeof err === 'string' ? err === errorKey.text : err.text === errorKey.text)) {
                         if (typeof err === 'string') {
                             r.errors[idx] = { text: err, reviewed: true };
@@ -754,13 +854,14 @@
         }
     }
 
-    function deleteError(errorKey) {
+    function deleteErrorFromList(errorKey) {
         if (!confirm('确定要删除这条错题吗？')) return;
         const records = getRecords();
         records.forEach(r => {
             if (r.errors && r.errors.length > 0) {
                 r.errors = r.errors.filter((err, idx) => {
-                    if (r.date === errorKey.date && r.taskName === errorKey.taskName) {
+                    if (r.date === errorKey.date &&
+                        r.taskName === errorKey.taskName) {
                         if (typeof err === 'string') return err !== errorKey.text;
                         else return err.text !== errorKey.text;
                     }
@@ -782,20 +883,13 @@
     }
 
     function renderErrors() {
-        let errors = getErrors();
+        const allErrors = getErrors();
+        const filtered = getFilteredErrors(allErrors);
         const container = document.getElementById('errorList');
 
-        const subjectFilter = document.getElementById('subjectFilter').value;
-        if (subjectFilter !== 'all') {
-            errors = errors.filter(e => e.subject === subjectFilter);
-        }
+        filtered.sort((a, b) => b.date.localeCompare(a.date));
 
-        if (currentErrorView === 'pending') errors = errors.filter(e => !e.reviewed);
-        else if (currentErrorView === 'done') errors = errors.filter(e => e.reviewed);
-
-        errors.sort((a, b) => b.date.localeCompare(a.date));
-
-        if (errors.length === 0) {
+        if (filtered.length === 0) {
             const msg = currentErrorView === 'pending' ? '🎉 所有错题都已掌握！继续保持！' :
                         currentErrorView === 'done' ? '📝 还没有已掌握的错题，开始复习吧！' :
                         '🎉 还没有错题，继续保持！';
@@ -803,7 +897,7 @@
             return;
         }
 
-        container.innerHTML = errors.map(e => {
+        container.innerHTML = filtered.map((e, idx) => {
             const reviewed = e.reviewed;
             const statusText = reviewed ? '✅ 已掌握' : '⏳ 待复习';
             const btnText = reviewed ? '🔄 重新复习' : '✅ 已复习';
@@ -813,21 +907,39 @@
 
             return `
                 <div class="error-item ${reviewed ? 'reviewed' : ''}">
-                    <div class="error-info">
-                        <div class="error-date">${e.date} · ${e.taskName}</div>
-                        <div class="error-text">
-                            <span class="error-subject">${emoji} ${e.subject}</span>
-                            ${e.text}
+                    <div class="error-header" onclick="toggleError(${idx})">
+                        <div class="error-info">
+                            <div class="error-date">${e.date} · ${e.taskName}</div>
+                            <div class="error-text-preview">
+                                <span class="error-subject">${emoji} ${e.subject}</span>
+                                <span>${e.text}</span>
+                            </div>
                         </div>
-                        <div style="font-size:0.75rem;color:var(--gray-400);margin-top:0.2rem;">${statusText}</div>
+                        <div class="error-actions">
+                            <span class="error-status">${statusText}</span>
+                            <span class="error-toggle ${e.expanded ? 'open' : ''}">▼</span>
+                        </div>
                     </div>
-                    <div class="error-actions">
-                        <button class="btn-sm ${btnClass}" onclick="toggleReview({date:'${e.date}', taskName:'${e.taskName}', text:'${e.text.replace(/'/g, "\\'")}'})">
-                            ${btnText}
-                        </button>
-                        <button class="btn-sm btn-delete-error" onclick="deleteError({date:'${e.date}', taskName:'${e.taskName}', text:'${e.text.replace(/'/g, "\\'")}'})">
-                            🗑️
-                        </button>
+                    <div class="error-detail ${e.expanded ? 'open' : ''}">
+                        <div class="detail-row">
+                            <span class="label">📌 错题内容</span>
+                            <div class="value">
+                                <div class="error-content">${e.text}</div>
+                            </div>
+                        </div>
+                        <div class="detail-row" style="border-top:1px solid var(--gray-100);padding-top:0.6rem;margin-top:0.3rem;flex-wrap:wrap;gap:0.5rem;">
+                            <span style="font-size:0.8rem;color:var(--gray-400);">📅 ${e.date}</span>
+                            <span style="font-size:0.8rem;color:var(--gray-400);">📚 ${emoji} ${e.subject}</span>
+                            <span style="font-size:0.8rem;color:${reviewed ? 'var(--success)' : 'var(--danger)'};">${statusText}</span>
+                            <div style="flex:1;text-align:right;display:flex;gap:0.4rem;justify-content:flex-end;flex-wrap:wrap;">
+                                <button class="btn-sm ${btnClass}" onclick="event.stopPropagation();toggleReviewFromError({date:'${e.date}', taskName:'${e.taskName}', text:'${e.text.replace(/'/g, "\\'")}'})">
+                                    ${btnText}
+                                </button>
+                                <button class="btn-sm btn-delete-error" onclick="event.stopPropagation();deleteErrorFromList({date:'${e.date}', taskName:'${e.taskName}', text:'${e.text.replace(/'/g, "\\'")}'})">
+                                    🗑️
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
