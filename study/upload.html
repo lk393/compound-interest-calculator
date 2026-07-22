@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../style.css" />
     <link rel="stylesheet" href="study-style.css" />
     <style>
+        /* ===== 上传区域 ===== */
         .upload-area {
             border: 2px dashed var(--gray-300);
             border-radius: 12px;
@@ -265,6 +266,36 @@
             font-size: 0.9rem;
         }
 
+        /* ===== 成功弹窗（Toast） ===== */
+        .success-toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #10b981;
+            color: white;
+            padding: 0.9rem 1.8rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            font-size: 1rem;
+            font-weight: 600;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            gap: 0.8rem;
+            animation: slideDown 0.4s ease;
+        }
+        .success-toast.show {
+            display: flex;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        .success-toast .icon {
+            font-size: 1.5rem;
+        }
+
         @media (max-width: 640px) {
             .top-nav {
                 flex-direction: column;
@@ -291,6 +322,13 @@
                 top: -5px;
                 right: -5px;
             }
+            .success-toast {
+                font-size: 0.85rem;
+                padding: 0.7rem 1.2rem;
+                top: 10px;
+                width: 90%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -298,19 +336,29 @@
 
 <div class="container">
 
+    <!-- ===== 成功弹窗 ===== -->
+    <div class="success-toast" id="successToast">
+        <span class="icon">🎉</span>
+        <span>提交成功！继续加油哦 💪</span>
+    </div>
+
+    <!-- ===== 顶部导航 ===== -->
     <div class="top-nav">
         <a href="index.html" class="back-link">← 返回看板</a>
         <div class="breadcrumb">📸 <span>拍照上传作业</span></div>
     </div>
 
+    <!-- ===== 当前使用者 ===== -->
     <div style="text-align:right; font-size:0.85rem; color:var(--gray-400); margin-bottom:-0.5rem;">
         👤 <span id="childNameDisplay">小勇士</span>
     </div>
 
+    <!-- ===== 主卡片 ===== -->
     <div class="card">
         <h2>📸 拍照上传作业</h2>
         <p>拍下孩子的作业，点击照片标记错题位置，系统会自动记录 📈</p>
 
+        <!-- 上传区域 -->
         <div class="upload-area" id="uploadArea">
             <span class="icon">📷</span>
             <p>点击上传 或 拖拽照片到这里</p>
@@ -318,15 +366,18 @@
             <input type="file" id="fileInput" accept="image/*" style="display:none;" />
         </div>
 
+        <!-- 照片 + 标记区 -->
         <div class="photo-container" id="photoContainer">
             <img id="preview" alt="作业预览" />
             <div class="click-overlay" id="clickOverlay"></div>
         </div>
 
+        <!-- 标记提示 -->
         <div class="marker-hint" id="markerHint" style="display:none;">
             💡 点击照片上<span style="color:#ef4444;">做错的位置</span>添加标记 · 已标记 <span class="count" id="markerCount">0</span> 处错题
         </div>
 
+        <!-- 错题预览 -->
         <div id="errorPreviewArea" style="display:none;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.3rem;">
                 <span style="font-size:0.85rem; font-weight:500; color:var(--gray-700);">📝 已标记错题</span>
@@ -335,13 +386,13 @@
             <div class="error-preview-list" id="errorPreviewList"></div>
         </div>
 
-        <!-- ===== 作业名称 ===== -->
+        <!-- 作业名称 -->
         <div class="form-group">
             <label for="taskName">📋 作业名称</label>
             <input type="text" id="taskName" placeholder="例如：数学练习册 P10-15" value="数学练习册" />
         </div>
 
-        <!-- ===== 科目选择（新增） ===== -->
+        <!-- 科目选择 -->
         <div class="form-group">
             <label for="subjectSelect">📚 科目</label>
             <select id="subjectSelect">
@@ -353,6 +404,7 @@
             </select>
         </div>
 
+        <!-- 正确率输入 -->
         <div class="score-row">
             <div class="field">
                 <label>✅ 正确题数</label>
@@ -364,21 +416,25 @@
             </div>
         </div>
 
+        <!-- 提交按钮 -->
         <div style="margin-top:1rem;">
             <button class="btn btn-success" onclick="submitTask()" style="width:100%;">📤 提交并记录</button>
         </div>
 
+        <!-- 结果展示 -->
         <div class="result-box" id="resultBox">
             <div class="big" id="resultAccuracy">0%</div>
             <div class="sub" id="resultMessage">继续加油！</div>
         </div>
 
+        <!-- 操作按钮 -->
         <div class="action-row">
             <button class="btn btn-secondary" onclick="resetForm()">🔄 重新上传</button>
             <a href="index.html" class="btn btn-secondary">📊 查看看板</a>
         </div>
     </div>
 
+    <!-- ===== 使用说明 ===== -->
     <div class="card" style="background:var(--gray-50);">
         <h2>💡 使用小贴士</h2>
         <ul style="color:var(--gray-600);font-size:0.9rem;line-height:1.8;padding-left:1.2rem;margin:0;">
@@ -390,17 +446,26 @@
         </ul>
     </div>
 
+    <!-- ===== 页脚 ===== -->
     <footer style="text-align:center; color:var(--gray-400); font-size:0.75rem; padding:0.5rem 0; border-top:1px solid var(--gray-200); margin-top:0.5rem;">
         <p>© 2026 — 学习成长系统 · 用坚持看见进步</p>
     </footer>
 </div>
 
 <script>
+    // ============================================================
+    //  数据管理
+    // ============================================================
+
     function getChildName() {
         return localStorage.getItem('childName') || '小勇士';
     }
 
     let markers = [];
+
+    // ============================================================
+    //  标记点管理
+    // ============================================================
 
     function getImageCoords(e) {
         const container = document.getElementById('photoContainer');
@@ -485,6 +550,10 @@
         ).join('');
     }
 
+    // ============================================================
+    //  照片上传
+    // ============================================================
+
     const uploadArea = document.getElementById('uploadArea');
     const fileInput = document.getElementById('fileInput');
     const preview = document.getElementById('preview');
@@ -524,14 +593,36 @@
 
     clickOverlay.addEventListener('click', addMarker);
 
+    // ============================================================
+    //  成功弹窗
+    // ============================================================
+
+    function showSuccessToast() {
+        const toast = document.getElementById('successToast');
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 2500);
+    }
+
+    // ============================================================
+    //  提交任务
+    // ============================================================
+
     function submitTask() {
         const taskName = document.getElementById('taskName').value.trim() || '未命名作业';
         const subject = document.getElementById('subjectSelect').value;
         const correct = parseInt(document.getElementById('correctCount').value) || 0;
         const total = parseInt(document.getElementById('totalCount').value) || 1;
 
-        if (total <= 0) { alert('总题数至少为1！'); return; }
-        if (correct > total) { alert('正确题数不能超过总题数！'); return; }
+        if (total <= 0) {
+            alert('总题数至少为1！');
+            return;
+        }
+        if (correct > total) {
+            alert('正确题数不能超过总题数！');
+            return;
+        }
 
         const accuracy = Math.round((correct / total) * 100);
         const today = new Date().toISOString().slice(0, 10);
@@ -560,6 +651,10 @@
         renderMarkers();
         updateErrorPreview();
 
+        // ===== 显示成功弹窗 =====
+        showSuccessToast();
+
+        // 显示结果
         showResult(accuracy, correct, total);
     }
 
@@ -611,6 +706,10 @@
         document.getElementById('errorPreviewArea').style.display = 'none';
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+
+    // ============================================================
+    //  初始化
+    // ============================================================
 
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('childNameDisplay').textContent = getChildName();
