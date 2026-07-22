@@ -6,7 +6,6 @@
     <title>Smart Finance Tools — 100+ Free Financial Calculators</title>
     <link rel="stylesheet" href="style.css" />
     <style>
-        /* ===== 首页特有样式 ===== */
         .hero {
             text-align: center;
             padding: 1.5rem 0 0.5rem;
@@ -58,7 +57,6 @@
             display: block;
         }
 
-        /* 网站说明（文案）— 放在搜索框下方 */
         .site-desc {
             text-align: center;
             max-width: 520px;
@@ -215,7 +213,6 @@
 
 <div class="container">
 
-    <!-- ===== 导航栏（精简） ===== -->
     <div class="nav-links">
         <a href="index.html" style="font-weight:700;">🏠 Home</a>
         <span class="sep">|</span>
@@ -224,19 +221,16 @@
 
     <main class="calculator-card" style="padding-bottom:1.5rem;">
 
-        <!-- ===== 头部 ===== -->
         <div class="hero">
             <h1>🧮 Smart Finance Tools</h1>
             <p>100+ free financial calculators — plan your money with confidence.</p>
         </div>
 
-        <!-- ===== 搜索框 ===== -->
         <div class="search-box">
             <input type="text" id="searchInput" placeholder="Search tools by name or category..." oninput="filterTools()" />
             <button class="clear-btn" id="clearBtn" onclick="clearSearch()">✕</button>
         </div>
 
-        <!-- ===== 网站说明（文案）— 放在搜索框下方 ===== -->
         <div class="site-desc">
             <p class="tagline">Stop guessing. Start planning.</p>
             <p class="sub">
@@ -244,26 +238,22 @@
             </p>
         </div>
 
-        <!-- ===== 工具列表区域（锚点：tools） ===== -->
         <div id="tools">
             <div id="categoriesContainer"></div>
         </div>
 
-        <!-- ===== 无结果提示 ===== -->
         <div class="no-results" id="noResults">
             <p>😕 No tools found. Try a different keyword.</p>
         </div>
 
-        <!-- ===== 统计信息（底部） ===== -->
         <div class="footer-stats">
             <span>📊 Total: <strong id="totalCount">100</strong> tools</span>
-            <span>✅ Available: <strong id="availableCount">31</strong></span>
-            <span>⏳ Coming soon: <strong id="comingCount">69</strong></span>
+            <span>✅ Available: <strong id="availableCount">36</strong></span>
+            <span>⏳ Coming soon: <strong id="comingCount">64</strong></span>
         </div>
 
     </main>
 
-    <!-- ===== 页脚 ===== -->
     <footer class="site-footer">
         <p>
             © 2026 — Smart Finance Tools · Free Online Calculators
@@ -318,14 +308,14 @@
             { name: 'Return on Investment (ROI) Calculator', icon: '📊', link: 'roi-calculator.html', status: 'done' },
             { name: 'Investment Goal Planner', icon: '🎯', link: 'investment-goal.html', status: 'done' },
             { name: 'Dividend Reinvestment (DRIP) Calculator', icon: '🔄', link: 'drip-calculator.html', status: 'done' },
+            { name: 'CAGR Calculator', icon: '📈', link: 'cagr-calculator.html', status: 'done' },
+            { name: 'Net Present Value (NPV) Calculator', icon: '💰', link: 'npv-calculator.html', status: 'done' },
+            { name: 'Cryptocurrency Growth Calculator', icon: '🪙', link: 'crypto-growth.html', status: 'done' },
             { name: 'Investment Fee Drag Calculator', icon: '📉', link: '#', status: 'coming' },
-            { name: 'CAGR Calculator', icon: '📈', link: '#', status: 'coming' },
-            { name: 'Net Present Value (NPV) Calculator', icon: '💰', link: '#', status: 'coming' },
             { name: 'Internal Rate of Return (IRR) Calculator', icon: '📊', link: '#', status: 'coming' },
             { name: 'Stock Return Calculator', icon: '📈', link: '#', status: 'coming' },
             { name: 'Backtest Calculator', icon: '⏮️', link: '#', status: 'coming' },
             { name: 'Margin Trading Calculator', icon: '⚖️', link: '#', status: 'coming' },
-            { name: 'Cryptocurrency Growth Calculator', icon: '🪙', link: '#', status: 'coming' },
             { name: 'SIP vs Lump Sum Comparator', icon: '⚖️', link: '#', status: 'coming' },
         ],
         '🏖️ Retirement & FIRE': [
@@ -337,8 +327,8 @@
             { name: '401(k) / Pension Calculator', icon: '📈', link: '401k-calculator.html', status: 'done' },
             { name: 'Retirement Age Calculator', icon: '🎂', link: 'retirement-age.html', status: 'done' },
             { name: 'Retirement Need Calculator', icon: '📋', link: 'retirement-need.html', status: 'done' },
-            { name: 'Roth IRA Calculator', icon: '📊', link: '#', status: 'coming' },
-            { name: 'Income Replacement Ratio Calculator', icon: '📈', link: '#', status: 'coming' },
+            { name: 'Roth IRA Calculator', icon: '📊', link: 'roth-ira-calculator.html', status: 'done' },
+            { name: 'Income Replacement Ratio Calculator', icon: '📈', link: 'income-replacement.html', status: 'done' },
         ],
         '📅 SIP & Systematic Investing': [
             { name: 'SIP Calculator', icon: '📈', link: 'sip-calculator.html', status: 'done' },
