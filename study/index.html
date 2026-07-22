@@ -98,13 +98,12 @@
             margin-top: 0.3rem;
         }
 
-        /* ===== 孩子管理 ===== */
+        /* ===== 孩子管理（修复版） ===== */
         .child-selector {
             display: flex;
             align-items: center;
             gap: 0.5rem;
             flex-wrap: wrap;
-            margin-bottom: 1rem;
             padding: 0.5rem 0.8rem;
             background: var(--gray-50);
             border-radius: 10px;
@@ -137,34 +136,67 @@
             color: var(--primary);
             font-weight: 600;
         }
-        .child-tag .remove {
+        .child-tag .remove-btn {
             font-size: 0.7rem;
             opacity: 0.5;
             cursor: pointer;
             margin-left: 0.1rem;
+            background: none;
+            border: none;
+            color: var(--gray-500);
+            padding: 0 2px;
         }
-        .child-tag .remove:hover {
+        .child-tag .remove-btn:hover {
             opacity: 1;
             color: var(--danger);
         }
+        .child-add-input {
+            padding: 0.25rem 0.6rem;
+            border: 1.5px solid var(--gray-300);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            background: white;
+            width: 100px;
+            transition: border-color 0.2s;
+        }
+        .child-add-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
         .child-add-btn {
             padding: 0.25rem 0.7rem;
-            border: 1.5px dashed var(--gray-300);
+            border: 1.5px solid var(--primary);
             border-radius: 20px;
-            background: none;
+            background: var(--primary);
+            color: white;
             cursor: pointer;
             font-size: 0.8rem;
-            color: var(--gray-400);
             transition: all 0.2s;
         }
         .child-add-btn:hover {
-            border-color: var(--primary);
-            color: var(--primary);
+            background: #1d4ed8;
         }
         .child-selector .hint {
             font-size: 0.7rem;
             color: var(--gray-400);
             margin-left: auto;
+        }
+        @media (max-width: 640px) {
+            .child-selector {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.4rem;
+            }
+            .child-selector .label {
+                margin-bottom: 0.1rem;
+            }
+            .child-add-input {
+                width: 100%;
+            }
+            .child-selector .hint {
+                margin-left: 0;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -178,13 +210,14 @@
         <div class="breadcrumb">📚 <span>学习成长系统</span></div>
     </div>
 
-    <!-- ===== 孩子选择器 ===== -->
+    <!-- ===== 孩子选择器（修复版） ===== -->
     <div class="card" style="padding:0.6rem 1rem;">
         <div class="child-selector" id="childSelector">
             <span class="label">👤 孩子:</span>
-            <div id="childTags"></div>
-            <button class="child-add-btn" onclick="addChild()">+ 添加</button>
-            <span class="hint" id="childHint">点击名字切换</span>
+            <div id="childTags" style="display:flex; flex-wrap:wrap; gap:0.4rem; align-items:center;"></div>
+            <input type="text" class="child-add-input" id="childNameInput" placeholder="输入名字" maxlength="10" />
+            <button class="child-add-btn" onclick="addChild()">➕ 添加</button>
+            <span class="hint" id="childHint">点击名字切换，× 删除</span>
         </div>
     </div>
 
@@ -309,17 +342,31 @@
         localStorage.setItem('studyData_' + childId, JSON.stringify(data));
     }
 
-    function addChild(name) {
+    // ============================================================
+    //  孩子管理操作
+    // ============================================================
+
+    function addChild() {
+        const input = document.getElementById('childNameInput');
+        const name = input.value.trim();
+        if (!name) {
+            alert('请输入孩子的名字！');
+            return;
+        }
         const children = getChildren();
+        // 检查是否已存在同名（可选）
+        if (children.some(c => c.name === name)) {
+            alert('已存在同名孩子，请换个名字');
+            return;
+        }
         const id = Date.now().toString(36);
         children.push({ id, name, createdAt: new Date().toISOString() });
         saveChildren(children);
         setCurrentChildId(id);
-        // 初始化空数据
         saveChildData(id, { records: [], streak: { days: 0, lastDate: null }, tasks: [] });
+        input.value = '';
         renderChildSelector();
         refreshAll();
-        return id;
     }
 
     function removeChild(id) {
@@ -392,10 +439,6 @@
         saveCurrentData(data);
     }
 
-    // ============================================================
-    //  孩子名字管理（兼容旧版）
-    // ============================================================
-
     function getChildName() {
         const child = getCurrentChild();
         return child ? child.name : '小勇士';
@@ -422,11 +465,17 @@
             tag.className = 'child-tag' + (child.id === currentId ? ' active' : '');
             tag.innerHTML = `${child.name} ${child.id === currentId ? '✓' : ''}`;
             tag.onclick = () => switchChild(child.id);
-            // 右键或长按删除（仅当有多个孩子时）
-            if (children.length > 1) {
-                tag.title = '点击切换 · 双击删除';
-                tag.ondblclick = () => removeChild(child.id);
-            }
+
+            // 删除按钮
+            const delBtn = document.createElement('button');
+            delBtn.className = 'remove-btn';
+            delBtn.textContent = '✕';
+            delBtn.onclick = function(e) {
+                e.stopPropagation();
+                removeChild(child.id);
+            };
+            tag.appendChild(delBtn);
+
             container.appendChild(tag);
         });
     }
@@ -641,11 +690,9 @@
     // ============================================================
 
     function refreshAll() {
-        // 更新问候语
         const name = getChildName();
         document.getElementById('greeting').textContent = `👋 欢迎回来，${name}！`;
         document.getElementById('subGreeting').textContent = `今天也要加油哦！每完成一项任务，你离「自律小英雄」就更近一步 🦸`;
-        // 更新统计和任务
         renderTasks();
         updateStats();
     }
@@ -711,7 +758,6 @@
 
                 if (!confirm(confirmMsg)) return;
 
-                // 恢复数据
                 saveChildren(data.children);
                 data.children.forEach(child => {
                     if (data.data[child.id]) {
@@ -740,12 +786,15 @@
     // ============================================================
 
     document.addEventListener('DOMContentLoaded', function() {
-        // 如果没有孩子，创建一个默认的
         const children = getChildren();
         if (children.length === 0) {
-            addChild('小勇士');
+            // 创建默认孩子
+            const id = Date.now().toString(36);
+            children.push({ id, name: '小勇士', createdAt: new Date().toISOString() });
+            saveChildren(children);
+            setCurrentChildId(id);
+            saveChildData(id, { records: [], streak: { days: 0, lastDate: null }, tasks: [] });
         } else {
-            // 确保当前孩子有效
             const currentId = getCurrentChildId();
             if (!currentId || !children.find(c => c.id === currentId)) {
                 setCurrentChildId(children[0].id);
