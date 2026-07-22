@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Income Replacement Ratio Calculator — Free Online Tool</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .results-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            margin: 1.5rem 0;
+        }
+        .summary-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+        .summary-item.highlight .value { color: #2563eb; }
+        .summary-item.positive .value { color: #10b981; }
+
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
+        .field input {
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem;
+            border: 1.5px solid #dce1e8;
+            border-radius: 10px;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .field input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background: #ffffff;
+        }
+
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+        .btn:hover { background: #1d4ed8; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
+        @media (max-width: 640px) {
+            .info-grid { grid-template-columns: 1fr; }
+            .summary-item { padding: 0.6rem 1rem; }
+            .summary-item .value { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="top-nav">
+        <a href="index.html" class="back-link">← Back to Home</a>
+        <div class="breadcrumb">📊 <span>Income Replacement Ratio Calculator</span></div>
+    </div>
+
+    <main class="calculator-card">
+        <h1>📊 Income Replacement Ratio Calculator</h1>
+        <p class="subtitle">Calculate what percentage of your pre-retirement income you'll need in retirement.</p>
+
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>Income Replacement Ratio Calculator</strong> — This tool helps you determine what
+                percentage of your pre-retirement income you'll need to maintain your lifestyle in retirement.
+                It answers the question: <em>“What is my target replacement ratio, and how much income will
+                I need from savings?”</em> Most financial experts recommend replacing 70-80% of your
+                pre-retirement income.
+            </p>
+        </div>
+
+        <div class="form-grid">
+            <div class="field">
+                <label for="pre-retirement-income">Pre-Retirement Income ($)</label>
+                <input type="number" id="pre-retirement-income" value="80000" min="0" step="1000" />
+            </div>
+            <div class="field">
+                <label for="target-ratio">Target Replacement Ratio (%)</label>
+                <input type="number" id="target-ratio" value="75" min="30" max="100" step="1" />
+            </div>
+            <div class="field">
+                <label for="social-security-ir">Social Security / Pension ($)</label>
+                <input type="number" id="social-security-ir" value="20000" min="0" step="1000" />
+            </div>
+            <div style="margin-top:0.5rem;">
+                <button class="btn" onclick="calculate()">Calculate</button>
+            </div>
+        </div>
+
+        <div id="results-area" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Income Replacement Results</h2>
+            <div class="results-summary" id="summary">
+                <div class="summary-item highlight">
+                    <span class="label">Target Retirement Income</span>
+                    <span class="value" id="target-income">—</span>
+                </div>
+                <div class="summary-item">
+                    <span class="label">Income from Social Security/Pension</span>
+                    <span class="value" id="income-from-ss">—</span>
+                </div>
+                <div class="summary-item positive">
+                    <span class="label">Income Needed from Savings</span>
+                    <span class="value" id="needed-from-savings">—</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
+            <h2>📖 How to read your results</h2>
+            <span class="accordion-arrow" id="infoArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="infoAccordion">
+            <div class="info-grid">
+                <div class="info-block"><h3>Target Retirement Income</h3><p>The amount of annual income you need in retirement to maintain your lifestyle, based on your chosen replacement ratio.</p></div>
+                <div class="info-block"><h3>Income from Social Security/Pension</h3><p>The guaranteed income you'll receive from social security, pensions, or other fixed sources.</p></div>
+                <div class="info-block"><h3>Income Needed from Savings</h3><p>The amount you need to generate from your personal savings and investments each year.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
+            <h2>❓ FAQ</h2>
+            <span class="accordion-arrow" id="faqArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="faqAccordion">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is a realistic income replacement ratio?</span></div>
+                <div class="faq-answer">Most financial advisors recommend 70-80% of your pre-retirement income. Higher earners may need a lower percentage, while lower earners may need a higher percentage.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Why not 100% of my pre-retirement income?</span></div>
+                <div class="faq-answer">In retirement, you no longer pay payroll taxes, save for retirement, or commute to work. These expenses typically reduce your required income by 20-30%.</div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
+    </footer>
+</div>
+
+<script>
+    function toggleAccordion(id) {
+        const body = document.getElementById(id);
+        const arrow = document.getElementById(id + 'Arrow');
+        if (body.style.display === 'none' || body.style.display === '') {
+            body.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            body.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+    function toggleFaq(el) {
+        const answer = el.nextElementSibling;
+        const arrow = el.querySelector('.faq-arrow');
+        if (answer.style.display === 'none' || answer.style.display === '') {
+            answer.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            answer.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+    function calculate() {
+        const income = parseFloat(document.getElementById('pre-retirement-income').value) || 0;
+        const ratio = parseFloat(document.getElementById('target-ratio').value) || 75;
+        const ssIncome = parseFloat(document.getElementById('social-security-ir').value) || 0;
+
+        const targetIncome = income * (ratio / 100);
+        const neededFromSavings = Math.max(0, targetIncome - ssIncome);
+
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+        document.getElementById('target-income').textContent = fmt.format(targetIncome);
+        document.getElementById('income-from-ss').textContent = fmt.format(ssIncome);
+        document.getElementById('needed-from-savings').textContent = fmt.format(neededFromSavings);
+
+        document.getElementById('results-area').style.display = 'block';
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('infoAccordion').style.display = 'block';
+        document.getElementById('infoArrow').textContent = '▼';
+        document.getElementById('faqAccordion').style.display = 'none';
+        document.getElementById('faqArrow').textContent = '▶';
+        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
+        calculate();
+    });
+    document.addEventListener('input', function(e) {
+        if (e.target.closest('.form-grid')) { calculate(); }
+    });
+</script>
+</body>
+</html>
