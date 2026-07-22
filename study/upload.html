@@ -6,519 +6,112 @@
     <title>拍照上传 — 学习成长系统</title>
     <link rel="stylesheet" href="../style.css" />
     <link rel="stylesheet" href="study-style.css" />
-    <!-- 引入 Tesseract.js OCR 库 -->
+    <!-- 引入 Tesseract.js -->
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
-        .upload-area {
-            border: 2px dashed var(--gray-300);
-            border-radius: 12px;
-            padding: 2rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: var(--gray-50);
-        }
-        .upload-area:hover {
-            border-color: var(--primary);
-            background: var(--primary-light);
-        }
-        .upload-area .icon {
-            font-size: 3rem;
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-        .upload-area p {
-            color: var(--gray-400);
-            margin: 0;
-        }
-        .upload-area .sub {
-            font-size: 0.8rem;
-            color: var(--gray-300);
-        }
-        .upload-area.dragover {
-            border-color: var(--primary);
-            background: #dbeafe;
-        }
+        /* ===== 样式（与之前相同，精简展示） ===== */
+        .upload-area { border: 2px dashed var(--gray-300); border-radius: 12px; padding: 2rem; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--gray-50); }
+        .upload-area:hover { border-color: var(--primary); background: var(--primary-light); }
+        .upload-area .icon { font-size: 3rem; display: block; margin-bottom: 0.5rem; }
+        .upload-area p { color: var(--gray-400); margin: 0; }
+        .upload-area .sub { font-size: 0.8rem; color: var(--gray-300); }
+        .upload-area.dragover { border-color: var(--primary); background: #dbeafe; }
 
-        .photo-container {
-            position: relative;
-            margin-top: 1rem;
-            display: none;
-            border-radius: 12px;
-            overflow: hidden;
-            background: #f8fafc;
-            border: 2px solid var(--gray-200);
-            cursor: crosshair;
-            user-select: none;
-        }
-        .photo-container.active {
-            display: block;
-        }
-        .photo-container img {
-            width: 100%;
-            height: auto;
-            display: block;
-            pointer-events: none;
-        }
-        .photo-container .click-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            cursor: crosshair;
-            z-index: 2;
-        }
+        .photo-container { position: relative; margin-top: 1rem; display: none; border-radius: 12px; overflow: hidden; background: #f8fafc; border: 2px solid var(--gray-200); cursor: crosshair; user-select: none; }
+        .photo-container.active { display: block; }
+        .photo-container img { width: 100%; height: auto; display: block; pointer-events: none; }
+        .photo-container .click-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; cursor: crosshair; z-index: 2; }
 
-        .marker {
-            position: absolute;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: rgba(239, 68, 68, 0.85);
-            border: 2px solid white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            transform: translate(-50%, -50%);
-            z-index: 3;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 11px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 0.15s;
-        }
-        .marker:hover {
-            transform: translate(-50%, -50%) scale(1.15);
-        }
-        .marker .delete-marker {
-            position: absolute;
-            top: -6px;
-            right: -6px;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #ef4444;
-            border: 1px solid white;
-            color: white;
-            font-size: 9px;
-            line-height: 14px;
-            text-align: center;
-            cursor: pointer;
-            display: none;
-        }
-        .marker:hover .delete-marker {
-            display: block;
-        }
+        .marker { position: absolute; width: 28px; height: 28px; border-radius: 50%; background: rgba(239,68,68,0.85); border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3); transform: translate(-50%,-50%); z-index: 3; display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; font-weight: 700; cursor: pointer; transition: transform 0.15s; }
+        .marker:hover { transform: translate(-50%,-50%) scale(1.15); }
+        .marker .delete-marker { position: absolute; top: -6px; right: -6px; width: 16px; height: 16px; border-radius: 50%; background: #ef4444; border: 1px solid white; color: white; font-size: 9px; line-height: 14px; text-align: center; cursor: pointer; display: none; }
+        .marker:hover .delete-marker { display: block; }
 
-        .marker-hint {
-            text-align: center;
-            font-size: 0.85rem;
-            color: var(--gray-500);
-            padding: 0.3rem 0 0.5rem;
-        }
-        .marker-hint .count {
-            font-weight: 600;
-            color: var(--primary);
-        }
+        .marker-hint { text-align: center; font-size: 0.85rem; color: var(--gray-500); padding: 0.3rem 0 0.5rem; }
+        .marker-hint .count { font-weight: 600; color: var(--primary); }
 
-        .error-preview-list {
-            margin-top: 0.5rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.4rem;
-        }
-        .error-preview-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            background: #fef2f2;
-            border: 1px solid #fecaca;
-            border-radius: 20px;
-            padding: 0.2rem 0.6rem;
-            font-size: 0.8rem;
-            color: #991b1b;
-        }
-        .error-preview-tag .num {
-            font-weight: 600;
-        }
-        .error-preview-tag .content {
-            max-width: 120px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
+        .error-preview-list { margin-top: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .error-preview-tag { display: inline-flex; align-items: center; gap: 0.4rem; background: #fef2f2; border: 1px solid #fecaca; border-radius: 20px; padding: 0.2rem 0.6rem; font-size: 0.8rem; color: #991b1b; }
+        .error-preview-tag .num { font-weight: 600; }
+        .error-preview-tag .content { max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-        .form-group {
-            margin-top: 1.2rem;
-        }
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--gray-700);
-            margin-bottom: 0.3rem;
-        }
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 0.6rem 0.8rem;
-            border: 1.5px solid var(--gray-300);
-            border-radius: 10px;
-            font-size: 1rem;
-            background: #fafbfc;
-            transition: border-color 0.2s;
-        }
-        .form-group input:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
+        .form-group { margin-top: 1.2rem; }
+        .form-group label { display: block; font-weight: 600; font-size: 0.9rem; color: var(--gray-700); margin-bottom: 0.3rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.6rem 0.8rem; border: 1.5px solid var(--gray-300); border-radius: 10px; font-size: 1rem; background: #fafbfc; transition: border-color 0.2s; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); }
 
-        .score-row {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-top: 1rem;
-        }
-        .score-row .field {
-            flex: 1;
-            min-width: 80px;
-        }
-        .score-row .field label {
-            font-size: 0.8rem;
-            color: var(--gray-500);
-            display: block;
-        }
-        .score-row .field input {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1.5px solid var(--gray-300);
-            border-radius: 8px;
-            font-size: 1rem;
-            text-align: center;
-        }
-        .score-row .field input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
+        .score-row { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-top: 1rem; }
+        .score-row .field { flex: 1; min-width: 80px; }
+        .score-row .field label { font-size: 0.8rem; color: var(--gray-500); display: block; }
+        .score-row .field input { width: 100%; padding: 0.5rem; border: 1.5px solid var(--gray-300); border-radius: 8px; font-size: 1rem; text-align: center; }
+        .score-row .field input:focus { outline: none; border-color: var(--primary); }
 
-        .btn {
-            display: inline-block;
-            background: var(--primary);
-            color: white;
-            padding: 0.6rem 1.2rem;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: background 0.2s;
-            border: none;
-            cursor: pointer;
-        }
-        .btn:hover {
-            background: #1d4ed8;
-        }
-        .btn-secondary {
-            background: var(--gray-100);
-            color: var(--gray-700);
-        }
-        .btn-secondary:hover {
-            background: var(--gray-200);
-        }
-        .btn-success {
-            background: var(--success);
-        }
-        .btn-success:hover {
-            background: #059669;
-        }
-        .btn-sm {
-            padding: 0.3rem 0.8rem;
-            font-size: 0.8rem;
-        }
-        .btn-danger {
-            background: var(--danger);
-        }
-        .btn-danger:hover {
-            background: #dc2626;
-        }
-        .btn-ocr {
-            background: #8b5cf6;
-            color: white;
-        }
-        .btn-ocr:hover {
-            background: #7c3aed;
-        }
-        .btn-ocr:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
+        .btn { display: inline-block; background: var(--primary); color: white; padding: 0.6rem 1.2rem; border-radius: 10px; text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: background 0.2s; border: none; cursor: pointer; }
+        .btn:hover { background: #1d4ed8; }
+        .btn-secondary { background: var(--gray-100); color: var(--gray-700); }
+        .btn-secondary:hover { background: var(--gray-200); }
+        .btn-success { background: var(--success); }
+        .btn-success:hover { background: #059669; }
+        .btn-sm { padding: 0.3rem 0.8rem; font-size: 0.8rem; }
+        .btn-danger { background: var(--danger); }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-ocr { background: #8b5cf6; color: white; }
+        .btn-ocr:hover { background: #7c3aed; }
 
-        .action-row {
-            display: flex;
-            gap: 0.8rem;
-            flex-wrap: wrap;
-            margin-top: 1.2rem;
-        }
+        .action-row { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 1.2rem; }
 
-        .result-box {
-            background: #f0fdf4;
-            border: 1px solid #bbf7d0;
-            border-radius: 12px;
-            padding: 1rem;
-            margin-top: 1rem;
-            display: none;
-        }
-        .result-box.show {
-            display: block;
-        }
-        .result-box .big {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #065f46;
-        }
-        .result-box .sub {
-            color: var(--gray-600);
-            font-size: 0.9rem;
-        }
+        .result-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 1rem; margin-top: 1rem; display: none; }
+        .result-box.show { display: block; }
+        .result-box .big { font-size: 2rem; font-weight: 700; color: #065f46; }
+        .result-box .sub { color: var(--gray-600); font-size: 0.9rem; }
 
-        .success-toast {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #10b981;
-            color: white;
-            padding: 0.9rem 1.8rem;
-            border-radius: 12px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-            font-size: 1rem;
-            font-weight: 600;
-            z-index: 9999;
-            display: none;
-            align-items: center;
-            gap: 0.8rem;
-            animation: slideDown 0.4s ease;
-        }
-        .success-toast.show {
-            display: flex;
-        }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
-        .success-toast .icon {
-            font-size: 1.5rem;
-        }
+        .success-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #10b981; color: white; padding: 0.9rem 1.8rem; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.2); font-size: 1rem; font-weight: 600; z-index: 9999; display: none; align-items: center; gap: 0.8rem; animation: slideDown 0.4s ease; }
+        .success-toast.show { display: flex; }
+        @keyframes slideDown { from { opacity: 0; transform: translateX(-50%) translateY(-20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+        .success-toast .icon { font-size: 1.5rem; }
 
-        .child-indicator {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            justify-content: flex-end;
-            font-size: 0.85rem;
-            color: var(--gray-500);
-            margin-bottom: 0.3rem;
-            padding: 0.2rem 0.5rem;
-            background: var(--gray-50);
-            border-radius: 8px;
-        }
-        .child-indicator .name {
-            font-weight: 600;
-            color: var(--primary);
-        }
+        .child-indicator { display: flex; align-items: center; gap: 0.5rem; justify-content: flex-end; font-size: 0.85rem; color: var(--gray-500); margin-bottom: 0.3rem; padding: 0.2rem 0.5rem; background: var(--gray-50); border-radius: 8px; }
+        .child-indicator .name { font-weight: 600; color: var(--primary); }
 
-        /* ===== OCR 识别状态 ===== */
-        .ocr-status {
-            display: none;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            margin-top: 0.5rem;
-            font-size: 0.85rem;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .ocr-status.show {
-            display: flex;
-        }
-        .ocr-status.loading {
-            background: #e0f2fe;
-            color: #0369a1;
-            border: 1px solid #bae6fd;
-        }
-        .ocr-status.success {
-            background: #f0fdf4;
-            color: #15803d;
-            border: 1px solid #bbf7d0;
-        }
-        .ocr-status.error {
-            background: #fef2f2;
-            color: #dc2626;
-            border: 1px solid #fecaca;
-        }
-        .ocr-status .spinner {
-            width: 16px;
-            height: 16px;
-            border: 2px solid #bae6fd;
-            border-top: 2px solid #0369a1;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        .ocr-status { display: none; padding: 0.5rem 1rem; border-radius: 8px; margin-top: 0.5rem; font-size: 0.85rem; align-items: center; gap: 0.5rem; }
+        .ocr-status.show { display: flex; }
+        .ocr-status.loading { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+        .ocr-status.success { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+        .ocr-status.error { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+        .ocr-status .spinner { width: 16px; height: 16px; border: 2px solid #bae6fd; border-top: 2px solid #0369a1; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        .auto-detect-hint {
-            font-size: 0.8rem;
-            color: var(--gray-400);
-            margin-top: 0.2rem;
-        }
+        .auto-detect-hint { font-size: 0.8rem; color: var(--gray-400); margin-top: 0.2rem; }
 
-        /* ===== 错题输入弹窗（识别结果确认） ===== */
-        .error-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 9999;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            padding: 1rem;
-        }
-        .error-modal.show {
-            display: flex;
-        }
-        .error-modal .modal-content {
-            background: white;
-            border-radius: 16px;
-            padding: 1.5rem;
-            max-width: 420px;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-        .error-modal .modal-content h3 {
-            margin-top: 0;
-            margin-bottom: 0.3rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .error-modal .modal-content .hint {
-            font-size: 0.85rem;
-            color: var(--gray-500);
-            margin-bottom: 0.8rem;
-        }
-        .error-modal .modal-content .recognized-text {
-            background: var(--gray-50);
-            border: 1.5px solid var(--gray-200);
-            border-radius: 10px;
-            padding: 0.6rem 0.8rem;
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-            min-height: 44px;
-            word-break: break-all;
-        }
-        .error-modal .modal-content .recognized-text .label {
-            font-size: 0.75rem;
-            color: var(--gray-400);
-            display: block;
-            margin-bottom: 0.2rem;
-        }
-        .error-modal .modal-content .recognized-text .text {
-            font-weight: 500;
-        }
-        .error-modal .modal-content input {
-            width: 100%;
-            padding: 0.6rem 0.8rem;
-            border: 1.5px solid var(--gray-300);
-            border-radius: 10px;
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-        }
-        .error-modal .modal-content input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-        .error-modal .modal-content .modal-actions {
-            display: flex;
-            gap: 0.5rem;
-            justify-content: flex-end;
-            flex-wrap: wrap;
-        }
-        .error-modal .modal-content .modal-actions button {
-            padding: 0.4rem 1rem;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-        .error-modal .modal-content .modal-actions .confirm {
-            background: var(--primary);
-            color: white;
-        }
-        .error-modal .modal-content .modal-actions .confirm:hover {
-            background: #1d4ed8;
-        }
-        .error-modal .modal-content .modal-actions .cancel {
-            background: var(--gray-200);
-            color: var(--gray-700);
-        }
-        .error-modal .modal-content .modal-actions .cancel:hover {
-            background: var(--gray-300);
-        }
-        .error-modal .modal-content .modal-actions .retry {
-            background: #e0f2fe;
-            color: #0369a1;
-        }
-        .error-modal .modal-content .modal-actions .retry:hover {
-            background: #bae6fd;
-        }
+        /* ===== 错题输入弹窗 ===== */
+        .error-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 9999; display: none; justify-content: center; align-items: center; padding: 1rem; }
+        .error-modal.show { display: flex; }
+        .error-modal .modal-content { background: white; border-radius: 16px; padding: 1.5rem; max-width: 420px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .error-modal .modal-content h3 { margin-top: 0; margin-bottom: 0.3rem; display: flex; align-items: center; gap: 0.5rem; }
+        .error-modal .modal-content .hint { font-size: 0.85rem; color: var(--gray-500); margin-bottom: 0.8rem; }
+        .error-modal .modal-content .recognized-text { background: var(--gray-50); border: 1.5px solid var(--gray-200); border-radius: 10px; padding: 0.6rem 0.8rem; font-size: 1rem; margin-bottom: 0.5rem; min-height: 44px; word-break: break-all; }
+        .error-modal .modal-content .recognized-text .label { font-size: 0.75rem; color: var(--gray-400); display: block; margin-bottom: 0.2rem; }
+        .error-modal .modal-content .recognized-text .text { font-weight: 500; }
+        .error-modal .modal-content input { width: 100%; padding: 0.6rem 0.8rem; border: 1.5px solid var(--gray-300); border-radius: 10px; font-size: 1rem; margin-bottom: 0.5rem; }
+        .error-modal .modal-content input:focus { outline: none; border-color: var(--primary); }
+        .error-modal .modal-content .modal-actions { display: flex; gap: 0.5rem; justify-content: flex-end; flex-wrap: wrap; }
+        .error-modal .modal-content .modal-actions button { padding: 0.4rem 1rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 0.9rem; }
+        .error-modal .modal-content .modal-actions .confirm { background: var(--primary); color: white; }
+        .error-modal .modal-content .modal-actions .confirm:hover { background: #1d4ed8; }
+        .error-modal .modal-content .modal-actions .cancel { background: var(--gray-200); color: var(--gray-700); }
+        .error-modal .modal-content .modal-actions .cancel:hover { background: var(--gray-300); }
+        .error-modal .modal-content .modal-actions .retry { background: #e0f2fe; color: #0369a1; }
+        .error-modal .modal-content .modal-actions .retry:hover { background: #bae6fd; }
 
         @media (max-width: 640px) {
-            .top-nav {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.3rem;
-            }
-            .score-row {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-            .score-row .field {
-                width: 100%;
-            }
-            .marker {
-                width: 24px;
-                height: 24px;
-                font-size: 9px;
-            }
-            .marker .delete-marker {
-                width: 14px;
-                height: 14px;
-                font-size: 8px;
-                line-height: 12px;
-                top: -5px;
-                right: -5px;
-            }
-            .success-toast {
-                font-size: 0.85rem;
-                padding: 0.7rem 1.2rem;
-                top: 10px;
-                width: 90%;
-                justify-content: center;
-            }
-            .error-modal .modal-content {
-                padding: 1rem;
-            }
-            .error-preview-tag .content {
-                max-width: 80px;
-            }
+            .top-nav { flex-direction: column; align-items: flex-start; gap: 0.3rem; }
+            .score-row { flex-direction: column; gap: 0.5rem; }
+            .score-row .field { width: 100%; }
+            .marker { width: 24px; height: 24px; font-size: 9px; }
+            .marker .delete-marker { width: 14px; height: 14px; font-size: 8px; line-height: 12px; top: -5px; right: -5px; }
+            .success-toast { font-size: 0.85rem; padding: 0.7rem 1.2rem; top: 10px; width: 90%; justify-content: center; }
+            .error-modal .modal-content { padding: 1rem; }
+            .error-preview-tag .content { max-width: 80px; }
         }
     </style>
 </head>
@@ -526,13 +119,12 @@
 
 <div class="container">
 
-    <!-- ===== 成功弹窗 ===== -->
     <div class="success-toast" id="successToast">
         <span class="icon">🎉</span>
         <span>提交成功！继续加油哦 💪</span>
     </div>
 
-    <!-- ===== 错题输入弹窗（含OCR识别结果） ===== -->
+    <!-- ===== 错题输入弹窗 ===== -->
     <div class="error-modal" id="errorModal">
         <div class="modal-content">
             <h3>📝 错题内容</h3>
@@ -541,10 +133,10 @@
                 <span class="label">🤖 识别结果</span>
                 <span class="text" id="recognizedContent">—</span>
             </div>
-            <input type="text" id="errorContentInput" placeholder="或手动输入错题内容，如：3+2=4" />
+            <input type="text" id="errorContentInput" placeholder="或手动输入错题内容" />
             <div class="modal-actions">
                 <button class="cancel" onclick="closeErrorModal()">取消</button>
-                <button class="retry" id="retryOcrBtn" onclick="retryOcr()">🔄 重新识别</button>
+                <button class="retry" onclick="retryOcr()">🔄 重新识别</button>
                 <button class="confirm" onclick="confirmError()">✅ 确认添加</button>
             </div>
         </div>
@@ -556,7 +148,6 @@
         <div class="breadcrumb">📸 <span>拍照上传作业</span></div>
     </div>
 
-    <!-- ===== 当前孩子指示 ===== -->
     <div class="child-indicator">
         👤 当前: <span class="name" id="childNameDisplay">小勇士</span>
     </div>
@@ -564,9 +155,8 @@
     <!-- ===== 主卡片 ===== -->
     <div class="card">
         <h2>📸 拍照上传作业</h2>
-        <p>拍下孩子的作业，<strong>点击照片标记错题位置</strong>，系统会自动识别错题内容 📈</p>
+        <p>拍下孩子的作业，<strong>点击错题位置</strong>，系统自动识别该题内容 📈</p>
 
-        <!-- 上传区域 -->
         <div class="upload-area" id="uploadArea">
             <span class="icon">📷</span>
             <p>点击上传 或 拖拽照片到这里</p>
@@ -574,24 +164,20 @@
             <input type="file" id="fileInput" accept="image/*" style="display:none;" />
         </div>
 
-        <!-- 照片 + 标记区 -->
         <div class="photo-container" id="photoContainer">
             <img id="preview" alt="作业预览" />
             <div class="click-overlay" id="clickOverlay"></div>
         </div>
 
-        <!-- OCR 状态 -->
         <div class="ocr-status" id="ocrStatus">
             <span class="spinner" id="ocrSpinner"></span>
-            <span id="ocrStatusText">正在识别图片中的文字...</span>
+            <span id="ocrStatusText">正在识别...</span>
         </div>
 
-        <!-- 标记提示 -->
         <div class="marker-hint" id="markerHint" style="display:none;">
-            💡 点击照片上<span style="color:#ef4444;">做错的位置</span>添加标记 · 已标记 <span class="count" id="markerCount">0</span> 处错题
+            💡 已标记 <span class="count" id="markerCount">0</span> 处错题
         </div>
 
-        <!-- 错题预览 -->
         <div id="errorPreviewArea" style="display:none;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.3rem;">
                 <span style="font-size:0.85rem; font-weight:500; color:var(--gray-700);">📝 已标记错题</span>
@@ -600,13 +186,11 @@
             <div class="error-preview-list" id="errorPreviewList"></div>
         </div>
 
-        <!-- 作业名称 -->
         <div class="form-group">
             <label for="taskName">📋 作业名称</label>
-            <input type="text" id="taskName" placeholder="例如：数学练习册 P10-15" value="数学练习册" />
+            <input type="text" id="taskName" placeholder="数学练习册 P10-15" value="数学练习册" />
         </div>
 
-        <!-- 科目选择 -->
         <div class="form-group">
             <label for="subjectSelect">📚 科目</label>
             <select id="subjectSelect">
@@ -618,53 +202,38 @@
             </select>
         </div>
 
-        <!-- 正确率输入 -->
         <div class="score-row">
-            <div class="field">
-                <label>✅ 正确题数</label>
-                <input type="number" id="correctCount" value="6" min="0" />
-            </div>
-            <div class="field">
-                <label>📝 总题数</label>
-                <input type="number" id="totalCount" value="8" min="1" />
-            </div>
+            <div class="field"><label>✅ 正确题数</label><input type="number" id="correctCount" value="6" min="0" /></div>
+            <div class="field"><label>📝 总题数</label><input type="number" id="totalCount" value="8" min="1" /></div>
         </div>
 
-        <div class="auto-detect-hint">
-            💡 点击照片上的错题位置，系统会自动识别该位置的文字内容
-        </div>
+        <div class="auto-detect-hint">💡 点击照片上的错题位置，系统只识别点击区域的内容</div>
 
-        <!-- 提交按钮 -->
         <div style="margin-top:1rem;">
             <button class="btn btn-success" onclick="submitTask()" style="width:100%;">📤 提交并记录</button>
         </div>
 
-        <!-- 结果展示 -->
         <div class="result-box" id="resultBox">
             <div class="big" id="resultAccuracy">0%</div>
             <div class="sub" id="resultMessage">继续加油！</div>
         </div>
 
-        <!-- 操作按钮 -->
         <div class="action-row">
             <button class="btn btn-secondary" onclick="resetForm()">🔄 重新上传</button>
             <a href="index.html" class="btn btn-secondary">📊 查看看板</a>
         </div>
     </div>
 
-    <!-- ===== 使用说明 ===== -->
     <div class="card" style="background:var(--gray-50);">
         <h2>💡 使用小贴士</h2>
         <ul style="color:var(--gray-600);font-size:0.9rem;line-height:1.8;padding-left:1.2rem;margin:0;">
             <li>📸 拍照时尽量光线充足，字迹清晰</li>
-            <li>👆 上传照片后，<strong>点击照片上做错的位置</strong>，系统自动识别文字</li>
-            <li>🤖 识别结果自动填入，家长只需点击确认即可</li>
-            <li>✏️ 如果识别不准确，可以手动修改再确认</li>
-            <li>📚 选择科目后，错题本可按科目分类查看</li>
+            <li>👆 上传照片后，<strong>点击照片上某道错题的位置</strong>，系统只识别该区域</li>
+            <li>🤖 识别结果自动填入，点击确认即可</li>
+            <li>✏️ 如果识别不准确，可以手动修改</li>
         </ul>
     </div>
 
-    <!-- ===== 页脚 ===== -->
     <footer style="text-align:center; color:var(--gray-400); font-size:0.75rem; padding:0.5rem 0; border-top:1px solid var(--gray-200); margin-top:0.5rem;">
         <p>© 2026 — 学习成长系统 · 用坚持看见进步</p>
     </footer>
@@ -672,7 +241,7 @@
 
 <script>
     // ============================================================
-    //  多孩子数据管理
+    //  数据管理
     // ============================================================
 
     function getChildren() {
@@ -720,28 +289,82 @@
         return child ? child.name : '小勇士';
     }
 
+    function getStreak() {
+        return getCurrentData().streak || { days: 0, lastDate: null };
+    }
+
+    function saveStreak(streak) {
+        const data = getCurrentData();
+        data.streak = streak;
+        saveCurrentData(data);
+    }
+
     // ============================================================
-    //  OCR 文字识别
+    //  裁剪 + 局部OCR识别
     // ============================================================
 
+    let markers = [];
     let currentOcrText = '';
-    let currentClickCoords = null;
-    let isOcrRunning = false;
+    let pendingMarkerCoords = null;
+    let imageDataCache = null; // 缓存原始图片数据
 
-    async function recognizeTextFromImage(imageDataUrl, clickX, clickY) {
-        if (isOcrRunning) return;
-        isOcrRunning = true;
+    // 从图片中裁剪指定区域
+    function cropImage(imageDataUrl, cropX, cropY, cropWidth, cropHeight, imgNaturalWidth, imgNaturalHeight, displayWidth, displayHeight) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = function() {
+                // 计算缩放比例
+                const scaleX = img.naturalWidth / displayWidth;
+                const scaleY = img.naturalHeight / displayHeight;
+
+                // 计算在原始图片中的实际坐标
+                const srcX = cropX * scaleX;
+                const srcY = cropY * scaleY;
+                const srcW = cropWidth * scaleX;
+                const srcH = cropHeight * scaleY;
+
+                // 创建canvas裁剪
+                const canvas = document.createElement('canvas');
+                canvas.width = Math.min(srcW, img.naturalWidth - srcX);
+                canvas.height = Math.min(srcH, img.naturalHeight - srcY);
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, srcX, srcY, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
+                resolve(canvas.toDataURL('image/png'));
+            };
+            img.src = imageDataUrl;
+        });
+    }
+
+    async function recognizeLocalArea(imageDataUrl, clickX, clickY, displayWidth, displayHeight) {
+        // 裁剪区域：以点击位置为中心，150x60像素（宽一些覆盖一道题）
+        const cropSizeX = 180;
+        const cropSizeY = 70;
+        const cropX = Math.max(0, clickX - cropSizeX / 2);
+        const cropY = Math.max(0, clickY - cropSizeY / 2);
 
         const statusEl = document.getElementById('ocrStatus');
         const statusText = document.getElementById('ocrStatusText');
         const spinner = document.getElementById('ocrSpinner');
 
         statusEl.className = 'ocr-status show loading';
-        statusText.textContent = '🤖 正在识别错题文字...';
+        statusText.textContent = '🤖 正在识别点击区域的文字...';
 
         try {
-            // 使用 Tesseract.js 识别
-            const result = await Tesseract.recognize(imageDataUrl, 'chi_sim+eng', {
+            // 加载图片获取原始尺寸
+            const img = document.getElementById('preview');
+            const naturalWidth = img.naturalWidth || 800;
+            const naturalHeight = img.naturalHeight || 600;
+
+            // 裁剪局部区域
+            const croppedDataUrl = await cropImage(
+                imageDataUrl,
+                cropX, cropY, cropSizeX, cropSizeY,
+                naturalWidth, naturalHeight,
+                displayWidth, displayHeight
+            );
+
+            // 识别裁剪后的图片
+            const result = await Tesseract.recognize(croppedDataUrl, 'chi_sim+eng', {
                 logger: function(m) {
                     if (m.status === 'recognizing text') {
                         statusText.textContent = `🤖 识别中... ${Math.round(m.progress * 100)}%`;
@@ -749,116 +372,84 @@
                 }
             });
 
-            const recognized = result.data.text.trim();
+            let text = result.data.text.trim();
 
-            if (recognized && recognized.length > 0) {
-                // 提取点击位置附近的文字（简化：取整个识别结果的前几行）
-                const lines = recognized.split('\n').filter(line => line.trim().length > 0);
-                // 取最可能的那一行（根据点击位置无法精确定位，取第一行或包含数字的行）
-                let bestMatch = lines[0] || recognized;
+            // 清理结果：移除多余空格和换行
+            text = text.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
 
-                // 如果有多行，尝试找包含数字或等号的行（数学题特征）
-                const mathLine = lines.find(line => /[\d=+\-×÷*]/.test(line));
-                if (mathLine) {
-                    bestMatch = mathLine;
-                }
+            // 如果结果太长，可能包含多道题，截取最可能的那一道
+            // 查找包含数字和等号的子串（数学题特征）
+            const mathPattern = /(\d+[\s]*[+\-×÷=][\s]*\d+[\s]*[=]?[\s]*[\d?]*)/;
+            const match = text.match(mathPattern);
+            if (match) {
+                text = match[0];
+            }
 
-                // 限制长度
-                if (bestMatch.length > 100) {
-                    bestMatch = bestMatch.substring(0, 100) + '...';
-                }
+            // 限制长度
+            if (text.length > 80) {
+                text = text.substring(0, 80);
+            }
 
-                currentOcrText = bestMatch;
+            if (text && text.length > 1) {
+                currentOcrText = text;
                 statusEl.className = 'ocr-status show success';
-                statusText.textContent = `✅ 识别成功：${bestMatch}`;
-
-                // 显示在弹窗中
-                document.getElementById('recognizedContent').textContent = bestMatch;
-                document.getElementById('errorContentInput').value = bestMatch;
-
-                // 自动打开弹窗
-                currentClickCoords = { x: clickX, y: clickY };
-                document.getElementById('errorModal').classList.add('show');
-                document.getElementById('modalHint').textContent = '点击确认使用识别结果，或手动修改后确认';
-
+                statusText.textContent = `✅ 识别成功：${text}`;
+                document.getElementById('recognizedContent').textContent = text;
+                document.getElementById('errorContentInput').value = text;
+                return text;
             } else {
                 currentOcrText = '';
                 statusEl.className = 'ocr-status show error';
-                statusText.textContent = '❌ 未识别到文字，请手动输入';
-
-                // 仍然打开弹窗，让用户手动输入
+                statusText.textContent = '❌ 未识别到有效内容，请手动输入';
                 document.getElementById('recognizedContent').textContent = '未识别到内容';
                 document.getElementById('errorContentInput').value = '';
-                currentClickCoords = { x: clickX, y: clickY };
-                document.getElementById('errorModal').classList.add('show');
-                document.getElementById('modalHint').textContent = '系统未能识别到文字，请手动输入错题内容';
+                return null;
             }
 
         } catch (err) {
             console.error('OCR Error:', err);
             statusEl.className = 'ocr-status show error';
             statusText.textContent = '❌ 识别失败，请手动输入';
-
-            // 打开弹窗让用户手动输入
             document.getElementById('recognizedContent').textContent = '识别失败';
             document.getElementById('errorContentInput').value = '';
-            currentClickCoords = { x: clickX, y: clickY };
-            document.getElementById('errorModal').classList.add('show');
-            document.getElementById('modalHint').textContent = '识别失败，请手动输入错题内容';
-        }
-
-        isOcrRunning = false;
-
-        // 3秒后自动隐藏状态
-        setTimeout(() => {
-            if (statusEl.className.includes('success') || statusEl.className.includes('error')) {
-                statusEl.className = 'ocr-status show';
-                setTimeout(() => {
-                    statusEl.classList.remove('show');
-                }, 2000);
-            }
-        }, 3000);
-    }
-
-    function retryOcr() {
-        // 如果有保存的图片和坐标，重新识别
-        const preview = document.getElementById('preview');
-        if (preview.src && currentClickCoords) {
-            recognizeTextFromImage(preview.src, currentClickCoords.x, currentClickCoords.y);
-        } else {
-            alert('请先上传照片并点击标记位置');
+            return null;
         }
     }
 
     // ============================================================
-    //  标记点管理（支持 OCR 识别）
+    //  标记点管理
     // ============================================================
-
-    let markers = [];
-    let pendingMarkerCoords = null;
-
-    function getImageCoords(e) {
-        const container = document.getElementById('photoContainer');
-        const rect = container.getBoundingClientRect();
-        let x = (e.clientX - rect.left) / rect.width;
-        let y = (e.clientY - rect.top) / rect.height;
-        x = Math.max(0, Math.min(1, x));
-        y = Math.max(0, Math.min(1, y));
-        return { x, y };
-    }
 
     function addMarker(e) {
-        const coords = getImageCoords(e);
-        pendingMarkerCoords = coords;
+        const container = document.getElementById('photoContainer');
+        const img = document.getElementById('preview');
+        const rect = container.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const clickY = e.clientY - rect.top;
+        const displayWidth = rect.width;
+        const displayHeight = rect.height;
 
-        // 获取当前图片进行OCR识别
-        const preview = document.getElementById('preview');
-        if (preview.src && preview.src.startsWith('data:image')) {
-            // 显示识别状态
-            recognizeTextFromImage(preview.src, coords.x, coords.y);
+        pendingMarkerCoords = { x: clickX / displayWidth, y: clickY / displayHeight };
+
+        // 获取图片数据
+        const imageDataUrl = img.src;
+        if (imageDataUrl && imageDataUrl.startsWith('data:image')) {
+            recognizeLocalArea(imageDataUrl, clickX, clickY, displayWidth, displayHeight)
+                .then((recognizedText) => {
+                    // 识别完成后，如果有关联的标记坐标，打开弹窗
+                    if (pendingMarkerCoords) {
+                        if (recognizedText) {
+                            document.getElementById('modalHint').textContent = '点击确认使用识别结果，或手动修改';
+                            document.getElementById('errorModal').classList.add('show');
+                        } else {
+                            document.getElementById('modalHint').textContent = '请手动输入错题内容';
+                            document.getElementById('errorModal').classList.add('show');
+                        }
+                    }
+                });
         } else {
-            // 没有图片，直接弹出输入框
-            document.getElementById('recognizedContent').textContent = '请上传照片';
+            // 没有图片数据
+            document.getElementById('recognizedContent').textContent = '请先上传照片';
             document.getElementById('errorContentInput').value = '';
             document.getElementById('errorModal').classList.add('show');
             document.getElementById('modalHint').textContent = '请手动输入错题内容';
@@ -873,17 +464,15 @@
             return;
         }
 
-        // 如果是从OCR识别来的，使用点击坐标；否则使用pending坐标
-        const coords = currentClickCoords || pendingMarkerCoords;
+        const coords = pendingMarkerCoords || { x: 0.5, y: 0.5 };
         const id = markers.length + 1;
         markers.push({
-            x: coords ? coords.x : 0.5,
-            y: coords ? coords.y : 0.5,
+            x: coords.x,
+            y: coords.y,
             id: id,
             content: content
         });
 
-        currentClickCoords = null;
         pendingMarkerCoords = null;
         closeErrorModal();
         renderMarkers();
@@ -892,17 +481,34 @@
 
     function closeErrorModal() {
         document.getElementById('errorModal').classList.remove('show');
-        currentClickCoords = null;
         pendingMarkerCoords = null;
-        // 隐藏OCR状态
         document.getElementById('ocrStatus').classList.remove('show');
     }
 
-    document.getElementById('errorContentInput').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-            confirmError();
+    function retryOcr() {
+        const img = document.getElementById('preview');
+        if (!img.src || !img.src.startsWith('data:image')) {
+            alert('请先上传照片');
+            return;
         }
-    });
+        // 找到最后一个标记点的位置重新识别
+        if (markers.length > 0) {
+            const lastMarker = markers[markers.length - 1];
+            const container = document.getElementById('photoContainer');
+            const rect = container.getBoundingClientRect();
+            const clickX = lastMarker.x * rect.width;
+            const clickY = lastMarker.y * rect.height;
+            pendingMarkerCoords = { x: lastMarker.x, y: lastMarker.y };
+            recognizeLocalArea(img.src, clickX, clickY, rect.width, rect.height)
+                .then(() => {
+                    if (pendingMarkerCoords) {
+                        document.getElementById('errorModal').classList.add('show');
+                    }
+                });
+        } else {
+            alert('请先点击错题位置');
+        }
+    }
 
     function removeMarker(id) {
         markers = markers.filter(m => m.id !== id);
@@ -953,7 +559,6 @@
             el.appendChild(del);
 
             el.title = m.content || `第${m.id}处错题`;
-
             container.appendChild(el);
         });
     }
@@ -1017,20 +622,14 @@
     clickOverlay.addEventListener('click', addMarker);
 
     // ============================================================
-    //  成功弹窗
+    //  提交任务
     // ============================================================
 
     function showSuccessToast() {
         const toast = document.getElementById('successToast');
         toast.classList.add('show');
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 2500);
+        setTimeout(() => { toast.classList.remove('show'); }, 2500);
     }
-
-    // ============================================================
-    //  提交任务
-    // ============================================================
 
     function submitTask() {
         const taskName = document.getElementById('taskName').value.trim() || '未命名作业';
@@ -1038,18 +637,11 @@
         const correct = parseInt(document.getElementById('correctCount').value) || 0;
         const total = parseInt(document.getElementById('totalCount').value) || 1;
 
-        if (total <= 0) {
-            alert('总题数至少为1！');
-            return;
-        }
-        if (correct > total) {
-            alert('正确题数不能超过总题数！');
-            return;
-        }
+        if (total <= 0) { alert('总题数至少为1！'); return; }
+        if (correct > total) { alert('正确题数不能超过总题数！'); return; }
 
         const accuracy = Math.round((correct / total) * 100);
         const today = new Date().toISOString().slice(0, 10);
-
         const errors = markers.map(m => m.content || `第${m.id}处 待复习`);
 
         const record = {
@@ -1068,54 +660,35 @@
         data.records.push(record);
         saveCurrentData(data);
 
-        updateStreak(today);
+        const streak = getStreak();
+        const lastDate = streak.lastDate;
+        if (lastDate !== today) {
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toISOString().slice(0, 10);
+            if (lastDate === yesterdayStr) {
+                streak.days += 1;
+            } else {
+                streak.days = 1;
+            }
+            streak.lastDate = today;
+            saveStreak(streak);
+        }
 
         markers = [];
         renderMarkers();
         updateErrorPreview();
-
         showSuccessToast();
-        showResult(accuracy, correct, total);
-    }
 
-    function updateStreak(today) {
-        const streak = getStreak();
-        const lastDate = streak.lastDate;
-        if (lastDate === today) return;
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-        const yesterdayStr = yesterday.toISOString().slice(0, 10);
-        if (lastDate === yesterdayStr) {
-            streak.days += 1;
-        } else {
-            streak.days = 1;
-        }
-        streak.lastDate = today;
-        saveStreak(streak);
-    }
-
-    function getStreak() {
-        return getCurrentData().streak || { days: 0, lastDate: null };
-    }
-
-    function saveStreak(streak) {
-        const data = getCurrentData();
-        data.streak = streak;
-        saveCurrentData(data);
-    }
-
-    function showResult(accuracy, correct, total) {
         const box = document.getElementById('resultBox');
-        const accEl = document.getElementById('resultAccuracy');
-        const msgEl = document.getElementById('resultMessage');
-        box.classList.add('show');
-        accEl.textContent = accuracy + '%';
+        document.getElementById('resultAccuracy').textContent = accuracy + '%';
         let emoji, msg;
-        if (accuracy === 100) { emoji = '🎉'; msg = '完美！全部正确！你是小天才！⭐'; }
-        else if (accuracy >= 80) { emoji = '😊'; msg = '做得不错！继续加油，你可以更好！💪'; }
-        else if (accuracy >= 60) { emoji = '📖'; msg = '有进步空间！错题再多练练，明天会更好！'; }
-        else { emoji = '💪'; msg = '没关系！错题是学习的机会，再来一次！'; }
-        msgEl.textContent = emoji + ' ' + msg + ` （${correct}/${total}）`;
+        if (accuracy === 100) { emoji = '🎉'; msg = '完美！全部正确！⭐'; }
+        else if (accuracy >= 80) { emoji = '😊'; msg = '做得不错！继续加油！💪'; }
+        else if (accuracy >= 60) { emoji = '📖'; msg = '有进步空间！明天会更好！'; }
+        else { emoji = '💪'; msg = '没关系！再来一次！'; }
+        document.getElementById('resultMessage').textContent = emoji + ' ' + msg + ` （${correct}/${total}）`;
+        box.classList.add('show');
         box.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
@@ -1146,6 +719,10 @@
         document.getElementById('childNameDisplay').textContent = getChildName();
         document.getElementById('errorModal').addEventListener('click', function(e) {
             if (e.target === this) closeErrorModal();
+        });
+        // 回车键确认
+        document.getElementById('errorContentInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') confirmError();
         });
     });
 </script>
