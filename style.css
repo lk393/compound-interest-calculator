@@ -331,6 +331,34 @@ body {
     font-size: 0.85rem;
     color: #94a3b8;
 }
+/* ===== 反馈按钮样式 ===== */
+.feedback-section {
+    text-align: center;
+    padding: 0.8rem 0 0.3rem;
+    border-top: 1px solid #e9edf2;
+    margin-top: 1.5rem;
+}
+.feedback-section p {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin-bottom: 0.5rem;
+}
+.feedback-section .fb-btn {
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1.5rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.feedback-section .fb-btn:hover {
+    background: #1d4ed8;
+}
+.feedback-section .fb-btn:active {
+    transform: scale(0.97);
+}
 .top-nav .breadcrumb span {
     color: #1e293b;
     font-weight: 500;
