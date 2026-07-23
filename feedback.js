@@ -1,7 +1,7 @@
-// ===== 反馈功能（使用 EmailJS） =====
+// ===== 反馈功能（使用 EmailJS - 修复版） =====
 
-// EmailJS 配置（已更新 Service ID）
-const SERVICE_ID = 'service_ksxo1dz';
+// 使用 default_service 自动检测
+const SERVICE_ID = 'default_service';
 const TEMPLATE_ID = 'feedback_template';
 const PUBLIC_KEY = '0fToB59RZVvEZdeD8';
 
@@ -10,7 +10,16 @@ const PUBLIC_KEY = '0fToB59RZVvEZdeD8';
     const script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
     script.onload = function() {
-        emailjs.init(PUBLIC_KEY);
+        console.log('✅ EmailJS SDK loaded');
+        emailjs.init(PUBLIC_KEY).then(function() {
+            console.log('✅ EmailJS initialized with Public Key');
+        }).catch(function(err) {
+            console.error('❌ EmailJS init error:', err);
+        });
+    };
+    script.onerror = function() {
+        console.error('❌ Failed to load EmailJS SDK');
+        alert('❌ 加载 EmailJS 失败，请刷新页面重试');
     };
     document.head.appendChild(script);
 })();
@@ -69,6 +78,11 @@ function closeFeedbackModal() {
 }
 
 function sendFeedback() {
+    if (typeof emailjs === 'undefined') {
+        alert('❌ EmailJS is not loaded. Please refresh the page and try again.');
+        return;
+    }
+
     const message = document.getElementById('feedbackMessage').value.trim();
     if (!message) {
         alert('Please describe the issue or your suggestion.');
@@ -95,6 +109,8 @@ function sendFeedback() {
     status.style.color = '#0369a1';
     status.textContent = '📤 Sending feedback...';
 
+    console.log('📤 Sending via default_service...');
+
     emailjs.send(SERVICE_ID, TEMPLATE_ID, {
         toolName: toolName,
         pageUrl: pageUrl,
@@ -102,6 +118,7 @@ function sendFeedback() {
         message: message,
         userEmail: userEmail
     }).then(function(response) {
+        console.log('✅ Success:', response);
         status.style.color = '#10b981';
         status.textContent = '✅ Feedback sent successfully! Thank you! 🎉';
         btn.textContent = '✓ Sent';
@@ -110,15 +127,14 @@ function sendFeedback() {
             closeFeedbackModal();
         }, 2000);
     }).catch(function(error) {
-        console.error('EmailJS Error:', error);
+        console.error('❌ Error:', error);
         status.style.color = '#ef4444';
-        status.textContent = '❌ Failed to send. Please try again or email us directly.';
+        status.textContent = '❌ Error: ' + (error.text || error.message || 'Unknown');
         btn.disabled = false;
         btn.textContent = 'Retry';
     });
 }
 
-// 自动在每个工具页面底部生成反馈区域（英文）
 (function() {
     if (document.querySelector('.feedback-section')) return;
 
