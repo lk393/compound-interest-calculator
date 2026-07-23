@@ -1,6 +1,6 @@
 // ===== 反馈功能（使用 EmailJS） =====
 
-// EmailJS 配置（已替换为你的实际值）
+// EmailJS 配置（你的实际值）
 const SERVICE_ID = 'service_1auxwht';
 const TEMPLATE_ID = 'feedback_template';
 const PUBLIC_KEY = '0fToB59RZVvEZdeD8';
@@ -118,6 +118,7 @@ function sendFeedback() {
     });
 }
 
+// 自动在每个工具页面底部生成反馈区域（英文）
 (function() {
     if (document.querySelector('.feedback-section')) return;
 
