@@ -1,9 +1,9 @@
-// ===== 反馈功能（使用 EmailJS - 成功版本） =====
+// ===== 反馈功能（使用 EmailJS） =====
 
-// EmailJS 配置（从成功版本恢复）
+// EmailJS 配置
 const SERVICE_ID = 'service_ksxo1dz';
 const TEMPLATE_ID = 'feedback_template';
-const PUBLIC_KEY = '0fToB59RZVvEZdeD8';
+const PUBLIC_KEY = '0fToB59RZVuE2deD8';
 
 // 加载 EmailJS SDK
 (function() {
@@ -134,35 +134,19 @@ function sendFeedback() {
     });
 }
 
-// 在 Year-by-Year Growth 表格和 How to read your results 之间插入
+// 自动在每个工具页面底部生成反馈区域
 (function() {
     if (document.querySelector('.feedback-section')) return;
 
-    const allCards = document.querySelectorAll('.accordion-card');
-    let targetCard = null;
-    for (const card of allCards) {
-        const heading = card.querySelector('h2');
-        if (heading && heading.textContent.includes('How to read your results')) {
-            targetCard = card;
-            break;
-        }
-    }
-    if (!targetCard) {
-        targetCard = document.querySelector('.accordion-card:last-of-type');
-    }
+    const footer = document.querySelector('footer.site-footer');
+    if (!footer) return;
 
-    if (targetCard) {
-        const container = document.createElement('div');
-        container.className = 'feedback-section';
-        container.style.cssText = 'margin-top: 1.5rem; margin-bottom: 1rem; padding: 1rem 0; text-align: center; background: #f8fafc; border-radius: 10px; border: 1px solid #e9edf2;';
-        container.innerHTML = `
-            <p style="font-size:0.95rem; color:#475569; margin-bottom:0.5rem;">
-                ⚠️ Found an issue? We take accuracy seriously!
-            </p>
-            <button class="fb-btn" onclick="openFeedback()" style="background:#2563eb; color:white; border:none; border-radius:8px; padding:0.5rem 1.5rem; font-size:0.9rem; cursor:pointer; transition:background 0.2s;">
-                📧 Submit Feedback
-            </button>
-        `;
-        targetCard.parentNode.insertBefore(container, targetCard);
-    }
+    const container = document.createElement('div');
+    container.className = 'feedback-section';
+    container.innerHTML = `
+        <p>⚠️ Found an issue? We take accuracy seriously!</p>
+        <button class="fb-btn" onclick="openFeedback()">📧 Submit Feedback</button>
+    `;
+
+    footer.parentNode.insertBefore(container, footer);
 })();
