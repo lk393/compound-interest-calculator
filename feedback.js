@@ -137,15 +137,12 @@ function sendFeedback() {
 (function() {
     if (document.querySelector('.feedback-section')) return;
 
-    // 找到最后一个 accordion-card（FAQ 区域）
     const faq = document.querySelector('.accordion-card:last-of-type');
     if (faq) {
         const container = document.createElement('div');
         container.className = 'feedback-section';
-        // 使用文案选项 A（温和邀请），如需要可替换为 B/C/D
         container.innerHTML = `
-            <p>💡 Found an error or have a suggestion? We'd love to hear it!</p>
-            <button class="fb-btn" onclick="openFeedback()">📧 Submit Feedback</button>
+            <p>Found an error? We take accuracy very seriously. <a href="#" onclick="event.preventDefault();openFeedback();" style="color:#2563eb;text-decoration:underline;">Submit feedback</a> We'll verify and fix it as soon as possible.</p>
         `;
         faq.parentNode.insertBefore(container, faq.nextSibling);
     }
