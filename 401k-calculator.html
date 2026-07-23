@@ -172,6 +172,10 @@
             </div>
             <p style="font-size:0.75rem; color:#94a3b8; margin-top:0.3rem; text-align:center;">* Assumes consistent monthly contributions, employer match, and steady annual returns.</p>
         </div>
+        <!-- ===== 推荐区域（工具联动推荐） ===== -->
+    <div id="recommendations-area"></div>
+
+</main>
     </main>
 
     <section class="accordion-card">
@@ -288,6 +292,15 @@
         }
 
         document.getElementById('results-area').style.display = 'block';
+            // ===== 推荐联动 =====
+    const finalBalance = document.getElementById('final-balance-401k').textContent.replace(/[^0-9.]/g, '');
+    const currentBalance = document.getElementById('current-balance').value;
+    const annualIncome = document.getElementById('monthly-contrib-401k').value * 12;
+    showRecommendations('401k-calculator.html', {
+        finalBalance: finalBalance,
+        currentBalance: currentBalance,
+        annualIncome: annualIncome
+    });
     }
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('infoAccordion').style.display = 'block';
@@ -303,6 +316,10 @@
     });
 </script>
     <script src="feedback.js"></script>
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+</body>
+</html>
 </body>
 </html>
 </body>
