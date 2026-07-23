@@ -1,8 +1,9 @@
-// ===== 反馈功能（使用 EmailJS） =====
+// ===== 反馈功能（使用 EmailJS - 成功版本） =====
 
+// EmailJS 配置（从成功版本恢复）
 const SERVICE_ID = 'service_ksxo1dz';
 const TEMPLATE_ID = 'feedback_template';
-const PUBLIC_KEY = '0fToB59RZVuE2deD8';
+const PUBLIC_KEY = '0fToB59RZVvEZdeD8';
 
 // 加载 EmailJS SDK
 (function() {
@@ -133,11 +134,10 @@ function sendFeedback() {
     });
 }
 
-// 在 Year-by-Year Growth 表格和 How to read your results 之间插入反馈区域
+// 在 Year-by-Year Growth 表格和 How to read your results 之间插入
 (function() {
     if (document.querySelector('.feedback-section')) return;
 
-    // 方法：找到 "How to read your results" 标题所在的 accordion-card
     const allCards = document.querySelectorAll('.accordion-card');
     let targetCard = null;
     for (const card of allCards) {
@@ -147,8 +147,6 @@ function sendFeedback() {
             break;
         }
     }
-
-    // 如果没找到，回退到最后一个 accordion-card
     if (!targetCard) {
         targetCard = document.querySelector('.accordion-card:last-of-type');
     }
@@ -165,7 +163,6 @@ function sendFeedback() {
                 📧 Submit Feedback
             </button>
         `;
-        // 插入到 How to read your results 之前
         targetCard.parentNode.insertBefore(container, targetCard);
     }
 })();
