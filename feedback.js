@@ -1,7 +1,7 @@
 // ===== 反馈功能（使用 EmailJS） =====
 
-// EmailJS 配置（你的实际值）
-const SERVICE_ID = 'service_1auxwht';
+// EmailJS 配置（已更新 Service ID）
+const SERVICE_ID = 'service_ksxo1dz';
 const TEMPLATE_ID = 'feedback_template';
 const PUBLIC_KEY = '0fToB59RZVvEZdeD8';
 
@@ -122,8 +122,8 @@ function sendFeedback() {
 (function() {
     if (document.querySelector('.feedback-section')) return;
 
-    const main = document.querySelector('main');
-    if (!main) return;
+    const footer = document.querySelector('footer.site-footer');
+    if (!footer) return;
 
     const container = document.createElement('div');
     container.className = 'feedback-section';
@@ -132,5 +132,5 @@ function sendFeedback() {
         <button class="fb-btn" onclick="openFeedback()">📧 Submit Feedback</button>
     `;
 
-    main.parentNode.insertBefore(container, main.nextSibling);
+    footer.parentNode.insertBefore(container, footer);
 })();
