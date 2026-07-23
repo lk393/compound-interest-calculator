@@ -1,6 +1,5 @@
 // ===== 反馈功能（使用 EmailJS） =====
 
-// EmailJS 配置
 const SERVICE_ID = 'service_ksxo1dz';
 const TEMPLATE_ID = 'feedback_template';
 const PUBLIC_KEY = '0fToB59RZVuE2deD8';
@@ -134,19 +133,20 @@ function sendFeedback() {
     });
 }
 
-// 自动在每个工具页面底部生成反馈区域
+// 自动在 FAQ 之后生成反馈区域
 (function() {
     if (document.querySelector('.feedback-section')) return;
 
-    const footer = document.querySelector('footer.site-footer');
-    if (!footer) return;
-
-    const container = document.createElement('div');
-    container.className = 'feedback-section';
-    container.innerHTML = `
-        <p>⚠️ Found an issue? We take accuracy seriously!</p>
-        <button class="fb-btn" onclick="openFeedback()">📧 Submit Feedback</button>
-    `;
-
-    footer.parentNode.insertBefore(container, footer);
+    // 找到最后一个 accordion-card（FAQ 区域）
+    const faq = document.querySelector('.accordion-card:last-of-type');
+    if (faq) {
+        const container = document.createElement('div');
+        container.className = 'feedback-section';
+        // 使用文案选项 A（温和邀请），如需要可替换为 B/C/D
+        container.innerHTML = `
+            <p>💡 Found an error or have a suggestion? We'd love to hear it!</p>
+            <button class="fb-btn" onclick="openFeedback()">📧 Submit Feedback</button>
+        `;
+        faq.parentNode.insertBefore(container, faq.nextSibling);
+    }
 })();
