@@ -194,6 +194,32 @@
             color: #475569;
         }
 
+        /* ===== 首页反馈区域 ===== */
+        .feedback-section-home {
+            text-align: center;
+            padding: 1.2rem 0 0.8rem;
+            margin-top: 0.5rem;
+            border-top: 1px solid #e9edf2;
+        }
+        .feedback-section-home p {
+            font-size: 0.95rem;
+            color: #475569;
+            margin-bottom: 0.5rem;
+        }
+        .feedback-section-home .fb-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1.5rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .feedback-section-home .fb-btn:hover {
+            background: #1d4ed8;
+        }
+
         @media (max-width: 640px) {
             .hero h1 { font-size: 1.5rem; }
             .tool-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
@@ -247,9 +273,15 @@
         </div>
 
         <div class="footer-stats">
-            <span>📊 Total: <strong id="totalCount">100</strong> tools</span>
+            <span>📊 Total: <strong id="totalCount">93</strong> tools</span>
             <span>✅ Available: <strong id="availableCount">36</strong></span>
-            <span>⏳ Coming soon: <strong id="comingCount">64</strong></span>
+            <span>⏳ Coming soon: <strong id="comingCount">57</strong></span>
+        </div>
+
+        <!-- ===== 首页反馈区域 ===== -->
+        <div class="feedback-section-home">
+            <p>⚠️ Found an issue? We take accuracy seriously!</p>
+            <button class="fb-btn" onclick="openFeedback()">📧 Submit Feedback</button>
         </div>
 
     </main>
@@ -264,6 +296,8 @@
         </p>
     </footer>
 </div>
+
+<script src="feedback.js"></script>
 
 <script>
     const toolsData = {
@@ -488,5 +522,6 @@
         renderTools('');
     });
 </script>
+
 </body>
 </html>
