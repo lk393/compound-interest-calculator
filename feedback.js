@@ -1,9 +1,9 @@
-// ===== 反馈功能（使用 EmailJS - 修复版） =====
+// ===== 反馈功能（使用 EmailJS） =====
 
-// 使用 default_service 自动检测
-const SERVICE_ID = 'default_service';
+// EmailJS 配置
+const SERVICE_ID = 'service_ksxo1dz';
 const TEMPLATE_ID = 'feedback_template';
-const PUBLIC_KEY = '0fToB59RZVvEZdeD8';
+const PUBLIC_KEY = '0fToB59RZVuE2deD8';
 
 // 加载 EmailJS SDK
 (function() {
@@ -12,14 +12,13 @@ const PUBLIC_KEY = '0fToB59RZVvEZdeD8';
     script.onload = function() {
         console.log('✅ EmailJS SDK loaded');
         emailjs.init(PUBLIC_KEY).then(function() {
-            console.log('✅ EmailJS initialized with Public Key');
+            console.log('✅ EmailJS initialized');
         }).catch(function(err) {
             console.error('❌ EmailJS init error:', err);
         });
     };
     script.onerror = function() {
         console.error('❌ Failed to load EmailJS SDK');
-        alert('❌ 加载 EmailJS 失败，请刷新页面重试');
     };
     document.head.appendChild(script);
 })();
@@ -109,7 +108,7 @@ function sendFeedback() {
     status.style.color = '#0369a1';
     status.textContent = '📤 Sending feedback...';
 
-    console.log('📤 Sending via default_service...');
+    console.log('📤 Sending feedback...');
 
     emailjs.send(SERVICE_ID, TEMPLATE_ID, {
         toolName: toolName,
@@ -135,6 +134,7 @@ function sendFeedback() {
     });
 }
 
+// 自动在每个工具页面底部生成反馈区域
 (function() {
     if (document.querySelector('.feedback-section')) return;
 
