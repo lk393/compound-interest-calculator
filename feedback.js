@@ -133,17 +133,39 @@ function sendFeedback() {
     });
 }
 
-// 自动在 FAQ 之后生成反馈区域
+// 在 Year-by-Year Growth 表格和 How to read your results 之间插入反馈区域
 (function() {
     if (document.querySelector('.feedback-section')) return;
 
-    const faq = document.querySelector('.accordion-card:last-of-type');
-    if (faq) {
+    // 方法：找到 "How to read your results" 标题所在的 accordion-card
+    const allCards = document.querySelectorAll('.accordion-card');
+    let targetCard = null;
+    for (const card of allCards) {
+        const heading = card.querySelector('h2');
+        if (heading && heading.textContent.includes('How to read your results')) {
+            targetCard = card;
+            break;
+        }
+    }
+
+    // 如果没找到，回退到最后一个 accordion-card
+    if (!targetCard) {
+        targetCard = document.querySelector('.accordion-card:last-of-type');
+    }
+
+    if (targetCard) {
         const container = document.createElement('div');
         container.className = 'feedback-section';
+        container.style.cssText = 'margin-top: 1.5rem; margin-bottom: 1rem; padding: 1rem 0; text-align: center; background: #f8fafc; border-radius: 10px; border: 1px solid #e9edf2;';
         container.innerHTML = `
-            <p>Found an error? We take accuracy very seriously. <a href="#" onclick="event.preventDefault();openFeedback();" style="color:#2563eb;text-decoration:underline;">Submit feedback</a> We'll verify and fix it as soon as possible.</p>
+            <p style="font-size:0.95rem; color:#475569; margin-bottom:0.5rem;">
+                ⚠️ Found an issue? We take accuracy seriously!
+            </p>
+            <button class="fb-btn" onclick="openFeedback()" style="background:#2563eb; color:white; border:none; border-radius:8px; padding:0.5rem 1.5rem; font-size:0.9rem; cursor:pointer; transition:background 0.2s;">
+                📧 Submit Feedback
+            </button>
         `;
-        faq.parentNode.insertBefore(container, faq.nextSibling);
+        // 插入到 How to read your results 之前
+        targetCard.parentNode.insertBefore(container, targetCard);
     }
 })();
