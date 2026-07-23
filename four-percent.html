@@ -6,7 +6,6 @@
     <title>4% Rule Calculator — Free Online Tool</title>
     <link rel="stylesheet" href="style.css" />
     <style>
-        /* ===== 4%法则计算器特有样式 ===== */
         .mode-selector {
             display: flex;
             gap: 0.5rem;
@@ -15,7 +14,6 @@
             border-radius: 12px;
             padding: 0.3rem;
         }
-
         .mode-btn {
             flex: 1;
             padding: 0.5rem 0.8rem;
@@ -28,16 +26,12 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-
         .mode-btn.active {
             background: #ffffff;
             color: #0f172a;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
-
-        .mode-btn:hover:not(.active) {
-            color: #1e293b;
-        }
+        .mode-btn:hover:not(.active) { color: #1e293b; }
 
         .results-summary {
             display: flex;
@@ -45,7 +39,6 @@
             gap: 0.7rem;
             margin: 1.5rem 0;
         }
-
         .summary-item {
             background: #f8fafc;
             border-radius: 12px;
@@ -54,48 +47,14 @@
             justify-content: space-between;
             align-items: center;
         }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
 
-        .summary-item .label {
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #475569;
-        }
-
-        .summary-item .value {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #0f172a;
-        }
-
-        .summary-item.highlight {
-            background: #eef2ff;
-            border: 1px solid #c7d2fe;
-        }
-
-        .summary-item.highlight .value {
-            color: #2563eb;
-        }
-
-        .form-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 0.9rem;
-        }
-
-        .field {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .field label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            color: #334155;
-        }
-
-        .field input,
-        .field select {
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
+        .field input {
             padding: 0.6rem 0.8rem;
             font-size: 1rem;
             border: 1.5px solid #dce1e8;
@@ -104,9 +63,7 @@
             transition: border-color 0.2s, box-shadow 0.2s;
             width: 100%;
         }
-
-        .field input:focus,
-        .field select:focus {
+        .field input:focus {
             outline: none;
             border-color: #2563eb;
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
@@ -125,62 +82,43 @@
             transition: background 0.2s;
             width: 100%;
         }
+        .btn:hover { background: #1d4ed8; }
 
-        .btn:hover {
-            background: #1d4ed8;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 0.8rem;
-        }
-
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
         @media (max-width: 640px) {
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
-            .summary-item {
-                padding: 0.6rem 1rem;
-            }
-            .summary-item .value {
-                font-size: 1rem;
-            }
-            .mode-btn {
-                font-size: 0.75rem;
-                padding: 0.4rem 0.5rem;
-            }
+            .info-grid { grid-template-columns: 1fr; }
+            .summary-item { padding: 0.6rem 1rem; }
+            .summary-item .value { font-size: 1rem; }
+            .mode-btn { font-size: 0.75rem; padding: 0.4rem 0.5rem; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-
-    <!-- ===== 顶部导航（面包屑） ===== -->
     <div class="top-nav">
         <a href="index.html" class="back-link">← Back to Home</a>
-        <div class="breadcrumb">
-            📊 <span>4% Rule Calculator</span>
-        </div>
+        <div class="breadcrumb">📊 <span>4% Rule Calculator</span></div>
     </div>
 
-    <!-- ===== 主卡片 ===== -->
     <main class="calculator-card">
         <h1>📊 4% Rule Calculator</h1>
         <p class="subtitle">How much can you safely withdraw from your retirement portfolio each year?</p>
 
-        <!-- 模式切换 -->
-        <div class="mode-selector">
-            <button class="mode-btn active" id="mode-spending" onclick="setMode('spending')">
-                💰 Spending → Nest Egg
-            </button>
-            <button class="mode-btn" id="mode-nestegg" onclick="setMode('nestegg')">
-                🏦 Nest Egg → Withdrawal
-            </button>
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>4% Rule Calculator</strong> — This tool applies the classic 4% rule to your personal
+                financial situation. It answers two important questions: <em>“How much can I safely withdraw from
+                my retirement portfolio each year without running out of money?”</em> and <em>“How much total savings
+                do I need to support my desired lifestyle?”</em>
+            </p>
         </div>
 
-        <!-- 输入区域（模式1：从年支出推算所需本金） -->
+        <div class="mode-selector">
+            <button class="mode-btn active" id="mode-spending" onclick="setMode('spending')">💰 Spending → Nest Egg</button>
+            <button class="mode-btn" id="mode-nestegg" onclick="setMode('nestegg')">🏦 Nest Egg → Withdrawal</button>
+        </div>
+
         <div class="form-grid" id="input-spending">
             <div class="field">
                 <label for="spending">Annual Spending in Retirement ($)</label>
@@ -190,12 +128,9 @@
                 <label for="withdrawal-rate">Safe Withdrawal Rate (%)</label>
                 <input type="number" id="withdrawal-rate" value="4" min="1" max="10" step="0.1" />
             </div>
-            <div style="margin-top:0.5rem;">
-                <button class="btn" onclick="calculate()">Calculate</button>
-            </div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculate()">Calculate</button></div>
         </div>
 
-        <!-- 输入区域（模式2：从已有本金推算每年可提取金额） -->
         <div class="form-grid" id="input-nestegg" style="display:none;">
             <div class="field">
                 <label for="nestegg">Your Nest Egg ($)</label>
@@ -205,32 +140,23 @@
                 <label for="withdrawal-rate2">Safe Withdrawal Rate (%)</label>
                 <input type="number" id="withdrawal-rate2" value="4" min="1" max="10" step="0.1" />
             </div>
-            <div style="margin-top:0.5rem;">
-                <button class="btn" onclick="calculate()">Calculate</button>
-            </div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculate()">Calculate</button></div>
         </div>
 
-        <!-- 结果区域 -->
         <div id="results-area" style="margin-top:1.8rem;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your 4% Rule Results</h2>
             <div class="results-summary" id="summary">
-                <div class="summary-item">
-                    <span class="label">Annual Withdrawal</span>
-                    <span class="value" id="result-annual">—</span>
-                </div>
-                <div class="summary-item">
-                    <span class="label">Monthly Withdrawal</span>
-                    <span class="value" id="result-monthly">—</span>
-                </div>
-                <div class="summary-item highlight">
-                    <span class="label">Nest Egg Needed</span>
-                    <span class="value" id="result-nestegg">—</span>
-                </div>
+                <div class="summary-item"><span class="label">Annual Withdrawal</span><span class="value" id="result-annual">—</span></div>
+                <div class="summary-item"><span class="label">Monthly Withdrawal</span><span class="value" id="result-monthly">—</span></div>
+                <div class="summary-item highlight"><span class="label">Nest Egg Needed</span><span class="value" id="result-nestegg">—</span></div>
             </div>
         </div>
+
+        <!-- ===== 推荐区域 ===== -->
+        <div id="recommendations-area"></div>
+
     </main>
 
-    <!-- ===== 指标说明（折叠） ===== -->
     <section class="accordion-card">
         <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
             <h2>📖 How to read your results</h2>
@@ -238,81 +164,39 @@
         </div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block">
-                    <h3>Annual Withdrawal</h3>
-                    <p>How much you can safely withdraw from your portfolio each year without running out of money. Based on the 4% rule.</p>
-                </div>
-                <div class="info-block">
-                    <h3>Monthly Withdrawal</h3>
-                    <p>Your annual withdrawal divided by 12. This is your monthly budget in retirement.</p>
-                </div>
-                <div class="info-block">
-                    <h3>Nest Egg Needed</h3>
-                    <p>The total portfolio size you need to support your desired spending. Multiply your annual spending by 25 (or 100 ÷ withdrawal rate).</p>
-                </div>
+                <div class="info-block"><h3>Annual Withdrawal</h3><p>How much you can safely withdraw from your portfolio each year without running out of money. Based on the 4% rule.</p></div>
+                <div class="info-block"><h3>Monthly Withdrawal</h3><p>Your annual withdrawal divided by 12. This is your monthly budget in retirement.</p></div>
+                <div class="info-block"><h3>Nest Egg Needed</h3><p>The total portfolio size you need to support your desired spending. Multiply your annual spending by 25 (or 100 ÷ withdrawal rate).</p></div>
             </div>
         </div>
     </section>
 
-    <!-- ===== FAQ（折叠） ===== -->
     <section class="accordion-card">
         <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
             <h2>❓ FAQ</h2>
             <span class="accordion-arrow" id="faqArrow">▶</span>
         </div>
         <div class="accordion-body" id="faqAccordion">
-
             <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>What is the 4% rule?</span>
-                </div>
-                <div class="faq-answer">The 4% rule says you can withdraw 4% of your portfolio in the first year of retirement, then adjust for inflation each year. It's designed to last 30+ years based on historical market data.</div>
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the 4% rule?</span></div>
+                <div class="faq-answer">The 4% rule says you can withdraw 4% of your portfolio in the first year of retirement, then adjust for inflation each year. It's designed to last 30+ years.</div>
             </div>
-
             <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>Where does the 25x rule come from?</span>
-                </div>
-                <div class="faq-answer">25x is just another way of saying the 4% rule. If you need $40,000/year, multiply by 25 = $1,000,000. 4% of $1,000,000 = $40,000.</div>
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Is the 4% rule still safe?</span></div>
+                <div class="faq-answer">Many still use it as a rule of thumb, but some argue 3-3.5% is safer for longer retirements (40+ years).</div>
             </div>
-
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>Is the 4% rule still safe?</span>
-                </div>
-                <div class="faq-answer">Many still use it as a rule of thumb, but some argue 3-3.5% is safer for longer retirements (40+ years). Use a lower rate if you're retiring early.</div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>Does this include inflation?</span>
-                </div>
-                <div class="faq-answer">Yes — the 4% rule was designed for a 30-year retirement with inflation adjustments. You increase your withdrawal amount each year with inflation.</div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>Can I withdraw more than 4%?</span>
-                </div>
-                <div class="faq-answer">You could, but it increases the risk of running out of money. A higher withdrawal rate means a shorter "safe" retirement period or requires more flexibility in your spending.</div>
-            </div>
-
         </div>
     </section>
 
-    <!-- ===== 页脚 ===== -->
     <footer class="site-footer">
-        <p>© 2026 — 4% Rule Calculator · Free Online Tool</p>
+        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
     </footer>
 </div>
 
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+
 <script>
-    // ===== 折叠切换函数 =====
     function toggleAccordion(id) {
         const body = document.getElementById(id);
         const arrow = document.getElementById(id + 'Arrow');
@@ -324,7 +208,6 @@
             arrow.textContent = '▶';
         }
     }
-
     function toggleFaq(el) {
         const answer = el.nextElementSibling;
         const arrow = el.querySelector('.faq-arrow');
@@ -337,14 +220,11 @@
         }
     }
 
-    // ===== 模式切换 =====
     let currentMode = 'spending';
 
     function setMode(mode) {
         currentMode = mode;
-        document.querySelectorAll('.mode-btn').forEach(function(btn) {
-            btn.classList.remove('active');
-        });
+        document.querySelectorAll('.mode-btn').forEach(function(btn) { btn.classList.remove('active'); });
         if (mode === 'spending') {
             document.getElementById('mode-spending').classList.add('active');
             document.getElementById('input-spending').style.display = 'flex';
@@ -357,20 +237,13 @@
         calculate();
     }
 
-    // ===== 核心计算 =====
     function calculate() {
-        const fmt = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        });
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
         if (currentMode === 'spending') {
             const spending = parseFloat(document.getElementById('spending').value) || 0;
             const rate = parseFloat(document.getElementById('withdrawal-rate').value) || 4;
             const rateDecimal = rate / 100;
-
             const nestEggNeeded = spending / rateDecimal;
             const annualWithdrawal = nestEggNeeded * rateDecimal;
             const monthlyWithdrawal = annualWithdrawal / 12;
@@ -379,44 +252,46 @@
             document.getElementById('result-monthly').textContent = fmt.format(monthlyWithdrawal);
             document.getElementById('result-nestegg').textContent = fmt.format(nestEggNeeded);
 
+            // ===== 推荐联动 =====
+            const nestEgg = fmt.format(nestEggNeeded).replace(/[^0-9.]/g, '');
+            const annualSpending = document.getElementById('spending').value;
+            showRecommendations('four-percent.html', {
+                nestEgg: nestEgg,
+                annualSpending: annualSpending
+            });
+
         } else {
             const nestEgg = parseFloat(document.getElementById('nestegg').value) || 0;
             const rate = parseFloat(document.getElementById('withdrawal-rate2').value) || 4;
             const rateDecimal = rate / 100;
-
             const annualWithdrawal = nestEgg * rateDecimal;
             const monthlyWithdrawal = annualWithdrawal / 12;
 
             document.getElementById('result-annual').textContent = fmt.format(annualWithdrawal);
             document.getElementById('result-monthly').textContent = fmt.format(monthlyWithdrawal);
             document.getElementById('result-nestegg').textContent = fmt.format(nestEgg);
+
+            // ===== 推荐联动 =====
+            const nestEggVal = fmt.format(nestEgg).replace(/[^0-9.]/g, '');
+            showRecommendations('four-percent.html', {
+                nestEgg: nestEggVal,
+                annualSpending: '0'
+            });
         }
     }
 
-    // ===== 页面加载 =====
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('infoAccordion').style.display = 'block';
         document.getElementById('infoArrow').textContent = '▼';
         document.getElementById('faqAccordion').style.display = 'none';
         document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(function(el) {
-            el.style.display = 'none';
-        });
-        document.querySelectorAll('.faq-arrow').forEach(function(el) {
-            el.textContent = '▶';
-        });
+        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
         calculate();
     });
-
-    // 输入变化时自动重新计算
     document.addEventListener('input', function(e) {
-        if (e.target.closest('.form-grid')) {
-            calculate();
-        }
+        if (e.target.closest('.form-grid')) { calculate(); }
     });
 </script>
-    <script src="feedback.js"></script>
-</body>
-</html>
 </body>
 </html>
