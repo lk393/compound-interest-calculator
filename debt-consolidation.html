@@ -23,7 +23,6 @@
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
         .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
-        .summary-item.highlight .value { color: #2563eb; }
         .summary-item.positive .value { color: #10b981; }
 
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
@@ -91,14 +90,8 @@
         .comparison-box.better {
             border: 2px solid #10b981;
         }
-        .comparison-box.better h4 {
-            color: #10b981;
-        }
         .comparison-box.worse {
             border: 2px solid #ef4444;
-        }
-        .comparison-box.worse h4 {
-            color: #ef4444;
         }
 
         .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
@@ -126,8 +119,7 @@
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
                 <strong>Debt Consolidation Calculator</strong> — This tool compares your current multiple
                 debts with a single consolidated loan. It answers the question: <em>“Will consolidating my
-                debts save me money?”</em> You'll see the monthly payment, total interest, and payoff time
-                for both scenarios.
+                debts save me money?”</em>
             </p>
         </div>
 
@@ -162,22 +154,20 @@
 
         <div id="results-area" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Comparison Results</h2>
-
             <div class="comparison-grid">
                 <div class="comparison-box" id="box-current">
                     <h4>📋 Current Debts</h4>
-                    <div class="row"><span>Monthly Payment</span><span class="num" id="current-monthly">—</span></div>
-                    <div class="row"><span>Total Interest</span><span class="num" id="current-interest">—</span></div>
-                    <div class="row"><span>Payoff Time</span><span class="num" id="current-time">—</span></div>
+                    <div class="row"><span>Monthly Payment</span><span class="num" id="current-monthly-dc">—</span></div>
+                    <div class="row"><span>Total Interest</span><span class="num" id="current-interest-dc">—</span></div>
+                    <div class="row"><span>Payoff Time</span><span class="num" id="current-time-dc">—</span></div>
                 </div>
                 <div class="comparison-box" id="box-consolidated">
                     <h4>🔄 Consolidated Loan</h4>
-                    <div class="row"><span>Monthly Payment</span><span class="num" id="consol-monthly">—</span></div>
-                    <div class="row"><span>Total Interest</span><span class="num" id="consol-interest">—</span></div>
-                    <div class="row"><span>Payoff Time</span><span class="num" id="consol-time">—</span></div>
+                    <div class="row"><span>Monthly Payment</span><span class="num" id="consol-monthly-dc">—</span></div>
+                    <div class="row"><span>Total Interest</span><span class="num" id="consol-interest-dc">—</span></div>
+                    <div class="row"><span>Payoff Time</span><span class="num" id="consol-time-dc">—</span></div>
                 </div>
             </div>
-
             <div class="results-summary" id="summary">
                 <div class="summary-item highlight">
                     <span class="label">💡 Recommendation</span>
@@ -189,6 +179,10 @@
                 </div>
             </div>
         </div>
+
+        <!-- ===== 推荐区域 ===== -->
+        <div id="recommendations-area"></div>
+
     </main>
 
     <section class="accordion-card">
@@ -198,9 +192,9 @@
         </div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block"><h3>Monthly Payment</h3><p>The amount you pay each month under each scenario. Lower is better for cash flow.</p></div>
-                <div class="info-block"><h3>Total Interest</h3><p>The total interest you'll pay. Lower is better — this is where consolidation saves money.</p></div>
-                <div class="info-block"><h3>Payoff Time</h3><p>How long until you're debt-free. Consolidation may extend the term but lower the rate.</p></div>
+                <div class="info-block"><h3>Monthly Payment</h3><p>The amount you pay each month under each scenario.</p></div>
+                <div class="info-block"><h3>Total Interest</h3><p>The total interest you'll pay. Lower is better.</p></div>
+                <div class="info-block"><h3>Payoff Time</h3><p>How long until you're debt-free.</p></div>
             </div>
         </div>
     </section>
@@ -213,7 +207,7 @@
         <div class="accordion-body" id="faqAccordion">
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Is debt consolidation always a good idea?</span></div>
-                <div class="faq-answer">Not always — it depends on the rates and fees. Consolidation is usually beneficial if you can get a significantly lower rate and avoid new debt.</div>
+                <div class="faq-answer">Not always — it depends on the rates and fees. Consolidation is usually beneficial if you can get a significantly lower rate.</div>
             </div>
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What about consolidation fees?</span></div>
@@ -226,6 +220,9 @@
         <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
     </footer>
 </div>
+
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
 
 <script>
     function toggleAccordion(id) {
@@ -250,6 +247,7 @@
             arrow.textContent = '▶';
         }
     }
+
     function calculate() {
         const balance = parseFloat(document.getElementById('current-balance').value) || 0;
         const currentRate = parseFloat(document.getElementById('current-rate').value) || 0;
@@ -265,9 +263,8 @@
         const monthlyRate1 = currentRate / 100 / 12;
         const monthlyRate2 = consolRate / 100 / 12;
 
-        // Current debt payoff time
-        let months1 = 0;
         let balance1 = balance;
+        let months1 = 0;
         let totalInterest1 = 0;
         while (balance1 > 0.01 && months1 < 1200) {
             months1++;
@@ -278,12 +275,10 @@
             if (balance1 <= 0.01) break;
         }
 
-        const payoffMonths = months1;
-        const payoffYears = Math.floor(payoffMonths / 12);
-        const payoffRemainingMonths = payoffMonths % 12;
-        const time1 = payoffYears > 0 ? `${payoffYears}y ${payoffRemainingMonths}m` : `${payoffMonths}m`;
+        const payoffYears = Math.floor(months1 / 12);
+        const payoffRemainingMonths = months1 % 12;
+        const time1 = payoffYears > 0 ? `${payoffYears}y ${payoffRemainingMonths}m` : `${months1}m`;
 
-        // Consolidated loan
         const totalMonths2 = consolTerm * 12;
         let payment2;
         if (monthlyRate2 === 0) {
@@ -297,12 +292,12 @@
 
         const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
-        document.getElementById('current-monthly').textContent = fmt.format(currentPayment);
-        document.getElementById('current-interest').textContent = fmt.format(totalInterest1);
-        document.getElementById('current-time').textContent = time1;
-        document.getElementById('consol-monthly').textContent = fmt.format(payment2);
-        document.getElementById('consol-interest').textContent = fmt.format(totalInterest2);
-        document.getElementById('consol-time').textContent = `${consolTerm} years`;
+        document.getElementById('current-monthly-dc').textContent = fmt.format(currentPayment);
+        document.getElementById('current-interest-dc').textContent = fmt.format(totalInterest1);
+        document.getElementById('current-time-dc').textContent = time1;
+        document.getElementById('consol-monthly-dc').textContent = fmt.format(payment2);
+        document.getElementById('consol-interest-dc').textContent = fmt.format(totalInterest2);
+        document.getElementById('consol-time-dc').textContent = `${consolTerm} years`;
 
         const savings = totalInterest1 - totalInterest2;
 
@@ -330,7 +325,14 @@
         }
 
         document.getElementById('results-area').style.display = 'block';
+
+        // ===== 推荐联动 =====
+        showRecommendations('debt-consolidation.html', {
+            balance: document.getElementById('current-balance').value,
+            consolTerm: document.getElementById('consolidation-term').value
+        });
     }
+
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('infoAccordion').style.display = 'block';
         document.getElementById('infoArrow').textContent = '▼';
@@ -344,6 +346,5 @@
         if (e.target.closest('.form-grid')) { calculate(); }
     });
 </script>
-<script src="feedback.js"></script>
 </body>
 </html>
