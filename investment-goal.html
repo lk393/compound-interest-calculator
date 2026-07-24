@@ -20,39 +20,14 @@
             justify-content: space-between;
             align-items: center;
         }
-        .summary-item .label {
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #475569;
-        }
-        .summary-item .value {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #0f172a;
-        }
-        .summary-item.highlight {
-            background: #eef2ff;
-            border: 1px solid #c7d2fe;
-        }
-        .summary-item.highlight .value {
-            color: #2563eb;
-        }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+        .summary-item.positive .value { color: #10b981; }
 
-        .form-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 0.9rem;
-        }
-        .field {
-            display: flex;
-            flex-direction: column;
-        }
-        .field label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            color: #334155;
-        }
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
         .field input {
             padding: 0.6rem 0.8rem;
             font-size: 1rem;
@@ -68,6 +43,7 @@
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
             background: #ffffff;
         }
+
         .btn {
             background: #2563eb;
             color: white;
@@ -119,11 +95,13 @@
     </style>
 </head>
 <body>
+
 <div class="container">
     <div class="top-nav">
         <a href="index.html" class="back-link">← Back to Home</a>
         <div class="breadcrumb">📊 <span>Investment Goal Planner</span></div>
     </div>
+
     <main class="calculator-card">
         <h1>🎯 Investment Goal Planner</h1>
         <p class="subtitle">Calculate how much you need to invest monthly to reach your financial goal.</p>
@@ -133,28 +111,25 @@
                 <strong>Investment Goal Planner</strong> — This tool calculates the monthly contribution
                 required to reach a specific financial goal. It answers the question:
                 <em>“How much do I need to invest each month to have $100,000 in 10 years?”</em>
-                You'll see the required monthly contribution, total contributions, and total returns.
-                Whether you're saving for a house, education, or retirement, this planner helps you
-                create a realistic investment roadmap.
             </p>
         </div>
 
         <div class="form-grid">
             <div class="field">
-                <label for="goal-amount">Goal Amount ($)</label>
-                <input type="number" id="goal-amount" value="100000" min="0" step="1000" />
+                <label for="goal-amount-ig">Goal Amount ($)</label>
+                <input type="number" id="goal-amount-ig" value="100000" min="0" step="1000" />
             </div>
             <div class="field">
-                <label for="current-savings">Current Savings ($)</label>
-                <input type="number" id="current-savings" value="10000" min="0" step="1000" />
+                <label for="current-savings-ig">Current Savings ($)</label>
+                <input type="number" id="current-savings-ig" value="10000" min="0" step="1000" />
             </div>
             <div class="field">
-                <label for="investment-years">Investment Period (Years)</label>
-                <input type="number" id="investment-years" value="10" min="1" max="50" step="1" />
+                <label for="investment-years-ig">Investment Period (Years)</label>
+                <input type="number" id="investment-years-ig" value="10" min="1" max="50" step="1" />
             </div>
             <div class="field">
-                <label for="return-rate">Expected Annual Return (%)</label>
-                <input type="number" id="return-rate" value="7" min="0" max="20" step="0.1" />
+                <label for="return-rate-ig">Expected Annual Return (%)</label>
+                <input type="number" id="return-rate-ig" value="7" min="0" max="20" step="0.1" />
             </div>
             <div style="margin-top:0.5rem;">
                 <button class="btn" onclick="calculate()">Calculate</button>
@@ -164,28 +139,22 @@
         <div id="results-area" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Investment Plan</h2>
             <div class="results-summary" id="summary">
-                <div class="summary-item highlight">
-                    <span class="label">Required Monthly Contribution</span>
-                    <span class="value" id="monthly-contribution">—</span>
-                </div>
-                <div class="summary-item">
-                    <span class="label">Total Contributions</span>
-                    <span class="value" id="total-contributions">—</span>
-                </div>
-                <div class="summary-item">
-                    <span class="label">Total Investment Returns</span>
-                    <span class="value" id="total-returns">—</span>
-                </div>
+                <div class="summary-item highlight"><span class="label">Required Monthly Contribution</span><span class="value" id="monthly-contribution-ig">—</span></div>
+                <div class="summary-item"><span class="label">Total Contributions</span><span class="value" id="total-contributions-ig">—</span></div>
+                <div class="summary-item positive"><span class="label">Total Investment Returns</span><span class="value" id="total-returns-ig">—</span></div>
             </div>
             <h3 style="font-size:1rem; margin:1rem 0 0.3rem;">📅 Year-by-Year Growth</h3>
             <div class="schedule-wrapper">
-                <table class="schedule-table" id="schedule-table">
+                <table class="schedule-table" id="schedule-table-ig">
                     <thead><tr><th>Year</th><th>Balance</th><th>Contributions (Cumulative)</th><th>Returns (Cumulative)</th></tr></thead>
-                    <tbody id="schedule-body"></tbody>
+                    <tbody id="schedule-body-ig"></tbody>
                 </table>
             </div>
-            <p style="font-size:0.75rem; color:#94a3b8; margin-top:0.3rem; text-align:center;">* Assumes consistent monthly contributions and steady annual returns.</p>
         </div>
+
+        <!-- ===== 推荐区域 ===== -->
+        <div id="recommendations-area"></div>
+
     </main>
 
     <section class="accordion-card">
@@ -214,7 +183,7 @@
             </div>
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Does this include taxes or fees?</span></div>
-                <div class="faq-answer">No — this calculation does not account for taxes, management fees, or transaction costs. Adjust your expected return accordingly.</div>
+                <div class="faq-answer">No — this calculation does not account for taxes, management fees, or transaction costs.</div>
             </div>
         </div>
     </section>
@@ -223,6 +192,9 @@
         <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
     </footer>
 </div>
+
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
 
 <script>
     function toggleAccordion(id) {
@@ -247,15 +219,15 @@
             arrow.textContent = '▶';
         }
     }
+
     function calculate() {
-        const goal = parseFloat(document.getElementById('goal-amount').value) || 0;
-        const current = parseFloat(document.getElementById('current-savings').value) || 0;
-        const years = parseFloat(document.getElementById('investment-years').value) || 10;
-        const annualReturn = parseFloat(document.getElementById('return-rate').value) || 0;
+        const goal = parseFloat(document.getElementById('goal-amount-ig').value) || 0;
+        const current = parseFloat(document.getElementById('current-savings-ig').value) || 0;
+        const years = parseFloat(document.getElementById('investment-years-ig').value) || 10;
+        const annualReturn = parseFloat(document.getElementById('return-rate-ig').value) || 0;
         const monthlyRate = annualReturn / 100 / 12;
         const months = years * 12;
 
-        // 目标 = current * (1+r)^n + PMT * ((1+r)^n - 1) / r
         let pmt = 0;
         if (months > 0 && monthlyRate > 0) {
             const fvCurrent = current * Math.pow(1 + monthlyRate, months);
@@ -269,13 +241,12 @@
         const totalReturns = goal - totalContributions;
 
         const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
-        const pct = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
-        document.getElementById('monthly-contribution').textContent = fmt.format(pmt);
-        document.getElementById('total-contributions').textContent = fmt.format(totalContributions);
-        document.getElementById('total-returns').textContent = fmt.format(totalReturns);
+        document.getElementById('monthly-contribution-ig').textContent = fmt.format(pmt);
+        document.getElementById('total-contributions-ig').textContent = fmt.format(totalContributions);
+        document.getElementById('total-returns-ig').textContent = fmt.format(totalReturns);
 
-        const tbody = document.getElementById('schedule-body');
+        const tbody = document.getElementById('schedule-body-ig');
         tbody.innerHTML = '';
         let balance = current;
         let cumContrib = current;
@@ -296,10 +267,19 @@
             if (year === years) tr.classList.add('highlight-row');
             tr.innerHTML = `<td>${year}</td><td>${fmt.format(balance)}</td><td>${fmt.format(cumContrib)}</td><td>${fmt.format(cumReturns)}</td>`;
             tbody.appendChild(tr);
-            if (year === years) break;
         }
+
         document.getElementById('results-area').style.display = 'block';
+
+        // ===== 推荐联动 =====
+        const goalAmount = document.getElementById('goal-amount-ig').value;
+        const monthlyContribution = pmt;
+        showRecommendations('investment-goal.html', {
+            goalAmount: goalAmount,
+            monthlyContribution: monthlyContribution.toString()
+        });
     }
+
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('infoAccordion').style.display = 'block';
         document.getElementById('infoArrow').textContent = '▼';
@@ -313,8 +293,5 @@
         if (e.target.closest('.form-grid')) { calculate(); }
     });
 </script>
-    <script src="feedback.js"></script>
-</body>
-</html>
 </body>
 </html>
