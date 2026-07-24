@@ -82,9 +82,7 @@
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
                 <strong>APR / APY Calculator</strong> — This tool helps you understand the true cost of borrowing
                 (APR) and the real return on savings (APY). It answers the question: <em>“What's the actual annual
-                interest rate after accounting for compounding and fees?”</em> APR (Annual Percentage Rate) shows
-                the total cost of a loan including fees. APY (Annual Percentage Yield) shows the effective return
-                on an investment with compound interest. Use this to compare loan offers and savings accounts.
+                interest rate after accounting for compounding and fees?”</em>
             </p>
         </div>
 
@@ -122,20 +120,15 @@
         <div id="results-area" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 APR & APY Results</h2>
             <div class="results-summary" id="summary">
-                <div class="summary-item highlight">
-                    <span class="label">Annual Percentage Yield (APY)</span>
-                    <span class="value" id="apy">—</span>
-                </div>
-                <div class="summary-item highlight" style="background:#dbeafe;border-color:#93c5fd;">
-                    <span class="label">Annual Percentage Rate (APR)</span>
-                    <span class="value" id="apr">—</span>
-                </div>
-                <div class="summary-item">
-                    <span class="label">Effective Annual Rate (EAR)</span>
-                    <span class="value" id="ear">—</span>
-                </div>
+                <div class="summary-item highlight"><span class="label">Annual Percentage Yield (APY)</span><span class="value" id="apy">—</span></div>
+                <div class="summary-item highlight" style="background:#dbeafe;border-color:#93c5fd;"><span class="label">Annual Percentage Rate (APR)</span><span class="value" id="apr">—</span></div>
+                <div class="summary-item"><span class="label">Effective Annual Rate (EAR)</span><span class="value" id="ear">—</span></div>
             </div>
         </div>
+
+        <!-- ===== 推荐区域 ===== -->
+        <div id="recommendations-area"></div>
+
     </main>
 
     <section class="accordion-card">
@@ -145,9 +138,9 @@
         </div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block"><h3>APY (Annual Percentage Yield)</h3><p>The effective annual return on savings, including the effect of compounding. This is what you actually earn.</p></div>
-                <div class="info-block"><h3>APR (Annual Percentage Rate)</h3><p>The total annual cost of borrowing, including interest plus any fees. This is what you actually pay.</p></div>
-                <div class="info-block"><h3>EAR (Effective Annual Rate)</h3><p>The actual annual interest rate after compounding, without fees. Used for comparing investment returns.</p></div>
+                <div class="info-block"><h3>APY</h3><p>The effective annual return on savings, including compounding. This is what you actually earn.</p></div>
+                <div class="info-block"><h3>APR</h3><p>The total annual cost of borrowing, including interest plus fees. This is what you actually pay.</p></div>
+                <div class="info-block"><h3>EAR</h3><p>The actual annual interest rate after compounding, without fees.</p></div>
             </div>
         </div>
     </section>
@@ -160,11 +153,11 @@
         <div class="accordion-body" id="faqAccordion">
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What's the difference between APR and APY?</span></div>
-                <div class="faq-answer">APR is the annual cost of borrowing (interest + fees). APY is the annual return on savings (interest + compounding). APR is typically lower than APY for the same nominal rate due to compounding.</div>
+                <div class="faq-answer">APR is the annual cost of borrowing (interest + fees). APY is the annual return on savings (interest + compounding). APY is typically higher than APR for the same nominal rate.</div>
             </div>
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Why does APY increase with more frequent compounding?</span></div>
-                <div class="faq-answer">The more frequently interest is compounded, the more often interest is earned on interest. Daily compounding yields a slightly higher APY than annual compounding at the same nominal rate.</div>
+                <div class="faq-answer">More frequent compounding means interest is earned on interest more often, yielding a higher effective rate.</div>
             </div>
         </div>
     </section>
@@ -173,6 +166,9 @@
         <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
     </footer>
 </div>
+
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
 
 <script>
     function toggleAccordion(id) {
@@ -197,6 +193,7 @@
             arrow.textContent = '▶';
         }
     }
+
     function calculate() {
         const nominalRate = parseFloat(document.getElementById('nominal-rate').value) || 0;
         const freq = parseInt(document.getElementById('compounding-frequency').value) || 1;
@@ -207,7 +204,6 @@
         const apy = (Math.pow(1 + rateDecimal / freq, freq) - 1) * 100;
         const ear = apy;
 
-        // APR with fees
         const totalCost = fees / loanAmount * 100;
         const apr = nominalRate + totalCost;
 
@@ -218,7 +214,14 @@
         document.getElementById('ear').textContent = fmt.format(ear / 100);
 
         document.getElementById('results-area').style.display = 'block';
+
+        // ===== 推荐联动 =====
+        const nominalRateVal = document.getElementById('nominal-rate').value;
+        showRecommendations('apr-apy.html', {
+            nominalRate: nominalRateVal
+        });
     }
+
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('infoAccordion').style.display = 'block';
         document.getElementById('infoArrow').textContent = '▼';
@@ -232,8 +235,5 @@
         if (e.target.closest('.form-grid')) { calculate(); }
     });
 </script>
-    <script src="feedback.js"></script>
-</body>
-</html>
 </body>
 </html>
