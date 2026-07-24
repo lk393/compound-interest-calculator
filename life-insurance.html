@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Life Insurance Needs Calculator</title>
+    <title>Life Insurance Needs Calculator — Free Online Tool</title>
     <link rel="stylesheet" href="style.css" />
     <style>
         .results-summary {
@@ -20,41 +20,14 @@
             justify-content: space-between;
             align-items: center;
         }
-        .summary-item .label {
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #475569;
-        }
-        .summary-item .value {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #0f172a;
-        }
-        .summary-item.highlight {
-            background: #eef2ff;
-            border: 1px solid #c7d2fe;
-        }
-        .summary-item.highlight .value {
-            color: #2563eb;
-        }
-        .summary-item.positive .value {
-            color: #10b981;
-        }
-        .form-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 0.9rem;
-        }
-        .field {
-            display: flex;
-            flex-direction: column;
-        }
-        .field label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            color: #334155;
-        }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+        .summary-item.positive .value { color: #10b981; }
+
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
         .field input {
             padding: 0.6rem 0.8rem;
             font-size: 1rem;
@@ -67,9 +40,10 @@
         .field input:focus {
             outline: none;
             border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
             background: #ffffff;
         }
+
         .btn {
             background: #2563eb;
             color: white;
@@ -82,56 +56,37 @@
             transition: background 0.2s;
             width: 100%;
         }
-        .btn:hover {
-            background: #1d4ed8;
-        }
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 0.8rem;
-        }
+        .btn:hover { background: #1d4ed8; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
         @media (max-width: 640px) {
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
-            .summary-item {
-                padding: 0.6rem 1rem;
-            }
-            .summary-item .value {
-                font-size: 1rem;
-            }
+            .info-grid { grid-template-columns: 1fr; }
+            .summary-item { padding: 0.6rem 1rem; }
+            .summary-item .value { font-size: 1rem; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-
-    <!-- ===== 顶部导航（面包屑） ===== -->
     <div class="top-nav">
         <a href="index.html" class="back-link">← Back to Home</a>
-        <div class="breadcrumb">
-            📊 <span>Life Insurance Needs Calculator</span>
-        </div>
+        <div class="breadcrumb">📊 <span>Life Insurance Needs Calculator</span></div>
     </div>
 
     <main class="calculator-card">
         <h1>🛡️ Life Insurance Needs Calculator</h1>
         <p class="subtitle">How much life insurance does your family really need?</p>
 
-        <!-- ===== 科普文 ===== -->
         <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
                 <strong>Life Insurance Needs Calculator</strong> — This tool helps you estimate the amount
                 of life insurance coverage your family would need if something happened to you. It answers
                 the question: <em>“How much coverage is enough to replace my income, pay off debts, and
-                secure my children's future?”</em> Using the DIME method (Debt, Income, Mortgage, Education),
-                you'll get a clear, personalized coverage target based on your family's unique financial
-                situation.
+                secure my children's future?”</em>
             </p>
         </div>
 
-        <!-- ===== 输入区域 ===== -->
         <div class="form-grid">
             <div class="field">
                 <label for="annual-expenses">Annual Household Expenses ($)</label>
@@ -158,32 +113,21 @@
             </div>
         </div>
 
-        <!-- ===== 结果区域 ===== -->
         <div id="results-area" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Life Insurance Coverage Estimate</h2>
-
             <div class="results-summary" id="summary">
-                <div class="summary-item highlight">
-                    <span class="label">🛡️ Recommended Coverage</span>
-                    <span class="value" id="coverage">—</span>
-                </div>
-                <div class="summary-item">
-                    <span class="label">💸 Total Expenses & Debts</span>
-                    <span class="value" id="total-need">—</span>
-                </div>
-                <div class="summary-item positive">
-                    <span class="label">🏦 Offset by Savings</span>
-                    <span class="value" id="offset">—</span>
-                </div>
-                <div class="summary-item">
-                    <span class="label">📅 Monthly Income Replacement</span>
-                    <span class="value" id="monthly-income">—</span>
-                </div>
+                <div class="summary-item highlight"><span class="label">🛡️ Recommended Coverage</span><span class="value" id="coverage-li">—</span></div>
+                <div class="summary-item"><span class="label">💸 Total Expenses & Debts</span><span class="value" id="total-need-li">—</span></div>
+                <div class="summary-item positive"><span class="label">🏦 Offset by Savings</span><span class="value" id="offset-li">—</span></div>
+                <div class="summary-item"><span class="label">📅 Monthly Income Replacement</span><span class="value" id="monthly-income-li">—</span></div>
             </div>
         </div>
+
+        <!-- ===== 推荐区域 ===== -->
+        <div id="recommendations-area"></div>
+
     </main>
 
-    <!-- ===== 折叠说明 ===== -->
     <section class="accordion-card">
         <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
             <h2>📖 How to read your results</h2>
@@ -191,23 +135,13 @@
         </div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block">
-                    <h3>Recommended Coverage</h3>
-                    <p>The total life insurance amount you should consider, based on your family's expenses, debts, and existing savings. This is your DIME total minus your current savings.</p>
-                </div>
-                <div class="info-block">
-                    <h3>Total Expenses & Debts</h3>
-                    <p>The sum of your annual expenses over the coverage period, plus mortgage and other debts. This is the raw amount your family would need.</p>
-                </div>
-                <div class="info-block">
-                    <h3>Offset by Savings</h3>
-                    <p>Your existing savings and investments that can reduce the amount of insurance you need to buy.</p>
-                </div>
+                <div class="info-block"><h3>Recommended Coverage</h3><p>The total life insurance amount you should consider, based on your family's expenses, debts, and existing savings.</p></div>
+                <div class="info-block"><h3>Total Expenses & Debts</h3><p>The sum of your annual expenses over the coverage period, plus mortgage and other debts.</p></div>
+                <div class="info-block"><h3>Offset by Savings</h3><p>Your existing savings that can reduce the amount of insurance you need.</p></div>
             </div>
         </div>
     </section>
 
-    <!-- ===== FAQ ===== -->
     <section class="accordion-card">
         <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
             <h2>❓ FAQ</h2>
@@ -215,54 +149,23 @@
         </div>
         <div class="accordion-body" id="faqAccordion">
             <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>What is the DIME method?</span>
-                </div>
-                <div class="faq-answer">DIME stands for Debt, Income, Mortgage, and Education. It's a simple way to calculate life insurance needs: add all debts, plus annual income × years needed, plus mortgage, plus education costs, then subtract existing savings.</div>
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the DIME method?</span></div>
+                <div class="faq-answer">DIME stands for Debt, Income, Mortgage, and Education. It's a simple way to calculate life insurance needs.</div>
             </div>
             <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>How many years should I cover?</span>
-                </div>
-                <div class="faq-answer">A common rule is to cover until your youngest child reaches age 22-25 (college completion). Or use 20-30 years for general income replacement.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>What about inflation?</span>
-                </div>
-                <div class="faq-answer">This calculator uses today's dollars. For a more accurate estimate, consider increasing your coverage amount by 2-3% per year to account for inflation over time.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>Is term or whole life better?</span>
-                </div>
-                <div class="faq-answer">Term life is cheaper and provides pure protection for a set period — ideal for most families. Whole life costs more but builds cash value. Choose based on your budget and goals.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>Should I include my spouse's income?</span>
-                </div>
-                <div class="faq-answer">Yes — if your spouse also contributes to household income, factor that in. This calculator uses your household expenses, which assumes both incomes are needed to cover them.</div>
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Is term or whole life better?</span></div>
+                <div class="faq-answer">Term life is cheaper and provides pure protection for a set period — ideal for most families. Whole life costs more but builds cash value.</div>
             </div>
         </div>
     </section>
 
-    <!-- ===== 页脚 ===== -->
     <footer class="site-footer">
-        <p>
-            © 2026 — Smart Finance Tools · Free Online Calculators
-            <br />
-            <a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a>
-            <span style="color:#dce1e8;">|</span>
-            <a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a>
-        </p>
+        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
     </footer>
 </div>
+
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
 
 <script>
     function toggleAccordion(id) {
@@ -276,7 +179,6 @@
             arrow.textContent = '▶';
         }
     }
-
     function toggleFaq(el) {
         const answer = el.nextElementSibling;
         const arrow = el.querySelector('.faq-arrow');
@@ -298,23 +200,22 @@
 
         const totalNeed = (annualExpenses * years) + mortgage + otherDebts;
         const coverage = Math.max(0, totalNeed - savings);
-
-        const fmt = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        });
-
-        document.getElementById('coverage').textContent = fmt.format(coverage);
-        document.getElementById('total-need').textContent = fmt.format(totalNeed);
-        document.getElementById('offset').textContent = fmt.format(savings);
-
-        // 每月收入替代（用年支出除以12，给用户一个直观参考）
         const monthlyIncome = annualExpenses / 12;
-        document.getElementById('monthly-income').textContent = fmt.format(monthlyIncome);
+
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+        document.getElementById('coverage-li').textContent = fmt.format(coverage);
+        document.getElementById('total-need-li').textContent = fmt.format(totalNeed);
+        document.getElementById('offset-li').textContent = fmt.format(savings);
+        document.getElementById('monthly-income-li').textContent = fmt.format(monthlyIncome);
 
         document.getElementById('results-area').style.display = 'block';
+
+        // ===== 推荐联动 =====
+        const coverageVal = fmt.format(coverage).replace(/[^0-9.]/g, '');
+        showRecommendations('life-insurance.html', {
+            coverage: coverageVal
+        });
     }
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -326,13 +227,9 @@
         document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
         calculate();
     });
-
     document.addEventListener('input', function(e) {
-        if (e.target.closest('.form-grid')) calculate();
+        if (e.target.closest('.form-grid')) { calculate(); }
     });
 </script>
-    <script src="feedback.js"></script>
-</body>
-</html>
 </body>
 </html>
