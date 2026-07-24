@@ -23,7 +23,6 @@
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
         .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
-        .summary-item.highlight .value { color: #2563eb; }
         .summary-item.positive .value { color: #10b981; }
 
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
@@ -112,8 +111,7 @@
                 <strong>Simple Interest Calculator</strong> — This tool calculates the interest earned on a
                 principal amount using the simple interest formula: <em>Interest = Principal × Rate × Time</em>.
                 Unlike compound interest, simple interest is calculated only on the initial principal, not on
-                accumulated interest. Use this for short-term loans, bonds, or any investment where interest
-                is not reinvested.
+                accumulated interest.
             </p>
         </div>
 
@@ -138,27 +136,22 @@
         <div id="results-area" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Simple Interest Results</h2>
             <div class="results-summary" id="summary">
-                <div class="summary-item highlight">
-                    <span class="label">Total Interest</span>
-                    <span class="value" id="total-interest">—</span>
-                </div>
-                <div class="summary-item">
-                    <span class="label">Final Value</span>
-                    <span class="value" id="final-value">—</span>
-                </div>
-                <div class="summary-item positive">
-                    <span class="label">Total Growth</span>
-                    <span class="value" id="total-growth">—</span>
-                </div>
+                <div class="summary-item highlight"><span class="label">Total Interest</span><span class="value" id="total-interest-si">—</span></div>
+                <div class="summary-item"><span class="label">Final Value</span><span class="value" id="final-value-si">—</span></div>
+                <div class="summary-item positive"><span class="label">Total Growth</span><span class="value" id="total-growth-si">—</span></div>
             </div>
             <h3 style="font-size:1rem; margin:1rem 0 0.3rem;">📅 Year-by-Year Interest</h3>
             <div class="schedule-wrapper">
-                <table class="schedule-table" id="schedule-table">
+                <table class="schedule-table" id="schedule-table-si">
                     <thead><tr><th>Year</th><th>Annual Interest</th><th>Cumulative Interest</th><th>Balance</th></tr></thead>
-                    <tbody id="schedule-body"></tbody>
+                    <tbody id="schedule-body-si"></tbody>
                 </table>
             </div>
         </div>
+
+        <!-- ===== 推荐区域 ===== -->
+        <div id="recommendations-area"></div>
+
     </main>
 
     <section class="accordion-card">
@@ -187,7 +180,7 @@
             </div>
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>When is simple interest used?</span></div>
-                <div class="faq-answer">Simple interest is commonly used for short-term loans, bonds, certificates of deposit (CDs), and some savings accounts where interest is not reinvested.</div>
+                <div class="faq-answer">Simple interest is commonly used for short-term loans, bonds, certificates of deposit, and some savings accounts where interest is not reinvested.</div>
             </div>
         </div>
     </section>
@@ -196,6 +189,9 @@
         <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
     </footer>
 </div>
+
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
 
 <script>
     function toggleAccordion(id) {
@@ -220,6 +216,7 @@
             arrow.textContent = '▶';
         }
     }
+
     function calculate() {
         const principal = parseFloat(document.getElementById('principal-si').value) || 0;
         const rate = parseFloat(document.getElementById('rate-si').value) || 0;
@@ -231,11 +228,11 @@
         const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
         const pct = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
-        document.getElementById('total-interest').textContent = fmt.format(totalInterest);
-        document.getElementById('final-value').textContent = fmt.format(finalValue);
-        document.getElementById('total-growth').textContent = pct.format(totalGrowth / 100);
+        document.getElementById('total-interest-si').textContent = fmt.format(totalInterest);
+        document.getElementById('final-value-si').textContent = fmt.format(finalValue);
+        document.getElementById('total-growth-si').textContent = pct.format(totalGrowth / 100);
 
-        const tbody = document.getElementById('schedule-body');
+        const tbody = document.getElementById('schedule-body-si');
         tbody.innerHTML = '';
         let cumInterest = 0;
         for (let year = 1; year <= Math.ceil(time); year++) {
@@ -247,8 +244,20 @@
             tr.innerHTML = `<td>${year}</td><td>${fmt.format(annualInterest)}</td><td>${fmt.format(cumInterest)}</td><td>${fmt.format(balance)}</td>`;
             tbody.appendChild(tr);
         }
+
         document.getElementById('results-area').style.display = 'block';
+
+        // ===== 推荐联动 =====
+        const principalVal = document.getElementById('principal-si').value;
+        const rateVal = document.getElementById('rate-si').value;
+        const timeVal = document.getElementById('time-si').value;
+        showRecommendations('simple-interest.html', {
+            principal: principalVal,
+            rate: rateVal,
+            time: timeVal
+        });
     }
+
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('infoAccordion').style.display = 'block';
         document.getElementById('infoArrow').textContent = '▼';
@@ -262,8 +271,5 @@
         if (e.target.closest('.form-grid')) { calculate(); }
     });
 </script>
-    <script src="feedback.js"></script>
-</body>
-</html>
 </body>
 </html>
