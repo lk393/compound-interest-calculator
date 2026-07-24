@@ -90,9 +90,6 @@
         .comparison-box.better {
             border: 2px solid #10b981;
         }
-        .comparison-box.better h4 {
-            color: #10b981;
-        }
 
         .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
         @media (max-width: 640px) {
@@ -118,20 +115,19 @@
         <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
                 <strong>SIP vs Lump Sum Comparator</strong> — This tool compares two investment approaches:
-                monthly SIP (Systematic Investment Plan) versus a one-time lump sum investment. It answers
-                the question: <em>“Should I invest a lump sum today or spread it out over time with SIP?”</em>
-                You'll see the final value, total returns, and which strategy performs better.
+                monthly SIP versus a one-time lump sum investment. It answers the question:
+                <em>“Should I invest a lump sum today or spread it out over time with SIP?”</em>
             </p>
         </div>
 
         <div class="form-grid">
             <div class="field">
-                <label for="total-investment">Total Investment ($)</label>
-                <input type="number" id="total-investment" value="12000" min="0" step="1000" />
+                <label for="total-investment-sl">Total Investment ($)</label>
+                <input type="number" id="total-investment-sl" value="12000" min="0" step="1000" />
             </div>
             <div class="field">
-                <label for="sip-months">SIP Period (Months)</label>
-                <input type="number" id="sip-months" value="12" min="1" max="120" step="1" />
+                <label for="sip-months-sl">SIP Period (Months)</label>
+                <input type="number" id="sip-months-sl" value="12" min="1" max="120" step="1" />
             </div>
             <div class="field">
                 <label for="return-rate-sl">Expected Annual Return (%)</label>
@@ -144,35 +140,31 @@
 
         <div id="results-area" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Comparison Results</h2>
-
             <div class="comparison-grid">
-                <div class="comparison-box" id="box-sip">
+                <div class="comparison-box" id="box-sip-sl">
                     <h4>📈 Monthly SIP</h4>
-                    <div class="row"><span>Final Value</span><span class="num" id="sip-final">—</span></div>
-                    <div class="row"><span>Total Invested</span><span class="num" id="sip-invested">—</span></div>
-                    <div class="row"><span>Total Returns</span><span class="num" id="sip-returns">—</span></div>
-                    <div class="row"><span>ROI</span><span class="num" id="sip-roi">—</span></div>
+                    <div class="row"><span>Final Value</span><span class="num" id="sip-final-sl">—</span></div>
+                    <div class="row"><span>Total Invested</span><span class="num" id="sip-invested-sl">—</span></div>
+                    <div class="row"><span>Total Returns</span><span class="num" id="sip-returns-sl">—</span></div>
+                    <div class="row"><span>ROI</span><span class="num" id="sip-roi-sl">—</span></div>
                 </div>
-                <div class="comparison-box" id="box-lumpsum">
+                <div class="comparison-box" id="box-lumpsum-sl">
                     <h4>💰 Lump Sum</h4>
-                    <div class="row"><span>Final Value</span><span class="num" id="ls-final">—</span></div>
-                    <div class="row"><span>Total Invested</span><span class="num" id="ls-invested">—</span></div>
-                    <div class="row"><span>Total Returns</span><span class="num" id="ls-returns">—</span></div>
-                    <div class="row"><span>ROI</span><span class="num" id="ls-roi">—</span></div>
+                    <div class="row"><span>Final Value</span><span class="num" id="ls-final-sl">—</span></div>
+                    <div class="row"><span>Total Invested</span><span class="num" id="ls-invested-sl">—</span></div>
+                    <div class="row"><span>Total Returns</span><span class="num" id="ls-returns-sl">—</span></div>
+                    <div class="row"><span>ROI</span><span class="num" id="ls-roi-sl">—</span></div>
                 </div>
             </div>
-
             <div class="results-summary" id="summary">
-                <div class="summary-item highlight">
-                    <span class="label">🏆 Winner</span>
-                    <span class="value" id="winner-sl">—</span>
-                </div>
-                <div class="summary-item positive">
-                    <span class="label">Return Difference</span>
-                    <span class="value" id="difference-sl">—</span>
-                </div>
+                <div class="summary-item highlight"><span class="label">🏆 Winner</span><span class="value" id="winner-sl">—</span></div>
+                <div class="summary-item positive"><span class="label">Return Difference</span><span class="value" id="difference-sl">—</span></div>
             </div>
         </div>
+
+        <!-- ===== 推荐区域 ===== -->
+        <div id="recommendations-area"></div>
+
     </main>
 
     <section class="accordion-card">
@@ -183,7 +175,7 @@
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
                 <div class="info-block"><h3>Final Value</h3><p>The total value of your investment at the end of the period.</p></div>
-                <div class="info-block"><h3>Total Returns</h3><p>The profit generated by your investment — final value minus total invested.</p></div>
+                <div class="info-block"><h3>Total Returns</h3><p>The profit generated by your investment.</p></div>
                 <div class="info-block"><h3>ROI</h3><p>The percentage return on your total investment. Higher is better.</p></div>
             </div>
         </div>
@@ -197,11 +189,11 @@
         <div class="accordion-body" id="faqAccordion">
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Which is better — SIP or Lump Sum?</span></div>
-                <div class="faq-answer">It depends on market conditions. In a rising market, lump sum often performs better. In a volatile or falling market, SIP reduces risk through rupee-cost averaging.</div>
+                <div class="faq-answer">It depends on market conditions. In a rising market, lump sum often performs better. In a volatile market, SIP reduces risk through rupee-cost averaging.</div>
             </div>
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Does this account for dividends?</span></div>
-                <div class="faq-answer">No — this calculation assumes price appreciation only. Dividends or distributions would increase returns.</div>
+                <div class="faq-answer">No — this calculation assumes price appreciation only.</div>
             </div>
         </div>
     </section>
@@ -210,6 +202,9 @@
         <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
     </footer>
 </div>
+
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
 
 <script>
     function toggleAccordion(id) {
@@ -234,15 +229,15 @@
             arrow.textContent = '▶';
         }
     }
+
     function calculate() {
-        const total = parseFloat(document.getElementById('total-investment').value) || 0;
-        const months = parseFloat(document.getElementById('sip-months').value) || 1;
+        const total = parseFloat(document.getElementById('total-investment-sl').value) || 0;
+        const months = parseFloat(document.getElementById('sip-months-sl').value) || 1;
         const annualReturn = parseFloat(document.getElementById('return-rate-sl').value) || 0;
 
         const monthlyRate = annualReturn / 100 / 12;
         const monthlySIP = total / months;
 
-        // SIP
         let sipFinal = 0;
         for (let m = 1; m <= months; m++) {
             const periods = months - m + 1;
@@ -251,7 +246,6 @@
         const sipReturns = sipFinal - total;
         const sipROI = (sipReturns / total) * 100;
 
-        // Lump Sum
         const lsFinal = total * Math.pow(1 + monthlyRate, months);
         const lsReturns = lsFinal - total;
         const lsROI = (lsReturns / total) * 100;
@@ -259,17 +253,17 @@
         const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
         const pct = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-        document.getElementById('sip-final').textContent = fmt.format(sipFinal);
-        document.getElementById('sip-invested').textContent = fmt.format(total);
-        document.getElementById('sip-returns').textContent = fmt.format(sipReturns);
-        document.getElementById('sip-roi').textContent = pct.format(sipROI / 100);
-        document.getElementById('ls-final').textContent = fmt.format(lsFinal);
-        document.getElementById('ls-invested').textContent = fmt.format(total);
-        document.getElementById('ls-returns').textContent = fmt.format(lsReturns);
-        document.getElementById('ls-roi').textContent = pct.format(lsROI / 100);
+        document.getElementById('sip-final-sl').textContent = fmt.format(sipFinal);
+        document.getElementById('sip-invested-sl').textContent = fmt.format(total);
+        document.getElementById('sip-returns-sl').textContent = fmt.format(sipReturns);
+        document.getElementById('sip-roi-sl').textContent = pct.format(sipROI / 100);
+        document.getElementById('ls-final-sl').textContent = fmt.format(lsFinal);
+        document.getElementById('ls-invested-sl').textContent = fmt.format(total);
+        document.getElementById('ls-returns-sl').textContent = fmt.format(lsReturns);
+        document.getElementById('ls-roi-sl').textContent = pct.format(lsROI / 100);
 
-        const boxSip = document.getElementById('box-sip');
-        const boxLs = document.getElementById('box-lumpsum');
+        const boxSip = document.getElementById('box-sip-sl');
+        const boxLs = document.getElementById('box-lumpsum-sl');
         const winnerEl = document.getElementById('winner-sl');
         const diffEl = document.getElementById('difference-sl');
 
@@ -290,7 +284,16 @@
         }
 
         document.getElementById('results-area').style.display = 'block';
+
+        // ===== 推荐联动 =====
+        const totalInvestment = document.getElementById('total-investment-sl').value;
+        const monthlyAmount = monthlySIP;
+        showRecommendations('sip-lumpsum.html', {
+            totalInvestment: totalInvestment,
+            monthlyAmount: monthlyAmount.toString()
+        });
     }
+
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('infoAccordion').style.display = 'block';
         document.getElementById('infoArrow').textContent = '▼';
@@ -304,6 +307,5 @@
         if (e.target.closest('.form-grid')) { calculate(); }
     });
 </script>
-<script src="feedback.js"></script>
 </body>
 </html>
