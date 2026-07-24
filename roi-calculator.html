@@ -20,45 +20,15 @@
             justify-content: space-between;
             align-items: center;
         }
-        .summary-item .label {
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #475569;
-        }
-        .summary-item .value {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #0f172a;
-        }
-        .summary-item.highlight {
-            background: #eef2ff;
-            border: 1px solid #c7d2fe;
-        }
-        .summary-item.highlight .value {
-            color: #2563eb;
-        }
-        .summary-item.positive .value {
-            color: #10b981;
-        }
-        .summary-item.negative .value {
-            color: #ef4444;
-        }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+        .summary-item.positive .value { color: #10b981; }
+        .summary-item.negative .value { color: #ef4444; }
 
-        .form-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 0.9rem;
-        }
-        .field {
-            display: flex;
-            flex-direction: column;
-        }
-        .field label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            color: #334155;
-        }
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
         .field input {
             padding: 0.6rem 0.8rem;
             font-size: 1rem;
@@ -87,9 +57,7 @@
             transition: background 0.2s;
             width: 100%;
         }
-        .btn:hover {
-            background: #1d4ed8;
-        }
+        .btn:hover { background: #1d4ed8; }
 
         .schedule-wrapper {
             max-height: 400px;
@@ -103,8 +71,7 @@
             border-collapse: collapse;
             font-size: 0.82rem;
         }
-        .schedule-table th,
-        .schedule-table td {
+        .schedule-table th, .schedule-table td {
             border: 1px solid #e9edf2;
             padding: 0.3rem 0.5rem;
             text-align: right;
@@ -117,36 +84,20 @@
             top: 0;
             z-index: 1;
         }
-        .schedule-table td:first-child {
-            text-align: center;
-        }
-        .schedule-table .highlight-row {
-            background: #eef2ff;
-        }
+        .schedule-table td:first-child { text-align: center; }
+        .schedule-table .highlight-row { background: #eef2ff; }
 
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 0.8rem;
-        }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
         @media (max-width: 640px) {
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
-            .summary-item {
-                padding: 0.6rem 1rem;
-            }
-            .summary-item .value {
-                font-size: 1rem;
-            }
+            .info-grid { grid-template-columns: 1fr; }
+            .summary-item { padding: 0.6rem 1rem; }
+            .summary-item .value { font-size: 1rem; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-
-    <!-- ===== 顶部导航（面包屑） ===== -->
     <div class="top-nav">
         <a href="index.html" class="back-link">← Back to Home</a>
         <div class="breadcrumb">📊 <span>ROI Calculator</span></div>
@@ -156,19 +107,14 @@
         <h1>📈 Return on Investment (ROI) Calculator</h1>
         <p class="subtitle">Calculate your total return, annualized return, and profit for any investment.</p>
 
-        <!-- ===== 科普文 ===== -->
         <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
                 <strong>ROI Calculator</strong> — This tool calculates the return on your investment, both in total
                 percentage and annualized terms (CAGR). It answers the question: <em>“What was my return on this
-                investment, and how does that compare annually?”</em> Simply enter your initial investment, final
-                value, and the number of years you held the investment. The results show your total gain, total
-                ROI, and the equivalent annualized return — so you can easily compare with other investments or
-                benchmark against the market.
+                investment, and how does that compare annually?”</em>
             </p>
         </div>
 
-        <!-- ===== 输入区域 ===== -->
         <div class="form-grid">
             <div class="field">
                 <label for="initial-investment">Initial Investment ($)</label>
@@ -187,45 +133,27 @@
             </div>
         </div>
 
-        <!-- ===== 结果区域 ===== -->
         <div id="results-area" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Investment Results</h2>
-
             <div class="results-summary" id="summary">
-                <div class="summary-item highlight">
-                    <span class="label">Total Return (ROI)</span>
-                    <span class="value" id="roi">—</span>
-                </div>
-                <div class="summary-item positive">
-                    <span class="label">Annualized Return (CAGR)</span>
-                    <span class="value" id="cagr">—</span>
-                </div>
-                <div class="summary-item">
-                    <span class="label">Total Profit</span>
-                    <span class="value" id="profit">—</span>
-                </div>
+                <div class="summary-item highlight"><span class="label">Total Return (ROI)</span><span class="value" id="roi-roi">—</span></div>
+                <div class="summary-item positive"><span class="label">Annualized Return (CAGR)</span><span class="value" id="cagr-roi">—</span></div>
+                <div class="summary-item"><span class="label">Total Profit</span><span class="value" id="profit-roi">—</span></div>
             </div>
-
             <h3 style="font-size:1rem; margin:1rem 0 0.3rem;">📅 Year-by-Year Growth</h3>
             <div class="schedule-wrapper">
-                <table class="schedule-table" id="schedule-table">
-                    <thead>
-                        <tr>
-                            <th>Year</th>
-                            <th>Ending Value</th>
-                            <th>Annual Growth</th>
-                        </tr>
-                    </thead>
-                    <tbody id="schedule-body"></tbody>
+                <table class="schedule-table" id="schedule-table-roi">
+                    <thead><tr><th>Year</th><th>Ending Value</th><th>Annual Growth</th></tr></thead>
+                    <tbody id="schedule-body-roi"></tbody>
                 </table>
             </div>
-            <p style="font-size:0.75rem; color:#94a3b8; margin-top:0.3rem; text-align:center;">
-                * Assumes steady compound growth over the investment period.
-            </p>
         </div>
+
+        <!-- ===== 推荐区域 ===== -->
+        <div id="recommendations-area"></div>
+
     </main>
 
-    <!-- ===== 折叠说明 ===== -->
     <section class="accordion-card">
         <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
             <h2>📖 How to read your results</h2>
@@ -233,23 +161,13 @@
         </div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block">
-                    <h3>Total Return (ROI)</h3>
-                    <p>The total percentage gain on your investment. Calculated as (Final Value − Initial Investment) / Initial Investment × 100%.</p>
-                </div>
-                <div class="info-block">
-                    <h3>Annualized Return (CAGR)</h3>
-                    <p>The equivalent yearly return that would produce the same total growth over the investment period. Useful for comparing investments of different lengths.</p>
-                </div>
-                <div class="info-block">
-                    <h3>Total Profit</h3>
-                    <p>The dollar amount you gained — simply the difference between the final value and your initial investment.</p>
-                </div>
+                <div class="info-block"><h3>Total Return (ROI)</h3><p>The total percentage gain on your investment.</p></div>
+                <div class="info-block"><h3>Annualized Return (CAGR)</h3><p>The equivalent yearly return over the investment period.</p></div>
+                <div class="info-block"><h3>Total Profit</h3><p>The dollar amount you gained — Final Value minus Initial Investment.</p></div>
             </div>
         </div>
     </section>
 
-    <!-- ===== FAQ ===== -->
     <section class="accordion-card">
         <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
             <h2>❓ FAQ</h2>
@@ -257,50 +175,25 @@
         </div>
         <div class="accordion-body" id="faqAccordion">
             <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>What is the difference between ROI and CAGR?</span>
-                </div>
-                <div class="faq-answer">ROI is the total return over the entire holding period, while CAGR is the annualized return that smooths out volatility to a steady yearly growth rate. CAGR is better for comparing investments of different durations.</div>
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the difference between ROI and CAGR?</span></div>
+                <div class="faq-answer">ROI is the total return over the entire holding period, while CAGR is the annualized return.</div>
             </div>
             <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>Does this include dividends or distributions?</span>
-                </div>
-                <div class="faq-answer">No — this calculator assumes you only track the change in capital value. For dividend-paying investments, you would need to include reinvested dividends as part of the final value.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>Can I use this for real estate investments?</span>
-                </div>
-                <div class="faq-answer">Yes — you can enter the purchase price as the initial investment and the current market value as the final value. Be sure to consider transaction costs separately.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>What if the investment lost money?</span>
-                </div>
-                <div class="faq-answer">The calculator handles negative returns automatically — ROI and CAGR will be negative, and the profit will be displayed in red to indicate a loss.</div>
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Does this include dividends?</span></div>
+                <div class="faq-answer">No — this assumes you only track the change in capital value. For dividend-paying investments, include reinvested dividends in the final value.</div>
             </div>
         </div>
     </section>
 
-    <!-- ===== 页脚 ===== -->
     <footer class="site-footer">
-        <p>
-            © 2026 — Smart Finance Tools · Free Online Calculators
-            <br />
-            <a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a>
-            <span style="color:#dce1e8;">|</span>
-            <a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a>
-        </p>
+        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
     </footer>
 </div>
 
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+
 <script>
-    // ===== 折叠切换函数 =====
     function toggleAccordion(id) {
         const body = document.getElementById(id);
         const arrow = document.getElementById(id + 'Arrow');
@@ -312,7 +205,6 @@
             arrow.textContent = '▶';
         }
     }
-
     function toggleFaq(el) {
         const answer = el.nextElementSibling;
         const arrow = el.querySelector('.faq-arrow');
@@ -325,7 +217,6 @@
         }
     }
 
-    // ===== 核心计算 =====
     function calculate() {
         const initial = parseFloat(document.getElementById('initial-investment').value) || 0;
         const final = parseFloat(document.getElementById('final-value').value) || 0;
@@ -341,62 +232,45 @@
             cagr = -100;
         }
 
-        const fmt = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        });
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        const pct = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-        const pct = new Intl.NumberFormat('en-US', {
-            style: 'percent',
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        });
+        document.getElementById('roi-roi').textContent = pct.format(roi / 100);
+        document.getElementById('cagr-roi').textContent = pct.format(cagr / 100);
+        document.getElementById('profit-roi').textContent = fmt.format(profit);
 
-        // 显示结果
-        document.getElementById('roi').textContent = pct.format(roi / 100);
-        document.getElementById('cagr').textContent = pct.format(cagr / 100);
-        document.getElementById('profit').textContent = fmt.format(profit);
-
-        // 根据正负设置颜色
-        const profitEl = document.getElementById('profit');
+        const profitEl = document.getElementById('profit-roi');
         const profitItem = profitEl.closest('.summary-item');
-        if (profit > 0) {
-            profitItem.classList.add('positive');
-            profitItem.classList.remove('negative');
-        } else if (profit < 0) {
-            profitItem.classList.add('negative');
-            profitItem.classList.remove('positive');
-        } else {
-            profitItem.classList.remove('positive', 'negative');
-        }
+        if (profit > 0) profitItem.classList.add('positive');
+        else if (profit < 0) profitItem.classList.add('negative');
 
-        // ===== 逐年增长表 =====
-        const tbody = document.getElementById('schedule-body');
+        const tbody = document.getElementById('schedule-body-roi');
         tbody.innerHTML = '';
-
         if (years > 0 && initial > 0) {
-            // 按 CAGR 计算逐年价值
             const annualRate = cagr / 100;
             for (let year = 1; year <= years; year++) {
                 const value = initial * Math.pow(1 + annualRate, year);
                 const growth = year === 1 ? value - initial : value - (initial * Math.pow(1 + annualRate, year - 1));
                 const tr = document.createElement('tr');
                 if (year === years) tr.classList.add('highlight-row');
-                tr.innerHTML = `
-                    <td>${year}</td>
-                    <td>${fmt.format(value)}</td>
-                    <td>${fmt.format(growth)}</td>
-                `;
+                tr.innerHTML = `<td>${year}</td><td>${fmt.format(value)}</td><td>${fmt.format(growth)}</td>`;
                 tbody.appendChild(tr);
             }
         }
 
         document.getElementById('results-area').style.display = 'block';
+
+        // ===== 推荐联动 =====
+        const initialInvestment = document.getElementById('initial-investment').value;
+        const finalValue = document.getElementById('final-value').value;
+        const investmentYears = document.getElementById('investment-years').value;
+        showRecommendations('roi-calculator.html', {
+            initialInvestment: initialInvestment,
+            finalValue: finalValue,
+            investmentYears: investmentYears
+        });
     }
 
-    // ===== 页面加载 =====
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('infoAccordion').style.display = 'block';
         document.getElementById('infoArrow').textContent = '▼';
@@ -406,15 +280,9 @@
         document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
         calculate();
     });
-
     document.addEventListener('input', function(e) {
-        if (e.target.closest('.form-grid')) {
-            calculate();
-        }
+        if (e.target.closest('.form-grid')) { calculate(); }
     });
 </script>
-    <script src="feedback.js"></script>
-</body>
-</html>
 </body>
 </html>
