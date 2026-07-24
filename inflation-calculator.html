@@ -1,1 +1,46 @@
-
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>通货膨胀计算器 - Smart Finance Tools</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="container" style="max-width: 700px; margin: 40px auto; padding: 20px;">
+        <h1>📉 通货膨胀计算器</h1>
+        <p>计算未来某笔钱在通胀影响下的实际购买力。</p>
+        <div class="card" style="padding: 25px; background: #f9fafc; border-radius: 16px;">
+            <div class="input-group" style="margin-bottom: 15px;">
+                <label>当前金额 (¥)</label>
+                <input type="number" id="presentValue" value="10000" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+            </div>
+            <div class="input-group" style="margin-bottom: 15px;">
+                <label>年通货膨胀率 (%)</label>
+                <input type="number" id="inflationRate" value="3" step="0.1" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+            </div>
+            <div class="input-group" style="margin-bottom: 20px;">
+                <label>年数</label>
+                <input type="number" id="years" value="10" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+            </div>
+            <button onclick="calculateInflation()" class="btn" style="background:#2563eb; color:#fff; padding:12px 24px; border:none; border-radius:8px; cursor:pointer; font-size:16px;">计算</button>
+            <div id="result" style="margin-top: 20px; font-size: 18px; background: #eef2ff; padding: 15px; border-radius: 8px;"></div>
+        </div>
+    </div>
+    <script>
+        function calculateInflation() {
+            const pv = parseFloat(document.getElementById('presentValue').value);
+            const rate = parseFloat(document.getElementById('inflationRate').value) / 100;
+            const years = parseInt(document.getElementById('years').value);
+            if (isNaN(pv) || isNaN(rate) || isNaN(years)) return alert('请输入有效数字');
+            const futureValue = pv * Math.pow(1 + rate, years);
+            document.getElementById('result').innerHTML = `
+                <strong>💰 未来价值（名义）</strong>：¥${futureValue.toFixed(2)}<br>
+                <strong>📉 实际购买力（按当前价值折算）</strong>：¥${(pv).toFixed(2)}（相当于现在的 ¥${pv} 仅值未来的 ¥${futureValue.toFixed(2)}）
+            `;
+        }
+    </script>
+    <script src="feedback.js"></script>
+    <script src="recommendations.js"></script>
+</body>
+</html>
