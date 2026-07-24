@@ -23,7 +23,6 @@
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
         .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
-        .summary-item.highlight .value { color: #2563eb; }
         .summary-item.positive .value { color: #10b981; }
 
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
@@ -83,9 +82,7 @@
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
                 <strong>Emergency Fund Calculator</strong> — This tool helps you determine how much money you
                 should set aside for unexpected expenses. It answers the question: <em>“How much do I need in
-                my emergency fund to cover 6 months of expenses?”</em> Financial experts typically recommend
-                3-6 months of essential living expenses. Use this calculator to set a realistic savings target
-                and track your progress toward financial security.
+                my emergency fund to cover 6 months of expenses?”</em>
             </p>
         </div>
 
@@ -110,24 +107,16 @@
         <div id="results-area" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Emergency Fund Status</h2>
             <div class="results-summary" id="summary">
-                <div class="summary-item highlight">
-                    <span class="label">Target Emergency Fund</span>
-                    <span class="value" id="target-fund">—</span>
-                </div>
-                <div class="summary-item">
-                    <span class="label">Current Fund</span>
-                    <span class="value" id="current-fund-display">—</span>
-                </div>
-                <div class="summary-item">
-                    <span class="label">Additional Savings Needed</span>
-                    <span class="value" id="additional-needed">—</span>
-                </div>
-                <div class="summary-item">
-                    <span class="label">Current Coverage</span>
-                    <span class="value" id="current-coverage">—</span>
-                </div>
+                <div class="summary-item highlight"><span class="label">Target Emergency Fund</span><span class="value" id="target-fund">—</span></div>
+                <div class="summary-item"><span class="label">Current Fund</span><span class="value" id="current-fund-display">—</span></div>
+                <div class="summary-item"><span class="label">Additional Savings Needed</span><span class="value" id="additional-needed">—</span></div>
+                <div class="summary-item"><span class="label">Current Coverage</span><span class="value" id="current-coverage">—</span></div>
             </div>
         </div>
+
+        <!-- ===== 推荐区域 ===== -->
+        <div id="recommendations-area"></div>
+
     </main>
 
     <section class="accordion-card">
@@ -155,7 +144,7 @@
                 <div class="faq-answer">Most experts recommend 3-6 months. If you have a stable job, 3 months may be enough. If your income is variable, consider 6-12 months.</div>
             </div>
             <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What counts as "essential expenses"?</span></div>
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What counts as essential expenses?</span></div>
                 <div class="faq-answer">Essential expenses include housing, food, utilities, transportation, insurance, and minimum debt payments — the minimum needed to survive without income.</div>
             </div>
         </div>
@@ -165,6 +154,9 @@
         <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
     </footer>
 </div>
+
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
 
 <script>
     function toggleAccordion(id) {
@@ -189,6 +181,7 @@
             arrow.textContent = '▶';
         }
     }
+
     function calculate() {
         const monthlyExpenses = parseFloat(document.getElementById('monthly-expenses').value) || 0;
         const currentFund = parseFloat(document.getElementById('current-fund').value) || 0;
@@ -206,7 +199,16 @@
         document.getElementById('current-coverage').textContent = currentCoverage.toFixed(1) + ' months';
 
         document.getElementById('results-area').style.display = 'block';
+
+        // ===== 推荐联动 =====
+        const targetFundText = fmt.format(targetFund).replace(/[^0-9.]/g, '');
+        const currentFundVal = document.getElementById('current-fund').value;
+        showRecommendations('emergency-fund.html', {
+            targetFund: targetFundText,
+            currentFund: currentFundVal
+        });
     }
+
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('infoAccordion').style.display = 'block';
         document.getElementById('infoArrow').textContent = '▼';
@@ -220,8 +222,5 @@
         if (e.target.closest('.form-grid')) { calculate(); }
     });
 </script>
-    <script src="feedback.js"></script>
-</body>
-</html>
 </body>
 </html>
