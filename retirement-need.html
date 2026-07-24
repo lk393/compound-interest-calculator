@@ -23,7 +23,6 @@
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
         .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
-        .summary-item.highlight .value { color: #2563eb; }
         .summary-item.positive .value { color: #10b981; }
 
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
@@ -84,8 +83,6 @@
                 <strong>Retirement Need Calculator</strong> — This tool calculates how much money you need
                 to have saved by retirement to support your desired lifestyle. It answers the question:
                 <em>“How much do I need in total savings to generate enough income for a 30-year retirement?”</em>
-                You'll see your total retirement need, the income shortfall, and the savings target using
-                the 4% rule.
             </p>
         </div>
 
@@ -95,12 +92,12 @@
                 <input type="number" id="desired-income" value="50000" min="0" step="1000" />
             </div>
             <div class="field">
-                <label for="social-security">Social Security / Pension Income ($)</label>
-                <input type="number" id="social-security" value="15000" min="0" step="500" />
+                <label for="social-security-rn">Social Security / Pension Income ($)</label>
+                <input type="number" id="social-security-rn" value="15000" min="0" step="500" />
             </div>
             <div class="field">
-                <label for="other-income">Other Retirement Income ($)</label>
-                <input type="number" id="other-income" value="5000" min="0" step="500" />
+                <label for="other-income-rn">Other Retirement Income ($)</label>
+                <input type="number" id="other-income-rn" value="5000" min="0" step="500" />
             </div>
             <div class="field">
                 <label for="withdrawal-rate-rn">Safe Withdrawal Rate (%)</label>
@@ -114,20 +111,15 @@
         <div id="results-area" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Retirement Need</h2>
             <div class="results-summary" id="summary">
-                <div class="summary-item highlight">
-                    <span class="label">Total Retirement Need</span>
-                    <span class="value" id="total-need-rn">—</span>
-                </div>
-                <div class="summary-item">
-                    <span class="label">Annual Shortfall</span>
-                    <span class="value" id="annual-shortfall">—</span>
-                </div>
-                <div class="summary-item">
-                    <span class="label">Target Savings</span>
-                    <span class="value" id="target-savings">—</span>
-                </div>
+                <div class="summary-item highlight"><span class="label">Total Retirement Need</span><span class="value" id="total-need-rn">—</span></div>
+                <div class="summary-item"><span class="label">Annual Shortfall</span><span class="value" id="annual-shortfall-rn">—</span></div>
+                <div class="summary-item"><span class="label">Target Savings</span><span class="value" id="target-savings-rn">—</span></div>
             </div>
         </div>
+
+        <!-- ===== 推荐区域 ===== -->
+        <div id="recommendations-area"></div>
+
     </main>
 
     <section class="accordion-card">
@@ -137,9 +129,9 @@
         </div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block"><h3>Total Retirement Need</h3><p>The total amount you need to have saved by retirement to generate your desired income, using the safe withdrawal rate.</p></div>
-                <div class="info-block"><h3>Annual Shortfall</h3><p>The amount you need to cover from your savings each year after accounting for social security and other income.</p></div>
-                <div class="info-block"><h3>Target Savings</h3><p>The amount you need to accumulate before retirement to generate enough income to cover your shortfall.</p></div>
+                <div class="info-block"><h3>Total Retirement Need</h3><p>The total amount you need to have saved by retirement to generate your desired income.</p></div>
+                <div class="info-block"><h3>Annual Shortfall</h3><p>The amount you need to cover from your savings each year after accounting for other income.</p></div>
+                <div class="info-block"><h3>Target Savings</h3><p>The amount you need to accumulate before retirement.</p></div>
             </div>
         </div>
     </section>
@@ -152,11 +144,11 @@
         <div class="accordion-body" id="faqAccordion">
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is a safe withdrawal rate?</span></div>
-                <div class="faq-answer">The safe withdrawal rate is the percentage of your retirement savings you can withdraw each year without running out of money. The classic 4% rule is based on a 30-year retirement period.</div>
+                <div class="faq-answer">The safe withdrawal rate is the percentage of your retirement savings you can withdraw each year without running out of money. The classic 4% rule is based on a 30-year retirement.</div>
             </div>
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Should I include inflation?</span></div>
-                <div class="faq-answer">Yes — the 4% rule assumes you adjust your withdrawals for inflation each year. This calculator uses today's dollars as a baseline estimate.</div>
+                <div class="faq-answer">Yes — the 4% rule assumes you adjust your withdrawals for inflation each year.</div>
             </div>
         </div>
     </section>
@@ -165,6 +157,9 @@
         <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
     </footer>
 </div>
+
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
 
 <script>
     function toggleAccordion(id) {
@@ -189,10 +184,11 @@
             arrow.textContent = '▶';
         }
     }
+
     function calculate() {
         const desiredIncome = parseFloat(document.getElementById('desired-income').value) || 0;
-        const ssIncome = parseFloat(document.getElementById('social-security').value) || 0;
-        const otherIncome = parseFloat(document.getElementById('other-income').value) || 0;
+        const ssIncome = parseFloat(document.getElementById('social-security-rn').value) || 0;
+        const otherIncome = parseFloat(document.getElementById('other-income-rn').value) || 0;
         const withdrawalRate = parseFloat(document.getElementById('withdrawal-rate-rn').value) || 4;
 
         const totalOtherIncome = ssIncome + otherIncome;
@@ -203,11 +199,19 @@
         const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
         document.getElementById('total-need-rn').textContent = fmt.format(totalNeed);
-        document.getElementById('annual-shortfall').textContent = fmt.format(shortfall);
-        document.getElementById('target-savings').textContent = fmt.format(targetSavings);
+        document.getElementById('annual-shortfall-rn').textContent = fmt.format(shortfall);
+        document.getElementById('target-savings-rn').textContent = fmt.format(targetSavings);
 
         document.getElementById('results-area').style.display = 'block';
+
+        // ===== 推荐联动 =====
+        const targetSavingsVal = fmt.format(targetSavings).replace(/[^0-9.]/g, '');
+        showRecommendations('retirement-need.html', {
+            targetSavings: targetSavingsVal,
+            desiredIncome: document.getElementById('desired-income').value
+        });
     }
+
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('infoAccordion').style.display = 'block';
         document.getElementById('infoArrow').textContent = '▼';
@@ -221,8 +225,5 @@
         if (e.target.closest('.form-grid')) { calculate(); }
     });
 </script>
-    <script src="feedback.js"></script>
-</body>
-</html>
 </body>
 </html>
