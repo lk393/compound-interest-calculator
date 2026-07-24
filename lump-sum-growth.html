@@ -23,7 +23,6 @@
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
         .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
-        .summary-item.highlight .value { color: #2563eb; }
         .summary-item.positive .value { color: #10b981; }
 
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
@@ -44,6 +43,7 @@
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
             background: #ffffff;
         }
+
         .btn {
             background: #2563eb;
             color: white;
@@ -110,8 +110,7 @@
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
                 <strong>Lump Sum Growth Calculator</strong> — This tool projects the future value of a
                 single one-time investment. It answers the question: <em>“If I invest $10,000 today at 7%
-                for 20 years, how much will it grow to?”</em> You'll see the final value, total returns,
-                and a year-by-year breakdown of your investment's growth.
+                for 20 years, how much will it grow to?”</em>
             </p>
         </div>
 
@@ -136,28 +135,22 @@
         <div id="results-area" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Investment Growth</h2>
             <div class="results-summary" id="summary">
-                <div class="summary-item highlight">
-                    <span class="label">Final Value</span>
-                    <span class="value" id="final-value">—</span>
-                </div>
-                <div class="summary-item">
-                    <span class="label">Total Return</span>
-                    <span class="value" id="total-return">—</span>
-                </div>
-                <div class="summary-item positive">
-                    <span class="label">Compound Annual Growth Rate (CAGR)</span>
-                    <span class="value" id="cagr">—</span>
-                </div>
+                <div class="summary-item highlight"><span class="label">Final Value</span><span class="value" id="final-value-ls">—</span></div>
+                <div class="summary-item"><span class="label">Total Return</span><span class="value" id="total-return-ls">—</span></div>
+                <div class="summary-item positive"><span class="label">Compound Annual Growth Rate (CAGR)</span><span class="value" id="cagr-ls">—</span></div>
             </div>
             <h3 style="font-size:1rem; margin:1rem 0 0.3rem;">📅 Year-by-Year Growth</h3>
             <div class="schedule-wrapper">
-                <table class="schedule-table" id="schedule-table">
+                <table class="schedule-table" id="schedule-table-ls">
                     <thead><tr><th>Year</th><th>Value</th><th>Annual Return</th></tr></thead>
-                    <tbody id="schedule-body"></tbody>
+                    <tbody id="schedule-body-ls"></tbody>
                 </table>
             </div>
-            <p style="font-size:0.75rem; color:#94a3b8; margin-top:0.3rem; text-align:center;">* Assumes a constant annual return rate.</p>
         </div>
+
+        <!-- ===== 推荐区域 ===== -->
+        <div id="recommendations-area"></div>
+
     </main>
 
     <section class="accordion-card">
@@ -196,6 +189,9 @@
     </footer>
 </div>
 
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+
 <script>
     function toggleAccordion(id) {
         const body = document.getElementById(id);
@@ -219,6 +215,7 @@
             arrow.textContent = '▶';
         }
     }
+
     function calculate() {
         const initial = parseFloat(document.getElementById('initial-amount').value) || 0;
         const years = parseFloat(document.getElementById('growth-years').value) || 1;
@@ -232,11 +229,11 @@
         const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
         const pct = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-        document.getElementById('final-value').textContent = fmt.format(finalValue);
-        document.getElementById('total-return').textContent = fmt.format(totalReturn);
-        document.getElementById('cagr').textContent = pct.format(cagr / 100);
+        document.getElementById('final-value-ls').textContent = fmt.format(finalValue);
+        document.getElementById('total-return-ls').textContent = fmt.format(totalReturn);
+        document.getElementById('cagr-ls').textContent = pct.format(cagr / 100);
 
-        const tbody = document.getElementById('schedule-body');
+        const tbody = document.getElementById('schedule-body-ls');
         tbody.innerHTML = '';
         for (let year = 1; year <= years; year++) {
             const value = initial * Math.pow(1 + rateDecimal, year);
@@ -248,7 +245,18 @@
         }
 
         document.getElementById('results-area').style.display = 'block';
+
+        // ===== 推荐联动 =====
+        const initialAmount = document.getElementById('initial-amount').value;
+        const growthRate = document.getElementById('growth-rate').value;
+        const growthYears = document.getElementById('growth-years').value;
+        showRecommendations('lump-sum-growth.html', {
+            initialAmount: initialAmount,
+            growthRate: growthRate,
+            growthYears: growthYears
+        });
     }
+
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('infoAccordion').style.display = 'block';
         document.getElementById('infoArrow').textContent = '▼';
@@ -262,8 +270,5 @@
         if (e.target.closest('.form-grid')) { calculate(); }
     });
 </script>
-    <script src="feedback.js"></script>
-</body>
-</html>
 </body>
 </html>
