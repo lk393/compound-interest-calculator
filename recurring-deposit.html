@@ -23,7 +23,6 @@
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
         .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
-        .summary-item.highlight .value { color: #2563eb; }
         .summary-item.positive .value { color: #10b981; }
 
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
@@ -112,7 +111,6 @@
                 <strong>Recurring Deposit Calculator</strong> — This tool calculates the maturity value of a
                 recurring deposit (RD) where you invest a fixed amount every month. It answers the question:
                 <em>“If I deposit $100 every month for 5 years at 6% interest, how much will I have at maturity?”</em>
-                You'll see the maturity value, total invested, total interest, and a year-by-year growth breakdown.
             </p>
         </div>
 
@@ -146,27 +144,22 @@
         <div id="results-area" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your RD Results</h2>
             <div class="results-summary" id="summary">
-                <div class="summary-item highlight">
-                    <span class="label">Maturity Value</span>
-                    <span class="value" id="rd-maturity">—</span>
-                </div>
-                <div class="summary-item">
-                    <span class="label">Total Invested</span>
-                    <span class="value" id="rd-invested">—</span>
-                </div>
-                <div class="summary-item positive">
-                    <span class="label">Total Interest</span>
-                    <span class="value" id="rd-interest">—</span>
-                </div>
+                <div class="summary-item highlight"><span class="label">Maturity Value</span><span class="value" id="rd-maturity">—</span></div>
+                <div class="summary-item"><span class="label">Total Invested</span><span class="value" id="rd-invested">—</span></div>
+                <div class="summary-item positive"><span class="label">Total Interest</span><span class="value" id="rd-interest">—</span></div>
             </div>
             <h3 style="font-size:1rem; margin:1rem 0 0.3rem;">📅 Year-by-Year Growth</h3>
             <div class="schedule-wrapper">
-                <table class="schedule-table" id="schedule-table">
+                <table class="schedule-table" id="schedule-table-rd">
                     <thead><tr><th>Year</th><th>Balance</th><th>Invested (Cumulative)</th><th>Interest (Cumulative)</th></tr></thead>
-                    <tbody id="schedule-body"></tbody>
+                    <tbody id="schedule-body-rd"></tbody>
                 </table>
             </div>
         </div>
+
+        <!-- ===== 推荐区域 ===== -->
+        <div id="recommendations-area"></div>
+
     </main>
 
     <section class="accordion-card">
@@ -205,6 +198,9 @@
     </footer>
 </div>
 
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+
 <script>
     function toggleAccordion(id) {
         const body = document.getElementById(id);
@@ -228,6 +224,7 @@
             arrow.textContent = '▶';
         }
     }
+
     function calculate() {
         const monthly = parseFloat(document.getElementById('rd-monthly').value) || 0;
         const years = parseFloat(document.getElementById('rd-tenure').value) || 1;
@@ -259,7 +256,7 @@
         document.getElementById('rd-invested').textContent = fmt.format(totalInvested);
         document.getElementById('rd-interest').textContent = fmt.format(totalInterest);
 
-        const tbody = document.getElementById('schedule-body');
+        const tbody = document.getElementById('schedule-body-rd');
         tbody.innerHTML = '';
         let balance = 0;
         let cumInvested = 0;
@@ -284,7 +281,16 @@
         }
 
         document.getElementById('results-area').style.display = 'block';
+
+        // ===== 推荐联动 =====
+        const monthlyDeposit = document.getElementById('rd-monthly').value;
+        const totalInvestedText = fmt.format(totalInvested).replace(/[^0-9.]/g, '');
+        showRecommendations('recurring-deposit.html', {
+            monthlyDeposit: monthlyDeposit,
+            totalInvested: totalInvestedText
+        });
     }
+
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('infoAccordion').style.display = 'block';
         document.getElementById('infoArrow').textContent = '▼';
@@ -298,6 +304,5 @@
         if (e.target.closest('.form-grid')) { calculate(); }
     });
 </script>
-<script src="feedback.js"></script>
 </body>
 </html>
