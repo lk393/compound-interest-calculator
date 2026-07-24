@@ -60,18 +60,13 @@
         }
         .btn:hover { background: #1d4ed8; }
 
-        .budget-breakdown {
-            display: flex;
-            flex-direction: column;
-            gap: 0.3rem;
-            margin-top: 0.5rem;
-        }
         .budget-bar {
             display: flex;
             height: 28px;
             border-radius: 8px;
             overflow: hidden;
             background: #e9edf2;
+            margin-top: 0.5rem;
         }
         .budget-bar .segment {
             height: 100%;
@@ -111,8 +106,6 @@
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
                 <strong>50/30/20 Budget Planner</strong> — This tool helps you allocate your after-tax income
                 using the popular budgeting rule: 50% for Needs, 30% for Wants, and 20% for Savings & Debt.
-                It answers the question: <em>“How much should I spend on essentials vs. fun vs. saving each month?”</em>
-                Enter your monthly income to see a clear breakdown and visual budget allocation.
             </p>
         </div>
 
@@ -128,34 +121,22 @@
 
         <div id="results-area" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your 50/30/20 Budget</h2>
-
             <div class="results-summary" id="summary">
-                <div class="summary-item">
-                    <span class="label">💰 Total Income</span>
-                    <span class="value" id="budget-total">—</span>
-                </div>
-                <div class="summary-item">
-                    <span class="label">🏠 Needs (50%)</span>
-                    <span class="value need" id="budget-needs">—</span>
-                </div>
-                <div class="summary-item">
-                    <span class="label">🎉 Wants (30%)</span>
-                    <span class="value want" id="budget-wants">—</span>
-                </div>
-                <div class="summary-item highlight">
-                    <span class="label">💰 Savings / Debt (20%)</span>
-                    <span class="value save" id="budget-savings">—</span>
-                </div>
+                <div class="summary-item"><span class="label">💰 Total Income</span><span class="value" id="budget-total">—</span></div>
+                <div class="summary-item"><span class="label">🏠 Needs (50%)</span><span class="value need" id="budget-needs">—</span></div>
+                <div class="summary-item"><span class="label">🎉 Wants (30%)</span><span class="value want" id="budget-wants">—</span></div>
+                <div class="summary-item highlight"><span class="label">💰 Savings / Debt (20%)</span><span class="value save" id="budget-savings">—</span></div>
             </div>
-
-            <div class="budget-breakdown">
-                <div class="budget-bar" id="budget-bar">
-                    <div class="segment need" id="bar-need" style="width:50%;">50% Needs</div>
-                    <div class="segment want" id="bar-want" style="width:30%;">30% Wants</div>
-                    <div class="segment save" id="bar-save" style="width:20%;">20% Savings</div>
-                </div>
+            <div class="budget-bar">
+                <div class="segment need" id="bar-need" style="width:50%;">50% Needs</div>
+                <div class="segment want" id="bar-want" style="width:30%;">30% Wants</div>
+                <div class="segment save" id="bar-save" style="width:20%;">20% Savings</div>
             </div>
         </div>
+
+        <!-- ===== 推荐区域 ===== -->
+        <div id="recommendations-area"></div>
+
     </main>
 
     <section class="accordion-card">
@@ -194,6 +175,9 @@
     </footer>
 </div>
 
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+
 <script>
     function toggleAccordion(id) {
         const body = document.getElementById(id);
@@ -217,6 +201,7 @@
             arrow.textContent = '▶';
         }
     }
+
     function calculate() {
         const income = parseFloat(document.getElementById('monthly-income-budget').value) || 0;
 
@@ -232,7 +217,16 @@
         document.getElementById('budget-savings').textContent = fmt.format(savings);
 
         document.getElementById('results-area').style.display = 'block';
+
+        // ===== 推荐联动 =====
+        const monthlyIncome = document.getElementById('monthly-income-budget').value;
+        const savingsAmount = fmt.format(savings).replace(/[^0-9.]/g, '');
+        showRecommendations('budget-planner.html', {
+            monthlyIncome: monthlyIncome,
+            savingsAmount: savingsAmount
+        });
     }
+
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('infoAccordion').style.display = 'block';
         document.getElementById('infoArrow').textContent = '▼';
@@ -246,6 +240,5 @@
         if (e.target.closest('.form-grid')) { calculate(); }
     });
 </script>
-<script src="feedback.js"></script>
 </body>
 </html>
