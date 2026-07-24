@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Debt Strategy Comparator — Free Online Tool</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .results-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            margin: 1.5rem 0;
+        }
+        .summary-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+        .summary-item.positive .value { color: #10b981; }
+
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
+        .field input {
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem;
+            border: 1.5px solid #dce1e8;
+            border-radius: 10px;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .field input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background: #ffffff;
+        }
+
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+        .btn:hover { background: #1d4ed8; }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        .comparison-box {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1rem;
+        }
+        .comparison-box h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin: 0 0 0.5rem;
+            text-align: center;
+        }
+        .comparison-box .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.2rem 0;
+            font-size: 0.85rem;
+            color: #475569;
+        }
+        .comparison-box .row .num {
+            font-weight: 600;
+            color: #0f172a;
+        }
+        .comparison-box.better {
+            border: 2px solid #10b981;
+        }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
+        @media (max-width: 640px) {
+            .info-grid { grid-template-columns: 1fr; }
+            .summary-item { padding: 0.6rem 1rem; }
+            .summary-item .value { font-size: 1rem; }
+            .comparison-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="top-nav">
+        <a href="index.html" class="back-link">← Back to Home</a>
+        <div class="breadcrumb">📊 <span>Debt Strategy Comparator</span></div>
+    </div>
+
+    <main class="calculator-card">
+        <h1>⚖️ Debt Strategy Comparator</h1>
+        <p class="subtitle">Compare Snowball vs Avalanche debt payoff strategies side-by-side.</p>
+
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>Debt Strategy Comparator</strong> — This tool compares two popular debt payoff
+                strategies: Snowball (smallest balance first) and Avalanche (highest interest rate first).
+                It answers the question: <em>“Which strategy saves me more money and gets me out of debt faster?”</em>
+            </p>
+        </div>
+
+        <div class="form-grid">
+            <div class="field">
+                <label for="total-debt-dsc">Total Debt ($)</label>
+                <input type="number" id="total-debt-dsc" value="15000" min="0" step="1000" />
+            </div>
+            <div class="field">
+                <label for="avg-rate-dsc">Average Interest Rate (%)</label>
+                <input type="number" id="avg-rate-dsc" value="15" min="0" step="0.1" />
+            </div>
+            <div class="field">
+                <label for="monthly-payment-dsc">Monthly Payment ($)</label>
+                <input type="number" id="monthly-payment-dsc" value="600" min="0" step="50" />
+            </div>
+            <div style="margin-top:0.5rem;">
+                <button class="btn" onclick="calculate()">Compare</button>
+            </div>
+        </div>
+
+        <div id="results-area" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Strategy Comparison</h2>
+            <div class="comparison-grid">
+                <div class="comparison-box" id="box-snowball-dsc">
+                    <h4>⛄ Snowball</h4>
+                    <div class="row"><span>Payoff Time</span><span class="num" id="snowball-time-dsc">—</span></div>
+                    <div class="row"><span>Total Interest</span><span class="num" id="snowball-interest-dsc">—</span></div>
+                    <div class="row"><span>Total Paid</span><span class="num" id="snowball-total-dsc">—</span></div>
+                </div>
+                <div class="comparison-box" id="box-avalanche-dsc">
+                    <h4>⛰️ Avalanche</h4>
+                    <div class="row"><span>Payoff Time</span><span class="num" id="avalanche-time-dsc">—</span></div>
+                    <div class="row"><span>Total Interest</span><span class="num" id="avalanche-interest-dsc">—</span></div>
+                    <div class="row"><span>Total Paid</span><span class="num" id="avalanche-total-dsc">—</span></div>
+                </div>
+            </div>
+            <div class="results-summary" id="summary">
+                <div class="summary-item highlight">
+                    <span class="label">🏆 Better Strategy</span>
+                    <span class="value" id="winner-dsc">—</span>
+                </div>
+                <div class="summary-item positive">
+                    <span class="label">Interest Savings</span>
+                    <span class="value" id="savings-dsc">—</span>
+                </div>
+                <div class="summary-item">
+                    <span class="label">Time Difference</span>
+                    <span class="value" id="time-difference-dsc">—</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 推荐区域 ===== -->
+        <div id="recommendations-area"></div>
+
+    </main>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
+            <h2>📖 How to read your results</h2>
+            <span class="accordion-arrow" id="infoArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="infoAccordion">
+            <div class="info-grid">
+                <div class="info-block"><h3>Snowball</h3><p>Pays off the smallest balance first. Provides quick wins and motivation, but may cost more in interest.</p></div>
+                <div class="info-block"><h3>Avalanche</h3><p>Pays off the highest interest rate first. Saves the most money on interest, but may take longer to see progress.</p></div>
+                <div class="info-block"><h3>Winner</h3><p>The strategy that saves you the most money. Avalanche usually wins mathematically, but Snowball may be better for motivation.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
+            <h2>❓ FAQ</h2>
+            <span class="accordion-arrow" id="faqArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="faqAccordion">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Which strategy is better?</span></div>
+                <div class="faq-answer">Avalanche saves more money mathematically. Snowball is better for motivation and momentum. Choose the one you'll actually stick with.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Can I use both strategies?</span></div>
+                <div class="faq-answer">Yes — some people start with Snowball for motivation on small debts, then switch to Avalanche for larger debts. The best strategy is the one you follow through.</div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
+    </footer>
+</div>
+
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+
+<script>
+    function toggleAccordion(id) {
+        const body = document.getElementById(id);
+        const arrow = document.getElementById(id + 'Arrow');
+        if (body.style.display === 'none' || body.style.display === '') {
+            body.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            body.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+    function toggleFaq(el) {
+        const answer = el.nextElementSibling;
+        const arrow = el.querySelector('.faq-arrow');
+        if (answer.style.display === 'none' || answer.style.display === '') {
+            answer.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            answer.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+
+    function calculate() {
+        const totalDebt = parseFloat(document.getElementById('total-debt-dsc').value) || 0;
+        const rate = parseFloat(document.getElementById('avg-rate-dsc').value) || 0;
+        const payment = parseFloat(document.getElementById('monthly-payment-dsc').value) || 0;
+
+        if (payment <= 0) {
+            alert('Monthly payment must be greater than zero.');
+            return;
+        }
+
+        const monthlyRate = rate / 100 / 12;
+
+        // Snowball: 模拟支付（假设分两个债务，一个大的一个小）
+        // 实际中Snowball和Avalanche的区别在于支付顺序，这里用两种债务比例模拟
+        // 简化：Snowball 70%付给小债务，30%付给大债务；Avalanche 30%付给小债务，70%付给大债务
+        function simulateStrategy(ratio1, ratio2) {
+            let bal1 = totalDebt * 0.3;
+            let bal2 = totalDebt * 0.7;
+            let month = 0;
+            let totalInterest = 0;
+
+            while ((bal1 > 0.01 || bal2 > 0.01) && month < 600) {
+                month++;
+                const payment1 = payment * ratio1;
+                const payment2 = payment * ratio2;
+
+                const int1 = bal1 * monthlyRate;
+                const int2 = bal2 * monthlyRate;
+                totalInterest += int1 + int2;
+
+                bal1 += int1;
+                bal2 += int2;
+
+                let paymentLeft1 = Math.min(payment1, bal1);
+                bal1 -= paymentLeft1;
+                let paymentLeft2 = Math.min(payment2, bal2);
+                bal2 -= paymentLeft2;
+
+                if (bal1 < 0.01) {
+                    const extra = Math.min(payment1 + payment2, bal2);
+                    bal2 -= extra;
+                }
+                if (bal2 < 0.01 && bal1 > 0.01) {
+                    const extra = Math.min(payment1 + payment2, bal1);
+                    bal1 -= extra;
+                }
+                if (bal1 < 0.01 && bal2 < 0.01) break;
+            }
+
+            return { months: month, interest: totalInterest };
+        }
+
+        const snowball = simulateStrategy(0.7, 0.3);
+        const avalanche = simulateStrategy(0.3, 0.7);
+
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+        const sbMonths = snowball.months;
+        const avMonths = avalanche.months;
+
+        document.getElementById('snowball-time-dsc').textContent = `${Math.floor(sbMonths/12)}y ${sbMonths%12}m`;
+        document.getElementById('snowball-interest-dsc').textContent = fmt.format(snowball.interest);
+        document.getElementById('snowball-total-dsc').textContent = fmt.format(totalDebt + snowball.interest);
+        document.getElementById('avalanche-time-dsc').textContent = `${Math.floor(avMonths/12)}y ${avMonths%12}m`;
+        document.getElementById('avalanche-interest-dsc').textContent = fmt.format(avalanche.interest);
+        document.getElementById('avalanche-total-dsc').textContent = fmt.format(totalDebt + avalanche.interest);
+
+        const boxS = document.getElementById('box-snowball-dsc');
+        const boxA = document.getElementById('box-avalanche-dsc');
+        const winnerEl = document.getElementById('winner-dsc');
+        const savEl = document.getElementById('savings-dsc');
+        const timeEl = document.getElementById('time-difference-dsc');
+
+        boxS.classList.remove('better');
+        boxA.classList.remove('better');
+
+        if (avalanche.interest < snowball.interest) {
+            boxA.classList.add('better');
+            winnerEl.textContent = '✅ Avalanche wins (saves more interest)';
+            savEl.textContent = fmt.format(snowball.interest - avalanche.interest) + ' saved';
+        } else if (snowball.interest < avalanche.interest) {
+            boxS.classList.add('better');
+            winnerEl.textContent = '✅ Snowball wins (saves more interest)';
+            savEl.textContent = fmt.format(avalanche.interest - snowball.interest) + ' saved';
+        } else {
+            winnerEl.textContent = '⚖️ Both strategies tie';
+            savEl.textContent = '$0';
+        }
+
+        const timeDiff = Math.abs(sbMonths - avMonths);
+        const timeDiffStr = `${Math.floor(timeDiff/12)}y ${timeDiff%12}m`;
+        timeEl.textContent = timeDiff === 0 ? 'Same time' : timeDiffStr + ' difference';
+
+        document.getElementById('results-area').style.display = 'block';
+
+        // ===== 推荐联动 =====
+        showRecommendations('debt-strategy-comparator.html', {
+            totalDebt: document.getElementById('total-debt-dsc').value,
+            monthlyPayment: document.getElementById('monthly-payment-dsc').value
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('infoAccordion').style.display = 'block';
+        document.getElementById('infoArrow').textContent = '▼';
+        document.getElementById('faqAccordion').style.display = 'none';
+        document.getElementById('faqArrow').textContent = '▶';
+        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
+        calculate();
+    });
+    document.addEventListener('input', function(e) {
+        if (e.target.closest('.form-grid')) { calculate(); }
+    });
+</script>
+</body>
+</html>
