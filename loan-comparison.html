@@ -20,26 +20,10 @@
             justify-content: space-between;
             align-items: center;
         }
-        .summary-item .label {
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #475569;
-        }
-        .summary-item .value {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #0f172a;
-        }
-        .summary-item.highlight {
-            background: #eef2ff;
-            border: 1px solid #c7d2fe;
-        }
-        .summary-item.highlight .value {
-            color: #2563eb;
-        }
-        .summary-item .savings {
-            color: #10b981;
-        }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+        .summary-item .savings { color: #10b981; }
 
         .comparison-grid {
             display: grid;
@@ -73,25 +57,10 @@
         .comparison-box.better {
             border: 2px solid #10b981;
         }
-        .comparison-box.better h4 {
-            color: #10b981;
-        }
 
-        .form-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 0.9rem;
-        }
-        .field {
-            display: flex;
-            flex-direction: column;
-        }
-        .field label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            color: #334155;
-        }
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
         .field input {
             padding: 0.6rem 0.8rem;
             font-size: 1rem;
@@ -120,9 +89,7 @@
             transition: background 0.2s;
             width: 100%;
         }
-        .btn:hover {
-            background: #1d4ed8;
-        }
+        .btn:hover { background: #1d4ed8; }
 
         .loan-section {
             border: 1px solid #e9edf2;
@@ -130,30 +97,14 @@
             padding: 1rem;
             margin-bottom: 0.5rem;
         }
-        .loan-section h4 {
-            margin: 0 0 0.5rem;
-            font-size: 0.95rem;
-            color: #0f172a;
-        }
+        .loan-section h4 { margin: 0 0 0.5rem; font-size: 0.95rem; color: #0f172a; }
 
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 0.8rem;
-        }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
         @media (max-width: 640px) {
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
-            .comparison-grid {
-                grid-template-columns: 1fr;
-            }
-            .summary-item {
-                padding: 0.6rem 1rem;
-            }
-            .summary-item .value {
-                font-size: 1rem;
-            }
+            .info-grid { grid-template-columns: 1fr; }
+            .comparison-grid { grid-template-columns: 1fr; }
+            .summary-item { padding: 0.6rem 1rem; }
+            .summary-item .value { font-size: 1rem; }
         }
     </style>
 </head>
@@ -173,42 +124,22 @@
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
                 <strong>Loan Comparison Calculator</strong> — This tool helps you compare two loan options
                 side-by-side. It answers the question: <em>“Which loan is the better deal — the one with
-                the lower rate or the one with the lower fees?”</em> You'll see the monthly payment, total
-                interest, and total cost for each loan, with a clear recommendation on which option is cheaper.
+                the lower rate or the one with the lower fees?”</em>
             </p>
         </div>
 
         <div class="comparison-grid">
             <div class="loan-section">
                 <h4>📋 Loan Option 1</h4>
-                <div class="field">
-                    <label>Loan Amount ($)</label>
-                    <input type="number" id="amount1" value="200000" min="0" step="1000" />
-                </div>
-                <div class="field">
-                    <label>Annual Interest Rate (%)</label>
-                    <input type="number" id="rate1" value="6.5" min="0" step="0.1" />
-                </div>
-                <div class="field">
-                    <label>Loan Term (Years)</label>
-                    <input type="number" id="term1" value="30" min="1" step="1" />
-                </div>
+                <div class="field"><label>Loan Amount ($)</label><input type="number" id="amount1" value="200000" min="0" step="1000" /></div>
+                <div class="field"><label>Annual Interest Rate (%)</label><input type="number" id="rate1" value="6.5" min="0" step="0.1" /></div>
+                <div class="field"><label>Loan Term (Years)</label><input type="number" id="term1" value="30" min="1" step="1" /></div>
             </div>
-
             <div class="loan-section">
                 <h4>📋 Loan Option 2</h4>
-                <div class="field">
-                    <label>Loan Amount ($)</label>
-                    <input type="number" id="amount2" value="200000" min="0" step="1000" />
-                </div>
-                <div class="field">
-                    <label>Annual Interest Rate (%)</label>
-                    <input type="number" id="rate2" value="5.5" min="0" step="0.1" />
-                </div>
-                <div class="field">
-                    <label>Loan Term (Years)</label>
-                    <input type="number" id="term2" value="25" min="1" step="1" />
-                </div>
+                <div class="field"><label>Loan Amount ($)</label><input type="number" id="amount2" value="200000" min="0" step="1000" /></div>
+                <div class="field"><label>Annual Interest Rate (%)</label><input type="number" id="rate2" value="5.5" min="0" step="0.1" /></div>
+                <div class="field"><label>Loan Term (Years)</label><input type="number" id="term2" value="25" min="1" step="1" /></div>
             </div>
         </div>
 
@@ -218,33 +149,27 @@
 
         <div id="results-area" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Comparison Results</h2>
-
             <div class="comparison-grid">
-                <div class="comparison-box" id="box1">
-                    <h4>Loan Option 1</h4>
+                <div class="comparison-box" id="box1"><h4>Loan Option 1</h4>
                     <div class="row"><span>Monthly Payment</span><span class="num" id="monthly1">—</span></div>
                     <div class="row"><span>Total Interest</span><span class="num" id="interest1">—</span></div>
                     <div class="row"><span>Total Payment</span><span class="num" id="total1">—</span></div>
                 </div>
-                <div class="comparison-box" id="box2">
-                    <h4>Loan Option 2</h4>
+                <div class="comparison-box" id="box2"><h4>Loan Option 2</h4>
                     <div class="row"><span>Monthly Payment</span><span class="num" id="monthly2">—</span></div>
                     <div class="row"><span>Total Interest</span><span class="num" id="interest2">—</span></div>
                     <div class="row"><span>Total Payment</span><span class="num" id="total2">—</span></div>
                 </div>
             </div>
-
             <div class="results-summary" id="summary">
-                <div class="summary-item highlight">
-                    <span class="label">💰 Recommendation</span>
-                    <span class="value" id="recommendation">—</span>
-                </div>
-                <div class="summary-item">
-                    <span class="label">Interest Savings</span>
-                    <span class="value" id="savings">—</span>
-                </div>
+                <div class="summary-item highlight"><span class="label">💰 Recommendation</span><span class="value" id="recommendation-lc">—</span></div>
+                <div class="summary-item"><span class="label">Interest Savings</span><span class="value" id="savings-lc">—</span></div>
             </div>
         </div>
+
+        <!-- ===== 推荐区域 ===== -->
+        <div id="recommendations-area"></div>
+
     </main>
 
     <section class="accordion-card">
@@ -269,11 +194,11 @@
         <div class="accordion-body" id="faqAccordion">
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Should I always choose the lower interest rate?</span></div>
-                <div class="faq-answer">Not necessarily — a lower rate with a longer term can sometimes cost more in total interest than a higher rate with a shorter term. This calculator helps you compare the total cost of each option.</div>
+                <div class="faq-answer">Not necessarily — a lower rate with a longer term can sometimes cost more in total interest than a higher rate with a shorter term.</div>
             </div>
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What about fees and closing costs?</span></div>
-                <div class="faq-answer">This calculator compares the principal, interest, and loan terms only. For a complete comparison, be sure to factor in origination fees, closing costs, and any other charges separately.</div>
+                <div class="faq-answer">This calculator compares the principal, interest, and loan terms only. Factor in fees separately.</div>
             </div>
         </div>
     </section>
@@ -282,6 +207,9 @@
         <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
     </footer>
 </div>
+
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
 
 <script>
     function toggleAccordion(id) {
@@ -311,11 +239,8 @@
         const monthlyRate = rate / 100 / 12;
         const months = term * 12;
         let payment;
-        if (monthlyRate === 0) {
-            payment = amount / months;
-        } else {
-            payment = amount * monthlyRate * Math.pow(1 + monthlyRate, months) / (Math.pow(1 + monthlyRate, months) - 1);
-        }
+        if (monthlyRate === 0) payment = amount / months;
+        else payment = amount * monthlyRate * Math.pow(1 + monthlyRate, months) / (Math.pow(1 + monthlyRate, months) - 1);
         const total = payment * months;
         const interest = total - amount;
         return { payment, total, interest };
@@ -341,11 +266,10 @@
         document.getElementById('interest2').textContent = fmt.format(result2.interest);
         document.getElementById('total2').textContent = fmt.format(result2.total);
 
-        // 推荐
         const box1 = document.getElementById('box1');
         const box2 = document.getElementById('box2');
-        const recEl = document.getElementById('recommendation');
-        const savingsEl = document.getElementById('savings');
+        const recEl = document.getElementById('recommendation-lc');
+        const savEl = document.getElementById('savings-lc');
 
         box1.classList.remove('better');
         box2.classList.remove('better');
@@ -353,17 +277,27 @@
         if (result1.total < result2.total) {
             box1.classList.add('better');
             recEl.textContent = '✅ Loan Option 1 is cheaper';
-            savingsEl.textContent = fmt.format(result2.total - result1.total) + ' saved';
+            savEl.textContent = fmt.format(result2.total - result1.total) + ' saved';
         } else if (result2.total < result1.total) {
             box2.classList.add('better');
             recEl.textContent = '✅ Loan Option 2 is cheaper';
-            savingsEl.textContent = fmt.format(result1.total - result2.total) + ' saved';
+            savEl.textContent = fmt.format(result1.total - result2.total) + ' saved';
         } else {
             recEl.textContent = '⚖️ Both options cost the same';
-            savingsEl.textContent = '$0';
+            savEl.textContent = '$0';
         }
 
         document.getElementById('results-area').style.display = 'block';
+
+        // ===== 推荐联动 =====
+        showRecommendations('loan-comparison.html', {
+            amount1: document.getElementById('amount1').value,
+            rate1: document.getElementById('rate1').value,
+            term1: document.getElementById('term1').value,
+            amount2: document.getElementById('amount2').value,
+            rate2: document.getElementById('rate2').value,
+            term2: document.getElementById('term2').value
+        });
     }
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -379,8 +313,5 @@
         if (e.target.closest('.form-grid') || e.target.closest('.loan-section')) { calculate(); }
     });
 </script>
-    <script src="feedback.js"></script>
-</body>
-</html>
 </body>
 </html>
