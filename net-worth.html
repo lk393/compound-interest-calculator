@@ -20,45 +20,15 @@
             justify-content: space-between;
             align-items: center;
         }
-        .summary-item .label {
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #475569;
-        }
-        .summary-item .value {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #0f172a;
-        }
-        .summary-item.highlight {
-            background: #eef2ff;
-            border: 1px solid #c7d2fe;
-        }
-        .summary-item.highlight .value {
-            color: #2563eb;
-        }
-        .summary-item.positive .value {
-            color: #10b981;
-        }
-        .summary-item.negative .value {
-            color: #ef4444;
-        }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+        .summary-item.positive .value { color: #10b981; }
+        .summary-item.negative .value { color: #ef4444; }
 
-        .form-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 0.9rem;
-        }
-        .field {
-            display: flex;
-            flex-direction: column;
-        }
-        .field label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            color: #334155;
-        }
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
         .field input {
             padding: 0.6rem 0.8rem;
             font-size: 1rem;
@@ -87,32 +57,19 @@
             transition: background 0.2s;
             width: 100%;
         }
-        .btn:hover {
-            background: #1d4ed8;
-        }
+        .btn:hover { background: #1d4ed8; }
 
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 0.8rem;
-        }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
         @media (max-width: 640px) {
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
-            .summary-item {
-                padding: 0.6rem 1rem;
-            }
-            .summary-item .value {
-                font-size: 1rem;
-            }
+            .info-grid { grid-template-columns: 1fr; }
+            .summary-item { padding: 0.6rem 1rem; }
+            .summary-item .value { font-size: 1rem; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-
     <div class="top-nav">
         <a href="index.html" class="back-link">← Back to Home</a>
         <div class="breadcrumb">📊 <span>Net Worth Calculator</span></div>
@@ -126,9 +83,7 @@
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
                 <strong>Net Worth Calculator</strong> — This tool gives you a complete picture of your
                 financial health. It answers the question: <em>“What is my total net worth, and how is it
-                distributed between assets and liabilities?”</em> Simply enter your assets (cash, investments,
-                property, etc.) and liabilities (mortgage, credit cards, loans, etc.) to see your total net
-                worth. Use this to track your financial progress over time.
+                distributed between assets and liabilities?”</em>
             </p>
         </div>
 
@@ -174,20 +129,15 @@
         <div id="results-area" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Net Worth</h2>
             <div class="results-summary" id="summary">
-                <div class="summary-item highlight">
-                    <span class="label">Total Net Worth</span>
-                    <span class="value" id="net-worth">—</span>
-                </div>
-                <div class="summary-item positive">
-                    <span class="label">Total Assets</span>
-                    <span class="value" id="total-assets">—</span>
-                </div>
-                <div class="summary-item negative">
-                    <span class="label">Total Liabilities</span>
-                    <span class="value" id="total-liabilities">—</span>
-                </div>
+                <div class="summary-item highlight"><span class="label">Total Net Worth</span><span class="value" id="net-worth">—</span></div>
+                <div class="summary-item positive"><span class="label">Total Assets</span><span class="value" id="total-assets">—</span></div>
+                <div class="summary-item negative"><span class="label">Total Liabilities</span><span class="value" id="total-liabilities">—</span></div>
             </div>
         </div>
+
+        <!-- ===== 推荐区域 ===== -->
+        <div id="recommendations-area"></div>
+
     </main>
 
     <section class="accordion-card">
@@ -226,6 +176,9 @@
     </footer>
 </div>
 
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+
 <script>
     function toggleAccordion(id) {
         const body = document.getElementById(id);
@@ -249,6 +202,7 @@
             arrow.textContent = '▶';
         }
     }
+
     function calculate() {
         const cash = parseFloat(document.getElementById('cash').value) || 0;
         const investments = parseFloat(document.getElementById('investments').value) || 0;
@@ -268,20 +222,18 @@
         document.getElementById('total-assets').textContent = fmt.format(totalAssets);
         document.getElementById('total-liabilities').textContent = fmt.format(totalLiabilities);
 
-        const nwEl = document.getElementById('net-worth');
-        const nwItem = nwEl.closest('.summary-item');
-        if (netWorth > 0) {
-            nwItem.classList.add('positive');
-            nwItem.classList.remove('negative');
-        } else if (netWorth < 0) {
-            nwItem.classList.add('negative');
-            nwItem.classList.remove('positive');
-        } else {
-            nwItem.classList.remove('positive', 'negative');
-        }
-
         document.getElementById('results-area').style.display = 'block';
+
+        // ===== 推荐联动 =====
+        const totalAssetsVal = fmt.format(totalAssets).replace(/[^0-9.]/g, '');
+        const totalLiabilitiesVal = fmt.format(totalLiabilities).replace(/[^0-9.]/g, '');
+        showRecommendations('net-worth.html', {
+            netWorth: netWorth.toString(),
+            totalAssets: totalAssetsVal,
+            totalLiabilities: totalLiabilitiesVal
+        });
     }
+
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('infoAccordion').style.display = 'block';
         document.getElementById('infoArrow').textContent = '▼';
@@ -295,8 +247,5 @@
         if (e.target.closest('.form-grid')) { calculate(); }
     });
 </script>
-    <script src="feedback.js"></script>
-</body>
-</html>
 </body>
 </html>
