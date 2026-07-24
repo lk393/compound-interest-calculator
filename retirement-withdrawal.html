@@ -20,42 +20,15 @@
             justify-content: space-between;
             align-items: center;
         }
-        .summary-item .label {
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #475569;
-        }
-        .summary-item .value {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #0f172a;
-        }
-        .summary-item.highlight {
-            background: #eef2ff;
-            border: 1px solid #c7d2fe;
-        }
-        .summary-item.highlight .value {
-            color: #2563eb;
-        }
-        .summary-item.positive .value {
-            color: #10b981;
-        }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+        .summary-item.highlight .value { color: #2563eb; }
+        .summary-item.positive .value { color: #10b981; }
 
-        .form-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 0.9rem;
-        }
-        .field {
-            display: flex;
-            flex-direction: column;
-        }
-        .field label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            color: #334155;
-        }
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
         .field input {
             padding: 0.6rem 0.8rem;
             font-size: 1rem;
@@ -84,9 +57,7 @@
             transition: background 0.2s;
             width: 100%;
         }
-        .btn:hover {
-            background: #1d4ed8;
-        }
+        .btn:hover { background: #1d4ed8; }
 
         .schedule-wrapper {
             max-height: 400px;
@@ -141,8 +112,7 @@
                 <strong>Retirement Withdrawal Calculator</strong> — This tool projects how much you can
                 withdraw from your retirement portfolio each year without running out of money. It answers
                 the question: <em>“If I retire with $1,000,000, how much can I take out each year for 30 years?”</em>
-                You'll see the annual withdrawal amount, total withdrawals, and a year-by-year projection
-                of your remaining balance.
+                You'll see the annual withdrawal amount, total withdrawals, and a year-by-year projection.
             </p>
         </div>
 
@@ -167,18 +137,9 @@
         <div id="results-area" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Withdrawal Plan</h2>
             <div class="results-summary" id="summary">
-                <div class="summary-item highlight">
-                    <span class="label">Annual Withdrawal</span>
-                    <span class="value" id="annual-withdrawal">—</span>
-                </div>
-                <div class="summary-item">
-                    <span class="label">Monthly Withdrawal</span>
-                    <span class="value" id="monthly-withdrawal">—</span>
-                </div>
-                <div class="summary-item positive">
-                    <span class="label">Total Withdrawals</span>
-                    <span class="value" id="total-withdrawals">—</span>
-                </div>
+                <div class="summary-item highlight"><span class="label">Annual Withdrawal</span><span class="value" id="annual-withdrawal">—</span></div>
+                <div class="summary-item"><span class="label">Monthly Withdrawal</span><span class="value" id="monthly-withdrawal">—</span></div>
+                <div class="summary-item positive"><span class="label">Total Withdrawals</span><span class="value" id="total-withdrawals">—</span></div>
             </div>
             <h3 style="font-size:1rem; margin:1rem 0 0.3rem;">📅 Year-by-Year Projection</h3>
             <div class="schedule-wrapper">
@@ -187,8 +148,11 @@
                     <tbody id="schedule-body"></tbody>
                 </table>
             </div>
-            <p style="font-size:0.75rem; color:#94a3b8; margin-top:0.3rem; text-align:center;">* Assumes a constant annual withdrawal amount and steady returns.</p>
         </div>
+
+        <!-- ===== 推荐区域 ===== -->
+        <div id="recommendations-area"></div>
+
     </main>
 
     <section class="accordion-card">
@@ -212,12 +176,12 @@
         </div>
         <div class="accordion-body" id="faqAccordion">
             <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the 4% rule?</span></div>
-                <div class="faq-answer">The 4% rule suggests withdrawing 4% of your retirement portfolio in the first year of retirement, then adjusting for inflation. This calculator uses a different method — it calculates equal withdrawals that exactly deplete your savings over the chosen period.</div>
-            </div>
-            <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is a realistic expected return during retirement?</span></div>
                 <div class="faq-answer">Many retirees use a 4-6% expected return, balancing growth and safety. A lower return reduces withdrawal amounts but is more conservative.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Does this account for inflation?</span></div>
+                <div class="faq-answer">Not directly — this uses nominal dollars. For inflation-adjusted planning, reduce your expected return by 2-3%.</div>
             </div>
         </div>
     </section>
@@ -226,6 +190,9 @@
         <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
     </footer>
 </div>
+
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
 
 <script>
     function toggleAccordion(id) {
@@ -250,13 +217,13 @@
             arrow.textContent = '▶';
         }
     }
+
     function calculate() {
         const savings = parseFloat(document.getElementById('retirement-savings').value) || 0;
         const years = parseFloat(document.getElementById('withdrawal-years').value) || 30;
         const returnRate = parseFloat(document.getElementById('withdrawal-return').value) || 0;
         const rateDecimal = returnRate / 100;
 
-        // 计算等额提取金额（年金公式）
         let withdrawal;
         if (rateDecimal === 0) {
             withdrawal = savings / years;
@@ -272,7 +239,6 @@
         document.getElementById('monthly-withdrawal').textContent = fmt.format(withdrawal / 12);
         document.getElementById('total-withdrawals').textContent = fmt.format(totalWithdrawals);
 
-        // 逐年表
         const tbody = document.getElementById('schedule-body');
         tbody.innerHTML = '';
         let balance = savings;
@@ -289,7 +255,15 @@
         }
 
         document.getElementById('results-area').style.display = 'block';
+
+        // ===== 推荐联动 =====
+        const savingsVal = document.getElementById('retirement-savings').value;
+        showRecommendations('retirement-withdrawal.html', {
+            savings: savingsVal,
+            annualIncome: (withdrawal * 12).toString()
+        });
     }
+
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('infoAccordion').style.display = 'block';
         document.getElementById('infoArrow').textContent = '▼';
@@ -303,8 +277,5 @@
         if (e.target.closest('.form-grid')) { calculate(); }
     });
 </script>
-    <script src="feedback.js"></script>
-</body>
-</html>
 </body>
 </html>
