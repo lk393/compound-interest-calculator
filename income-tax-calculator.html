@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>所得税计算器 - Smart Finance Tools</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="container" style="max-width: 700px; margin: 40px auto; padding: 20px;">
+        <h1>🧾 所得税计算器</h1>
+        <p>根据收入计算应缴税额（美国2024年单身标准扣除示例）。</p>
+        <div class="card" style="padding: 25px; background: #f9fafc; border-radius: 16px;">
+            <div class="input-group" style="margin-bottom: 15px;">
+                <label>年总收入 (¥ / $)</label>
+                <input type="number" id="income" value="80000" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+            </div>
+            <div class="input-group" style="margin-bottom: 15px;">
+                <label>标准扣除额 (¥ / $)</label>
+                <input type="number" id="deduction" value="14600" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+            </div>
+            <button onclick="calcIncomeTax()" class="btn" style="background:#2563eb; color:#fff; padding:12px 24px; border:none; border-radius:8px; cursor:pointer; font-size:16px;">计算</button>
+            <div id="result" style="margin-top: 20px; font-size: 16px; background: #eef2ff; padding: 15px; border-radius: 8px;"></div>
+        </div>
+    </div>
+    <script>
+        function calcIncomeTax() {
+            let income = parseFloat(document.getElementById('income').value);
+            const deduction = parseFloat(document.getElementById('deduction').value);
+            if (isNaN(income) || isNaN(deduction)) return alert('请输入有效数字');
+            let taxable = Math.max(0, income - deduction);
+            // 2024 美国单身税率示例
+            const brackets = [
+                { limit: 11600, rate: 0.10 },
+                { limit: 47150, rate: 0.12 },
+                { limit: 100525, rate: 0.22 },
+                { limit: 191950, rate: 0.24 },
+                { limit: 243725, rate: 0.32 },
+                { limit: 609350, rate: 0.35 },
+                { limit: Infinity, rate: 0.37 }
+            ];
+            let tax = 0;
+            let remaining = taxable;
+            let prevLimit = 0;
+            for (let b of brackets) {
+                if (remaining <= 0) break;
+                let slice = Math.min(remaining, b.limit - prevLimit);
+                tax += slice * b.rate;
+                remaining -= slice;
+                prevLimit = b.limit;
+            }
+            document.getElementById('result').innerHTML = `
+                <strong>💰 应纳税所得额</strong>：${taxable.toFixed(2)}<br>
+                <strong>🧾 应缴税款</strong>：${tax.toFixed(2)}<br>
+                <strong>📊 有效税率</strong>：${(tax / income * 100).toFixed(2)}%
+            `;
+        }
+    </script>
+    <script src="feedback.js"></script>
+    <script src="recommendations.js"></script>
+</body>
+</html>
