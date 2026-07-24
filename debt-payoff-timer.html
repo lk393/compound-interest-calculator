@@ -23,7 +23,6 @@
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
         .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
-        .summary-item.highlight .value { color: #2563eb; }
         .summary-item.positive .value { color: #10b981; }
 
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
@@ -111,23 +110,22 @@
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
                 <strong>Debt Payoff Timer</strong> — This tool calculates how long it will take to pay off
                 a debt with regular monthly payments. It answers the question: <em>“If I pay $500 per month
-                toward my $10,000 debt at 15% APR, how long until I'm debt-free?”</em> You'll see the number
-                of months to payoff, total interest paid, and a month-by-month breakdown.
+                toward my $10,000 debt at 15% APR, how long until I'm debt-free?”</em>
             </p>
         </div>
 
         <div class="form-grid">
             <div class="field">
-                <label for="debt-amount">Total Debt Amount ($)</label>
-                <input type="number" id="debt-amount" value="10000" min="0" step="100" />
+                <label for="debt-amount-dpt">Total Debt Amount ($)</label>
+                <input type="number" id="debt-amount-dpt" value="10000" min="0" step="100" />
             </div>
             <div class="field">
-                <label for="debt-rate">Annual Interest Rate (%)</label>
-                <input type="number" id="debt-rate" value="15" min="0" max="50" step="0.1" />
+                <label for="debt-rate-dpt">Annual Interest Rate (%)</label>
+                <input type="number" id="debt-rate-dpt" value="15" min="0" max="50" step="0.1" />
             </div>
             <div class="field">
-                <label for="monthly-payment">Monthly Payment ($)</label>
-                <input type="number" id="monthly-payment" value="500" min="0" step="50" />
+                <label for="monthly-payment-dpt">Monthly Payment ($)</label>
+                <input type="number" id="monthly-payment-dpt" value="500" min="0" step="50" />
             </div>
             <div style="margin-top:0.5rem;">
                 <button class="btn" onclick="calculate()">Calculate</button>
@@ -137,28 +135,22 @@
         <div id="results-area" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Debt Payoff Plan</h2>
             <div class="results-summary" id="summary">
-                <div class="summary-item highlight">
-                    <span class="label">Time to Pay Off</span>
-                    <span class="value" id="time-to-payoff">—</span>
-                </div>
-                <div class="summary-item">
-                    <span class="label">Total Interest Paid</span>
-                    <span class="value" id="total-interest">—</span>
-                </div>
-                <div class="summary-item">
-                    <span class="label">Total Paid</span>
-                    <span class="value" id="total-paid">—</span>
-                </div>
+                <div class="summary-item highlight"><span class="label">Time to Pay Off</span><span class="value" id="time-to-payoff-dpt">—</span></div>
+                <div class="summary-item"><span class="label">Total Interest Paid</span><span class="value" id="total-interest-dpt">—</span></div>
+                <div class="summary-item"><span class="label">Total Paid</span><span class="value" id="total-paid-dpt">—</span></div>
             </div>
             <h3 style="font-size:1rem; margin:1rem 0 0.3rem;">📅 Month-by-Month Breakdown</h3>
             <div class="schedule-wrapper">
-                <table class="schedule-table" id="schedule-table">
+                <table class="schedule-table" id="schedule-table-dpt">
                     <thead><tr><th>Month</th><th>Payment</th><th>Interest</th><th>Principal</th><th>Balance</th></tr></thead>
-                    <tbody id="schedule-body"></tbody>
+                    <tbody id="schedule-body-dpt"></tbody>
                 </table>
             </div>
-            <p style="font-size:0.75rem; color:#94a3b8; margin-top:0.3rem; text-align:center;">* Assumes consistent monthly payments.</p>
         </div>
+
+        <!-- ===== 推荐区域 ===== -->
+        <div id="recommendations-area"></div>
+
     </main>
 
     <section class="accordion-card">
@@ -168,7 +160,7 @@
         </div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block"><h3>Time to Pay Off</h3><p>The number of months (and years) it will take to completely pay off your debt with your current payment plan.</p></div>
+                <div class="info-block"><h3>Time to Pay Off</h3><p>The number of months (and years) it will take to completely pay off your debt.</p></div>
                 <div class="info-block"><h3>Total Interest</h3><p>The total amount of interest you will pay by the time the debt is fully paid off.</p></div>
                 <div class="info-block"><h3>Total Paid</h3><p>The total amount you will pay (principal + interest) over the entire repayment period.</p></div>
             </div>
@@ -183,7 +175,7 @@
         <div class="accordion-body" id="faqAccordion">
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What if I can't pay the full balance each month?</span></div>
-                <div class="faq-answer">This calculator assumes you make a fixed monthly payment. If you can't afford the minimum payment, consider reducing your payment amount or extending the term — but this will increase total interest.</div>
+                <div class="faq-answer">This calculator assumes you make a fixed monthly payment. If you can't afford the payment, reduce it — but this will increase total interest.</div>
             </div>
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How can I pay off debt faster?</span></div>
@@ -196,6 +188,9 @@
         <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
     </footer>
 </div>
+
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
 
 <script>
     function toggleAccordion(id) {
@@ -220,10 +215,11 @@
             arrow.textContent = '▶';
         }
     }
+
     function calculate() {
-        const debt = parseFloat(document.getElementById('debt-amount').value) || 0;
-        const rate = parseFloat(document.getElementById('debt-rate').value) || 0;
-        const payment = parseFloat(document.getElementById('monthly-payment').value) || 0;
+        const debt = parseFloat(document.getElementById('debt-amount-dpt').value) || 0;
+        const rate = parseFloat(document.getElementById('debt-rate-dpt').value) || 0;
+        const payment = parseFloat(document.getElementById('monthly-payment-dpt').value) || 0;
 
         if (payment <= 0) {
             alert('Monthly payment must be greater than zero.');
@@ -239,11 +235,11 @@
         while (balance > 0.01 && month < 1200) {
             month++;
             const interest = balance * monthlyRate;
-            const principal = Math.min(payment - interest, balance);
-            if (principal < 0) {
-                alert('Your monthly payment is too low to cover the interest. Try increasing your payment.');
+            if (payment <= interest) {
+                alert('Your payment is too low to cover the interest. Try increasing your payment.');
                 return;
             }
+            const principal = Math.min(payment - interest, balance);
             balance -= principal;
             totalInterest += interest;
             schedule.push({ month, payment, interest, principal, balance: Math.max(0, balance) });
@@ -257,11 +253,11 @@
         const remainingMonths = months % 12;
         const timeStr = years > 0 ? `${years}y ${remainingMonths}m` : `${months}m`;
 
-        document.getElementById('time-to-payoff').textContent = timeStr;
-        document.getElementById('total-interest').textContent = fmt.format(totalInterest);
-        document.getElementById('total-paid').textContent = fmt.format(debt + totalInterest);
+        document.getElementById('time-to-payoff-dpt').textContent = timeStr;
+        document.getElementById('total-interest-dpt').textContent = fmt.format(totalInterest);
+        document.getElementById('total-paid-dpt').textContent = fmt.format(debt + totalInterest);
 
-        const tbody = document.getElementById('schedule-body');
+        const tbody = document.getElementById('schedule-body-dpt');
         tbody.innerHTML = '';
         for (const row of schedule) {
             const tr = document.createElement('tr');
@@ -271,7 +267,16 @@
         }
 
         document.getElementById('results-area').style.display = 'block';
+
+        // ===== 推荐联动 =====
+        const debtAmount = document.getElementById('debt-amount-dpt').value;
+        const monthlyPayment = document.getElementById('monthly-payment-dpt').value;
+        showRecommendations('debt-payoff-timer.html', {
+            debtAmount: debtAmount,
+            monthlyPayment: monthlyPayment
+        });
     }
+
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('infoAccordion').style.display = 'block';
         document.getElementById('infoArrow').textContent = '▼';
@@ -285,8 +290,5 @@
         if (e.target.closest('.form-grid')) { calculate(); }
     });
 </script>
-    <script src="feedback.js"></script>
-</body>
-</html>
 </body>
 </html>
