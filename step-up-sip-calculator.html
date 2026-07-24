@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>阶梯式SIP计算器 - Smart Finance Tools</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="container" style="max-width: 700px; margin: 40px auto; padding: 20px;">
+        <h1>📈 阶梯式 SIP 计算器</h1>
+        <p>每月投资额每年按比例增加，计算最终财富。</p>
+        <div class="card" style="padding: 25px; background: #f9fafc; border-radius: 16px;">
+            <div class="input-group" style="margin-bottom: 15px;">
+                <label>初始每月投资 (¥)</label>
+                <input type="number" id="initialSip" value="5000" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+            </div>
+            <div class="input-group" style="margin-bottom: 15px;">
+                <label>年化回报率 (%)</label>
+                <input type="number" id="returnRate" value="12" step="0.1" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+            </div>
+            <div class="input-group" style="margin-bottom: 15px;">
+                <label>年增长率 (%) (SIP 每年增加)</label>
+                <input type="number" id="stepUpRate" value="10" step="0.1" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+            </div>
+            <div class="input-group" style="margin-bottom: 20px;">
+                <label>投资年限</label>
+                <input type="number" id="years" value="10" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+            </div>
+            <button onclick="calculateStepUpSip()" class="btn" style="background:#2563eb; color:#fff; padding:12px 24px; border:none; border-radius:8px; cursor:pointer; font-size:16px;">计算</button>
+            <div id="result" style="margin-top: 20px; font-size: 18px; background: #eef2ff; padding: 15px; border-radius: 8px;"></div>
+        </div>
+    </div>
+    <script>
+        function calculateStepUpSip() {
+            let sip = parseFloat(document.getElementById('initialSip').value);
+            const r = parseFloat(document.getElementById('returnRate').value) / 100 / 12;
+            const step = parseFloat(document.getElementById('stepUpRate').value) / 100;
+            const years = parseInt(document.getElementById('years').value);
+            if (isNaN(sip) || isNaN(r) || isNaN(step) || isNaN(years)) return alert('请输入有效数字');
+            let total = 0;
+            let months = years * 12;
+            let currentSip = sip;
+            for (let i = 1; i <= months; i++) {
+                total = (total + currentSip) * (1 + r);
+                if (i % 12 === 0 && i < months) {
+                    currentSip = currentSip * (1 + step);
+                }
+            }
+            document.getElementById('result').innerHTML = `
+                <strong>📊 最终总资产</strong>：¥${total.toFixed(2)}<br>
+                <strong>💰 总投入本金</strong>：¥${(sip * 12 * years + (sip * step * 12 * years * (years-1)/2)).toFixed(2)} (估算)
+            `;
+        }
+    </script>
+    <script src="feedback.js"></script>
+    <script src="recommendations.js"></script>
+</body>
+</html>
