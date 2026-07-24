@@ -1,46 +1,292 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>通货膨胀计算器 - Smart Finance Tools</title>
+    <title>Inflation Calculator — Free Online Tool</title>
     <link rel="stylesheet" href="style.css" />
+    <style>
+        .results-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            margin: 1.5rem 0;
+        }
+        .summary-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+        .summary-item.positive .value { color: #10b981; }
+        .summary-item.negative .value { color: #ef4444; }
+
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
+        .field input {
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem;
+            border: 1.5px solid #dce1e8;
+            border-radius: 10px;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .field input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background: #ffffff;
+        }
+
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+        .btn:hover { background: #1d4ed8; }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        .comparison-box {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1rem;
+        }
+        .comparison-box h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin: 0 0 0.5rem;
+            text-align: center;
+        }
+        .comparison-box .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.2rem 0;
+            font-size: 0.85rem;
+            color: #475569;
+        }
+        .comparison-box .row .num {
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
+        @media (max-width: 640px) {
+            .info-grid { grid-template-columns: 1fr; }
+            .summary-item { padding: 0.6rem 1rem; }
+            .summary-item .value { font-size: 1rem; }
+            .comparison-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
-    <div class="container" style="max-width: 700px; margin: 40px auto; padding: 20px;">
-        <h1>📉 通货膨胀计算器</h1>
-        <p>计算未来某笔钱在通胀影响下的实际购买力。</p>
-        <div class="card" style="padding: 25px; background: #f9fafc; border-radius: 16px;">
-            <div class="input-group" style="margin-bottom: 15px;">
-                <label>当前金额 (¥)</label>
-                <input type="number" id="presentValue" value="10000" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
-            </div>
-            <div class="input-group" style="margin-bottom: 15px;">
-                <label>年通货膨胀率 (%)</label>
-                <input type="number" id="inflationRate" value="3" step="0.1" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
-            </div>
-            <div class="input-group" style="margin-bottom: 20px;">
-                <label>年数</label>
-                <input type="number" id="years" value="10" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
-            </div>
-            <button onclick="calculateInflation()" class="btn" style="background:#2563eb; color:#fff; padding:12px 24px; border:none; border-radius:8px; cursor:pointer; font-size:16px;">计算</button>
-            <div id="result" style="margin-top: 20px; font-size: 18px; background: #eef2ff; padding: 15px; border-radius: 8px;"></div>
-        </div>
+
+<div class="container">
+    <div class="top-nav">
+        <a href="index.html" class="back-link">← Back to Home</a>
+        <div class="breadcrumb">📉 <span>Inflation Calculator</span></div>
     </div>
-    <script>
-        function calculateInflation() {
-            const pv = parseFloat(document.getElementById('presentValue').value);
-            const rate = parseFloat(document.getElementById('inflationRate').value) / 100;
-            const years = parseInt(document.getElementById('years').value);
-            if (isNaN(pv) || isNaN(rate) || isNaN(years)) return alert('请输入有效数字');
-            const futureValue = pv * Math.pow(1 + rate, years);
-            document.getElementById('result').innerHTML = `
-                <strong>💰 未来价值（名义）</strong>：¥${futureValue.toFixed(2)}<br>
-                <strong>📉 实际购买力（按当前价值折算）</strong>：¥${(pv).toFixed(2)}（相当于现在的 ¥${pv} 仅值未来的 ¥${futureValue.toFixed(2)}）
-            `;
+
+    <main class="calculator-card">
+        <h1>📉 Inflation Calculator</h1>
+        <p class="subtitle">See how inflation erodes the purchasing power of your money over time.</p>
+
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>Inflation Calculator</strong> — This tool shows you how rising prices reduce what your money can buy.
+                It answers: <em>“If inflation averages 3%, what will $100,000 be worth in 20 years?”</em>
+                See the future nominal value needed to maintain your lifestyle, and compare it to your total contributions.
+            </p>
+        </div>
+
+        <div class="form-grid">
+            <div class="field">
+                <label for="initial-amount-ic">Current Amount ($)</label>
+                <input type="number" id="initial-amount-ic" value="100000" min="0" step="1000" />
+            </div>
+            <div class="field">
+                <label for="inflation-rate-ic">Annual Inflation Rate (%)</label>
+                <input type="number" id="inflation-rate-ic" value="3" min="0" step="0.1" />
+            </div>
+            <div class="field">
+                <label for="years-ic">Number of Years</label>
+                <input type="number" id="years-ic" value="20" min="1" max="50" step="1" />
+            </div>
+            <div class="field">
+                <label for="monthly-contribution-ic">Monthly Contribution ($) <span style="font-weight:400; color:#94a3b8;">(optional)</span></label>
+                <input type="number" id="monthly-contribution-ic" value="0" min="0" step="100" />
+            </div>
+            <div style="margin-top:0.5rem;">
+                <button class="btn" onclick="calculate()">Calculate</button>
+            </div>
+        </div>
+
+        <div id="results-area" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Inflation Impact</h2>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>💰 Total Contributions</h4>
+                    <div class="row"><span>Total Amount Put In</span><span class="num" id="total-contrib">—</span></div>
+                    <div class="row"><span style="color:#64748b;">(no inflation adjustment)</span><span class="num" style="color:#94a3b8;">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>📈 Future Nominal Value</h4>
+                    <div class="row"><span>Amount Needed in Future</span><span class="num" id="future-nominal">—</span></div>
+                    <div class="row"><span style="color:#64748b;">(with inflation)</span><span class="num" style="color:#94a3b8;">—</span></div>
+                </div>
+            </div>
+            <div class="results-summary" id="summary">
+                <div class="summary-item highlight negative">
+                    <span class="label">📉 Inflation Erosion</span>
+                    <span class="value negative" id="inflation-erosion">—</span>
+                </div>
+                <div class="summary-item positive">
+                    <span class="label">🛡️ Equivalent Buying Power Today</span>
+                    <span class="value" id="real-value-today">—</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 推荐区域 -->
+        <div id="recommendations-area"></div>
+
+    </main>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
+            <h2>📖 How to read your results</h2>
+            <span class="accordion-arrow" id="infoArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="infoAccordion">
+            <div class="info-grid">
+                <div class="info-block"><h3>Total Contributions</h3><p>The total dollar amount you actually deposit over the period (initial + all monthly contributions). This is your baseline without inflation.</p></div>
+                <div class="info-block"><h3>Future Nominal Value</h3><p>The amount you'll need in the future to have the same purchasing power as your contributions today, after accounting for inflation.</p></div>
+                <div class="info-block"><h3>Inflation Erosion</h3><p>The extra dollars you'll need due to inflation. A positive number means rising prices have reduced your purchasing power.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
+            <h2>❓ FAQ</h2>
+            <span class="accordion-arrow" id="faqArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="faqAccordion">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is a typical inflation rate?</span></div>
+                <div class="faq-answer">Central banks often target 2% annually. Historical averages in the US are around 3-4% over the long term. Use 3% as a conservative estimate.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Why does inflation matter for retirement?</span></div>
+                <div class="faq-answer">If you need $50,000/year to live today, at 3% inflation you'll need over $90,000 in 20 years to maintain the same lifestyle. Inflation is often the biggest risk to long-term savers.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How is the future value calculated with monthly contributions?</span></div>
+                <div class="faq-answer">We compound the initial lump sum and each monthly contribution at the annual inflation rate, assuming contributions are made at the end of each month.</div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
+    </footer>
+</div>
+
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+
+<script>
+    function toggleAccordion(id) {
+        const body = document.getElementById(id);
+        const arrow = document.getElementById(id + 'Arrow');
+        if (body.style.display === 'none' || body.style.display === '') {
+            body.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            body.style.display = 'none';
+            arrow.textContent = '▶';
         }
-    </script>
-    <script src="feedback.js"></script>
-    <script src="recommendations.js"></script>
+    }
+    function toggleFaq(el) {
+        const answer = el.nextElementSibling;
+        const arrow = el.querySelector('.faq-arrow');
+        if (answer.style.display === 'none' || answer.style.display === '') {
+            answer.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            answer.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+
+    function calculate() {
+        const P = parseFloat(document.getElementById('initial-amount-ic').value) || 0;
+        const r = parseFloat(document.getElementById('inflation-rate-ic').value) || 0;
+        const n = parseFloat(document.getElementById('years-ic').value) || 0;
+        const M = parseFloat(document.getElementById('monthly-contribution-ic').value) || 0;
+
+        const rDecimal = r / 100;
+
+        // 未来价值：初始一笔 + 每月定投（年末复利）
+        let fvLump = P * Math.pow(1 + rDecimal, n);
+        let fvAnnuity = 0;
+        if (rDecimal > 0) {
+            fvAnnuity = M * 12 * (Math.pow(1 + rDecimal, n) - 1) / rDecimal;
+        } else {
+            fvAnnuity = M * 12 * n;
+        }
+        const totalFuture = fvLump + fvAnnuity;
+        const totalContrib = P + M * 12 * n;
+        const inflationErosion = totalFuture - totalContrib;
+        const realValueToday = totalContrib / Math.pow(1 + rDecimal, n);
+
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+        document.getElementById('total-contrib').textContent = fmt.format(totalContrib);
+        document.getElementById('future-nominal').textContent = fmt.format(totalFuture);
+        document.getElementById('inflation-erosion').textContent = fmt.format(inflationErosion);
+        document.getElementById('real-value-today').textContent = fmt.format(realValueToday);
+
+        document.getElementById('results-area').style.display = 'block';
+
+        // 推荐联动
+        showRecommendations('inflation-calculator.html', {
+            initialAmount: document.getElementById('initial-amount-ic').value,
+            years: document.getElementById('years-ic').value
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('infoAccordion').style.display = 'block';
+        document.getElementById('infoArrow').textContent = '▼';
+        document.getElementById('faqAccordion').style.display = 'none';
+        document.getElementById('faqArrow').textContent = '▶';
+        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
+        calculate();
+    });
+    document.addEventListener('input', function(e) {
+        if (e.target.closest('.form-grid')) { calculate(); }
+    });
+</script>
 </body>
 </html>
