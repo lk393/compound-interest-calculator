@@ -23,7 +23,6 @@
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
         .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
-        .summary-item.highlight .value { color: #2563eb; }
         .summary-item.positive .value { color: #10b981; }
 
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
@@ -111,9 +110,7 @@
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
                 <strong>Savings Goal Planner</strong> — This tool tells you how much you need to save each month
                 to reach a specific financial goal. It answers the question: <em>“How much do I need to save every
-                month to have $50,000 for a down payment in 5 years?”</em> You'll see the required monthly savings,
-                total contributions, and investment returns. Use this for any savings goal — buying a house,
-                starting a business, or building an emergency fund.
+                month to have $50,000 for a down payment in 5 years?”</em>
             </p>
         </div>
 
@@ -142,27 +139,22 @@
         <div id="results-area" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Savings Plan</h2>
             <div class="results-summary" id="summary">
-                <div class="summary-item highlight">
-                    <span class="label">Monthly Savings Needed</span>
-                    <span class="value" id="monthly-savings">—</span>
-                </div>
-                <div class="summary-item">
-                    <span class="label">Total Contributions</span>
-                    <span class="value" id="total-contributions-sg">—</span>
-                </div>
-                <div class="summary-item positive">
-                    <span class="label">Total Returns</span>
-                    <span class="value" id="total-returns-sg">—</span>
-                </div>
+                <div class="summary-item highlight"><span class="label">Monthly Savings Needed</span><span class="value" id="monthly-savings-sg">—</span></div>
+                <div class="summary-item"><span class="label">Total Contributions</span><span class="value" id="total-contributions-sg">—</span></div>
+                <div class="summary-item positive"><span class="label">Total Returns</span><span class="value" id="total-returns-sg">—</span></div>
             </div>
             <h3 style="font-size:1rem; margin:1rem 0 0.3rem;">📅 Year-by-Year Progress</h3>
             <div class="schedule-wrapper">
-                <table class="schedule-table" id="schedule-table">
+                <table class="schedule-table" id="schedule-table-sg">
                     <thead><tr><th>Year</th><th>Balance</th><th>Contributions (Cumulative)</th><th>Returns (Cumulative)</th></tr></thead>
-                    <tbody id="schedule-body"></tbody>
+                    <tbody id="schedule-body-sg"></tbody>
                 </table>
             </div>
         </div>
+
+        <!-- ===== 推荐区域 ===== -->
+        <div id="recommendations-area"></div>
+
     </main>
 
     <section class="accordion-card">
@@ -201,6 +193,9 @@
     </footer>
 </div>
 
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+
 <script>
     function toggleAccordion(id) {
         const body = document.getElementById(id);
@@ -224,6 +219,7 @@
             arrow.textContent = '▶';
         }
     }
+
     function calculate() {
         const goal = parseFloat(document.getElementById('goal-amount').value) || 0;
         const current = parseFloat(document.getElementById('current-savings-sg').value) || 0;
@@ -246,11 +242,11 @@
 
         const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
-        document.getElementById('monthly-savings').textContent = fmt.format(pmt);
+        document.getElementById('monthly-savings-sg').textContent = fmt.format(pmt);
         document.getElementById('total-contributions-sg').textContent = fmt.format(totalContributions);
         document.getElementById('total-returns-sg').textContent = fmt.format(totalReturns);
 
-        const tbody = document.getElementById('schedule-body');
+        const tbody = document.getElementById('schedule-body-sg');
         tbody.innerHTML = '';
         let balance = current;
         let cumContrib = current;
@@ -272,8 +268,20 @@
             tr.innerHTML = `<td>${year}</td><td>${fmt.format(balance)}</td><td>${fmt.format(cumContrib)}</td><td>${fmt.format(cumReturns)}</td>`;
             tbody.appendChild(tr);
         }
+
         document.getElementById('results-area').style.display = 'block';
+
+        // ===== 推荐联动 =====
+        const goalAmount = document.getElementById('goal-amount').value;
+        const currentSavings = document.getElementById('current-savings-sg').value;
+        const monthlySavings = pmt;
+        showRecommendations('savings-goal.html', {
+            goalAmount: goalAmount,
+            currentSavings: currentSavings,
+            monthlySavings: monthlySavings.toString()
+        });
     }
+
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('infoAccordion').style.display = 'block';
         document.getElementById('infoArrow').textContent = '▼';
@@ -287,8 +295,5 @@
         if (e.target.closest('.form-grid')) { calculate(); }
     });
 </script>
-    <script src="feedback.js"></script>
-</body>
-</html>
 </body>
 </html>
