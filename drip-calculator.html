@@ -23,7 +23,6 @@
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
         .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
-        .summary-item.highlight .value { color: #2563eb; }
         .summary-item.positive .value { color: #10b981; }
 
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
@@ -111,8 +110,7 @@
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
                 <strong>DRIP Calculator</strong> — This tool shows the power of dividend reinvestment over
                 time. It answers the question: <em>“How much will my investment grow if I reinvest all
-                dividends instead of taking them as cash?”</em> You'll see the final value, total dividends
-                reinvested, and the effect of compounding on your total returns.
+                dividends instead of taking them as cash?”</em>
             </p>
         </div>
 
@@ -145,27 +143,22 @@
         <div id="results-area" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your DRIP Results</h2>
             <div class="results-summary" id="summary">
-                <div class="summary-item highlight">
-                    <span class="label">Final Portfolio Value</span>
-                    <span class="value" id="final-value-drip">—</span>
-                </div>
-                <div class="summary-item">
-                    <span class="label">Total Dividends Reinvested</span>
-                    <span class="value" id="total-dividends">—</span>
-                </div>
-                <div class="summary-item positive">
-                    <span class="label">Total Capital Appreciation</span>
-                    <span class="value" id="total-appreciation">—</span>
-                </div>
+                <div class="summary-item highlight"><span class="label">Final Portfolio Value</span><span class="value" id="final-value-drip">—</span></div>
+                <div class="summary-item"><span class="label">Total Dividends Reinvested</span><span class="value" id="total-dividends-drip">—</span></div>
+                <div class="summary-item positive"><span class="label">Total Capital Appreciation</span><span class="value" id="total-appreciation-drip">—</span></div>
             </div>
             <h3 style="font-size:1rem; margin:1rem 0 0.3rem;">📅 Year-by-Year Growth</h3>
             <div class="schedule-wrapper">
-                <table class="schedule-table" id="schedule-table">
+                <table class="schedule-table" id="schedule-table-drip">
                     <thead><tr><th>Year</th><th>Portfolio Value</th><th>Annual Dividends</th><th>Dividends (Cumulative)</th></tr></thead>
-                    <tbody id="schedule-body"></tbody>
+                    <tbody id="schedule-body-drip"></tbody>
                 </table>
             </div>
         </div>
+
+        <!-- ===== 推荐区域 ===== -->
+        <div id="recommendations-area"></div>
+
     </main>
 
     <section class="accordion-card">
@@ -175,7 +168,7 @@
         </div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block"><h3>Final Portfolio Value</h3><p>The total value of your investment at the end of the period, including all reinvested dividends and stock appreciation.</p></div>
+                <div class="info-block"><h3>Final Portfolio Value</h3><p>The total value of your investment at the end of the period, including all reinvested dividends.</p></div>
                 <div class="info-block"><h3>Total Dividends Reinvested</h3><p>The cumulative amount of dividends that were reinvested back into the investment.</p></div>
                 <div class="info-block"><h3>Total Capital Appreciation</h3><p>The total return from stock price increases, excluding dividends.</p></div>
             </div>
@@ -190,11 +183,11 @@
         <div class="accordion-body" id="faqAccordion">
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is DRIP?</span></div>
-                <div class="faq-answer">DRIP stands for Dividend Reinvestment Plan. It's a strategy where you automatically use dividend payments to purchase more shares of the same stock instead of taking cash.</div>
+                <div class="faq-answer">DRIP stands for Dividend Reinvestment Plan. It's a strategy where you automatically use dividend payments to purchase more shares.</div>
             </div>
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Why is DRIP powerful?</span></div>
-                <div class="faq-answer">DRIP harnesses the power of compounding — your dividends buy more shares, which generate more dividends, creating a snowball effect that accelerates your returns over time.</div>
+                <div class="faq-answer">DRIP harnesses the power of compounding — your dividends buy more shares, which generate more dividends, creating a snowball effect.</div>
             </div>
         </div>
     </section>
@@ -203,6 +196,9 @@
         <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
     </footer>
 </div>
+
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
 
 <script>
     function toggleAccordion(id) {
@@ -227,6 +223,7 @@
             arrow.textContent = '▶';
         }
     }
+
     function calculate() {
         const initial = parseFloat(document.getElementById('initial-investment-drip').value) || 0;
         const annualContrib = parseFloat(document.getElementById('annual-contribution-drip').value) || 0;
@@ -240,29 +237,22 @@
         const schedule = [];
 
         for (let year = 1; year <= years; year++) {
-            const startBalance = balance;
             const annualDividend = balance * (dividendYield / 100);
             balance += annualDividend;
             totalDividends += annualDividend;
             const appreciationGain = (balance + annualContrib) * (appreciation / 100);
             balance += appreciationGain + annualContrib;
             totalAppreciation += appreciationGain;
-
-            schedule.push({
-                year: year,
-                balance: balance,
-                annualDividend: annualDividend,
-                cumulativeDividends: totalDividends
-            });
+            schedule.push({ year, balance, annualDividend, cumulativeDividends: totalDividends });
         }
 
         const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
         document.getElementById('final-value-drip').textContent = fmt.format(balance);
-        document.getElementById('total-dividends').textContent = fmt.format(totalDividends);
-        document.getElementById('total-appreciation').textContent = fmt.format(totalAppreciation);
+        document.getElementById('total-dividends-drip').textContent = fmt.format(totalDividends);
+        document.getElementById('total-appreciation-drip').textContent = fmt.format(totalAppreciation);
 
-        const tbody = document.getElementById('schedule-body');
+        const tbody = document.getElementById('schedule-body-drip');
         tbody.innerHTML = '';
         for (const row of schedule) {
             const tr = document.createElement('tr');
@@ -272,7 +262,16 @@
         }
 
         document.getElementById('results-area').style.display = 'block';
+
+        // ===== 推荐联动 =====
+        const initialInvestment = document.getElementById('initial-investment-drip').value;
+        const finalValue = fmt.format(balance).replace(/[^0-9.]/g, '');
+        showRecommendations('drip-calculator.html', {
+            initialInvestment: initialInvestment,
+            finalValue: finalValue
+        });
     }
+
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('infoAccordion').style.display = 'block';
         document.getElementById('infoArrow').textContent = '▼';
@@ -286,8 +285,5 @@
         if (e.target.closest('.form-grid')) { calculate(); }
     });
 </script>
-    <script src="feedback.js"></script>
-</body>
-</html>
 </body>
 </html>
