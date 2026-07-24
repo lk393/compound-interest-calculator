@@ -82,8 +82,7 @@
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
                 <strong>Salary to Hourly Converter</strong> — This tool converts your annual salary into
                 hourly, daily, weekly, and monthly pay. It answers the question: <em>“What is my hourly rate
-                based on my annual salary?”</em> Useful for comparing job offers, freelance rates, or
-                understanding your true hourly worth.
+                based on my annual salary?”</em>
             </p>
         </div>
 
@@ -108,24 +107,16 @@
         <div id="results-area" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Salary Breakdown</h2>
             <div class="results-summary" id="summary">
-                <div class="summary-item highlight">
-                    <span class="label">Hourly Rate</span>
-                    <span class="value" id="hourly-rate">—</span>
-                </div>
-                <div class="summary-item">
-                    <span class="label">Daily Rate</span>
-                    <span class="value" id="daily-rate">—</span>
-                </div>
-                <div class="summary-item">
-                    <span class="label">Weekly Pay</span>
-                    <span class="value" id="weekly-pay">—</span>
-                </div>
-                <div class="summary-item">
-                    <span class="label">Monthly Pay</span>
-                    <span class="value" id="monthly-pay">—</span>
-                </div>
+                <div class="summary-item highlight"><span class="label">Hourly Rate</span><span class="value" id="hourly-rate">—</span></div>
+                <div class="summary-item"><span class="label">Daily Rate</span><span class="value" id="daily-rate">—</span></div>
+                <div class="summary-item"><span class="label">Weekly Pay</span><span class="value" id="weekly-pay">—</span></div>
+                <div class="summary-item"><span class="label">Monthly Pay</span><span class="value" id="monthly-pay">—</span></div>
             </div>
         </div>
+
+        <!-- ===== 推荐区域 ===== -->
+        <div id="recommendations-area"></div>
+
     </main>
 
     <section class="accordion-card">
@@ -164,6 +155,9 @@
     </footer>
 </div>
 
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+
 <script>
     function toggleAccordion(id) {
         const body = document.getElementById(id);
@@ -187,6 +181,7 @@
             arrow.textContent = '▶';
         }
     }
+
     function calculate() {
         const salary = parseFloat(document.getElementById('annual-salary').value) || 0;
         const hours = parseFloat(document.getElementById('work-hours').value) || 40;
@@ -205,7 +200,16 @@
         document.getElementById('monthly-pay').textContent = fmt.format(monthly);
 
         document.getElementById('results-area').style.display = 'block';
+
+        // ===== 推荐联动 =====
+        const annualSalary = document.getElementById('annual-salary').value;
+        const monthlyPay = fmt.format(monthly).replace(/[^0-9.]/g, '');
+        showRecommendations('salary-hourly.html', {
+            annualSalary: annualSalary,
+            monthlyPay: monthlyPay
+        });
     }
+
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('infoAccordion').style.display = 'block';
         document.getElementById('infoArrow').textContent = '▼';
@@ -219,6 +223,5 @@
         if (e.target.closest('.form-grid')) { calculate(); }
     });
 </script>
-<script src="feedback.js"></script>
 </body>
 </html>
