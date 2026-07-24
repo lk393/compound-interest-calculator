@@ -172,4 +172,353 @@
             margin: 0 0.5rem;
             font-size: 0.9rem;
         }
-        .nav
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+        .nav-links .sep {
+            color: #dce1e8;
+        }
+
+        .footer-stats {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            padding: 0.8rem 0;
+            border-top: 1px solid #e9edf2;
+            margin-top: 0.5rem;
+        }
+        .footer-stats span {
+            margin: 0 0.8rem;
+        }
+        .footer-stats strong {
+            color: #475569;
+        }
+
+        .feedback-section-home {
+            text-align: center;
+            padding: 1.2rem 0 0.8rem;
+            margin-top: 0.5rem;
+            border-top: 1px solid #e9edf2;
+        }
+        .feedback-section-home p {
+            font-size: 0.95rem;
+            color: #475569;
+            margin-bottom: 0.5rem;
+        }
+        .feedback-section-home .fb-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1.5rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .feedback-section-home .fb-btn:hover {
+            background: #1d4ed8;
+        }
+
+        @media (max-width: 640px) {
+            .hero h1 { font-size: 1.5rem; }
+            .tool-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+            .nav-links a { font-size: 0.8rem; margin: 0 0.3rem; }
+            .footer-stats { font-size: 0.75rem; }
+            .footer-stats span { margin: 0 0.4rem; }
+            .site-desc .tagline { font-size: 0.95rem; }
+            .site-desc .sub { font-size: 0.85rem; }
+        }
+        @media (max-width: 480px) {
+            .tool-grid { grid-template-columns: 1fr 1fr; }
+            .tool-card { font-size: 0.8rem; padding: 0.4rem 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="nav-links">
+        <a href="index.html" style="font-weight:700;">🏠 Home</a>
+        <span class="sep">|</span>
+        <a href="#tools">📊 All Tools</a>
+    </div>
+
+    <main class="calculator-card" style="padding-bottom:1.5rem;">
+
+        <div class="hero">
+            <h1>🧮 Smart Finance Tools</h1>
+            <p>100+ free financial calculators — plan your money with confidence.</p>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search tools by name or category..." oninput="filterTools()" />
+            <button class="clear-btn" id="clearBtn" onclick="clearSearch()">✕</button>
+        </div>
+
+        <div class="site-desc">
+            <p class="tagline">Stop guessing. Start planning.</p>
+            <p class="sub">
+                Free calculators for every money decision — savings, loans, investments, retirement, and more.
+            </p>
+        </div>
+
+        <div id="tools">
+            <div id="categoriesContainer"></div>
+        </div>
+
+        <div class="no-results" id="noResults">
+            <p>😕 No tools found. Try a different keyword.</p>
+        </div>
+
+        <div class="footer-stats">
+            <span>📊 Total: <strong id="totalCount">93</strong> tools</span>
+            <span>✅ Available: <strong id="availableCount">45</strong></span>
+            <span>⏳ Coming soon: <strong id="comingCount">48</strong></span>
+        </div>
+
+        <div class="feedback-section-home">
+            <p>⚠️ Found an issue? We take accuracy seriously!</p>
+            <button class="fb-btn" onclick="openFeedback()">📧 Submit Feedback</button>
+        </div>
+
+    </main>
+
+    <footer class="site-footer">
+        <p>
+            © 2026 — Smart Finance Tools · Free Online Calculators
+            <br />
+            <a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a>
+            <span style="color:#dce1e8;">|</span>
+            <a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a>
+        </p>
+    </footer>
+</div>
+
+<script src="feedback.js"></script>
+
+<script>
+    const toolsData = {
+        '💰 Personal Finance & Savings': [
+            { name: 'Compound Interest Calculator', icon: '📈', link: 'compound-interest.html', status: 'done' },
+            { name: 'Simple Interest Calculator', icon: '🧮', link: 'simple-interest.html', status: 'done' },
+            { name: 'Fixed Deposit Calculator', icon: '🏦', link: 'fixed-deposit.html', status: 'done' },
+            { name: 'Recurring Deposit Calculator', icon: '💰', link: 'recurring-deposit.html', status: 'done' },
+            { name: 'Savings Goal Planner', icon: '🎯', link: 'savings-goal.html', status: 'done' },
+            { name: 'Emergency Fund Calculator', icon: '🛡️', link: 'emergency-fund.html', status: 'done' },
+            { name: 'Inflation Calculator', icon: '📉', link: 'inflation-calculator.html', status: 'done' },
+            { name: 'Net Worth Calculator', icon: '📊', link: 'net-worth.html', status: 'done' },
+            { name: 'Lump Sum Growth Calculator', icon: '📈', link: 'lump-sum-growth.html', status: 'done' },
+            { name: '50/30/20 Budget Planner', icon: '📋', link: 'budget-planner.html', status: 'done' },
+            { name: 'Salary to Hourly Converter', icon: '⏰', link: 'salary-hourly.html', status: 'done' },
+            { name: 'Prorated Salary Calculator', icon: '📐', link: '#', status: 'coming' },
+            { name: 'Pay Period Converter', icon: '📅', link: '#', status: 'coming' },
+        ],
+        '🏦 Loans & Mortgages': [
+            { name: 'Mortgage Payment Calculator', icon: '🏠', link: 'mortgage-payment.html', status: 'done' },
+            { name: 'Mortgage Extra Payment Calculator', icon: '🚀', link: 'extra-payment.html', status: 'done' },
+            { name: 'Loan Amortization Calculator', icon: '📑', link: 'loan-amortization.html', status: 'done' },
+            { name: 'Loan Comparison Calculator', icon: '⚖️', link: 'loan-comparison.html', status: 'done' },
+            { name: 'Auto Loan Calculator', icon: '🚗', link: 'auto-loan.html', status: 'done' },
+            { name: 'Affordability Calculator', icon: '💳', link: 'affordability.html', status: 'done' },
+            { name: 'APR / APY Calculator', icon: '📊', link: 'apr-apy.html', status: 'done' },
+            { name: 'Credit Card Payoff Calculator', icon: '💳', link: 'credit-card-payoff.html', status: 'done' },
+            { name: 'Credit Card Minimum Payment Calculator', icon: '💳', link: 'credit-card-min-payment.html', status: 'done' },
+            { name: 'Personal Loan Calculator', icon: '👤', link: 'personal-loan.html', status: 'done' },
+            { name: 'Refinance Calculator', icon: '🔄', link: '#', status: 'coming' },
+            { name: 'Debt-to-Income Ratio Checker', icon: '📈', link: '#', status: 'coming' },
+        ],
+        '💳 Debt Management': [
+            { name: 'Debt Snowball / Avalanche Calculator', icon: '⛰️', link: 'debt-calculator.html', status: 'done' },
+            { name: 'Debt Payoff Timer', icon: '⏳', link: 'debt-payoff-timer.html', status: 'done' },
+            { name: 'Debt Consolidation Calculator', icon: '🔗', link: 'debt-consolidation.html', status: 'done' },
+            { name: 'Debt Interest Comparison', icon: '📊', link: 'debt-interest-comparison.html', status: 'done' },
+            { name: 'Debt Strategy Comparator', icon: '⚖️', link: 'debt-strategy-comparator.html', status: 'done' },
+            { name: 'Household Debt Dashboard', icon: '📋', link: '#', status: 'coming' },
+        ],
+        '📈 Investment & Returns': [
+            { name: 'Return on Investment (ROI) Calculator', icon: '📊', link: 'roi-calculator.html', status: 'done' },
+            { name: 'Investment Goal Planner', icon: '🎯', link: 'investment-goal.html', status: 'done' },
+            { name: 'Dividend Reinvestment (DRIP) Calculator', icon: '🔄', link: 'drip-calculator.html', status: 'done' },
+            { name: 'CAGR Calculator', icon: '📈', link: 'cagr-calculator.html', status: 'done' },
+            { name: 'Net Present Value (NPV) Calculator', icon: '💰', link: 'npv-calculator.html', status: 'done' },
+            { name: 'Cryptocurrency Growth Calculator', icon: '🪙', link: 'crypto-growth.html', status: 'done' },
+            { name: 'SIP vs Lump Sum Comparator', icon: '⚖️', link: 'sip-lumpsum.html', status: 'done' },
+            { name: 'Investment Fee Drag Calculator', icon: '📉', link: 'investment-fee-drag.html', status: 'done' },
+            { name: 'Internal Rate of Return (IRR) Calculator', icon: '📊', link: 'irr-calculator.html', status: 'done' },
+            { name: 'Stock Return Calculator', icon: '📈', link: 'stock-return.html', status: 'done' },
+            { name: 'Backtest Calculator', icon: '⏮️', link: 'backtest-calculator.html', status: 'done' },
+            { name: 'Margin Trading Calculator', icon: '⚖️', link: 'margin-trading.html', status: 'done' },
+        ],
+        '🏖️ Retirement & FIRE': [
+            { name: 'FIRE Number Calculator', icon: '🔥', link: 'fire-calculator.html', status: 'done' },
+            { name: 'Coast FIRE Calculator', icon: '🏖️', link: 'coast-fire.html', status: 'done' },
+            { name: '4% Rule Calculator', icon: '📊', link: 'four-percent.html', status: 'done' },
+            { name: 'Retirement Savings Calculator', icon: '🏦', link: 'retirement-savings.html', status: 'done' },
+            { name: 'Retirement Withdrawal Calculator', icon: '🏦', link: 'retirement-withdrawal.html', status: 'done' },
+            { name: '401(k) / Pension Calculator', icon: '📈', link: '401k-calculator.html', status: 'done' },
+            { name: 'Retirement Age Calculator', icon: '🎂', link: 'retirement-age.html', status: 'done' },
+            { name: 'Retirement Need Calculator', icon: '📋', link: 'retirement-need.html', status: 'done' },
+            { name: 'Roth IRA Calculator', icon: '📊', link: 'roth-ira-calculator.html', status: 'done' },
+            { name: 'Income Replacement Ratio Calculator', icon: '📈', link: 'income-replacement.html', status: 'done' },
+        ],
+        '📅 SIP & Systematic Investing': [
+            { name: 'SIP Calculator', icon: '📈', link: 'sip-calculator.html', status: 'done' },
+            { name: 'Step-up SIP Calculator', icon: '📊', link: '#', status: 'coming' },
+            { name: 'SIP Frequency Comparator', icon: '📅', link: '#', status: 'coming' },
+            { name: 'SIP Goal Planner', icon: '🎯', link: '#', status: 'coming' },
+        ],
+        '🛡️ Insurance & Risk': [
+            { name: 'Life Insurance Needs Calculator', icon: '🛡️', link: 'life-insurance.html', status: 'done' },
+            { name: 'Health Insurance Needs Calculator', icon: '🏥', link: 'health-insurance.html', status: 'done' },
+            { name: 'Car Insurance Estimator', icon: '🚗', link: '#', status: 'coming' },
+            { name: 'Insurance Gap Calculator', icon: '📊', link: '#', status: 'coming' },
+            { name: 'Insurance Product Comparator', icon: '⚖️', link: '#', status: 'coming' },
+            { name: 'Tax-free Insurance Return Calculator', icon: '💰', link: '#', status: 'coming' },
+            { name: 'Long-term Care Insurance Calculator', icon: '🏥', link: '#', status: 'coming' },
+            { name: 'Disability Income Insurance Calculator', icon: '🦽', link: '#', status: 'coming' },
+        ],
+        '💰 Taxes': [
+            { name: 'Sales Tax Calculator', icon: '🛒', link: 'sales-tax.html', status: 'done' },
+            { name: 'Income Tax Calculator', icon: '📊', link: '#', status: 'coming' },
+            { name: 'VAT / GST Calculator', icon: '📊', link: '#', status: 'coming' },
+            { name: 'Capital Gains Tax Calculator', icon: '📈', link: '#', status: 'coming' },
+            { name: 'Effective Tax Rate Calculator', icon: '📊', link: '#', status: 'coming' },
+            { name: 'Tax Strategy Planner', icon: '📋', link: '#', status: 'coming' },
+            { name: 'Pre-tax vs Post-tax Converter', icon: '🔄', link: '#', status: 'coming' },
+            { name: 'Retirement Account Tax Comparator', icon: '⚖️', link: '#', status: 'coming' },
+            { name: 'Property Tax Calculator', icon: '🏠', link: '#', status: 'coming' },
+            { name: 'Cross-border Tax Estimator', icon: '🌍', link: '#', status: 'coming' },
+        ],
+        '🏠 Home Buying & Renting': [
+            { name: 'Rent vs Buy Calculator', icon: '⚖️', link: 'rent-vs-buy.html', status: 'done' },
+            { name: 'Down Payment Calculator', icon: '💰', link: '#', status: 'coming' },
+            { name: 'Rental Yield Calculator', icon: '📊', link: '#', status: 'coming' },
+            { name: 'Property Appreciation Calculator', icon: '📈', link: '#', status: 'coming' },
+            { name: 'Mortgage vs Cash Calculator', icon: '⚖️', link: '#', status: 'coming' },
+            { name: 'Rent vs Mortgage Payment Comparator', icon: '📊', link: '#', status: 'coming' },
+            { name: 'Total Home Cost Calculator', icon: '📋', link: '#', status: 'coming' },
+        ],
+        '🌍 Currency & Exchange': [
+            { name: 'Currency Converter', icon: '💱', link: '#', status: 'coming' },
+            { name: 'International Transfer Cost Calculator', icon: '💸', link: '#', status: 'coming' },
+            { name: 'Purchasing Power Parity Calculator', icon: '⚖️', link: '#', status: 'coming' },
+            { name: 'Inflation-adjusted Currency Converter', icon: '📉', link: '#', status: 'coming' },
+            { name: 'Cross-border Living Cost Comparator', icon: '🌍', link: '#', status: 'coming' },
+            { name: 'Historical Currency Lookup', icon: '📜', link: '#', status: 'coming' },
+            { name: 'Forex Return Calculator', icon: '📈', link: '#', status: 'coming' },
+            { name: 'Exchange Rate Impact Analyzer', icon: '📊', link: '#', status: 'coming' },
+            { name: 'Multi-currency Budget Planner', icon: '💰', link: '#', status: 'coming' },
+            { name: 'Gold / Precious Metals Price Converter', icon: '🥇', link: '#', status: 'coming' },
+        ],
+    };
+
+    let totalTools = 0;
+    let doneTools = 0;
+    for (const category in toolsData) {
+        const tools = toolsData[category];
+        totalTools += tools.length;
+        for (const t of tools) {
+            if (t.status === 'done') doneTools++;
+        }
+    }
+    const comingTools = totalTools - doneTools;
+
+    document.getElementById('totalCount').textContent = totalTools;
+    document.getElementById('availableCount').textContent = doneTools;
+    document.getElementById('comingCount').textContent = comingTools;
+
+    function renderTools(filter = '') {
+        const container = document.getElementById('categoriesContainer');
+        container.innerHTML = '';
+        let hasVisible = false;
+        const searchTerm = filter.toLowerCase().trim();
+
+        for (const category in toolsData) {
+            const tools = toolsData[category];
+            const categoryHtml = document.createElement('div');
+            categoryHtml.className = 'category-section';
+
+            let visibleCount = 0;
+            let cardsHtml = '';
+
+            for (const tool of tools) {
+                const match = searchTerm === '' ||
+                    tool.name.toLowerCase().includes(searchTerm) ||
+                    category.toLowerCase().includes(searchTerm);
+                const hidden = !match;
+                if (match) {
+                    visibleCount++;
+                    hasVisible = true;
+                }
+
+                const isDone = tool.status === 'done';
+                const badgeHtml = isDone ?
+                    '<span class="badge">✅</span>' :
+                    '<span class="badge coming">⏳</span>';
+                const linkAttr = isDone ? `href="${tool.link}"` : `href="#" onclick="return false;"`;
+                const disabledClass = isDone ? '' : 'disabled';
+
+                cardsHtml += `
+                    <a class="tool-card ${hidden ? 'hidden' : ''} ${disabledClass}" ${linkAttr}>
+                        <span class="icon">${tool.icon}</span>
+                        <span class="name">${tool.name}</span>
+                        ${badgeHtml}
+                    </a>
+                `;
+            }
+
+            if (visibleCount === 0 && searchTerm !== '') {
+                categoryHtml.style.display = 'none';
+            } else {
+                const headerHtml = `
+                    <div class="category-header">
+                        <h2>${category} <span class="count">(${tools.length})</span></h2>
+                    </div>
+                    <div class="tool-grid">${cardsHtml}</div>
+                `;
+                categoryHtml.innerHTML = headerHtml;
+                container.appendChild(categoryHtml);
+            }
+        }
+
+        const noResults = document.getElementById('noResults');
+        if (searchTerm !== '' && !hasVisible) {
+            noResults.classList.add('visible');
+        } else {
+            noResults.classList.remove('visible');
+        }
+
+        const clearBtn = document.getElementById('clearBtn');
+        if (searchTerm !== '') {
+            clearBtn.classList.add('visible');
+        } else {
+            clearBtn.classList.remove('visible');
+        }
+    }
+
+    function filterTools() {
+        const input = document.getElementById('searchInput');
+        renderTools(input.value);
+    }
+
+    function clearSearch() {
+        document.getElementById('searchInput').value = '';
+        renderTools('');
+        document.getElementById('searchInput').focus();
+    }
+
+    document.getElementById('searchInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            filterTools();
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        renderTools('');
+    });
+</script>
+
+</body>
+</html>
