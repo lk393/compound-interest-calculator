@@ -6,61 +6,90 @@
     <title>Coast FIRE Calculator — Free Online Tool</title>
     <link rel="stylesheet" href="style.css" />
     <style>
-        .results-summary { display:flex; flex-direction:column; gap:0.7rem; margin:1.5rem 0; }
-        .summary-item { background:#f8fafc; border-radius:12px; padding:0.8rem 1.2rem; display:flex; justify-content:space-between; align-items:center; }
-        .summary-item .label { font-size:0.85rem; font-weight:500; color:#475569; }
-        .summary-item .value { font-size:1.2rem; font-weight:700; color:#0f172a; }
-        .summary-item.highlight { background:#eef2ff; border:1px solid #c7d2fe; }
-        .summary-item.highlight .value { color:#2563eb; }
-        .summary-item.positive .value { color:#10b981; }
-        .summary-item.negative .value { color:#ef4444; }
-        .form-grid { display:flex; flex-direction:column; gap:0.9rem; }
-        .field { display:flex; flex-direction:column; }
-        .field label { font-size:0.85rem; font-weight:600; margin-bottom:0.25rem; color:#334155; }
-        .field input, .field select { padding:0.6rem 0.8rem; font-size:1rem; border:1.5px solid #dce1e8; border-radius:10px; background:#fafbfc; transition:border-color 0.2s, box-shadow 0.2s; width:100%; }
-        .field input:focus, .field select:focus { outline:none; border-color:#2563eb; box-shadow:0 0 0 3px rgba(37,99,235,0.15); background:#ffffff; }
-        .btn { background:#2563eb; color:white; border:none; border-radius:10px; padding:0.6rem 1.2rem; font-size:0.95rem; font-weight:600; cursor:pointer; transition:background 0.2s; width:100%; }
-        .btn:hover { background:#1d4ed8; }
-        .status-badge { display:inline-block; padding:0.3rem 1rem; border-radius:20px; font-weight:600; font-size:0.9rem; }
-        .status-badge.coast { background:#d1fae5; color:#065f46; }
-        .status-badge.not-coast { background:#fee2e2; color:#991b1b; }
-        .info-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.8rem; }
-        @media (max-width:640px) {
-            .info-grid { grid-template-columns:1fr; }
-            .summary-item { padding:0.6rem 1rem; }
-            .summary-item .value { font-size:1rem; }
+        .results-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            margin: 1.5rem 0;
+        }
+        .summary-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+        .summary-item.highlight .value { color: #2563eb; }
+        .summary-item.positive .value { color: #10b981; }
+        .summary-item.negative .value { color: #ef4444; }
+
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
+        .field input {
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem;
+            border: 1.5px solid #dce1e8;
+            border-radius: 10px;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .field input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background: #ffffff;
+        }
+
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+        .btn:hover { background: #1d4ed8; }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
+        @media (max-width: 640px) {
+            .info-grid { grid-template-columns: 1fr; }
+            .summary-item { padding: 0.6rem 1rem; }
+            .summary-item .value { font-size: 1rem; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-
-    <!-- ===== 顶部导航（面包屑） ===== -->
     <div class="top-nav">
         <a href="index.html" class="back-link">← Back to Home</a>
-        <div class="breadcrumb">
-            📊 <span>Coast FIRE Calculator</span>
-        </div>
+        <div class="breadcrumb">📊 <span>Coast FIRE Calculator</span></div>
     </div>
 
     <main class="calculator-card">
         <h1>🏖️ Coast FIRE Calculator</h1>
         <p class="subtitle">How much do you need today to stop saving and still retire on time?</p>
 
-        <!-- ===== 科普文 ===== -->
         <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
                 <strong>Coast FIRE Calculator</strong> — This tool answers a simple but powerful question:
                 <em>“If I stop saving today, will I still have enough for retirement?”</em> It calculates the amount
                 you need right now so that, with no additional contributions, your money will grow to your target by
                 retirement age. This gives you a clear benchmark: if you've already reached your Coast FIRE number,
-                you have the freedom to work less, switch careers, or spend more without jeopardizing your future
-                retirement.
+                you have the freedom to work less, switch careers, or spend more.
             </p>
         </div>
 
-        <!-- ===== 输入区域 ===== -->
         <div class="form-grid">
             <div class="field">
                 <label for="current-age">Current Age</label>
@@ -91,8 +120,7 @@
             </div>
         </div>
 
-        <!-- ===== 结果区域 ===== -->
-        <div id="results-area" style="margin-top:1.8rem;">
+        <div id="results-area" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Coast FIRE Status</h2>
             <div class="results-summary" id="summary">
                 <div class="summary-item"><span class="label">FIRE Number</span><span class="value" id="result-fire-number">—</span></div>
@@ -101,9 +129,12 @@
                 <div class="summary-item" id="gap-item"><span class="label">Gap to Coast FIRE</span><span class="value" id="result-gap">—</span></div>
             </div>
         </div>
+
+        <!-- ===== 推荐区域 ===== -->
+        <div id="recommendations-area"></div>
+
     </main>
 
-    <!-- ===== 折叠说明 ===== -->
     <section class="accordion-card">
         <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
             <h2>📖 How to read your results</h2>
@@ -111,14 +142,13 @@
         </div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block"><h3>FIRE Number</h3><p>Your target retirement number based on the 4% rule. Annual Spending × 25. Same as the FIRE calculator.</p></div>
+                <div class="info-block"><h3>FIRE Number</h3><p>Your target retirement number based on the 4% rule. Annual Spending × 25.</p></div>
                 <div class="info-block"><h3>Coast FIRE Number</h3><p>The amount you need TODAY so that it grows to your FIRE Number by retirement age — without adding another dollar.</p></div>
-                <div class="info-block"><h3>Status &amp; Gap</h3><p>✅ Coast FIRE — you can stop saving now and still retire on time. ❌ Not there yet — the gap shows how much more you need today.</p></div>
+                <div class="info-block"><h3>Status &amp; Gap</h3><p>✅ Coast FIRE — you can stop saving now. ❌ Not there yet — the gap shows how much more you need today.</p></div>
             </div>
         </div>
     </section>
 
-    <!-- ===== FAQ ===== -->
     <section class="accordion-card">
         <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
             <h2>❓ FAQ</h2>
@@ -126,47 +156,23 @@
         </div>
         <div class="accordion-body" id="faqAccordion">
             <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>What is Coast FIRE?</span>
-                </div>
-                <div class="faq-answer">Coast FIRE means you've saved enough that your current portfolio will grow to your FIRE Number by traditional retirement age — even if you never save another dollar. You can "coast" on your investments.</div>
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is Coast FIRE?</span></div>
+                <div class="faq-answer">Coast FIRE means you've saved enough that your current portfolio will grow to your FIRE Number by traditional retirement age — even if you never save another dollar.</div>
             </div>
             <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>Can I still save after Coast FIRE?</span>
-                </div>
-                <div class="faq-answer">Absolutely. Reaching Coast FIRE doesn't mean you have to stop saving — it just means you have the flexibility to work less, switch careers, or spend more while still retiring on time.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>What if I'm already Coast FIRE?</span>
-                </div>
-                <div class="faq-answer">Congrats! 🎉 You can relax your savings rate. Any extra savings will just get you to FIRE earlier or give you a bigger retirement buffer.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>Is the calculation accurate?</span>
-                </div>
-                <div class="faq-answer">It's a solid estimate based on compound growth. Market returns vary — use a conservative return rate (like 6-7%) for more realistic planning.</div>
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Can I still save after Coast FIRE?</span></div>
+                <div class="faq-answer">Absolutely. Reaching Coast FIRE doesn't mean you have to stop saving — it just gives you flexibility to work less or switch careers.</div>
             </div>
         </div>
     </section>
 
-    <!-- ===== 页脚 ===== -->
     <footer class="site-footer">
-        <p>
-            © 2026 — Smart Finance Tools · Free Online Calculators
-            <br />
-            <a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a>
-            <span style="color:#dce1e8;">|</span>
-            <a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a>
-        </p>
+        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
     </footer>
 </div>
+
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
 
 <script>
     function toggleAccordion(id) {
@@ -191,6 +197,7 @@
             arrow.textContent = '▶';
         }
     }
+
     function calculate() {
         const currentAge = parseFloat(document.getElementById('current-age').value) || 30;
         const retireAge = parseFloat(document.getElementById('retire-age').value) || 65;
@@ -198,14 +205,19 @@
         const annualSpending = parseFloat(document.getElementById('annual-spending').value) || 40000;
         const returnRate = parseFloat(document.getElementById('return-rate').value) || 7;
         const withdrawalRate = parseFloat(document.getElementById('withdrawal-rate').value) || 4;
+
         const yearsToGrow = Math.max(0, retireAge - currentAge);
         const fireNumber = annualSpending / (withdrawalRate / 100);
-        const fmt = new Intl.NumberFormat('en-US', { style:'currency', currency:'USD', minimumFractionDigits:0, maximumFractionDigits:0 });
+
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
         const coastNumber = fireNumber / Math.pow(1 + returnRate / 100, yearsToGrow);
         const isCoast = currentSavings >= coastNumber;
         const gap = Math.max(0, coastNumber - currentSavings);
+
         document.getElementById('result-fire-number').textContent = fmt.format(fireNumber);
         document.getElementById('result-coast-number').textContent = fmt.format(coastNumber);
+
         const statusEl = document.getElementById('result-status');
         const statusItem = document.getElementById('status-item');
         if (yearsToGrow <= 0) {
@@ -223,11 +235,23 @@
             statusItem.classList.add('negative');
             statusItem.classList.remove('positive');
         }
+
         const gapEl = document.getElementById('result-gap');
         if (yearsToGrow <= 0) { gapEl.textContent = '—'; }
         else if (isCoast) { gapEl.textContent = '$0 — You\'re there!'; }
         else { gapEl.textContent = fmt.format(gap); }
+
+        document.getElementById('results-area').style.display = 'block';
+
+        // ===== 推荐联动 =====
+        const fireNumberText = fmt.format(fireNumber).replace(/[^0-9.]/g, '');
+        showRecommendations('coast-fire.html', {
+            annualSpending: document.getElementById('annual-spending').value,
+            currentSavings: document.getElementById('current-savings').value,
+            fireNumber: fireNumberText
+        });
     }
+
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('infoAccordion').style.display = 'block';
         document.getElementById('infoArrow').textContent = '▼';
@@ -238,11 +262,8 @@
         calculate();
     });
     document.addEventListener('input', function(e) {
-        if (e.target.closest('.form-grid')) calculate();
+        if (e.target.closest('.form-grid')) { calculate(); }
     });
 </script>
-    <script src="feedback.js"></script>
-</body>
-</html>
 </body>
 </html>
