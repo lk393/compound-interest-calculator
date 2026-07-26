@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>个人贷款计算器 — 免费在线工具</title>
+    <title>Personal Loan Calculator — Free Online Tool</title>
     <link rel="stylesheet" href="style.css" />
     <style>
         .results-summary {
@@ -23,8 +23,7 @@
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
         .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
-        .summary-item .value.positive { color: #10b981; }
-        .summary-item .value.negative { color: #ef4444; }
+        .summary-item.positive .value { color: #10b981; }
 
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
         .field { display: flex; flex-direction: column; }
@@ -102,52 +101,54 @@
 
 <div class="container">
     <div class="top-nav">
-        <a href="index.html" class="back-link">← 返回首页</a>
-        <div class="breadcrumb">🏦 <span>个人贷款计算器</span></div>
+        <a href="index.html" class="back-link">← Back to Home</a>
+        <div class="breadcrumb">🏦 <span>Personal Loan Calculator</span></div>
     </div>
 
     <main class="calculator-card">
-        <h1>🏦 个人贷款计算器</h1>
-        <p class="subtitle">计算等额本息贷款的月供、总利息和总还款额。</p>
+        <h1>🏦 Personal Loan Calculator</h1>
+        <p class="subtitle">Calculate monthly payments, total interest, and total repayment for a fixed-rate loan.</p>
 
         <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
-                <strong>个人贷款计算器</strong> — 输入贷款金额、年利率和期限，快速计算每月还款额、总利息和总还款额。适用于车贷、装修贷、消费贷等。
+                <strong>Personal Loan Calculator</strong> — This tool uses the standard amortizing loan formula
+                to calculate your fixed monthly payment. Enter your loan amount, interest rate, and term to see
+                the total cost of borrowing. Perfect for auto loans, home improvement loans, and personal financing.
             </p>
         </div>
 
         <div class="form-grid">
             <div class="field">
-                <label for="loanAmount">贷款金额 (¥)</label>
-                <input type="number" id="loanAmount" value="100000" min="0" step="1000" />
+                <label for="loanAmount">Loan Amount ($)</label>
+                <input type="number" id="loanAmount" value="10000" min="0" step="1000" />
             </div>
             <div class="field">
-                <label for="rate">年利率 (%)</label>
+                <label for="rate">Annual Interest Rate (%)</label>
                 <input type="number" id="rate" value="6.5" min="0" step="0.1" />
             </div>
             <div class="field">
-                <label for="months">贷款期限 (月)</label>
+                <label for="months">Loan Term (Months)</label>
                 <input type="number" id="months" value="36" min="1" max="360" step="1" />
             </div>
             <div style="margin-top:0.5rem;">
-                <button class="btn" onclick="calculate()">计算</button>
+                <button class="btn" onclick="calculate()">Calculate</button>
             </div>
         </div>
 
         <div id="results-area" style="margin-top:1.8rem; display:none;">
-            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 还款明细</h2>
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Loan Results</h2>
             <div class="comparison-grid">
                 <div class="comparison-box">
-                    <h4>📋 贷款信息</h4>
-                    <div class="row"><span>贷款金额</span><span class="num" id="loan-amount-display">—</span></div>
-                    <div class="row"><span>年利率</span><span class="num" id="rate-display">—</span></div>
-                    <div class="row"><span>期限</span><span class="num" id="months-display">—</span></div>
+                    <h4>📋 Loan Details</h4>
+                    <div class="row"><span>Loan Amount</span><span class="num" id="loan-amount-display">—</span></div>
+                    <div class="row"><span>Annual Rate</span><span class="num" id="rate-display">—</span></div>
+                    <div class="row"><span>Term</span><span class="num" id="months-display">—</span></div>
                 </div>
                 <div class="comparison-box">
-                    <h4>💰 还款结果</h4>
-                    <div class="row"><span>每月还款</span><span class="num" id="monthly-payment">—</span></div>
-                    <div class="row"><span>总还款额</span><span class="num" id="total-payment">—</span></div>
-                    <div class="row"><span>总利息</span><span class="num" id="total-interest">—</span></div>
+                    <h4>💰 Payment Summary</h4>
+                    <div class="row"><span>Monthly Payment</span><span class="num" id="monthly-payment">—</span></div>
+                    <div class="row"><span>Total Repayment</span><span class="num" id="total-payment">—</span></div>
+                    <div class="row"><span>Total Interest</span><span class="num" id="total-interest">—</span></div>
                 </div>
             </div>
         </div>
@@ -157,37 +158,37 @@
 
     <section class="accordion-card">
         <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
-            <h2>📖 如何解读结果</h2>
+            <h2>📖 How to read your results</h2>
             <span class="accordion-arrow" id="infoArrow">▶</span>
         </div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block"><h3>每月还款</h3><p>等额本息方式下每月固定还款金额，包含本金和利息。</p></div>
-                <div class="info-block"><h3>总利息</h3><p>整个贷款期间需要支付的总利息金额。</p></div>
-                <div class="info-block"><h3>总还款额</h3><p>本金 + 总利息，即最终需要偿还的全部金额。</p></div>
+                <div class="info-block"><h3>Monthly Payment</h3><p>Your fixed monthly payment under the standard amortizing loan formula. This amount stays the same for the entire loan term.</p></div>
+                <div class="info-block"><h3>Total Interest</h3><p>The total interest you will pay over the life of the loan. This is the cost of borrowing beyond the principal.</p></div>
+                <div class="info-block"><h3>Total Repayment</h3><p>The full amount you will repay — principal plus total interest — by the end of the loan term.</p></div>
             </div>
         </div>
     </section>
 
     <section class="accordion-card">
         <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
-            <h2>❓ 常见问题</h2>
+            <h2>❓ FAQ</h2>
             <span class="accordion-arrow" id="faqArrow">▶</span>
         </div>
         <div class="accordion-body" id="faqAccordion">
             <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>什么是等额本息？</span></div>
-                <div class="faq-answer">等额本息是指每月还款金额固定，其中包含一部分本金和一部分利息。前期利息占比高，后期本金占比高。</div>
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is an amortizing loan?</span></div>
+                <div class="faq-answer">An amortizing loan has fixed monthly payments where each payment covers both interest and principal. Early payments go mostly toward interest; later payments go mostly toward principal.</div>
             </div>
             <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>如何降低贷款利息？</span></div>
-                <div class="faq-answer">缩短贷款期限、降低贷款利率、增加首付比例或提前还款都可以减少总利息支出。</div>
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How can I reduce the total interest I pay?</span></div>
+                <div class="faq-answer">You can reduce total interest by choosing a shorter loan term, shopping for a lower interest rate, making a larger down payment, or making extra principal payments early in the loan term.</div>
             </div>
         </div>
     </section>
 
     <footer class="site-footer">
-        <p>© 2026 — Smart Finance Tools · 免费在线计算器<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">关于</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">隐私</a></p>
+        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
     </footer>
 </div>
 
@@ -228,11 +229,11 @@
         const total = payment * n;
         const interest = total - P;
 
-        const fmt = new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
         document.getElementById('loan-amount-display').textContent = fmt.format(P);
         document.getElementById('rate-display').textContent = r + '%';
-        document.getElementById('months-display').textContent = n + ' 个月';
+        document.getElementById('months-display').textContent = n + ' months';
         document.getElementById('monthly-payment').textContent = fmt.format(payment);
         document.getElementById('total-payment').textContent = fmt.format(total);
         document.getElementById('total-interest').textContent = fmt.format(interest);
