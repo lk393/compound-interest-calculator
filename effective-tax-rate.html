@@ -1,41 +1,251 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>有效税率计算器 - Smart Finance Tools</title>
+    <title>Effective Tax Rate Calculator — Free Online Tool</title>
     <link rel="stylesheet" href="style.css" />
+    <style>
+        .results-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            margin: 1.5rem 0;
+        }
+        .summary-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
+        .field input {
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem;
+            border: 1.5px solid #dce1e8;
+            border-radius: 10px;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .field input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background: #ffffff;
+        }
+
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+        .btn:hover { background: #1d4ed8; }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        .comparison-box {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1rem;
+        }
+        .comparison-box h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin: 0 0 0.5rem;
+            text-align: center;
+        }
+        .comparison-box .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.2rem 0;
+            font-size: 0.85rem;
+            color: #475569;
+        }
+        .comparison-box .row .num {
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
+        @media (max-width: 640px) {
+            .info-grid { grid-template-columns: 1fr; }
+            .summary-item { padding: 0.6rem 1rem; }
+            .summary-item .value { font-size: 1rem; }
+            .comparison-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
-<div class="container" style="max-width:700px; margin:40px auto; padding:20px;">
-    <h1>🧾 有效税率计算器</h1>
-    <p>根据总收入和实际纳税额计算您的真实税负率。</p>
-    <div class="card" style="padding:25px; background:#f9fafc; border-radius:16px;">
-        <div class="input-group" style="margin-bottom:15px;">
-            <label>年总收入 (¥)</label>
-            <input type="number" id="income" value="80000" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
-        </div>
-        <div class="input-group" style="margin-bottom:20px;">
-            <label>年度总纳税额 (¥)</label>
-            <input type="number" id="tax" value="12000" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
-        </div>
-        <button onclick="calcEffectiveTax()" class="btn" style="background:#2563eb; color:#fff; padding:12px 24px; border:none; border-radius:8px; cursor:pointer; font-size:16px;">计算</button>
-        <div id="result" style="margin-top:20px; font-size:16px; background:#eef2ff; padding:15px; border-radius:8px;"></div>
+
+<div class="container">
+    <div class="top-nav">
+        <a href="index.html" class="back-link">← Back to Home</a>
+        <div class="breadcrumb">🧾 <span>Effective Tax Rate Calculator</span></div>
     </div>
+
+    <main class="calculator-card">
+        <h1>🧾 Effective Tax Rate Calculator</h1>
+        <p class="subtitle">Calculate your true tax burden based on total income and taxes paid.</p>
+
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>Effective Tax Rate Calculator</strong> — This tool calculates your actual tax burden
+                as a percentage of your total income. Unlike marginal tax rates, the effective tax rate gives
+                you a truer picture of how much you're actually paying in taxes.
+            </p>
+        </div>
+
+        <div class="form-grid">
+            <div class="field">
+                <label for="income">Annual Gross Income ($)</label>
+                <input type="number" id="income" value="80000" min="0" step="1000" />
+            </div>
+            <div class="field">
+                <label for="tax">Total Annual Taxes Paid ($)</label>
+                <input type="number" id="tax" value="12000" min="0" step="100" />
+            </div>
+            <div style="margin-top:0.5rem;">
+                <button class="btn" onclick="calculate()">Calculate</button>
+            </div>
+        </div>
+
+        <div id="results-area" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Tax Results</h2>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>📋 Input Summary</h4>
+                    <div class="row"><span>Annual Gross Income</span><span class="num" id="income-display">—</span></div>
+                    <div class="row"><span>Annual Taxes Paid</span><span class="num" id="tax-display">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>📊 Results</h4>
+                    <div class="row"><span>Effective Tax Rate</span><span class="num" id="effective-rate" style="font-size:1.2rem;">—</span></div>
+                    <div class="row"><span>Net Income (After Tax)</span><span class="num" id="net-income">—</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="recommendations-area"></div>
+    </main>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
+            <h2>📖 How to read your results</h2>
+            <span class="accordion-arrow" id="infoArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="infoAccordion">
+            <div class="info-grid">
+                <div class="info-block"><h3>Effective Tax Rate</h3><p>This is the percentage of your total income that goes to taxes. It's usually lower than your marginal tax rate.</p></div>
+                <div class="info-block"><h3>Net Income</h3><p>Your take-home pay after all taxes are deducted. This is the actual amount you have available for spending and saving.</p></div>
+                <div class="info-block"><h3>Marginal vs. Effective</h3><p>Your marginal rate is what you'd pay on the next dollar earned. Your effective rate is the average rate you pay on all your income.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
+            <h2>❓ FAQ</h2>
+            <span class="accordion-arrow" id="faqArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="faqAccordion">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What's the difference between effective and marginal tax rate?</span></div>
+                <div class="faq-answer">Your marginal tax rate is the rate you pay on your last dollar of income. Your effective tax rate is the average rate you pay on all your income, which is usually lower.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How can I lower my effective tax rate?</span></div>
+                <div class="faq-answer">You can lower your effective rate by using tax-advantaged accounts (like 401(k) or IRA), claiming deductions, using tax credits, or timing income and expenses strategically.</div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
+    </footer>
 </div>
-<script>
-    function calcEffectiveTax() {
-        const income = parseFloat(document.getElementById('income').value);
-        const tax = parseFloat(document.getElementById('tax').value);
-        if (isNaN(income) || isNaN(tax)) return alert('请输入有效数字');
-        const rate = (tax / income) * 100;
-        document.getElementById('result').innerHTML = `
-            <strong>有效税率</strong>：${rate.toFixed(2)}%<br>
-            <strong>净收入</strong>：¥${(income - tax).toFixed(2)}
-        `;
-    }
-</script>
-<script src="feedback.js"></script>
+
 <script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+
+<script>
+    function toggleAccordion(id) {
+        const body = document.getElementById(id);
+        const arrow = document.getElementById(id + 'Arrow');
+        if (body.style.display === 'none' || body.style.display === '') {
+            body.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            body.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+    function toggleFaq(el) {
+        const answer = el.nextElementSibling;
+        const arrow = el.querySelector('.faq-arrow');
+        if (answer.style.display === 'none' || answer.style.display === '') {
+            answer.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            answer.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+
+    function calculate() {
+        const income = parseFloat(document.getElementById('income').value) || 0;
+        const tax = parseFloat(document.getElementById('tax').value) || 0;
+
+        const rate = income > 0 ? (tax / income) * 100 : 0;
+        const net = income - tax;
+
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+        document.getElementById('income-display').textContent = fmt.format(income);
+        document.getElementById('tax-display').textContent = fmt.format(tax);
+        document.getElementById('effective-rate').textContent = rate.toFixed(2) + '%';
+        document.getElementById('net-income').textContent = fmt.format(net);
+
+        document.getElementById('results-area').style.display = 'block';
+
+        showRecommendations('effective-tax-rate.html', {
+            income: document.getElementById('income').value,
+            tax: document.getElementById('tax').value
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('infoAccordion').style.display = 'block';
+        document.getElementById('infoArrow').textContent = '▼';
+        document.getElementById('faqAccordion').style.display = 'none';
+        document.getElementById('faqArrow').textContent = '▶';
+        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
+        calculate();
+    });
+    document.addEventListener('input', function(e) {
+        if (e.target.closest('.form-grid')) { calculate(); }
+    });
+</script>
 </body>
 </html>
