@@ -1,47 +1,261 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>租金收益率计算器 - Smart Finance Tools</title>
+    <title>Rental Yield Calculator — Free Online Tool</title>
     <link rel="stylesheet" href="style.css" />
+    <style>
+        .results-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            margin: 1.5rem 0;
+        }
+        .summary-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
+        .field input {
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem;
+            border: 1.5px solid #dce1e8;
+            border-radius: 10px;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .field input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background: #ffffff;
+        }
+
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+        .btn:hover { background: #1d4ed8; }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        .comparison-box {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1rem;
+        }
+        .comparison-box h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin: 0 0 0.5rem;
+            text-align: center;
+        }
+        .comparison-box .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.2rem 0;
+            font-size: 0.85rem;
+            color: #475569;
+        }
+        .comparison-box .row .num {
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
+        @media (max-width: 640px) {
+            .info-grid { grid-template-columns: 1fr; }
+            .summary-item { padding: 0.6rem 1rem; }
+            .summary-item .value { font-size: 1rem; }
+            .comparison-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
-<div class="container" style="max-width:700px; margin:40px auto; padding:20px;">
-    <h1>📊 租金收益率计算器</h1>
-    <p>计算房产的毛租金收益率和净租金收益率。</p>
-    <div class="card" style="padding:25px; background:#f9fafc; border-radius:16px;">
-        <div class="input-group" style="margin-bottom:15px;">
-            <label>年租金收入 (¥)</label>
-            <input type="number" id="annualRent" value="60000" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
-        </div>
-        <div class="input-group" style="margin-bottom:15px;">
-            <label>房产当前价值 (¥)</label>
-            <input type="number" id="propertyValue" value="1000000" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
-        </div>
-        <div class="input-group" style="margin-bottom:20px;">
-            <label>年持有成本 (物业费、税等) (¥)</label>
-            <input type="number" id="costs" value="8000" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
-        </div>
-        <button onclick="calcYield()" class="btn" style="background:#2563eb; color:#fff; padding:12px 24px; border:none; border-radius:8px; cursor:pointer; font-size:16px;">计算</button>
-        <div id="result" style="margin-top:20px; font-size:16px; background:#eef2ff; padding:15px; border-radius:8px;"></div>
+
+<div class="container">
+    <div class="top-nav">
+        <a href="index.html" class="back-link">← Back to Home</a>
+        <div class="breadcrumb">📊 <span>Rental Yield Calculator</span></div>
     </div>
+
+    <main class="calculator-card">
+        <h1>📊 Rental Yield Calculator</h1>
+        <p class="subtitle">Calculate gross and net rental yields for your investment property.</p>
+
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>Rental Yield Calculator</strong> — This tool helps you evaluate the return on your
+                investment property. Gross yield shows the nominal return before expenses, while net yield
+                accounts for costs like property taxes, insurance, and maintenance.
+            </p>
+        </div>
+
+        <div class="form-grid">
+            <div class="field">
+                <label for="annualRent">Annual Rental Income ($)</label>
+                <input type="number" id="annualRent" value="24000" min="0" step="1000" />
+            </div>
+            <div class="field">
+                <label for="propertyValue">Current Property Value ($)</label>
+                <input type="number" id="propertyValue" value="400000" min="0" step="10000" />
+            </div>
+            <div class="field">
+                <label for="costs">Annual Holding Costs (Property Tax, Insurance, Maintenance, etc.) ($)</label>
+                <input type="number" id="costs" value="4000" min="0" step="500" />
+            </div>
+            <div style="margin-top:0.5rem;">
+                <button class="btn" onclick="calculate()">Calculate</button>
+            </div>
+        </div>
+
+        <div id="results-area" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Rental Yield</h2>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>📋 Input Summary</h4>
+                    <div class="row"><span>Annual Rental Income</span><span class="num" id="rent-display">—</span></div>
+                    <div class="row"><span>Property Value</span><span class="num" id="value-display">—</span></div>
+                    <div class="row"><span>Annual Holding Costs</span><span class="num" id="costs-display">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>📊 Yield Results</h4>
+                    <div class="row"><span>Gross Rental Yield</span><span class="num" id="gross-yield" style="font-size:1.1rem;">—</span></div>
+                    <div class="row"><span>Net Rental Yield</span><span class="num" id="net-yield" style="font-size:1.1rem;">—</span></div>
+                    <div class="row"><span>Annual Net Cash Flow</span><span class="num" id="net-income">—</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="recommendations-area"></div>
+    </main>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
+            <h2>📖 How to read your results</h2>
+            <span class="accordion-arrow" id="infoArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="infoAccordion">
+            <div class="info-grid">
+                <div class="info-block"><h3>Gross Rental Yield</h3><p>Annual rent divided by property value. This is the return before any expenses — a quick snapshot of your potential return.</p></div>
+                <div class="info-block"><h3>Net Rental Yield</h3><p>Annual rent minus holding costs, divided by property value. This reflects your true return after expenses.</p></div>
+                <div class="info-block"><h3>Typical Range</h3><p>Yields vary by location and property type, typically between 2% and 8%. Higher net yields indicate better investment returns.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
+            <h2>❓ FAQ</h2>
+            <span class="accordion-arrow" id="faqArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="faqAccordion">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is considered a good rental yield?</span></div>
+                <div class="faq-answer">A good net rental yield is typically 4% or higher. However, this depends on local market conditions, property type, interest rates, and your investment goals.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Why is net yield lower than gross yield?</span></div>
+                <div class="faq-answer">Net yield subtracts holding costs like property taxes, insurance, maintenance, and property management fees. These costs typically reduce the yield by 0.5% to 2%.</div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
+    </footer>
 </div>
-<script>
-    function calcYield() {
-        const rent = parseFloat(document.getElementById('annualRent').value);
-        const value = parseFloat(document.getElementById('propertyValue').value);
-        const costs = parseFloat(document.getElementById('costs').value);
-        if (isNaN(rent) || isNaN(value) || isNaN(costs)) return alert('请输入有效数字');
-        const gross = (rent / value) * 100;
-        const net = ((rent - costs) / value) * 100;
-        document.getElementById('result').innerHTML = `
-            <strong>毛租金收益率</strong>：${gross.toFixed(2)}%<br>
-            <strong>净租金收益率</strong>：${net.toFixed(2)}%
-        `;
-    }
-</script>
-<script src="feedback.js"></script>
+
 <script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+
+<script>
+    function toggleAccordion(id) {
+        const body = document.getElementById(id);
+        const arrow = document.getElementById(id + 'Arrow');
+        if (body.style.display === 'none' || body.style.display === '') {
+            body.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            body.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+    function toggleFaq(el) {
+        const answer = el.nextElementSibling;
+        const arrow = el.querySelector('.faq-arrow');
+        if (answer.style.display === 'none' || answer.style.display === '') {
+            answer.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            answer.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+
+    function calculate() {
+        const rent = parseFloat(document.getElementById('annualRent').value) || 0;
+        const value = parseFloat(document.getElementById('propertyValue').value) || 1;
+        const costs = parseFloat(document.getElementById('costs').value) || 0;
+
+        const grossYield = (rent / value) * 100;
+        const netYield = ((rent - costs) / value) * 100;
+        const netIncome = rent - costs;
+
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+        document.getElementById('rent-display').textContent = fmt.format(rent);
+        document.getElementById('value-display').textContent = fmt.format(value);
+        document.getElementById('costs-display').textContent = fmt.format(costs);
+        document.getElementById('gross-yield').textContent = grossYield.toFixed(2) + '%';
+        document.getElementById('net-yield').textContent = netYield.toFixed(2) + '%';
+        document.getElementById('net-income').textContent = fmt.format(netIncome);
+
+        document.getElementById('results-area').style.display = 'block';
+
+        showRecommendations('rental-yield-calculator.html', {
+            annualRent: document.getElementById('annualRent').value,
+            propertyValue: document.getElementById('propertyValue').value
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('infoAccordion').style.display = 'block';
+        document.getElementById('infoArrow').textContent = '▼';
+        document.getElementById('faqAccordion').style.display = 'none';
+        document.getElementById('faqArrow').textContent = '▶';
+        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
+        calculate();
+    });
+    document.addEventListener('input', function(e) {
+        if (e.target.closest('.form-grid')) { calculate(); }
+    });
+</script>
 </body>
 </html>
