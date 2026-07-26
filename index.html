@@ -1,196 +1,524 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Smart Finance Tools - 免费财务计算器</title>
+    <title>Smart Finance Tools — 100+ Free Financial Calculators</title>
     <link rel="stylesheet" href="style.css" />
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>" />
-    <meta name="description" content="100+ 免费财务计算器：储蓄、贷款、投资、退休、税务、购房等" />
+    <style>
+        .hero {
+            text-align: center;
+            padding: 1.5rem 0 0.5rem;
+        }
+        .hero h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+            color: #0f172a;
+        }
+        .hero p {
+            color: #64748b;
+            font-size: 1.05rem;
+        }
+
+        .search-box {
+            max-width: 500px;
+            margin: 0 auto 0.8rem;
+            position: relative;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 0.7rem 1rem 0.7rem 2.8rem;
+            font-size: 1rem;
+            border: 2px solid #dce1e8;
+            border-radius: 12px;
+            background: #fafbfc url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 0.8rem center;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .search-box input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+            background-color: #ffffff;
+        }
+        .search-box .clear-btn {
+            position: absolute;
+            right: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: none;
+        }
+        .search-box .clear-btn.visible {
+            display: block;
+        }
+
+        .site-desc {
+            text-align: center;
+            max-width: 520px;
+            margin: 0 auto 1.5rem;
+        }
+        .site-desc .tagline {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin: 0;
+        }
+        .site-desc .sub {
+            font-size: 0.9rem;
+            color: #475569;
+            margin: 0.2rem 0 0;
+            line-height: 1.5;
+        }
+
+        .category-section {
+            margin-bottom: 2rem;
+        }
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e9edf2;
+            margin-bottom: 1rem;
+        }
+        .category-header h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin: 0;
+        }
+        .category-header .count {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 0.6rem;
+        }
+        .tool-card {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.7rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            transition: all 0.15s;
+            text-decoration: none;
+            color: #1e293b;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .tool-card:hover {
+            background: #eef2ff;
+            border-color: #c7d2fe;
+            transform: translateY(-1px);
+        }
+        .tool-card .icon {
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .tool-card .name {
+            flex: 1;
+            line-height: 1.2;
+        }
+        .tool-card .badge {
+            font-size: 0.6rem;
+            background: #10b981;
+            color: white;
+            padding: 0.1rem 0.4rem;
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+        .tool-card .badge.coming {
+            background: #94a3b8;
+        }
+        .tool-card.hidden {
+            display: none;
+        }
+        .tool-card.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 2rem 0;
+            color: #94a3b8;
+            display: none;
+        }
+        .no-results.visible {
+            display: block;
+        }
+
+        .nav-links {
+            text-align: center;
+            margin-bottom: 0.5rem;
+            padding-top: 0.5rem;
+        }
+        .nav-links a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 500;
+            margin: 0 0.5rem;
+            font-size: 0.9rem;
+        }
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+        .nav-links .sep {
+            color: #dce1e8;
+        }
+
+        .footer-stats {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            padding: 0.8rem 0;
+            border-top: 1px solid #e9edf2;
+            margin-top: 0.5rem;
+        }
+        .footer-stats span {
+            margin: 0 0.8rem;
+        }
+        .footer-stats strong {
+            color: #475569;
+        }
+
+        .feedback-section-home {
+            text-align: center;
+            padding: 1.2rem 0 0.8rem;
+            margin-top: 0.5rem;
+            border-top: 1px solid #e9edf2;
+        }
+        .feedback-section-home p {
+            font-size: 0.95rem;
+            color: #475569;
+            margin-bottom: 0.5rem;
+        }
+        .feedback-section-home .fb-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1.5rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .feedback-section-home .fb-btn:hover {
+            background: #1d4ed8;
+        }
+
+        @media (max-width: 640px) {
+            .hero h1 { font-size: 1.5rem; }
+            .tool-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+            .nav-links a { font-size: 0.8rem; margin: 0 0.3rem; }
+            .footer-stats { font-size: 0.75rem; }
+            .footer-stats span { margin: 0 0.4rem; }
+            .site-desc .tagline { font-size: 0.95rem; }
+            .site-desc .sub { font-size: 0.85rem; }
+        }
+        @media (max-width: 480px) {
+            .tool-grid { grid-template-columns: 1fr 1fr; }
+            .tool-card { font-size: 0.8rem; padding: 0.4rem 0.5rem; }
+        }
+    </style>
 </head>
 <body>
-    <!-- 导航 -->
-    <nav style="background:#1e293b; padding:16px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
-        <a href="/" style="color:#fff; font-size:24px; font-weight:700; text-decoration:none;">📊 Smart Finance</a>
-        <div style="display:flex; gap:20px;">
-            <a href="/study/" style="color:#94a3b8; text-decoration:none;">📚 学习系统</a>
-            <a href="/about.html" style="color:#94a3b8; text-decoration:none;">关于</a>
-            <a href="/privacy.html" style="color:#94a3b8; text-decoration:none;">隐私</a>
-        </div>
-    </nav>
 
-    <div class="container" style="max-width: 1200px; margin: 30px auto; padding: 0 20px;">
-        <h1 style="font-size: 36px; margin-bottom: 10px;">Smart Finance Tools</h1>
-        <p style="font-size: 18px; color: #475569; margin-bottom: 30px;">100+ 免费财务计算器 — 自信规划你的每一分钱。</p>
+<div class="container">
 
-        <!-- 搜索框 -->
-        <div style="margin-bottom: 40px;">
-            <input type="text" id="searchInput" placeholder="🔍 按名称或类别搜索工具..." style="width:100%; padding:14px 20px; border:2px solid #e2e8f0; border-radius:12px; font-size:16px; outline:none;" oninput="filterTools()" />
-        </div>
-
-        <p style="font-size: 14px; color: #64748b; margin-bottom: 30px;">
-            ✅ 已上线：<strong id="availableCount">68</strong> 个 &nbsp;|&nbsp; 🚀 即将上线：<strong id="comingCount">24</strong> 个
-        </p>
-
-        <div id="toolGrid">
-            <!-- 分类：个人理财 -->
-            <div class="category" data-category="个人理财">
-                <h2>💰 个人理财与储蓄 (15)</h2>
-                <div class="tool-list">
-                    <a href="compound-interest.html">复利计算器</a>
-                    <a href="simple-interest.html">单利计算器</a>
-                    <a href="fixed-deposit.html">定期存款计算器</a>
-                    <a href="recurring-deposit.html">零存整取计算器</a>
-                    <a href="savings-goal.html">储蓄目标规划器</a>
-                    <a href="emergency-fund.html">应急基金计算器</a>
-                    <a href="inflation-calculator.html">通货膨胀计算器</a>
-                    <a href="net-worth.html">净资产计算器</a>
-                    <a href="lump-sum-growth.html">一次性投资增长</a>
-                    <a href="budget-planner.html">50/30/20 预算规划</a>
-                    <a href="salary-hourly.html">薪资时薪转换</a>
-                    <a href="prorated-salary-calculator.html">按比例薪资计算</a>
-                </div>
-            </div>
-
-            <!-- 分类：贷款（新增 2 个工具） -->
-            <div class="category" data-category="贷款">
-                <h2>🏦 贷款与抵押贷款 (14)</h2>
-                <div class="tool-list">
-                    <a href="mortgage-payment.html">抵押贷款月供</a>
-                    <a href="extra-payment.html">额外还款计算器</a>
-                    <a href="loan-amortization.html">贷款摊销表</a>
-                    <a href="loan-comparison.html">贷款比较器</a>
-                    <a href="auto-loan.html">车贷计算器</a>
-                    <a href="affordability.html">负担能力计算器</a>
-                    <a href="debt-calculator.html">债务计算器</a>
-                    <a href="debt-consolidation.html">债务整合</a>
-                    <a href="debt-interest-comparison.html">债务利息比较</a>
-                    <a href="debt-payoff-timer.html">债务还清计时</a>
-                    <a href="debt-strategy-comparator.html">债务策略比较</a>
-                    <a href="credit-card-min-payment.html">信用卡最低还款</a>
-                    <a href="personal-loan-calculator.html">个人贷款计算器</a>
-                    <a href="debt-to-income-ratio.html">负债收入比 (DTI)</a>
-                </div>
-            </div>
-
-            <!-- 分类：投资 -->
-            <div class="category" data-category="投资">
-                <h2>📈 投资与回报 (12)</h2>
-                <div class="tool-list">
-                    <a href="roi-calculator.html">投资回报率 (ROI)</a>
-                    <a href="investment-goal.html">投资目标规划</a>
-                    <a href="drip-calculator.html">股息再投资 (DRIP)</a>
-                    <a href="cagr-calculator.html">复合年增长率 (CAGR)</a>
-                    <a href="npv-calculator.html">净现值 (NPV)</a>
-                    <a href="crypto-growth.html">加密货币增长</a>
-                    <a href="sip-lumpsum.html">SIP vs 一次性</a>
-                    <a href="investment-fee-drag.html">投资费用拖累</a>
-                    <a href="irr-calculator.html">内部收益率 (IRR)</a>
-                    <a href="stock-return.html">股票回报率</a>
-                    <a href="backtest-calculator.html">回测计算器</a>
-                    <a href="margin-trading.html">保证金交易</a>
-                </div>
-            </div>
-
-            <!-- 分类：退休 -->
-            <div class="category" data-category="退休">
-                <h2>🧓 退休与 FIRE (10)</h2>
-                <div class="tool-list">
-                    <a href="fire-calculator.html">FIRE 目标计算</a>
-                    <a href="coast-fire.html">Coast FIRE</a>
-                    <a href="four-percent.html">4% 法则</a>
-                    <a href="retirement-savings.html">退休储蓄</a>
-                    <a href="retirement-withdrawal.html">退休提款</a>
-                    <a href="401k-calculator.html">401(k) / 养老金</a>
-                    <a href="retirement-age.html">退休年龄</a>
-                    <a href="retirement-need.html">退休需求</a>
-                    <a href="roth-ira-calculator.html">Roth IRA</a>
-                    <a href="income-replacement.html">收入替代率</a>
-                </div>
-            </div>
-
-            <!-- 分类：SIP -->
-            <div class="category" data-category="SIP">
-                <h2>📊 SIP 与系统性投资 (6)</h2>
-                <div class="tool-list">
-                    <a href="sip-calculator.html">SIP 计算器</a>
-                    <a href="step-up-sip-calculator.html">阶梯式 SIP</a>
-                    <a href="sip-frequency-calculator.html">SIP 频率比较</a>
-                </div>
-            </div>
-
-            <!-- 分类：保险 -->
-            <div class="category" data-category="保险">
-                <h2>🛡️ 保险与风险 (8)</h2>
-                <div class="tool-list">
-                    <a href="life-insurance.html">寿险需求</a>
-                    <a href="health-insurance.html">健康险需求</a>
-                </div>
-            </div>
-
-            <!-- 分类：税务（新增 1 个工具） -->
-            <div class="category" data-category="税务">
-                <h2>🧾 税务 (13)</h2>
-                <div class="tool-list">
-                    <a href="sales-tax.html">销售税计算器</a>
-                    <a href="income-tax-calculator.html">所得税计算器</a>
-                    <a href="capital-gains-tax-calculator.html">资本利得税</a>
-                    <a href="effective-tax-rate.html">有效税率计算器</a>
-                </div>
-            </div>
-
-            <!-- 分类：购房（新增 2 个工具） -->
-            <div class="category" data-category="购房">
-                <h2>🏠 购房与租赁 (13)</h2>
-                <div class="tool-list">
-                    <a href="rent-vs-buy-calculator.html">租房 vs 买房</a>
-                    <a href="down-payment-calculator.html">首付计算器</a>
-                    <a href="rental-yield-calculator.html">租金收益率</a>
-                    <a href="property-appreciation-calculator.html">房产增值</a>
-                </div>
-            </div>
-
-            <!-- 分类：货币 -->
-            <div class="category" data-category="货币">
-                <h2>💱 货币与汇率 (10)</h2>
-                <div class="tool-list">
-                    <span style="color:#94a3b8; padding:8px 0;">🚀 即将上线...</span>
-                </div>
-            </div>
-        </div>
-
-        <div style="margin-top: 60px; padding: 30px 0; border-top: 1px solid #e2e8f0; text-align: center; color: #64748b;">
-            <p>发现错误？我们重视准确性！</p>
-            <button onclick="openFeedback()" style="background:#2563eb; color:#fff; padding:10px 30px; border:none; border-radius:8px; cursor:pointer; font-size:16px;">📧 提交反馈</button>
-            <p style="margin-top:20px; font-size:14px;">© 2026 — Smart Finance Tools · 免费在线计算器</p>
-        </div>
+    <div class="nav-links">
+        <a href="index.html" style="font-weight:700;">🏠 Home</a>
+        <span class="sep">|</span>
+        <a href="#tools">📊 All Tools</a>
     </div>
 
-    <script>
-        function filterTools() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const categories = document.querySelectorAll('.category');
-            categories.forEach(cat => {
-                const links = cat.querySelectorAll('.tool-list a');
-                let visible = false;
-                links.forEach(link => {
-                    const text = link.textContent.toLowerCase();
-                    const match = text.includes(query);
-                    link.style.display = match ? 'inline-block' : 'none';
-                    if (match) visible = true;
-                });
-                const title = cat.querySelector('h2').textContent.toLowerCase();
-                if (title.includes(query)) visible = true;
-                cat.style.display = visible ? 'block' : 'none';
-            });
+    <main class="calculator-card" style="padding-bottom:1.5rem;">
+
+        <div class="hero">
+            <h1>🧮 Smart Finance Tools</h1>
+            <p>100+ free financial calculators — plan your money with confidence.</p>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search tools by name or category..." oninput="filterTools()" />
+            <button class="clear-btn" id="clearBtn" onclick="clearSearch()">✕</button>
+        </div>
+
+        <div class="site-desc">
+            <p class="tagline">Stop guessing. Start planning.</p>
+            <p class="sub">
+                Free calculators for every money decision — savings, loans, investments, retirement, and more.
+            </p>
+        </div>
+
+        <div id="tools">
+            <div id="categoriesContainer"></div>
+        </div>
+
+        <div class="no-results" id="noResults">
+            <p>😕 No tools found. Try a different keyword.</p>
+        </div>
+
+        <div class="footer-stats">
+            <span>📊 Total: <strong id="totalCount">98</strong> tools</span>
+            <span>✅ Available: <strong id="availableCount">50</strong></span>
+            <span>⏳ Coming soon: <strong id="comingCount">48</strong></span>
+        </div>
+
+        <div class="feedback-section-home">
+            <p>⚠️ Found an issue? We take accuracy seriously!</p>
+            <button class="fb-btn" onclick="openFeedback()">📧 Submit Feedback</button>
+        </div>
+
+    </main>
+
+    <footer class="site-footer">
+        <p>
+            © 2026 — Smart Finance Tools · Free Online Calculators
+            <br />
+            <a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a>
+            <span style="color:#dce1e8;">|</span>
+            <a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a>
+        </p>
+    </footer>
+</div>
+
+<script src="feedback.js"></script>
+
+<script>
+    const toolsData = {
+        '💰 Personal Finance & Savings': [
+            { name: 'Compound Interest Calculator', icon: '📈', link: 'compound-interest.html', status: 'done' },
+            { name: 'Simple Interest Calculator', icon: '🧮', link: 'simple-interest.html', status: 'done' },
+            { name: 'Fixed Deposit Calculator', icon: '🏦', link: 'fixed-deposit.html', status: 'done' },
+            { name: 'Recurring Deposit Calculator', icon: '💰', link: 'recurring-deposit.html', status: 'done' },
+            { name: 'Savings Goal Planner', icon: '🎯', link: 'savings-goal.html', status: 'done' },
+            { name: 'Emergency Fund Calculator', icon: '🛡️', link: 'emergency-fund.html', status: 'done' },
+            { name: 'Inflation Calculator', icon: '📉', link: 'inflation-calculator.html', status: 'done' },
+            { name: 'Net Worth Calculator', icon: '📊', link: 'net-worth.html', status: 'done' },
+            { name: 'Lump Sum Growth Calculator', icon: '📈', link: 'lump-sum-growth.html', status: 'done' },
+            { name: '50/30/20 Budget Planner', icon: '📋', link: 'budget-planner.html', status: 'done' },
+            { name: 'Salary to Hourly Converter', icon: '⏰', link: 'salary-hourly.html', status: 'done' },
+            { name: 'Prorated Salary Calculator', icon: '📐', link: 'prorated-salary-calculator.html', status: 'done' },
+            { name: 'Pay Period Converter', icon: '📅', link: 'pay-period-converter.html', status: 'done' },
+        ],
+        '🏦 Loans & Mortgages': [
+            { name: 'Mortgage Payment Calculator', icon: '🏠', link: 'mortgage-payment.html', status: 'done' },
+            { name: 'Mortgage Extra Payment Calculator', icon: '🚀', link: 'extra-payment.html', status: 'done' },
+            { name: 'Loan Amortization Calculator', icon: '📑', link: 'loan-amortization.html', status: 'done' },
+            { name: 'Loan Comparison Calculator', icon: '⚖️', link: 'loan-comparison.html', status: 'done' },
+            { name: 'Auto Loan Calculator', icon: '🚗', link: 'auto-loan.html', status: 'done' },
+            { name: 'Affordability Calculator', icon: '💳', link: 'affordability.html', status: 'done' },
+            { name: 'APR / APY Calculator', icon: '📊', link: 'apr-ay.html', status: 'done' },
+            { name: 'Credit Card Payoff Calculator', icon: '💳', link: 'credit-card-payoff.html', status: 'done' },
+            { name: 'Credit Card Minimum Payment Calculator', icon: '💳', link: 'credit-card-min-payment.html', status: 'done' },
+            { name: 'Personal Loan Calculator', icon: '👤', link: 'personal-loan-calculator.html', status: 'done' },
+            { name: 'Refinance Calculator', icon: '🔄', link: 'refinance.html', status: 'done' },
+            { name: 'Debt-to-Income Ratio Checker', icon: '📈', link: 'debt-to-income-ratio.html', status: 'done' },
+        ],
+        '💳 Debt Management': [
+            { name: 'Debt Snowball / Avalanche Calculator', icon: '⛰️', link: 'debt-calculator.html', status: 'done' },
+            { name: 'Debt Payoff Timer', icon: '⏳', link: 'debt-payoff-timer.html', status: 'done' },
+            { name: 'Debt Consolidation Calculator', icon: '🔗', link: 'debt-consolidation.html', status: 'done' },
+            { name: 'Debt Interest Comparison', icon: '📊', link: 'debt-interest-comparison.html', status: 'done' },
+            { name: 'Debt Strategy Comparator', icon: '⚖️', link: 'debt-strategy-comparator.html', status: 'done' },
+            { name: 'Household Debt Dashboard', icon: '📋', link: 'household-debt-dashboard.html', status: 'done' },
+        ],
+        '📈 Investment & Returns': [
+            { name: 'Return on Investment (ROI) Calculator', icon: '📊', link: 'roi-calculator.html', status: 'done' },
+            { name: 'Investment Goal Planner', icon: '🎯', link: 'investment-goal.html', status: 'done' },
+            { name: 'Dividend Reinvestment (DRIP) Calculator', icon: '🔄', link: 'drip-calculator.html', status: 'done' },
+            { name: 'CAGR Calculator', icon: '📈', link: 'cagr-calculator.html', status: 'done' },
+            { name: 'Net Present Value (NPV) Calculator', icon: '💰', link: 'npv-calculator.html', status: 'done' },
+            { name: 'Cryptocurrency Growth Calculator', icon: '🪙', link: 'crypto-growth.html', status: 'done' },
+            { name: 'SIP vs Lump Sum Comparator', icon: '⚖️', link: 'sip-lumpsum.html', status: 'done' },
+            { name: 'Investment Fee Drag Calculator', icon: '📉', link: 'investment-fee-drag.html', status: 'done' },
+            { name: 'Internal Rate of Return (IRR) Calculator', icon: '📊', link: 'irr-calculator.html', status: 'done' },
+            { name: 'Stock Return Calculator', icon: '📈', link: 'stock-return.html', status: 'done' },
+            { name: 'Backtest Calculator', icon: '⏮️', link: 'backtest-calculator.html', status: 'done' },
+            { name: 'Margin Trading Calculator', icon: '⚖️', link: 'margin-trading.html', status: 'done' },
+        ],
+        '🏖️ Retirement & FIRE': [
+            { name: 'FIRE Number Calculator', icon: '🔥', link: 'fire-calculator.html', status: 'done' },
+            { name: 'Coast FIRE Calculator', icon: '🏖️', link: 'coast-fire.html', status: 'done' },
+            { name: '4% Rule Calculator', icon: '📊', link: 'four-percent.html', status: 'done' },
+            { name: 'Retirement Savings Calculator', icon: '🏦', link: 'retirement-savings.html', status: 'done' },
+            { name: 'Retirement Withdrawal Calculator', icon: '🏦', link: 'retirement-withdrawal.html', status: 'done' },
+            { name: '401(k) / Pension Calculator', icon: '📈', link: '401k-calculator.html', status: 'done' },
+            { name: 'Retirement Age Calculator', icon: '🎂', link: 'retirement-age.html', status: 'done' },
+            { name: 'Retirement Need Calculator', icon: '📋', link: 'retirement-need.html', status: 'done' },
+            { name: 'Roth IRA Calculator', icon: '📊', link: 'roth-ira-calculator.html', status: 'done' },
+            { name: 'Income Replacement Ratio Calculator', icon: '📈', link: 'income-replacement.html', status: 'done' },
+        ],
+        '📅 SIP & Systematic Investing': [
+            { name: 'SIP Calculator', icon: '📈', link: 'sip-calculator.html', status: 'done' },
+            { name: 'Step-up SIP Calculator', icon: '📊', link: 'step-up-sip-calculator.html', status: 'done' },
+            { name: 'SIP Frequency Comparator', icon: '📅', link: 'sip-frequency-calculator.html', status: 'done' },
+            { name: 'SIP Goal Planner', icon: '🎯', link: 'sip-goal-planner.html', status: 'coming' },
+        ],
+        '🛡️ Insurance & Risk': [
+            { name: 'Life Insurance Needs Calculator', icon: '🛡️', link: 'life-insurance.html', status: 'done' },
+            { name: 'Health Insurance Needs Calculator', icon: '🏥', link: 'health-insurance.html', status: 'done' },
+            { name: 'Car Insurance Estimator', icon: '🚗', link: 'car-insurance-estimator.html', status: 'done' },
+            { name: 'Insurance Gap Calculator', icon: '📊', link: 'insurance-gap-calculator.html', status: 'done' },
+            { name: 'Insurance Product Comparator', icon: '⚖️', link: 'insurance-product-comparator.html', status: 'coming' },
+            { name: 'Tax-free Insurance Return Calculator', icon: '💰', link: 'tax-free-insurance-return.html', status: 'coming' },
+            { name: 'Long-term Care Insurance Calculator', icon: '🏥', link: 'long-term-care-insurance.html', status: 'coming' },
+            { name: 'Disability Income Insurance Calculator', icon: '🦽', link: 'disability-income-insurance.html', status: 'coming' },
+        ],
+        '💰 Taxes': [
+            { name: 'Sales Tax Calculator', icon: '🛒', link: 'sales-tax.html', status: 'done' },
+            { name: 'Income Tax Calculator', icon: '📊', link: 'income-tax-calculator.html', status: 'done' },
+            { name: 'VAT / GST Calculator', icon: '📊', link: 'vat-gst-calculator.html', status: 'done' },
+            { name: 'Capital Gains Tax Calculator', icon: '📈', link: 'capital-gains-tax-calculator.html', status: 'done' },
+            { name: 'Effective Tax Rate Calculator', icon: '📊', link: 'effective-tax-rate.html', status: 'done' },
+            { name: 'Tax Strategy Planner', icon: '📋', link: 'tax-strategy-planner.html', status: 'done' },
+            { name: 'Pre-tax vs Post-tax Converter', icon: '🔄', link: 'pre-tax-post-tax.html', status: 'done' },
+            { name: 'Retirement Account Tax Comparator', icon: '⚖️', link: 'retirement-account-tax-comparator.html', status: 'done' },
+            { name: 'Property Tax Calculator', icon: '🏠', link: 'property-tax-calculator.html', status: 'done' },
+            { name: 'Cross-border Tax Estimator', icon: '🌍', link: 'cross-border-tax-estimator.html', status: 'coming' },
+        ],
+        '🏠 Home Buying & Renting': [
+            { name: 'Rent vs Buy Calculator', icon: '⚖️', link: 'rent-vs-buy-calculator.html', status: 'done' },
+            { name: 'Down Payment Calculator', icon: '💰', link: 'down-payment-calculator.html', status: 'done' },
+            { name: 'Rental Yield Calculator', icon: '📊', link: 'rental-yield-calculator.html', status: 'done' },
+            { name: 'Property Appreciation Calculator', icon: '📈', link: 'property-appreciation-calculator.html', status: 'done' },
+            { name: 'Mortgage vs Cash Calculator', icon: '⚖️', link: 'mortgage-vs-cash.html', status: 'coming' },
+            { name: 'Rent vs Mortgage Payment Comparator', icon: '📊', link: 'rent-vs-mortgage-payment.html', status: 'coming' },
+            { name: 'Total Home Cost Calculator', icon: '📋', link: 'total-home-cost.html', status: 'coming' },
+        ],
+        '🌍 Currency & Exchange': [
+            { name: 'Currency Converter', icon: '💱', link: 'currency-converter.html', status: 'coming' },
+            { name: 'International Transfer Cost Calculator', icon: '💸', link: 'international-transfer-cost.html', status: 'coming' },
+            { name: 'Purchasing Power Parity Calculator', icon: '⚖️', link: 'purchasing-power-parity.html', status: 'coming' },
+            { name: 'Inflation-adjusted Currency Converter', icon: '📉', link: 'inflation-adjusted-currency.html', status: 'coming' },
+            { name: 'Cross-border Living Cost Comparator', icon: '🌍', link: 'cross-border-living-cost.html', status: 'coming' },
+            { name: 'Historical Currency Lookup', icon: '📜', link: 'historical-currency-lookup.html', status: 'coming' },
+            { name: 'Forex Return Calculator', icon: '📈', link: 'forex-return-calculator.html', status: 'coming' },
+            { name: 'Exchange Rate Impact Analyzer', icon: '📊', link: 'exchange-rate-impact-analyzer.html', status: 'coming' },
+            { name: 'Multi-currency Budget Planner', icon: '💰', link: 'multi-currency-budget-planner.html', status: 'coming' },
+            { name: 'Gold / Precious Metals Price Converter', icon: '🥇', link: 'gold-price-converter.html', status: 'coming' },
+        ],
+    };
+
+    let totalTools = 0;
+    let doneTools = 0;
+    for (const category in toolsData) {
+        const tools = toolsData[category];
+        totalTools += tools.length;
+        for (const t of tools) {
+            if (t.status === 'done') doneTools++;
+        }
+    }
+    const comingTools = totalTools - doneTools;
+
+    document.getElementById('totalCount').textContent = totalTools;
+    document.getElementById('availableCount').textContent = doneTools;
+    document.getElementById('comingCount').textContent = comingTools;
+
+    function renderTools(filter = '') {
+        const container = document.getElementById('categoriesContainer');
+        container.innerHTML = '';
+        let hasVisible = false;
+        const searchTerm = filter.toLowerCase().trim();
+
+        for (const category in toolsData) {
+            const tools = toolsData[category];
+            const categoryHtml = document.createElement('div');
+            categoryHtml.className = 'category-section';
+
+            let visibleCount = 0;
+            let cardsHtml = '';
+
+            for (const tool of tools) {
+                const match = searchTerm === '' ||
+                    tool.name.toLowerCase().includes(searchTerm) ||
+                    category.toLowerCase().includes(searchTerm);
+                const hidden = !match;
+                if (match) {
+                    visibleCount++;
+                    hasVisible = true;
+                }
+
+                const isDone = tool.status === 'done';
+                const badgeHtml = isDone ?
+                    '<span class="badge">✅</span>' :
+                    '<span class="badge coming">⏳</span>';
+                const linkAttr = isDone ? `href="${tool.link}"` : `href="#" onclick="return false;"`;
+                const disabledClass = isDone ? '' : 'disabled';
+
+                cardsHtml += `
+                    <a class="tool-card ${hidden ? 'hidden' : ''} ${disabledClass}" ${linkAttr}>
+                        <span class="icon">${tool.icon}</span>
+                        <span class="name">${tool.name}</span>
+                        ${badgeHtml}
+                    </a>
+                `;
+            }
+
+            if (visibleCount === 0 && searchTerm !== '') {
+                categoryHtml.style.display = 'none';
+            } else {
+                const headerHtml = `
+                    <div class="category-header">
+                        <h2>${category} <span class="count">(${tools.length})</span></h2>
+                    </div>
+                    <div class="tool-grid">${cardsHtml}</div>
+                `;
+                categoryHtml.innerHTML = headerHtml;
+                container.appendChild(categoryHtml);
+            }
         }
 
-        function openFeedback() {
-            alert('反馈功能已集成 EmailJS，请点击页面右下角悬浮按钮。');
+        const noResults = document.getElementById('noResults');
+        if (searchTerm !== '' && !hasVisible) {
+            noResults.classList.add('visible');
+        } else {
+            noResults.classList.remove('visible');
         }
-    </script>
 
-    <script src="feedback.js"></script>
-    <script src="recommendations.js"></script>
+        const clearBtn = document.getElementById('clearBtn');
+        if (searchTerm !== '') {
+            clearBtn.classList.add('visible');
+        } else {
+            clearBtn.classList.remove('visible');
+        }
+    }
+
+    function filterTools() {
+        const input = document.getElementById('searchInput');
+        renderTools(input.value);
+    }
+
+    function clearSearch() {
+        document.getElementById('searchInput').value = '';
+        renderTools('');
+        document.getElementById('searchInput').focus();
+    }
+
+    document.getElementById('searchInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            filterTools();
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        renderTools('');
+    });
+</script>
+
 </body>
 </html>
