@@ -22,7 +22,7 @@
     <div class="container" style="max-width: 1200px; margin: 30px auto; padding: 0 20px;">
         <h1 style="font-size: 36px; margin-bottom: 10px;">Smart Finance Tools</h1>
         <p style="font-size: 18px; color: #475569; margin-bottom: 30px;">100+ 免费财务计算器 — 自信规划你的每一分钱。</p>
-        
+
         <!-- 搜索框 -->
         <div style="margin-bottom: 40px;">
             <input type="text" id="searchInput" placeholder="🔍 按名称或类别搜索工具..." style="width:100%; padding:14px 20px; border:2px solid #e2e8f0; border-radius:12px; font-size:16px; outline:none;" oninput="filterTools()" />
@@ -33,85 +33,75 @@
         </p>
 
         <div id="toolGrid">
-            <!-- 个人理财 -->
+            <!-- 分类：个人理财 -->
             <div class="category" data-category="个人理财">
-                <h2>💰 个人理财与储蓄 (11)</h2>
+                <h2>💰 个人理财与储蓄 (15)</h2>
                 <div class="tool-list">
                     <a href="compound-interest.html">复利计算器</a>
                     <a href="simple-interest.html">单利计算器</a>
-                    <a href="fixed-deposit.html">定期存款</a>
-                    <a href="recurring-deposit.html">零存整取</a>
-                    <a href="savings-goal.html">储蓄目标规划</a>
-                    <a href="emergency-fund.html">应急基金</a>
-                    <a href="inflation-calculator.html">通货膨胀</a>
-                    <a href="net-worth.html">净资产</a>
+                    <a href="fixed-deposit.html">定期存款计算器</a>
+                    <a href="recurring-deposit.html">零存整取计算器</a>
+                    <a href="savings-goal.html">储蓄目标规划器</a>
+                    <a href="emergency-fund.html">应急基金计算器</a>
+                    <a href="inflation-calculator.html">通货膨胀计算器</a>
+                    <a href="net-worth.html">净资产计算器</a>
                     <a href="lump-sum-growth.html">一次性投资增长</a>
-                    <a href="budget-planner.html">50/30/20预算</a>
+                    <a href="budget-planner.html">50/30/20 预算规划</a>
                     <a href="salary-hourly.html">薪资时薪转换</a>
+                    <a href="prorated-salary-calculator.html">按比例薪资计算</a>
                 </div>
             </div>
 
-            <!-- 贷款与抵押贷款 -->
+            <!-- 分类：贷款（新增 2 个工具） -->
             <div class="category" data-category="贷款">
                 <h2>🏦 贷款与抵押贷款 (14)</h2>
                 <div class="tool-list">
                     <a href="mortgage-payment.html">抵押贷款月供</a>
-                    <a href="extra-payment.html">额外还款</a>
-                    <a href="loan-amortization.html">贷款摊销</a>
-                    <a href="loan-comparison.html">贷款比较</a>
-                    <a href="auto-loan.html">车贷</a>
-                    <a href="affordability.html">负担能力</a>
-                    <a href="apr-ay.html">APR/APY</a>
-                    <a href="credit-card-min-payment.html">信用卡最低还款</a>
-                    <a href="debt-calculator.html">债务计算</a>
+                    <a href="extra-payment.html">额外还款计算器</a>
+                    <a href="loan-amortization.html">贷款摊销表</a>
+                    <a href="loan-comparison.html">贷款比较器</a>
+                    <a href="auto-loan.html">车贷计算器</a>
+                    <a href="affordability.html">负担能力计算器</a>
+                    <a href="debt-calculator.html">债务计算器</a>
                     <a href="debt-consolidation.html">债务整合</a>
                     <a href="debt-interest-comparison.html">债务利息比较</a>
-                    <a href="debt-strategy-comparator.html">债务策略比较</a>
-                    <a href="personal-loan-calculator.html">个人贷款</a>
-                    <a href="debt-to-income-ratio.html">负债收入比</a>
-                </div>
-            </div>
-
-            <!-- 债务管理 -->
-            <div class="category" data-category="债务管理">
-                <h2>📉 债务管理 (4)</h2>
-                <div class="tool-list">
                     <a href="debt-payoff-timer.html">债务还清计时</a>
-                    <a href="debt-consolidation.html">债务整合</a>
-                    <a href="debt-interest-comparison.html">利息比较</a>
-                    <a href="debt-strategy-comparator.html">策略比较</a>
+                    <a href="debt-strategy-comparator.html">债务策略比较</a>
+                    <a href="credit-card-min-payment.html">信用卡最低还款</a>
+                    <a href="personal-loan-calculator.html">个人贷款计算器</a>
+                    <a href="debt-to-income-ratio.html">负债收入比 (DTI)</a>
                 </div>
             </div>
 
-            <!-- 投资 -->
+            <!-- 分类：投资 -->
             <div class="category" data-category="投资">
                 <h2>📈 投资与回报 (12)</h2>
                 <div class="tool-list">
-                    <a href="roi-calculator.html">ROI</a>
-                    <a href="investment-goal.html">投资目标</a>
-                    <a href="drip-calculator.html">股息再投资</a>
-                    <a href="cagr-calculator.html">CAGR</a>
-                    <a href="npv-calculator.html">NPV</a>
+                    <a href="roi-calculator.html">投资回报率 (ROI)</a>
+                    <a href="investment-goal.html">投资目标规划</a>
+                    <a href="drip-calculator.html">股息再投资 (DRIP)</a>
+                    <a href="cagr-calculator.html">复合年增长率 (CAGR)</a>
+                    <a href="npv-calculator.html">净现值 (NPV)</a>
                     <a href="crypto-growth.html">加密货币增长</a>
                     <a href="sip-lumpsum.html">SIP vs 一次性</a>
-                    <a href="investment-fee-drag.html">费用拖累</a>
-                    <a href="irr-calculator.html">IRR</a>
-                    <a href="stock-return.html">股票回报</a>
-                    <a href="backtest-calculator.html">回测</a>
+                    <a href="investment-fee-drag.html">投资费用拖累</a>
+                    <a href="irr-calculator.html">内部收益率 (IRR)</a>
+                    <a href="stock-return.html">股票回报率</a>
+                    <a href="backtest-calculator.html">回测计算器</a>
                     <a href="margin-trading.html">保证金交易</a>
                 </div>
             </div>
 
-            <!-- 退休 -->
+            <!-- 分类：退休 -->
             <div class="category" data-category="退休">
                 <h2>🧓 退休与 FIRE (10)</h2>
                 <div class="tool-list">
-                    <a href="fire-calculator.html">FIRE目标</a>
+                    <a href="fire-calculator.html">FIRE 目标计算</a>
                     <a href="coast-fire.html">Coast FIRE</a>
-                    <a href="four-percent.html">4%法则</a>
+                    <a href="four-percent.html">4% 法则</a>
                     <a href="retirement-savings.html">退休储蓄</a>
                     <a href="retirement-withdrawal.html">退休提款</a>
-                    <a href="401k-calculator.html">401(k)</a>
+                    <a href="401k-calculator.html">401(k) / 养老金</a>
                     <a href="retirement-age.html">退休年龄</a>
                     <a href="retirement-need.html">退休需求</a>
                     <a href="roth-ira-calculator.html">Roth IRA</a>
@@ -119,48 +109,50 @@
                 </div>
             </div>
 
-            <!-- SIP -->
+            <!-- 分类：SIP -->
             <div class="category" data-category="SIP">
-                <h2>📊 SIP 与系统性投资 (2)</h2>
+                <h2>📊 SIP 与系统性投资 (6)</h2>
                 <div class="tool-list">
-                    <a href="sip-calculator.html">SIP计算器</a>
-                    <a href="step-up-sip-calculator.html">阶梯式SIP</a>
+                    <a href="sip-calculator.html">SIP 计算器</a>
+                    <a href="step-up-sip-calculator.html">阶梯式 SIP</a>
+                    <a href="sip-frequency-calculator.html">SIP 频率比较</a>
                 </div>
             </div>
 
-            <!-- 保险 -->
+            <!-- 分类：保险 -->
             <div class="category" data-category="保险">
-                <h2>🛡️ 保险与风险 (2)</h2>
+                <h2>🛡️ 保险与风险 (8)</h2>
                 <div class="tool-list">
                     <a href="life-insurance.html">寿险需求</a>
                     <a href="health-insurance.html">健康险需求</a>
                 </div>
             </div>
 
-            <!-- 税务 -->
+            <!-- 分类：税务（新增 1 个工具） -->
             <div class="category" data-category="税务">
-                <h2>🧾 税务 (4)</h2>
+                <h2>🧾 税务 (13)</h2>
                 <div class="tool-list">
-                    <a href="sales-tax.html">销售税</a>
-                    <a href="income-tax-calculator.html">所得税</a>
+                    <a href="sales-tax.html">销售税计算器</a>
+                    <a href="income-tax-calculator.html">所得税计算器</a>
                     <a href="capital-gains-tax-calculator.html">资本利得税</a>
-                    <a href="effective-tax-rate.html">有效税率</a>
+                    <a href="effective-tax-rate.html">有效税率计算器</a>
                 </div>
             </div>
 
-            <!-- 购房 -->
+            <!-- 分类：购房（新增 2 个工具） -->
             <div class="category" data-category="购房">
-                <h2>🏠 购房与租赁 (3)</h2>
+                <h2>🏠 购房与租赁 (13)</h2>
                 <div class="tool-list">
                     <a href="rent-vs-buy-calculator.html">租房 vs 买房</a>
-                    <a href="rental-yield-calculator.html">租金收益率</a>
                     <a href="down-payment-calculator.html">首付计算器</a>
+                    <a href="rental-yield-calculator.html">租金收益率</a>
+                    <a href="property-appreciation-calculator.html">房产增值</a>
                 </div>
             </div>
 
-            <!-- 货币与汇率 -->
+            <!-- 分类：货币 -->
             <div class="category" data-category="货币">
-                <h2>💱 货币与汇率 (0)</h2>
+                <h2>💱 货币与汇率 (10)</h2>
                 <div class="tool-list">
                     <span style="color:#94a3b8; padding:8px 0;">🚀 即将上线...</span>
                 </div>
@@ -192,10 +184,12 @@
                 cat.style.display = visible ? 'block' : 'none';
             });
         }
+
         function openFeedback() {
             alert('反馈功能已集成 EmailJS，请点击页面右下角悬浮按钮。');
         }
     </script>
+
     <script src="feedback.js"></script>
     <script src="recommendations.js"></script>
 </body>
