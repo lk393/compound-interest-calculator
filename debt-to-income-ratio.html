@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>负债收入比计算器 - Smart Finance Tools</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="container" style="max-width:700px; margin:40px auto; padding:20px;">
+    <h1>📊 负债收入比 (DTI) 计算器</h1>
+    <p>计算每月总债务支出占税前收入的比例，评估财务健康度。</p>
+    <div class="card" style="padding:25px; background:#f9fafc; border-radius:16px;">
+        <div class="input-group" style="margin-bottom:15px;">
+            <label>月税前收入 (¥)</label>
+            <input type="number" id="income" value="10000" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+        </div>
+        <div class="input-group" style="margin-bottom:20px;">
+            <label>每月债务支出 (房贷+车贷+信用卡等) (¥)</label>
+            <input type="number" id="debt" value="3000" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+        </div>
+        <button onclick="calcDTI()" class="btn" style="background:#2563eb; color:#fff; padding:12px 24px; border:none; border-radius:8px; cursor:pointer; font-size:16px;">计算</button>
+        <div id="result" style="margin-top:20px; font-size:16px; background:#eef2ff; padding:15px; border-radius:8px;"></div>
+    </div>
+</div>
+<script>
+    function calcDTI() {
+        const income = parseFloat(document.getElementById('income').value);
+        const debt = parseFloat(document.getElementById('debt').value);
+        if (isNaN(income) || isNaN(debt)) return alert('请输入有效数字');
+        const ratio = (debt / income) * 100;
+        let status = '';
+        if (ratio <= 36) status = '✅ 健康（≤36%）';
+        else if (ratio <= 43) status = '⚠️ 可接受（≤43%）';
+        else status = '❌ 过高（>43%），建议降低负债';
+        document.getElementById('result').innerHTML = `
+            <strong>DTI 比率</strong>：${ratio.toFixed(1)}%<br>
+            <strong>评估</strong>：${status}
+        `;
+    }
+</script>
+<script src="feedback.js"></script>
+<script src="recommendations.js"></script>
+</body>
+</html>
