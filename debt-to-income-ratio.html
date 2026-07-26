@@ -1,45 +1,263 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>负债收入比计算器 - Smart Finance Tools</title>
+    <title>Debt-to-Income Ratio Calculator — Free Online Tool</title>
     <link rel="stylesheet" href="style.css" />
+    <style>
+        .results-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            margin: 1.5rem 0;
+        }
+        .summary-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+        .summary-item .value.healthy { color: #10b981; }
+        .summary-item .value.warning { color: #f59e0b; }
+        .summary-item .value.danger { color: #ef4444; }
+
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
+        .field input {
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem;
+            border: 1.5px solid #dce1e8;
+            border-radius: 10px;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .field input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background: #ffffff;
+        }
+
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+        .btn:hover { background: #1d4ed8; }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        .comparison-box {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1rem;
+        }
+        .comparison-box h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin: 0 0 0.5rem;
+            text-align: center;
+        }
+        .comparison-box .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.2rem 0;
+            font-size: 0.85rem;
+            color: #475569;
+        }
+        .comparison-box .row .num {
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
+        @media (max-width: 640px) {
+            .info-grid { grid-template-columns: 1fr; }
+            .summary-item { padding: 0.6rem 1rem; }
+            .summary-item .value { font-size: 1rem; }
+            .comparison-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
-<div class="container" style="max-width:700px; margin:40px auto; padding:20px;">
-    <h1>📊 负债收入比 (DTI) 计算器</h1>
-    <p>计算每月总债务支出占税前收入的比例，评估财务健康度。</p>
-    <div class="card" style="padding:25px; background:#f9fafc; border-radius:16px;">
-        <div class="input-group" style="margin-bottom:15px;">
-            <label>月税前收入 (¥)</label>
-            <input type="number" id="income" value="10000" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
-        </div>
-        <div class="input-group" style="margin-bottom:20px;">
-            <label>每月债务支出 (房贷+车贷+信用卡等) (¥)</label>
-            <input type="number" id="debt" value="3000" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
-        </div>
-        <button onclick="calcDTI()" class="btn" style="background:#2563eb; color:#fff; padding:12px 24px; border:none; border-radius:8px; cursor:pointer; font-size:16px;">计算</button>
-        <div id="result" style="margin-top:20px; font-size:16px; background:#eef2ff; padding:15px; border-radius:8px;"></div>
+
+<div class="container">
+    <div class="top-nav">
+        <a href="index.html" class="back-link">← Back to Home</a>
+        <div class="breadcrumb">📊 <span>Debt-to-Income Ratio Calculator</span></div>
     </div>
+
+    <main class="calculator-card">
+        <h1>📊 Debt-to-Income (DTI) Ratio Calculator</h1>
+        <p class="subtitle">Calculate your monthly debt-to-income ratio to assess your financial health.</p>
+
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>Debt-to-Income Ratio Calculator</strong> — This tool helps you understand how much
+                of your monthly income goes toward debt payments. Lenders use this ratio to evaluate your
+                ability to manage monthly payments. A DTI of 36% or less is generally considered healthy.
+            </p>
+        </div>
+
+        <div class="form-grid">
+            <div class="field">
+                <label for="income">Monthly Gross Income ($)</label>
+                <input type="number" id="income" value="5000" min="0" step="500" />
+            </div>
+            <div class="field">
+                <label for="debt">Monthly Debt Payments (Mortgage + Car + Credit Cards + Other) ($)</label>
+                <input type="number" id="debt" value="1500" min="0" step="100" />
+            </div>
+            <div style="margin-top:0.5rem;">
+                <button class="btn" onclick="calculate()">Calculate</button>
+            </div>
+        </div>
+
+        <div id="results-area" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your DTI Results</h2>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>📋 Input Summary</h4>
+                    <div class="row"><span>Monthly Income</span><span class="num" id="income-display">—</span></div>
+                    <div class="row"><span>Monthly Debt</span><span class="num" id="debt-display">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>📊 Results</h4>
+                    <div class="row"><span>DTI Ratio</span><span class="num" id="dti-ratio" style="font-size:1.1rem;">—</span></div>
+                    <div class="row"><span>Assessment</span><span class="num" id="dti-status">—</span></div>
+                    <div class="row"><span>Remaining Income</span><span class="num" id="remaining-income">—</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="recommendations-area"></div>
+    </main>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
+            <h2>📖 How to read your results</h2>
+            <span class="accordion-arrow" id="infoArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="infoAccordion">
+            <div class="info-grid">
+                <div class="info-block"><h3>≤ 36%</h3><p>Healthy level. Your debt is well within manageable limits. You have financial flexibility for unexpected expenses.</p></div>
+                <div class="info-block"><h3>37% – 43%</h3><p>Acceptable level. Debt is starting to consume a significant portion of income. Consider gradually reducing your debt load.</p></div>
+                <div class="info-block"><h3>&gt; 43%</h3><p>Elevated level. Your debt burden is high. Consider creating a repayment plan and avoiding new debt.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
+            <h2>❓ FAQ</h2>
+            <span class="accordion-arrow" id="faqArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="faqAccordion">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the debt-to-income ratio?</span></div>
+                <div class="faq-answer">DTI is the percentage of your monthly gross income that goes toward debt payments. It's a key metric lenders use to assess your borrowing capacity.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How can I lower my DTI?</span></div>
+                <div class="faq-answer">You can lower your DTI by increasing your income, paying down existing debt, refinancing to lower monthly payments, or avoiding new debt.</div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
+    </footer>
 </div>
-<script>
-    function calcDTI() {
-        const income = parseFloat(document.getElementById('income').value);
-        const debt = parseFloat(document.getElementById('debt').value);
-        if (isNaN(income) || isNaN(debt)) return alert('请输入有效数字');
-        const ratio = (debt / income) * 100;
-        let status = '';
-        if (ratio <= 36) status = '✅ 健康（≤36%）';
-        else if (ratio <= 43) status = '⚠️ 可接受（≤43%）';
-        else status = '❌ 过高（>43%），建议降低负债';
-        document.getElementById('result').innerHTML = `
-            <strong>DTI 比率</strong>：${ratio.toFixed(1)}%<br>
-            <strong>评估</strong>：${status}
-        `;
-    }
-</script>
-<script src="feedback.js"></script>
+
 <script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+
+<script>
+    function toggleAccordion(id) {
+        const body = document.getElementById(id);
+        const arrow = document.getElementById(id + 'Arrow');
+        if (body.style.display === 'none' || body.style.display === '') {
+            body.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            body.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+    function toggleFaq(el) {
+        const answer = el.nextElementSibling;
+        const arrow = el.querySelector('.faq-arrow');
+        if (answer.style.display === 'none' || answer.style.display === '') {
+            answer.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            answer.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+
+    function calculate() {
+        const income = parseFloat(document.getElementById('income').value) || 0;
+        const debt = parseFloat(document.getElementById('debt').value) || 0;
+
+        const ratio = income > 0 ? (debt / income) * 100 : 0;
+        let status = '';
+        let statusClass = '';
+        if (ratio <= 36) { status = '✅ Healthy (≤36%)'; statusClass = 'healthy'; }
+        else if (ratio <= 43) { status = '⚠️ Acceptable (≤43%)'; statusClass = 'warning'; }
+        else { status = '❌ Elevated (>43%)'; statusClass = 'danger'; }
+
+        const remaining = income - debt;
+
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+        document.getElementById('income-display').textContent = fmt.format(income);
+        document.getElementById('debt-display').textContent = fmt.format(debt);
+        document.getElementById('dti-ratio').textContent = ratio.toFixed(1) + '%';
+        document.getElementById('dti-status').textContent = status;
+        document.getElementById('dti-status').className = 'num ' + statusClass;
+        document.getElementById('remaining-income').textContent = fmt.format(remaining);
+
+        document.getElementById('results-area').style.display = 'block';
+
+        showRecommendations('debt-to-income-ratio.html', {
+            income: document.getElementById('income').value,
+            debt: document.getElementById('debt').value
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('infoAccordion').style.display = 'block';
+        document.getElementById('infoArrow').textContent = '▼';
+        document.getElementById('faqAccordion').style.display = 'none';
+        document.getElementById('faqArrow').textContent = '▶';
+        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
+        calculate();
+    });
+    document.addEventListener('input', function(e) {
+        if (e.target.closest('.form-grid')) { calculate(); }
+    });
+</script>
 </body>
 </html>
