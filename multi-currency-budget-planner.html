@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multi‑currency Budget Planner — Free Online Tool</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .results-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            margin: 1.5rem 0;
+        }
+        .summary-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
+        .field input {
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem;
+            border: 1.5px solid #dce1e8;
+            border-radius: 10px;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .field input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background: #ffffff;
+        }
+
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+        .btn:hover { background: #1d4ed8; }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        .comparison-box {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1rem;
+        }
+        .comparison-box h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin: 0 0 0.5rem;
+            text-align: center;
+        }
+        .comparison-box .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.2rem 0;
+            font-size: 0.85rem;
+            color: #475569;
+        }
+        .comparison-box .row .num {
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
+        @media (max-width: 640px) {
+            .info-grid { grid-template-columns: 1fr; }
+            .summary-item { padding: 0.6rem 1rem; }
+            .summary-item .value { font-size: 1rem; }
+            .comparison-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="top-nav">
+        <a href="index.html" class="back-link">← Back to Home</a>
+        <div class="breadcrumb">💰 <span>Multi‑currency Budget Planner</span></div>
+    </div>
+
+    <main class="calculator-card">
+        <h1>💰 Multi‑currency Budget Planner</h1>
+        <p class="subtitle">Plan a monthly budget across multiple currencies, all converted to a single base currency.</p>
+
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>Multi‑currency Budget Planner</strong> — This tool helps you manage a budget when you have
+                income and expenses in different currencies. Enter your income and expenses in their original
+                currencies, set exchange rates, and see everything in your base currency.
+            </p>
+        </div>
+
+        <div class="form-grid">
+            <div class="field">
+                <label for="base-currency">Base Currency (for reporting)</label>
+                <input type="text" id="base-currency" value="USD" style="width:100%;" />
+            </div>
+            <h3 style="font-size:1rem; margin-bottom:0;">Income</h3>
+            <div class="field">
+                <label>Income Amount (Currency 1)</label>
+                <input type="number" id="income-1" value="5000" min="0" step="100" />
+            </div>
+            <div class="field">
+                <label>Currency 1 Code</label>
+                <input type="text" id="currency-1" value="USD" style="width:100%;" />
+            </div>
+            <div class="field">
+                <label>Exchange Rate (1 Currency 1 = X Base Currency)</label>
+                <input type="number" id="rate-1" value="1" min="0.001" step="0.001" />
+            </div>
+            <h3 style="font-size:1rem; margin-bottom:0;">Expenses</h3>
+            <div class="field">
+                <label>Expense Amount (Currency 2)</label>
+                <input type="number" id="expense-2" value="3000" min="0" step="100" />
+            </div>
+            <div class="field">
+                <label>Currency 2 Code</label>
+                <input type="text" id="currency-2" value="EUR" style="width:100%;" />
+            </div>
+            <div class="field">
+                <label>Exchange Rate (1 Currency 2 = X Base Currency)</label>
+                <input type="number" id="rate-2" value="1.05" min="0.001" step="0.001" />
+            </div>
+            <div class="field">
+                <label>Expense Amount (Currency 3)</label>
+                <input type="number" id="expense-3" value="2000" min="0" step="100" />
+            </div>
+            <div class="field">
+                <label>Currency 3 Code</label>
+                <input type="text" id="currency-3" value="GBP" style="width:100%;" />
+            </div>
+            <div class="field">
+                <label>Exchange Rate (1 Currency 3 = X Base Currency)</label>
+                <input type="number" id="rate-3" value="1.25" min="0.001" step="0.001" />
+            </div>
+            <div style="margin-top:0.5rem;">
+                <button class="btn" onclick="calculate()">Calculate Budget</button>
+            </div>
+        </div>
+
+        <div id="results-area" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Budget in Base Currency</h2>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>📈 Income</h4>
+                    <div class="row"><span>Income (Currency 1)</span><span class="num" id="income-1-display">—</span></div>
+                    <div class="row"><span>Income (Base Currency)</span><span class="num" id="income-base">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>📉 Expenses</h4>
+                    <div class="row"><span>Expense (Currency 2)</span><span class="num" id="expense-2-display">—</span></div>
+                    <div class="row"><span>Expense (Currency 3)</span><span class="num" id="expense-3-display">—</span></div>
+                    <div class="row"><span>Total Expenses (Base)</span><span class="num" id="expense-base">—</span></div>
+                </div>
+            </div>
+            <div class="results-summary">
+                <div class="summary-item highlight">
+                    <span class="label">💰 Net Balance (Base Currency)</span>
+                    <span class="value" id="net-balance" style="font-size:1.2rem;">—</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="recommendations-area"></div>
+    </main>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
+            <h2>📖 How to read your results</h2>
+            <span class="accordion-arrow" id="infoArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="infoAccordion">
+            <div class="info-grid">
+                <div class="info-block"><h3>Base Currency</h3><p>The currency you choose for reporting. All income and expenses are converted to this currency.</p></div>
+                <div class="info-block"><h3>Exchange Rate</h3><p>The rate you enter to convert each foreign currency to the base currency.</p></div>
+                <div class="info-block"><h3>Net Balance</h3><p>Total income minus total expenses in the base currency. Positive means you're in surplus.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
+            <h2>❓ FAQ</h2>
+            <span class="accordion-arrow" id="faqArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="faqAccordion">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is this useful for?</span></div>
+                <div class="faq-answer">This is useful for expats, international freelancers, or anyone with income and expenses in different currencies.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Can I add more currencies?</span></div>
+                <div class="faq-answer">This simplified version uses three expense currencies. For more, you can adapt the code or make multiple calculations.</div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
+    </footer>
+</div>
+
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+
+<script>
+    function toggleAccordion(id) {
+        const body = document.getElementById(id);
+        const arrow = document.getElementById(id + 'Arrow');
+        if (body.style.display === 'none' || body.style.display === '') {
+            body.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            body.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+    function toggleFaq(el) {
+        const answer = el.nextElementSibling;
+        const arrow = el.querySelector('.faq-arrow');
+        if (answer.style.display === 'none' || answer.style.display === '') {
+            answer.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            answer.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+
+    function calculate() {
+        const base = document.getElementById('base-currency').value || 'USD';
+        const income1 = parseFloat(document.getElementById('income-1').value) || 0;
+        const curr1 = document.getElementById('currency-1').value || 'USD';
+        const rate1 = parseFloat(document.getElementById('rate-1').value) || 1;
+        const expense2 = parseFloat(document.getElementById('expense-2').value) || 0;
+        const curr2 = document.getElementById('currency-2').value || 'EUR';
+        const rate2 = parseFloat(document.getElementById('rate-2').value) || 1;
+        const expense3 = parseFloat(document.getElementById('expense-3').value) || 0;
+        const curr3 = document.getElementById('currency-3').value || 'GBP';
+        const rate3 = parseFloat(document.getElementById('rate-3').value) || 1;
+
+        const incomeBase = income1 * rate1;
+        const expenseBase2 = expense2 * rate2;
+        const expenseBase3 = expense3 * rate3;
+        const totalExpenses = expenseBase2 + expenseBase3;
+        const net = incomeBase - totalExpenses;
+
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+        document.getElementById('income-1-display').textContent = income1.toFixed(0) + ' ' + curr1;
+        document.getElementById('income-base').textContent = fmt.format(incomeBase) + ' ' + base;
+        document.getElementById('expense-2-display').textContent = expense2.toFixed(0) + ' ' + curr2 + ' → ' + fmt.format(expenseBase2) + ' ' + base;
+        document.getElementById('expense-3-display').textContent = expense3.toFixed(0) + ' ' + curr3 + ' → ' + fmt.format(expenseBase3) + ' ' + base;
+        document.getElementById('expense-base').textContent = fmt.format(totalExpenses) + ' ' + base;
+
+        const netEl = document.getElementById('net-balance');
+        netEl.textContent = fmt.format(net) + ' ' + base;
+        netEl.style.color = net >= 0 ? '#10b981' : '#ef4444';
+
+        document.getElementById('results-area').style.display = 'block';
+
+        showRecommendations('multi-currency-budget-planner.html', {
+            base: base,
+            income: document.getElementById('income-1').value
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('infoAccordion').style.display = 'block';
+        document.getElementById('infoArrow').textContent = '▼';
+        document.getElementById('faqAccordion').style.display = 'none';
+        document.getElementById('faqArrow').textContent = '▶';
+        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
+        calculate();
+    });
+    document.addEventListener('input', function(e) {
+        if (e.target.closest('.form-grid')) { calculate(); }
+    });
+</script>
+</body>
+</html>
