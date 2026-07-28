@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SIP Goal Planner — Free Online Tool</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .results-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            margin: 1.5rem 0;
+        }
+        .summary-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
+        .field input {
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem;
+            border: 1.5px solid #dce1e8;
+            border-radius: 10px;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .field input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background: #ffffff;
+        }
+
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+        .btn:hover { background: #1d4ed8; }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        .comparison-box {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1rem;
+        }
+        .comparison-box h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin: 0 0 0.5rem;
+            text-align: center;
+        }
+        .comparison-box .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.2rem 0;
+            font-size: 0.85rem;
+            color: #475569;
+        }
+        .comparison-box .row .num {
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
+        @media (max-width: 640px) {
+            .info-grid { grid-template-columns: 1fr; }
+            .summary-item { padding: 0.6rem 1rem; }
+            .summary-item .value { font-size: 1rem; }
+            .comparison-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="top-nav">
+        <a href="index.html" class="back-link">← Back to Home</a>
+        <div class="breadcrumb">📊 <span>SIP Goal Planner</span></div>
+    </div>
+
+    <main class="calculator-card">
+        <h1>📊 SIP Goal Planner</h1>
+        <p class="subtitle">Calculate the monthly SIP amount needed to reach your investment goal.</p>
+
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>SIP Goal Planner</strong> — This tool determines the monthly Systematic Investment
+                Plan (SIP) contribution required to achieve a target future value, given an expected annual
+                return and investment horizon.
+            </p>
+        </div>
+
+        <div class="form-grid">
+            <div class="field">
+                <label for="target">Target Future Value ($)</label>
+                <input type="number" id="target" value="100000" min="0" step="1000" />
+            </div>
+            <div class="field">
+                <label for="return-rate">Expected Annual Return (%)</label>
+                <input type="number" id="return-rate" value="12" min="0" step="0.1" />
+            </div>
+            <div class="field">
+                <label for="years">Investment Horizon (Years)</label>
+                <input type="number" id="years" value="10" min="1" max="50" step="1" />
+            </div>
+            <div style="margin-top:0.5rem;">
+                <button class="btn" onclick="calculate()">Calculate</button>
+            </div>
+        </div>
+
+        <div id="results-area" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your SIP Plan</h2>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>📋 Input Summary</h4>
+                    <div class="row"><span>Target Amount</span><span class="num" id="target-display">—</span></div>
+                    <div class="row"><span>Expected Return</span><span class="num" id="return-display">—</span></div>
+                    <div class="row"><span>Years</span><span class="num" id="years-display">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>💰 Required SIP</h4>
+                    <div class="row"><span>Monthly SIP Contribution</span><span class="num" id="monthly-sip" style="font-size:1.1rem;">—</span></div>
+                    <div class="row"><span>Total Investment</span><span class="num" id="total-invested">—</span></div>
+                    <div class="row"><span>Total Returns</span><span class="num" id="total-returns">—</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="recommendations-area"></div>
+    </main>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
+            <h2>📖 How to read your results</h2>
+            <span class="accordion-arrow" id="infoArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="infoAccordion">
+            <div class="info-grid">
+                <div class="info-block"><h3>Monthly SIP</h3><p>The amount you need to invest every month to reach your target, assuming the given return rate and time horizon.</p></div>
+                <div class="info-block"><h3>Total Investment</h3><p>Your total contributions over the entire period (monthly SIP × number of months).</p></div>
+                <div class="info-block"><h3>Total Returns</h3><p>The difference between your target amount and total investment — the profit earned through compounding.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
+            <h2>❓ FAQ</h2>
+            <span class="accordion-arrow" id="faqArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="faqAccordion">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is SIP?</span></div>
+                <div class="faq-answer">A Systematic Investment Plan (SIP) is a method of investing a fixed amount regularly (monthly) in mutual funds, allowing you to benefit from rupee cost averaging and compounding.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Is this calculator accurate for real investments?</span></div>
+                <div class="faq-answer">It provides an estimate based on a constant annual return. Real returns may vary due to market fluctuations, so use this as a planning guide.</div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
+    </footer>
+</div>
+
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+
+<script>
+    function toggleAccordion(id) {
+        const body = document.getElementById(id);
+        const arrow = document.getElementById(id + 'Arrow');
+        if (body.style.display === 'none' || body.style.display === '') {
+            body.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            body.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+    function toggleFaq(el) {
+        const answer = el.nextElementSibling;
+        const arrow = el.querySelector('.faq-arrow');
+        if (answer.style.display === 'none' || answer.style.display === '') {
+            answer.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            answer.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+
+    function calculate() {
+        const target = parseFloat(document.getElementById('target').value) || 0;
+        const rate = parseFloat(document.getElementById('return-rate').value) || 0;
+        const years = parseFloat(document.getElementById('years').value) || 1;
+
+        const monthlyRate = rate / 100 / 12;
+        const months = years * 12;
+
+        let sip = 0;
+        if (monthlyRate > 0 && target > 0) {
+            sip = target * monthlyRate / (Math.pow(1 + monthlyRate, months) - 1);
+        } else {
+            sip = target / months;
+        }
+
+        const totalInvested = sip * months;
+        const totalReturns = target - totalInvested;
+
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        const pct = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+        document.getElementById('target-display').textContent = fmt.format(target);
+        document.getElementById('return-display').textContent = pct.format(rate / 100);
+        document.getElementById('years-display').textContent = years + ' years';
+        document.getElementById('monthly-sip').textContent = fmt.format(sip);
+        document.getElementById('total-invested').textContent = fmt.format(totalInvested);
+        document.getElementById('total-returns').textContent = fmt.format(totalReturns);
+
+        document.getElementById('results-area').style.display = 'block';
+
+        showRecommendations('sip-goal-planner.html', {
+            target: document.getElementById('target').value,
+            years: document.getElementById('years').value
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('infoAccordion').style.display = 'block';
+        document.getElementById('infoArrow').textContent = '▼';
+        document.getElementById('faqAccordion').style.display = 'none';
+        document.getElementById('faqArrow').textContent = '▶';
+        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
+        calculate();
+    });
+    document.addEventListener('input', function(e) {
+        if (e.target.closest('.form-grid')) { calculate(); }
+    });
+</script>
+</body>
+</html>
