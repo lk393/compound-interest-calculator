@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>International Transfer Cost Calculator — Free Online Tool</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .results-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            margin: 1.5rem 0;
+        }
+        .summary-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
+        .field input {
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem;
+            border: 1.5px solid #dce1e8;
+            border-radius: 10px;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .field input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background: #ffffff;
+        }
+
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+        .btn:hover { background: #1d4ed8; }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        .comparison-box {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1rem;
+        }
+        .comparison-box h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin: 0 0 0.5rem;
+            text-align: center;
+        }
+        .comparison-box .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.2rem 0;
+            font-size: 0.85rem;
+            color: #475569;
+        }
+        .comparison-box .row .num {
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
+        @media (max-width: 640px) {
+            .info-grid { grid-template-columns: 1fr; }
+            .summary-item { padding: 0.6rem 1rem; }
+            .summary-item .value { font-size: 1rem; }
+            .comparison-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="top-nav">
+        <a href="index.html" class="back-link">← Back to Home</a>
+        <div class="breadcrumb">💸 <span>International Transfer Cost Calculator</span></div>
+    </div>
+
+    <main class="calculator-card">
+        <h1>💸 International Transfer Cost Calculator</h1>
+        <p class="subtitle">Compare the total cost of sending money abroad — fees plus exchange rate markup.</p>
+
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>International Transfer Cost Calculator</strong> — This tool estimates the total cost
+                of an international money transfer, including both the upfront fee and the hidden markup in
+                the exchange rate. Compare providers to find the cheapest option.
+            </p>
+        </div>
+
+        <div class="form-grid">
+            <div class="field">
+                <label for="amount">Amount to Send (USD)</label>
+                <input type="number" id="amount" value="1000" min="0" step="100" />
+            </div>
+            <div class="field">
+                <label for="fee">Transfer Fee ($)</label>
+                <input type="number" id="fee" value="10" min="0" step="1" />
+            </div>
+            <div class="field">
+                <label for="mid-market-rate">Mid‑Market Exchange Rate (e.g., 1 USD = 0.85 EUR)</label>
+                <input type="number" id="mid-market-rate" value="0.85" min="0.001" step="0.001" />
+            </div>
+            <div class="field">
+                <label for="offered-rate">Offered Exchange Rate (what you actually get)</label>
+                <input type="number" id="offered-rate" value="0.84" min="0.001" step="0.001" />
+            </div>
+            <div style="margin-top:0.5rem;">
+                <button class="btn" onclick="calculate()">Calculate</button>
+            </div>
+        </div>
+
+        <div id="results-area" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Transfer Cost Breakdown</h2>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>📋 Input Summary</h4>
+                    <div class="row"><span>Amount</span><span class="num" id="amount-display">—</span></div>
+                    <div class="row"><span>Transfer Fee</span><span class="num" id="fee-display">—</span></div>
+                    <div class="row"><span>Mid-Market Rate</span><span class="num" id="mid-rate-display">—</span></div>
+                    <div class="row"><span>Offered Rate</span><span class="num" id="offered-rate-display">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>💰 Cost Results</h4>
+                    <div class="row"><span>Total Cost</span><span class="num" id="total-cost" style="font-size:1.1rem;">—</span></div>
+                    <div class="row"><span>Markup Cost</span><span class="num" id="markup-cost">—</span></div>
+                    <div class="row"><span>Total Fees</span><span class="num" id="total-fees">—</span></div>
+                    <div class="row"><span>Effective Exchange Rate</span><span class="num" id="effective-rate">—</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="recommendations-area"></div>
+    </main>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
+            <h2>📖 How to read your results</h2>
+            <span class="accordion-arrow" id="infoArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="infoAccordion">
+            <div class="info-grid">
+                <div class="info-block"><h3>Total Cost</h3><p>The sum of the transfer fee and the exchange rate markup (in your home currency). This is the true cost of the transfer.</p></div>
+                <div class="info-block"><h3>Markup Cost</h3><p>The difference between the mid‑market rate and the offered rate, multiplied by the amount. This is the hidden fee.</p></div>
+                <div class="info-block"><h3>Effective Rate</h3><p>The actual exchange rate you get after factoring in the transfer fee. A lower number means worse value.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
+            <h2>❓ FAQ</h2>
+            <span class="accordion-arrow" id="faqArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="faqAccordion">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the mid‑market rate?</span></div>
+                <div class="faq-answer">The mid‑market rate is the real exchange rate used between banks, with no markup. It's the best possible rate you could get.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How can I reduce transfer costs?</span></div>
+                <div class="faq-answer">Compare providers, choose those with low or zero fees and tight exchange rate spreads. Avoid providers that offer a bad rate to compensate for low fees.</div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
+    </footer>
+</div>
+
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+
+<script>
+    function toggleAccordion(id) {
+        const body = document.getElementById(id);
+        const arrow = document.getElementById(id + 'Arrow');
+        if (body.style.display === 'none' || body.style.display === '') {
+            body.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            body.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+    function toggleFaq(el) {
+        const answer = el.nextElementSibling;
+        const arrow = el.querySelector('.faq-arrow');
+        if (answer.style.display === 'none' || answer.style.display === '') {
+            answer.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            answer.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+
+    function calculate() {
+        const amount = parseFloat(document.getElementById('amount').value) || 0;
+        const fee = parseFloat(document.getElementById('fee').value) || 0;
+        const mid = parseFloat(document.getElementById('mid-market-rate').value) || 0.85;
+        const offered = parseFloat(document.getElementById('offered-rate').value) || 0.84;
+
+        const markupRate = mid - offered;
+        const markupCost = amount * markupRate;
+        const totalCost = fee + markupCost;
+        const totalFees = fee + markupCost;
+        // Effective rate: how much foreign currency you get per USD after fees
+        const receivedForeign = amount * offered;
+        const effectiveRate = receivedForeign / (amount + fee); // per USD spent
+
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const rateFmt = new Intl.NumberFormat('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+
+        document.getElementById('amount-display').textContent = fmt.format(amount);
+        document.getElementById('fee-display').textContent = fmt.format(fee);
+        document.getElementById('mid-rate-display').textContent = rateFmt.format(mid);
+        document.getElementById('offered-rate-display').textContent = rateFmt.format(offered);
+        document.getElementById('total-cost').textContent = fmt.format(totalCost);
+        document.getElementById('markup-cost').textContent = fmt.format(markupCost);
+        document.getElementById('total-fees').textContent = fmt.format(totalFees);
+        document.getElementById('effective-rate').textContent = rateFmt.format(effectiveRate);
+
+        document.getElementById('results-area').style.display = 'block';
+
+        showRecommendations('international-transfer-cost.html', {
+            amount: document.getElementById('amount').value
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('infoAccordion').style.display = 'block';
+        document.getElementById('infoArrow').textContent = '▼';
+        document.getElementById('faqAccordion').style.display = 'none';
+        document.getElementById('faqArrow').textContent = '▶';
+        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
+        calculate();
+    });
+    document.addEventListener('input', function(e) {
+        if (e.target.closest('.form-grid')) { calculate(); }
+    });
+</script>
+</body>
+</html>
