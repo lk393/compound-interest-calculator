@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Total Home Cost Calculator — Free Online Tool</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .results-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            margin: 1.5rem 0;
+        }
+        .summary-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
+        .field input {
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem;
+            border: 1.5px solid #dce1e8;
+            border-radius: 10px;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .field input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background: #ffffff;
+        }
+
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+        .btn:hover { background: #1d4ed8; }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        .comparison-box {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1rem;
+        }
+        .comparison-box h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin: 0 0 0.5rem;
+            text-align: center;
+        }
+        .comparison-box .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.2rem 0;
+            font-size: 0.85rem;
+            color: #475569;
+        }
+        .comparison-box .row .num {
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
+        @media (max-width: 640px) {
+            .info-grid { grid-template-columns: 1fr; }
+            .summary-item { padding: 0.6rem 1rem; }
+            .summary-item .value { font-size: 1rem; }
+            .comparison-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="top-nav">
+        <a href="index.html" class="back-link">← Back to Home</a>
+        <div class="breadcrumb">📋 <span>Total Home Cost Calculator</span></div>
+    </div>
+
+    <main class="calculator-card">
+        <h1>📋 Total Home Cost Calculator</h1>
+        <p class="subtitle">Calculate the total lifetime cost of owning a home, including mortgage, taxes, and maintenance.</p>
+
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>Total Home Cost Calculator</strong> — This tool estimates the total cost of homeownership
+                over the entire loan term, including mortgage payments, property taxes, insurance, and maintenance.
+                It helps you understand the true cost of buying a home beyond the purchase price.
+            </p>
+        </div>
+
+        <div class="form-grid">
+            <div class="field">
+                <label for="price-thc">Purchase Price ($)</label>
+                <input type="number" id="price-thc" value="300000" min="0" step="10000" />
+            </div>
+            <div class="field">
+                <label for="down-thc">Down Payment ($)</label>
+                <input type="number" id="down-thc" value="60000" min="0" step="5000" />
+            </div>
+            <div class="field">
+                <label for="rate-thc">Mortgage Interest Rate (%)</label>
+                <input type="number" id="rate-thc" value="6.5" min="0" step="0.1" />
+            </div>
+            <div class="field">
+                <label for="term-thc">Loan Term (Years)</label>
+                <input type="number" id="term-thc" value="30" min="1" max="40" step="1" />
+            </div>
+            <div class="field">
+                <label for="taxes-thc">Annual Property Taxes ($)</label>
+                <input type="number" id="taxes-thc" value="3000" min="0" step="500" />
+            </div>
+            <div class="field">
+                <label for="insurance-thc">Annual Insurance ($)</label>
+                <input type="number" id="insurance-thc" value="1200" min="0" step="100" />
+            </div>
+            <div class="field">
+                <label for="maintenance-thc">Annual Maintenance & Repairs ($)</label>
+                <input type="number" id="maintenance-thc" value="1500" min="0" step="100" />
+            </div>
+            <div style="margin-top:0.5rem;">
+                <button class="btn" onclick="calculate()">Calculate</button>
+            </div>
+        </div>
+
+        <div id="results-area" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Total Home Cost Breakdown</h2>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>📋 Input Summary</h4>
+                    <div class="row"><span>Purchase Price</span><span class="num" id="price-display">—</span></div>
+                    <div class="row"><span>Down Payment</span><span class="num" id="down-display">—</span></div>
+                    <div class="row"><span>Loan Amount</span><span class="num" id="loan-display">—</span></div>
+                    <div class="row"><span>Term</span><span class="num" id="term-display">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>💰 Total Cost Breakdown</h4>
+                    <div class="row"><span>Mortgage Interest</span><span class="num" id="interest-display">—</span></div>
+                    <div class="row"><span>Property Taxes</span><span class="num" id="taxes-total">—</span></div>
+                    <div class="row"><span>Insurance</span><span class="num" id="insurance-total">—</span></div>
+                    <div class="row"><span>Maintenance</span><span class="num" id="maintenance-total">—</span></div>
+                    <div class="row"><span style="font-weight:700;">Total Cost of Ownership</span><span class="num" id="total-cost" style="font-size:1.2rem;">—</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="recommendations-area"></div>
+    </main>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
+            <h2>📖 How to read your results</h2>
+            <span class="accordion-arrow" id="infoArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="infoAccordion">
+            <div class="info-grid">
+                <div class="info-block"><h3>Mortgage Interest</h3><p>The total interest paid over the life of the loan — often the largest cost of homeownership.</p></div>
+                <div class="info-block"><h3>Operating Costs</h3><p>Property taxes, insurance, and maintenance are ongoing costs that add up significantly over time.</p></div>
+                <div class="info-block"><h3>Total Cost</h3><p>The sum of all costs: purchase price, interest, taxes, insurance, and maintenance. This is the true cost of owning the home.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
+            <h2>❓ FAQ</h2>
+            <span class="accordion-arrow" id="faqArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="faqAccordion">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What costs are included?</span></div>
+                <div class="faq-answer">This calculator includes mortgage interest, property taxes, insurance, and maintenance/repairs. It does not include utility costs or HOA fees.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the 1% rule for maintenance?</span></div>
+                <div class="faq-answer">A common rule of thumb is to budget 1% of the home's value annually for maintenance and repairs. This calculator uses a fixed amount you can adjust.</div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
+    </footer>
+</div>
+
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+
+<script>
+    function toggleAccordion(id) {
+        const body = document.getElementById(id);
+        const arrow = document.getElementById(id + 'Arrow');
+        if (body.style.display === 'none' || body.style.display === '') {
+            body.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            body.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+    function toggleFaq(el) {
+        const answer = el.nextElementSibling;
+        const arrow = el.querySelector('.faq-arrow');
+        if (answer.style.display === 'none' || answer.style.display === '') {
+            answer.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            answer.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+
+    function calculate() {
+        const price = parseFloat(document.getElementById('price-thc').value) || 0;
+        const down = parseFloat(document.getElementById('down-thc').value) || 0;
+        const rate = parseFloat(document.getElementById('rate-thc').value) || 0;
+        const term = parseFloat(document.getElementById('term-thc').value) || 1;
+        const taxes = parseFloat(document.getElementById('taxes-thc').value) || 0;
+        const insurance = parseFloat(document.getElementById('insurance-thc').value) || 0;
+        const maintenance = parseFloat(document.getElementById('maintenance-thc').value) || 0;
+
+        const loan = price - down;
+        const monthlyRate = rate / 100 / 12;
+        const months = term * 12;
+        const payment = loan * monthlyRate * Math.pow(1 + monthlyRate, months) / (Math.pow(1 + monthlyRate, months) - 1);
+        const totalInterest = payment * months - loan;
+        const totalTaxes = taxes * term;
+        const totalInsurance = insurance * term;
+        const totalMaintenance = maintenance * term;
+        const totalCost = price + totalInterest + totalTaxes + totalInsurance + totalMaintenance;
+
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+        document.getElementById('price-display').textContent = fmt.format(price);
+        document.getElementById('down-display').textContent = fmt.format(down);
+        document.getElementById('loan-display').textContent = fmt.format(loan);
+        document.getElementById('term-display').textContent = term + ' years';
+        document.getElementById('interest-display').textContent = fmt.format(totalInterest);
+        document.getElementById('taxes-total').textContent = fmt.format(totalTaxes);
+        document.getElementById('insurance-total').textContent = fmt.format(totalInsurance);
+        document.getElementById('maintenance-total').textContent = fmt.format(totalMaintenance);
+        document.getElementById('total-cost').textContent = fmt.format(totalCost);
+
+        document.getElementById('results-area').style.display = 'block';
+
+        showRecommendations('total-home-cost.html', {
+            price: document.getElementById('price-thc').value,
+            term: document.getElementById('term-thc').value
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('infoAccordion').style.display = 'block';
+        document.getElementById('infoArrow').textContent = '▼';
+        document.getElementById('faqAccordion').style.display = 'none';
+        document.getElementById('faqArrow').textContent = '▶';
+        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
+        calculate();
+    });
+    document.addEventListener('input', function(e) {
+        if (e.target.closest('.form-grid')) { calculate(); }
+    });
+</script>
+</body>
+</html>
