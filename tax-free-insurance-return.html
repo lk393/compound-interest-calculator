@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tax‑free Insurance Return Calculator — Free Online Tool</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .results-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            margin: 1.5rem 0;
+        }
+        .summary-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
+        .field input {
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem;
+            border: 1.5px solid #dce1e8;
+            border-radius: 10px;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .field input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background: #ffffff;
+        }
+
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+        .btn:hover { background: #1d4ed8; }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        .comparison-box {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1rem;
+        }
+        .comparison-box h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin: 0 0 0.5rem;
+            text-align: center;
+        }
+        .comparison-box .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.2rem 0;
+            font-size: 0.85rem;
+            color: #475569;
+        }
+        .comparison-box .row .num {
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
+        @media (max-width: 640px) {
+            .info-grid { grid-template-columns: 1fr; }
+            .summary-item { padding: 0.6rem 1rem; }
+            .summary-item .value { font-size: 1rem; }
+            .comparison-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="top-nav">
+        <a href="index.html" class="back-link">← Back to Home</a>
+        <div class="breadcrumb">💰 <span>Tax‑free Insurance Return Calculator</span></div>
+    </div>
+
+    <main class="calculator-card">
+        <h1>💰 Tax‑free Insurance Return Calculator</h1>
+        <p class="subtitle">Compare the effective return of a tax‑free insurance product with a taxable investment.</p>
+
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>Tax‑free Insurance Return Calculator</strong> — This tool compares the after‑tax returns
+                of a tax‑free insurance policy (like a Roth IRA or certain life insurance products) with a
+                taxable investment. It shows the value of the tax advantage.
+            </p>
+        </div>
+
+        <div class="form-grid">
+            <div class="field">
+                <label for="premium-tf">Annual Premium / Contribution ($)</label>
+                <input type="number" id="premium-tf" value="5000" min="0" step="500" />
+            </div>
+            <div class="field">
+                <label for="return-tf">Insurance Product Annual Return (%)</label>
+                <input type="number" id="return-tf" value="4" min="0" step="0.1" />
+            </div>
+            <div class="field">
+                <label for="taxable-return">Taxable Investment Annual Return (%)</label>
+                <input type="number" id="taxable-return" value="6" min="0" step="0.1" />
+            </div>
+            <div class="field">
+                <label for="tax-rate-tf">Tax Rate on Investment (%)</label>
+                <input type="number" id="tax-rate-tf" value="22" min="0" step="1" />
+            </div>
+            <div class="field">
+                <label for="years-tf">Investment Period (Years)</label>
+                <input type="number" id="years-tf" value="20" min="1" max="50" step="1" />
+            </div>
+            <div style="margin-top:0.5rem;">
+                <button class="btn" onclick="calculate()">Compare</button>
+            </div>
+        </div>
+
+        <div id="results-area" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Comparison Results</h2>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>✅ Tax‑Free Insurance</h4>
+                    <div class="row"><span>Total Contributions</span><span class="num" id="total-premium">—</span></div>
+                    <div class="row"><span>Final Value</span><span class="num" id="final-taxfree">—</span></div>
+                    <div class="row"><span>Tax Saved</span><span class="num" id="tax-saved">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>📈 Taxable Investment</h4>
+                    <div class="row"><span>Total Contributions</span><span class="num" id="total-taxable">—</span></div>
+                    <div class="row"><span>Final After‑Tax Value</span><span class="num" id="final-taxable">—</span></div>
+                    <div class="row"><span>Tax Paid</span><span class="num" id="tax-paid">—</span></div>
+                </div>
+            </div>
+            <div class="results-summary">
+                <div class="summary-item highlight">
+                    <span class="label">🏆 Advantage of Tax‑Free Product</span>
+                    <span class="value" id="advantage" style="font-size:1.2rem;">—</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="recommendations-area"></div>
+    </main>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
+            <h2>📖 How to read your results</h2>
+            <span class="accordion-arrow" id="infoArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="infoAccordion">
+            <div class="info-grid">
+                <div class="info-block"><h3>Tax‑Free Final Value</h3><p>The value of the insurance product at the end of the term, with all growth tax‑free.</p></div>
+                <div class="info-block"><h3>Taxable Final Value</h3><p>The value of the taxable investment after paying taxes on returns each year.</p></div>
+                <div class="info-block"><h3>Advantage</h3><p>The extra value you get from the tax‑free product compared to the taxable investment.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
+            <h2>❓ FAQ</h2>
+            <span class="accordion-arrow" id="faqArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="faqAccordion">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What types of insurance are tax‑free?</span></div>
+                <div class="faq-answer">Roth IRAs, certain life insurance policies (like whole life), and some annuities offer tax‑free growth or tax‑free withdrawals. Check with your provider.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Is the tax advantage always worth it?</span></div>
+                <div class="faq-answer">It depends on the return rate, fees, and your tax bracket. This tool helps you quantify the benefit. Always compare fees and surrender charges.</div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
+    </footer>
+</div>
+
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+
+<script>
+    function toggleAccordion(id) {
+        const body = document.getElementById(id);
+        const arrow = document.getElementById(id + 'Arrow');
+        if (body.style.display === 'none' || body.style.display === '') {
+            body.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            body.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+    function toggleFaq(el) {
+        const answer = el.nextElementSibling;
+        const arrow = el.querySelector('.faq-arrow');
+        if (answer.style.display === 'none' || answer.style.display === '') {
+            answer.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            answer.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+
+    function calculate() {
+        const premium = parseFloat(document.getElementById('premium-tf').value) || 0;
+        const returnTF = parseFloat(document.getElementById('return-tf').value) || 0;
+        const returnTax = parseFloat(document.getElementById('taxable-return').value) || 0;
+        const taxRate = parseFloat(document.getElementById('tax-rate-tf').value) || 0;
+        const years = parseFloat(document.getElementById('years-tf').value) || 1;
+
+        // Tax‑free: grows without tax
+        const finalTF = premium * (Math.pow(1 + returnTF / 100, years) - 1) / (returnTF / 100);
+        const totalPremium = premium * years;
+
+        // Taxable: returns are taxed each year
+        const afterTaxReturn = returnTax * (1 - taxRate / 100);
+        const finalTaxable = premium * (Math.pow(1 + afterTaxReturn / 100, years) - 1) / (afterTaxReturn / 100);
+        const totalTaxable = premium * years;
+        const taxPaid = finalTaxable - totalTaxable;
+        const taxSaved = finalTF - (premium * (Math.pow(1 + returnTax / 100, years) - 1) / (returnTax / 100));
+        const advantage = finalTF - finalTaxable;
+
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+        document.getElementById('total-premium').textContent = fmt.format(totalPremium);
+        document.getElementById('final-taxfree').textContent = fmt.format(finalTF);
+        document.getElementById('tax-saved').textContent = fmt.format(Math.max(0, taxSaved));
+        document.getElementById('total-taxable').textContent = fmt.format(totalTaxable);
+        document.getElementById('final-taxable').textContent = fmt.format(finalTaxable);
+        document.getElementById('tax-paid').textContent = fmt.format(taxPaid);
+
+        const advEl = document.getElementById('advantage');
+        advEl.textContent = fmt.format(advantage);
+        advEl.style.color = advantage >= 0 ? '#10b981' : '#ef4444';
+
+        document.getElementById('results-area').style.display = 'block';
+
+        showRecommendations('tax-free-insurance-return.html', {
+            premium: document.getElementById('premium-tf').value,
+            years: document.getElementById('years-tf').value
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('infoAccordion').style.display = 'block';
+        document.getElementById('infoArrow').textContent = '▼';
+        document.getElementById('faqAccordion').style.display = 'none';
+        document.getElementById('faqArrow').textContent = '▶';
+        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
+        calculate();
+    });
+    document.addEventListener('input', function(e) {
+        if (e.target.closest('.form-grid')) { calculate(); }
+    });
+</script>
+</body>
+</html>
