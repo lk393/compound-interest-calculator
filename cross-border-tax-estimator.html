@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cross‑border Tax Estimator — Free Online Tool</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .results-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            margin: 1.5rem 0;
+        }
+        .summary-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
+        .field input {
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem;
+            border: 1.5px solid #dce1e8;
+            border-radius: 10px;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .field input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background: #ffffff;
+        }
+
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+        .btn:hover { background: #1d4ed8; }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        .comparison-box {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1rem;
+        }
+        .comparison-box h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin: 0 0 0.5rem;
+            text-align: center;
+        }
+        .comparison-box .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.2rem 0;
+            font-size: 0.85rem;
+            color: #475569;
+        }
+        .comparison-box .row .num {
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
+        @media (max-width: 640px) {
+            .info-grid { grid-template-columns: 1fr; }
+            .summary-item { padding: 0.6rem 1rem; }
+            .summary-item .value { font-size: 1rem; }
+            .comparison-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="top-nav">
+        <a href="index.html" class="back-link">← Back to Home</a>
+        <div class="breadcrumb">🌍 <span>Cross‑border Tax Estimator</span></div>
+    </div>
+
+    <main class="calculator-card">
+        <h1>🌍 Cross‑border Tax Estimator</h1>
+        <p class="subtitle">Estimate taxes on income earned in a foreign country, including foreign tax credits.</p>
+
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>Cross‑border Tax Estimator</strong> — This tool helps you estimate the tax you might owe
+                on foreign‑source income, considering both the foreign tax rate and your home country's tax
+                rate, as well as potential foreign tax credits to avoid double taxation.
+            </p>
+        </div>
+
+        <div class="form-grid">
+            <div class="field">
+                <label for="income">Foreign Source Income ($)</label>
+                <input type="number" id="income" value="50000" min="0" step="1000" />
+            </div>
+            <div class="field">
+                <label for="foreign-rate">Foreign Tax Rate (%)</label>
+                <input type="number" id="foreign-rate" value="15" min="0" step="0.1" />
+            </div>
+            <div class="field">
+                <label for="home-rate">Home Country Tax Rate (%)</label>
+                <input type="number" id="home-rate" value="22" min="0" step="0.1" />
+            </div>
+            <div class="field">
+                <label for="credit">Foreign Tax Credit Allowed (%) (portion of foreign tax creditable)</label>
+                <input type="number" id="credit" value="100" min="0" max="100" step="1" />
+            </div>
+            <div style="margin-top:0.5rem;">
+                <button class="btn" onclick="calculate()">Estimate</button>
+            </div>
+        </div>
+
+        <div id="results-area" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Tax Estimation</h2>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>📋 Input Summary</h4>
+                    <div class="row"><span>Foreign Income</span><span class="num" id="income-display">—</span></div>
+                    <div class="row"><span>Foreign Tax Rate</span><span class="num" id="foreign-rate-display">—</span></div>
+                    <div class="row"><span>Home Rate</span><span class="num" id="home-rate-display">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>💰 Tax Breakdown</h4>
+                    <div class="row"><span>Foreign Tax Paid</span><span class="num" id="foreign-tax">—</span></div>
+                    <div class="row"><span>Home Country Tax (before credit)</span><span class="num" id="home-tax">—</span></div>
+                    <div class="row"><span>Foreign Tax Credit</span><span class="num" id="tax-credit">—</span></div>
+                    <div class="row"><span>Net Home Tax Due</span><span class="num" id="net-home-tax">—</span></div>
+                    <div class="row"><span>Total Tax Paid</span><span class="num" id="total-tax" style="font-size:1.1rem;">—</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="recommendations-area"></div>
+    </main>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
+            <h2>📖 How to read your results</h2>
+            <span class="accordion-arrow" id="infoArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="infoAccordion">
+            <div class="info-grid">
+                <div class="info-block"><h3>Foreign Tax</h3><p>Tax paid to the foreign country on your income there.</p></div>
+                <div class="info-block"><h3>Foreign Tax Credit</h3><p>The portion of foreign tax that can be claimed as a credit against your home country tax, preventing double taxation.</p></div>
+                <div class="info-block"><h3>Total Tax</h3><p>The sum of foreign tax and any remaining home tax after credit. This is your total tax burden on foreign income.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
+            <h2>❓ FAQ</h2>
+            <span class="accordion-arrow" id="faqArrow">▶</span>
+        </div>
+        <div class="accordion-body" id="faqAccordion">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the foreign tax credit?</span></div>
+                <div class="faq-answer">It's a credit allowed by many countries to reduce double taxation on foreign income. You can claim a credit for taxes paid to a foreign country against your home tax liability.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Is this calculator accurate for all countries?</span></div>
+                <div class="faq-answer">No, it's a simplified estimate. Tax treaties, deductions, and specific rules vary greatly. Consult a tax professional for precise advice.</div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
+    </footer>
+</div>
+
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+
+<script>
+    function toggleAccordion(id) {
+        const body = document.getElementById(id);
+        const arrow = document.getElementById(id + 'Arrow');
+        if (body.style.display === 'none' || body.style.display === '') {
+            body.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            body.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+    function toggleFaq(el) {
+        const answer = el.nextElementSibling;
+        const arrow = el.querySelector('.faq-arrow');
+        if (answer.style.display === 'none' || answer.style.display === '') {
+            answer.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            answer.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+
+    function calculate() {
+        const income = parseFloat(document.getElementById('income').value) || 0;
+        const foreignRate = parseFloat(document.getElementById('foreign-rate').value) || 0;
+        const homeRate = parseFloat(document.getElementById('home-rate').value) || 0;
+        const creditPct = parseFloat(document.getElementById('credit').value) || 0;
+
+        const foreignTax = income * (foreignRate / 100);
+        const homeTaxBefore = income * (homeRate / 100);
+        const credit = foreignTax * (creditPct / 100);
+        const netHomeTax = Math.max(0, homeTaxBefore - credit);
+        const totalTax = foreignTax + netHomeTax;
+
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        const pct = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+        document.getElementById('income-display').textContent = fmt.format(income);
+        document.getElementById('foreign-rate-display').textContent = pct.format(foreignRate / 100);
+        document.getElementById('home-rate-display').textContent = pct.format(homeRate / 100);
+        document.getElementById('foreign-tax').textContent = fmt.format(foreignTax);
+        document.getElementById('home-tax').textContent = fmt.format(homeTaxBefore);
+        document.getElementById('tax-credit').textContent = fmt.format(credit);
+        document.getElementById('net-home-tax').textContent = fmt.format(netHomeTax);
+        document.getElementById('total-tax').textContent = fmt.format(totalTax);
+
+        document.getElementById('results-area').style.display = 'block';
+
+        showRecommendations('cross-border-tax-estimator.html', {
+            income: document.getElementById('income').value
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('infoAccordion').style.display = 'block';
+        document.getElementById('infoArrow').textContent = '▼';
+        document.getElementById('faqAccordion').style.display = 'none';
+        document.getElementById('faqArrow').textContent = '▶';
+        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
+        calculate();
+    });
+    document.addEventListener('input', function(e) {
+        if (e.target.closest('.form-grid')) { calculate(); }
+    });
+</script>
+</body>
+</html>
