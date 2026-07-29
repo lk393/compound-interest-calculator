@@ -1,102 +1,112 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Home -->
-  <url><loc>https://financetools.tools/</loc><lastmod>2026-07-28</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
-  <!-- Personal Finance & Savings -->
-  <url><loc>https://financetools.tools/compound-interest.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/simple-interest.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/fixed-deposit.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/recurring-deposit.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/savings-goal.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/emergency-fund.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/inflation-calculator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/net-worth.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/lump-sum-growth.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/budget-planner.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/salary-hourly.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/prorated-salary-calculator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/pay-period-converter.html</loc><lastmod>2026-07-28</lastmod></url>
-  <!-- Loans & Mortgages -->
-  <url><loc>https://financetools.tools/mortgage-payment.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/extra-payment.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/loan-amortization.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/loan-comparison.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/auto-loan.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/affordability.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/apr-ay.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/credit-card-payoff.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/credit-card-min-payment.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/personal-loan-calculator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/refinance.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/debt-to-income-ratio.html</loc><lastmod>2026-07-28</lastmod></url>
-  <!-- Debt Management -->
-  <url><loc>https://financetools.tools/debt-calculator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/debt-payoff-timer.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/debt-consolidation.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/debt-interest-comparison.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/debt-strategy-comparator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/household-debt-dashboard.html</loc><lastmod>2026-07-28</lastmod></url>
-  <!-- Investment & Returns -->
-  <url><loc>https://financetools.tools/roi-calculator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/investment-goal.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/drip-calculator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/cagr-calculator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/npv-calculator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/crypto-growth.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/sip-lumpsum.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/investment-fee-drag.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/irr-calculator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/stock-return.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/backtest-calculator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/margin-trading.html</loc><lastmod>2026-07-28</lastmod></url>
-  <!-- Retirement & FIRE -->
-  <url><loc>https://financetools.tools/fire-calculator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/coast-fire.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/four-percent.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/retirement-savings.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/retirement-withdrawal.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/401k-calculator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/retirement-age.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/retirement-need.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/roth-ira-calculator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/income-replacement.html</loc><lastmod>2026-07-28</lastmod></url>
-  <!-- SIP & Systematic Investing -->
-  <url><loc>https://financetools.tools/sip-calculator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/step-up-sip-calculator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/sip-frequency-calculator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/sip-goal-planner.html</loc><lastmod>2026-07-28</lastmod></url>
-  <!-- Insurance & Risk -->
-  <url><loc>https://financetools.tools/life-insurance.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/health-insurance.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/car-insurance-estimator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/insurance-gap-calculator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/insurance-product-comparator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/tax-free-insurance-return.html</loc><lastmod>2026-07-28</lastmod></url>
-  <!-- Taxes -->
-  <url><loc>https://financetools.tools/sales-tax.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/income-tax-calculator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/vat-gst-calculator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/capital-gains-tax-calculator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/effective-tax-rate.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/tax-strategy-planner.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/pre-tax-post-tax.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/retirement-account-tax-comparator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/property-tax-calculator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/cross-border-tax-estimator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <!-- Home Buying & Renting -->
-  <url><loc>https://financetools.tools/rent-vs-buy-calculator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/down-payment-calculator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/rental-yield-calculator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/property-appreciation-calculator.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/mortgage-vs-cash.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/total-home-cost.html</loc><lastmod>2026-07-28</lastmod></url>
-  <!-- Currency & Exchange -->
-  <url><loc>https://financetools.tools/currency-converter.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/international-transfer-cost.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/inflation-adjusted-currency.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/multi-currency-budget-planner.html</loc><lastmod>2026-07-28</lastmod></url>
+  <url><loc>https://financetools.tools/</loc><lastmod>2026-07-29</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
+  <!-- Personal Finance & Savings (13) -->
+  <url><loc>https://financetools.tools/compound-interest.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/simple-interest.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/fixed-deposit.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/recurring-deposit.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/savings-goal.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/emergency-fund.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/inflation-calculator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/net-worth.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/lump-sum-growth.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/budget-planner.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/salary-hourly.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/prorated-salary-calculator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/pay-period-converter.html</loc><lastmod>2026-07-29</lastmod></url>
+  <!-- Loans & Mortgages (12) -->
+  <url><loc>https://financetools.tools/mortgage-payment.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/extra-payment.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/loan-amortization.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/loan-comparison.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/auto-loan.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/affordability.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/apr-ay.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/credit-card-payoff.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/credit-card-min-payment.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/personal-loan-calculator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/refinance.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/debt-to-income-ratio.html</loc><lastmod>2026-07-29</lastmod></url>
+  <!-- Debt Management (6) -->
+  <url><loc>https://financetools.tools/debt-calculator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/debt-payoff-timer.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/debt-consolidation.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/debt-interest-comparison.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/debt-strategy-comparator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/household-debt-dashboard.html</loc><lastmod>2026-07-29</lastmod></url>
+  <!-- Investment & Returns (12) -->
+  <url><loc>https://financetools.tools/roi-calculator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/investment-goal.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/drip-calculator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/cagr-calculator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/npv-calculator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/crypto-growth.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/sip-lumpsum.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/investment-fee-drag.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/irr-calculator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/stock-return.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/backtest-calculator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/margin-trading.html</loc><lastmod>2026-07-29</lastmod></url>
+  <!-- Retirement & FIRE (10) -->
+  <url><loc>https://financetools.tools/fire-calculator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/coast-fire.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/four-percent.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/retirement-savings.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/retirement-withdrawal.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/401k-calculator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/retirement-age.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/retirement-need.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/roth-ira-calculator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/income-replacement.html</loc><lastmod>2026-07-29</lastmod></url>
+  <!-- SIP & Systematic Investing (4) -->
+  <url><loc>https://financetools.tools/sip-calculator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/step-up-sip-calculator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/sip-frequency-calculator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/sip-goal-planner.html</loc><lastmod>2026-07-29</lastmod></url>
+  <!-- Insurance & Risk (8) -->
+  <url><loc>https://financetools.tools/life-insurance.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/health-insurance.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/car-insurance-estimator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/insurance-gap-calculator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/insurance-product-comparator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/tax-free-insurance-return.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/long-term-care-insurance.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/disability-income-insurance.html</loc><lastmod>2026-07-29</lastmod></url>
+  <!-- Taxes (11) -->
+  <url><loc>https://financetools.tools/sales-tax.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/income-tax-calculator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/vat-gst-calculator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/capital-gains-tax-calculator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/effective-tax-rate.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/tax-strategy-planner.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/pre-tax-post-tax.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/retirement-account-tax-comparator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/property-tax-calculator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/cross-border-tax-estimator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/tax-loss-harvesting.html</loc><lastmod>2026-07-29</lastmod></url>
+  <!-- Home Buying & Renting (7) -->
+  <url><loc>https://financetools.tools/rent-vs-buy-calculator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/down-payment-calculator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/rental-yield-calculator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/property-appreciation-calculator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/mortgage-vs-cash.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/total-home-cost.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/rent-vs-mortgage-payment.html</loc><lastmod>2026-07-29</lastmod></url>
+  <!-- Currency & Exchange (10) -->
+  <url><loc>https://financetools.tools/currency-converter.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/international-transfer-cost.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/inflation-adjusted-currency.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/multi-currency-budget-planner.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/purchasing-power-parity.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/cross-border-living-cost.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/historical-currency-lookup.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/forex-return-calculator.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/exchange-rate-impact-analyzer.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/gold-price-converter.html</loc><lastmod>2026-07-29</lastmod></url>
   <!-- Other pages -->
-  <url><loc>https://financetools.tools/study/</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/about.html</loc><lastmod>2026-07-28</lastmod></url>
-  <url><loc>https://financetools.tools/privacy.html</loc><lastmod>2026-07-28</lastmod></url>
+  <url><loc>https://financetools.tools/study/</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/about.html</loc><lastmod>2026-07-29</lastmod></url>
+  <url><loc>https://financetools.tools/privacy.html</loc><lastmod>2026-07-29</lastmod></url>
 </urlset>
