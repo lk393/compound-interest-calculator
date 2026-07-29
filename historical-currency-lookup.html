@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Historical Currency Lookup — Free Online Tool</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
+        .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
+        .field input, .field select {
+            padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px;
+            background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%;
+        }
+        .field input:focus, .field select:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
+        .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
+        .btn:hover { background: #1d4ed8; }
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+        .comparison-box { background: #f8fafc; border-radius: 12px; padding: 1rem; }
+        .comparison-box h4 { font-size: 0.85rem; font-weight: 600; color: #0f172a; margin: 0 0 0.5rem; text-align: center; }
+        .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
+        .comparison-box .row .num { font-weight: 600; color: #0f172a; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
+        .schedule-wrapper { max-height: 300px; overflow-y: auto; border: 1px solid #e9edf2; border-radius: 8px; margin-top: 0.5rem; }
+        .schedule-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+        .schedule-table th, .schedule-table td { border: 1px solid #e9edf2; padding: 0.3rem 0.5rem; text-align: right; }
+        .schedule-table th { background: #f1f5f9; font-weight: 600; color: #334155; position: sticky; top: 0; z-index: 1; }
+        .schedule-table td:first-child { text-align: center; }
+        @media (max-width: 640px) { .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">📜 <span>Historical Currency Lookup</span></div></div>
+    <main class="calculator-card">
+        <h1>📜 Historical Currency Lookup</h1>
+        <p class="subtitle">View simulated historical exchange rates for a currency pair.</p>
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>Historical Currency Lookup</strong> — This tool generates simulated historical exchange
+                rates for a given currency pair over a selected period. It uses a simple model with random
+                fluctuations to illustrate trends.
+            </p>
+        </div>
+        <div class="form-grid">
+            <div class="field"><label for="pair-hist">Currency Pair (e.g., USD/EUR)</label><input type="text" id="pair-hist" value="USD/EUR" /></div>
+            <div class="field"><label for="start-year-hist">Start Year</label><input type="number" id="start-year-hist" value="2010" min="1990" max="2025" step="1" /></div>
+            <div class="field"><label for="end-year-hist">End Year</label><input type="number" id="end-year-hist" value="2025" min="1990" max="2030" step="1" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculate()">Look Up</button></div>
+        </div>
+        <div id="results-area" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Historical Rates (Simulated)</h2>
+            <div class="schedule-wrapper">
+                <table class="schedule-table" id="hist-table">
+                    <thead><tr><th>Year</th><th>Rate (1 Unit Base = X Quote)</th></tr></thead>
+                    <tbody id="hist-body"></tbody>
+                </table>
+            </div>
+        </div>
+        <div id="recommendations-area"></div>
+    </main>
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
+        <div class="accordion-body" id="infoAccordion">
+            <div class="info-grid">
+                <div class="info-block"><h3>Rates</h3><p>Displayed as the number of quote currency units per 1 base currency unit. These are simulated for demonstration.</p></div>
+                <div class="info-block"><h3>Trend</h3><p>Notice the overall direction of the rate over the selected period.</p></div>
+                <div class="info-block"><h3>Use for Education</h3><p>This is a simplified simulation; real historical data can be obtained from financial data providers.</p></div>
+            </div>
+        </div>
+    </section>
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
+        <div class="accordion-body" id="faqAccordion">
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Are these real historical rates?</span></div><div class="faq-answer">No, these are simulated for educational and illustrative purposes. For real historical data, use a dedicated financial data service.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What does the rate represent?</span></div><div class="faq-answer">It shows how many units of the quote currency you get for 1 unit of the base currency.</div></div>
+        </div>
+    </section>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p></footer>
+</div>
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+<script>
+    function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
+    function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
+    function calculate() {
+        const start = parseInt(document.getElementById('start-year-hist').value) || 2000;
+        const end = parseInt(document.getElementById('end-year-hist').value) || 2025;
+        const pair = document.getElementById('pair-hist').value || 'USD/EUR';
+        const tbody = document.getElementById('hist-body');
+        tbody.innerHTML = '';
+        let baseRate = 0.85; // starting rate for USD/EUR
+        for (let y = start; y <= end; y++) {
+            // Simulate with random walk + slight drift
+            const change = (Math.random() - 0.48) * 0.05; // small fluctuation
+            baseRate = Math.max(0.4, baseRate * (1 + change));
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${y}</td><td>${baseRate.toFixed(4)}</td>`;
+            tbody.appendChild(tr);
+        }
+        document.getElementById('results-area').style.display = 'block';
+        showRecommendations('historical-currency-lookup.html', { pair: pair });
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('infoAccordion').style.display = 'block'; document.getElementById('infoArrow').textContent = '▼';
+        document.getElementById('faqAccordion').style.display = 'none'; document.getElementById('faqArrow').textContent = '▶';
+        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
+        calculate();
+    });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculate(); } });
+</script>
+</body>
+</html>
