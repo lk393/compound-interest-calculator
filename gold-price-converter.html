@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gold / Precious Metals Price Converter — Free Online Tool</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
+        .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
+        .field input, .field select {
+            padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px;
+            background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%;
+        }
+        .field input:focus, .field select:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
+        .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
+        .btn:hover { background: #1d4ed8; }
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+        .comparison-box { background: #f8fafc; border-radius: 12px; padding: 1rem; }
+        .comparison-box h4 { font-size: 0.85rem; font-weight: 600; color: #0f172a; margin: 0 0 0.5rem; text-align: center; }
+        .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
+        .comparison-box .row .num { font-weight: 600; color: #0f172a; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
+        @media (max-width: 640px) { .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">🥇 <span>Gold / Precious Metals Price Converter</span></div></div>
+    <main class="calculator-card">
+        <h1>🥇 Gold / Precious Metals Price Converter</h1>
+        <p class="subtitle">Convert the value of gold or other precious metals between weight units and currencies.</p>
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>Gold Price Converter</strong> — This tool converts a quantity of gold (or other metals)
+                from one weight unit (oz, g, kg) to another and calculates its value in multiple currencies
+                based on the current spot price.
+            </p>
+        </div>
+        <div class="form-grid">
+            <div class="field"><label for="weight-gold">Weight</label><input type="number" id="weight-gold" value="1" min="0" step="0.001" /></div>
+            <div class="field"><label for="unit-gold">Weight Unit</label>
+                <select id="unit-gold">
+                    <option value="oz">Ounce (troy)</option>
+                    <option value="g">Gram</option>
+                    <option value="kg">Kilogram</option>
+                </select>
+            </div>
+            <div class="field"><label for="spot-price">Spot Price (USD per ounce)</label><input type="number" id="spot-price" value="2000" min="0" step="10" /></div>
+            <div class="field"><label for="exchange-rate-gold">Exchange Rate (1 USD = X other currency)</label><input type="number" id="exchange-rate-gold" value="1.0" min="0.001" step="0.001" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculate()">Convert</button></div>
+        </div>
+        <div id="results-area" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Value Conversion</h2>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>📋 Input</h4>
+                    <div class="row"><span>Weight</span><span class="num" id="weight-display">—</span></div>
+                    <div class="row"><span>Spot Price (USD/oz)</span><span class="num" id="spot-display">—</span></div>
+                    <div class="row"><span>Exchange Rate</span><span class="num" id="rate-display">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>💰 Value</h4>
+                    <div class="row"><span>Weight in Ounces</span><span class="num" id="oz-display">—</span></div>
+                    <div class="row"><span>Value in USD</span><span class="num" id="usd-value" style="font-size:1.2rem;">—</span></div>
+                    <div class="row"><span>Value in Other Currency</span><span class="num" id="foreign-value">—</span></div>
+                </div>
+            </div>
+        </div>
+        <div id="recommendations-area"></div>
+    </main>
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
+        <div class="accordion-body" id="infoAccordion">
+            <div class="info-grid">
+                <div class="info-block"><h3>Ounces Equivalent</h3><p>The weight converted to troy ounces (the standard unit for precious metals).</p></div>
+                <div class="info-block"><h3>USD Value</h3><p>The value in US dollars based on the spot price.</p></div>
+                <div class="info-block"><h3>Foreign Currency</h3><p>The value converted to another currency using the exchange rate you provide.</p></div>
+            </div>
+        </div>
+    </section>
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
+        <div class="accordion-body" id="faqAccordion">
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is a troy ounce?</span></div><div class="faq-answer">A troy ounce is 31.1035 grams, used for precious metals. It's different from the standard avoirdupois ounce (28.35g).</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Can I use this for other metals?</span></div><div class="faq-answer">Yes, you can enter any spot price for silver, platinum, or other metals to convert their value.</div></div>
+        </div>
+    </section>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p></footer>
+</div>
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+<script>
+    function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
+    function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
+    function calculate() {
+        const weight = parseFloat(document.getElementById('weight-gold').value) || 0;
+        const unit = document.getElementById('unit-gold').value;
+        const spot = parseFloat(document.getElementById('spot-price').value) || 0;
+        const rate = parseFloat(document.getElementById('exchange-rate-gold').value) || 1;
+
+        let ounces = 0;
+        if (unit === 'oz') ounces = weight;
+        else if (unit === 'g') ounces = weight / 31.1035;
+        else if (unit === 'kg') ounces = weight * 1000 / 31.1035;
+
+        const usdValue = ounces * spot;
+        const foreignValue = usdValue * rate;
+
+        const fmt = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
+        const fmtCur = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        document.getElementById('weight-display').textContent = fmt.format(weight) + ' ' + unit;
+        document.getElementById('spot-display').textContent = fmtCur.format(spot) + '/oz';
+        document.getElementById('rate-display').textContent = fmt.format(rate);
+        document.getElementById('oz-display').textContent = fmt.format(ounces) + ' oz';
+        document.getElementById('usd-value').textContent = fmtCur.format(usdValue);
+        document.getElementById('foreign-value').textContent = fmt.format(foreignValue) + ' (other)';
+        document.getElementById('results-area').style.display = 'block';
+        showRecommendations('gold-price-converter.html', { weight: weight });
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('infoAccordion').style.display = 'block'; document.getElementById('infoArrow').textContent = '▼';
+        document.getElementById('faqAccordion').style.display = 'none'; document.getElementById('faqArrow').textContent = '▶';
+        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
+        calculate();
+    });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculate(); } });
+</script>
+</body>
+</html>
