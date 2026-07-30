@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ===== 独立优化的页面元数据 (Meta Tags) ===== -->
     <title>Compound Interest Calculator — Free Online Tool</title>
     <meta name="description" content="Calculate how your savings grow with regular contributions and compound interest. Free online compound interest calculator for retirement planning, investment growth, and savings goals." />
+
     <link rel="stylesheet" href="style.css" />
 
     <!-- ===== STRUCTURED DATA: WebApplication ===== -->
@@ -562,40 +565,29 @@
             const years = parseInt(document.getElementById('years-ci').value) || 1;
             const monthlyContrib = parseFloat(document.getElementById('contribution-ci').value) || 0;
 
-            // Convert to monthly if freq is monthly (12)
             const periods = years * freq;
             const ratePerPeriod = (annualRate / 100) / freq;
             const monthlyRate = (annualRate / 100) / 12;
 
-            // Compound formula: FV = P * (1 + r)^n + PMT * [((1 + r)^n - 1) / r]
-            // For monthly contributions, we need to accumulate them separately
             let balance = principal;
             let totalContributions = principal;
             let yearData = [];
 
-            // For year‑by‑year, we need to track monthly contributions within each year
             const totalMonths = years * 12;
             let monthlyBalance = principal;
 
-            // First, calculate the final balance using the monthly compounding approach
             for (let m = 1; m <= totalMonths; m++) {
-                // Add contribution at the beginning of the month
                 monthlyBalance += monthlyContrib;
                 totalContributions += monthlyContrib;
-                // Apply monthly interest
                 monthlyBalance = monthlyBalance * (1 + monthlyRate);
             }
 
             const finalBalance = monthlyBalance;
             const totalInterest = finalBalance - totalContributions;
-
-            // Calculate effective annual rate
             const effectiveRate = (Math.pow(1 + monthlyRate, 12) - 1) * 100;
 
-            // Build year‑by‑year data
             let yearBalance = principal;
             let yearContributions = principal;
-            let yearTotalContrib = principal;
             for (let y = 1; y <= years; y++) {
                 let startingBalance = yearBalance;
                 let contribThisYear = 0;
@@ -624,7 +616,6 @@
             document.getElementById('total-interest-ci').textContent = fmt.format(totalInterest);
             document.getElementById('effective-rate-ci').textContent = pct.format(effectiveRate / 100);
 
-            // Render year‑by‑year table
             const tbody = document.getElementById('schedule-body-ci');
             tbody.innerHTML = '';
             yearData.forEach((d, idx) => {
@@ -642,7 +633,6 @@
 
             document.getElementById('results-area').style.display = 'block';
 
-            // ===== 推荐联动 =====
             const principalVal = document.getElementById('principal-ci').value;
             const rateVal = document.getElementById('rate-ci').value;
             const yearsVal = document.getElementById('years-ci').value;
