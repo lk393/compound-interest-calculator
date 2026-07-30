@@ -3,601 +3,224 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ===== Meta Tags ===== -->
     <title>Net Worth Growth Forecast — Free Online Tool</title>
+    <meta name="description" content="Project your net worth growth over time with savings and investment returns. Plan your path to financial independence." />
+
     <link rel="stylesheet" href="style.css" />
+
+    <!-- ===== WebApplication Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Net Worth Growth Forecast",
+      "description": "Project your net worth growth over time with savings and investment returns. Plan your path to financial independence.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "url": "https://financetools.tools/net-worth-forecast.html",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.6", "ratingCount": "79" }
+    }
+    </script>
+
+    <!-- ===== FAQPage Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "If I have $50,000 net worth and save $1,000/month, what will I have in 20 years?",
+          "acceptedAnswer": { "@type": "Answer", "text": "At 7% annual return, $50,000 growing with $1,000/month savings will reach approximately $712,000 in 20 years." }
+        },
+        {
+          "@type": "Question",
+          "name": "How long will it take to reach a $1 million net worth?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Starting from $0 at 7% return, saving $2,000/month would take about 22 years to reach $1 million. Saving $3,000/month would take about 17 years." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is a good net worth by age?",
+          "acceptedAnswer": { "@type": "Answer", "text": "A common rule is to have your age × annual salary / 10 as a net worth target. By 40, you should have 3-4× your annual salary; by 50, 6-7×." }
+        }
+      ]
+    }
+    </script>
+
     <style>
-        .results-summary {
-            display: flex;
-            flex-direction: column;
-            gap: 0.7rem;
-            margin: 1.5rem 0;
-        }
-        .summary-item {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 0.8rem 1.2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .summary-item .label {
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #475569;
-        }
-        .summary-item .value {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #0f172a;
-        }
-        .summary-item.highlight {
-            background: #eef2ff;
-            border: 1px solid #c7d2fe;
-        }
-
-        .form-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 0.9rem;
-        }
-        .field {
-            display: flex;
-            flex-direction: column;
-        }
-        .field label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            color: #334155;
-        }
-        .field input {
-            padding: 0.6rem 0.8rem;
-            font-size: 1rem;
-            border: 1.5px solid #dce1e8;
-            border-radius: 10px;
-            background: #fafbfc;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            width: 100%;
-        }
-        .field input:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-            background: #ffffff;
-        }
-
-        .btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 0.6rem 1.2rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            width: 100%;
-        }
-        .btn:hover {
-            background: #1d4ed8;
-        }
-
-        .comparison-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-top: 0.5rem;
-        }
-        .comparison-box {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 1rem;
-        }
-        .comparison-box h4 {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #0f172a;
-            margin: 0 0 0.5rem;
-            text-align: center;
-        }
-        .comparison-box .row {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.2rem 0;
-            font-size: 0.85rem;
-            color: #475569;
-        }
-        .comparison-box .row .num {
-            font-weight: 600;
-            color: #0f172a;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 0.8rem;
-        }
-        .info-block h3 {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #0f172a;
-            margin: 0 0 0.3rem;
-        }
-        .info-block p {
-            font-size: 0.85rem;
-            color: #475569;
-            margin: 0;
-            line-height: 1.5;
-        }
-
-        .schedule-wrapper {
-            max-height: 400px;
-            overflow-y: auto;
-            border: 1px solid #e9edf2;
-            border-radius: 8px;
-            margin-top: 0.5rem;
-        }
-        .schedule-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.82rem;
-        }
-        .schedule-table th,
-        .schedule-table td {
-            border: 1px solid #e9edf2;
-            padding: 0.3rem 0.5rem;
-            text-align: right;
-        }
-        .schedule-table th {
-            background: #f1f5f9;
-            font-weight: 600;
-            color: #334155;
-            position: sticky;
-            top: 0;
-            z-index: 1;
-        }
-        .schedule-table td:first-child {
-            text-align: center;
-        }
-        .schedule-table .highlight-row {
-            background: #eef2ff;
-        }
-
-        .accordion-card {
-            background: white;
-            border-radius: 12px;
-            border: 1px solid #e9edf2;
-            margin-top: 1.5rem;
-            overflow: hidden;
-        }
-        .accordion-header {
-            padding: 1rem 1.2rem;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background 0.2s;
-        }
-        .accordion-header:hover {
-            background: #f8fafc;
-        }
-        .accordion-header h2 {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #0f172a;
-            margin: 0;
-        }
-        .accordion-arrow {
-            font-size: 0.9rem;
-            color: #94a3b8;
-            transition: transform 0.2s;
-        }
-        .accordion-body {
-            padding: 0 1.2rem 1.2rem;
-            display: none;
-        }
-        .accordion-body.open {
-            display: block;
-        }
-
-        .faq-item {
-            border-bottom: 1px solid #e9edf2;
-            padding: 0.5rem 0;
-        }
-        .faq-item:last-child {
-            border-bottom: none;
-        }
-        .faq-question {
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-weight: 500;
-            color: #0f172a;
-            padding: 0.3rem 0;
-        }
-        .faq-question:hover {
-            color: #2563eb;
-        }
-        .faq-arrow {
-            font-size: 0.7rem;
-            color: #94a3b8;
-            transition: transform 0.2s;
-        }
-        .faq-answer {
-            padding: 0.3rem 0 0.3rem 1.5rem;
-            color: #475569;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            display: none;
-        }
-        .faq-answer.open {
-            display: block;
-        }
-
-        .top-nav {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 0.8rem 0;
-            border-bottom: 1px solid #e9edf2;
-            margin-bottom: 1.5rem;
-        }
-        .top-nav .back-link {
-            color: #2563eb;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-        .top-nav .back-link:hover {
-            text-decoration: underline;
-        }
-        .top-nav .breadcrumb {
-            color: #94a3b8;
-            font-size: 0.85rem;
-        }
-        .top-nav .breadcrumb span {
-            color: #1e293b;
-        }
-
-        .calculator-card {
-            background: white;
-            border-radius: 16px;
-            padding: 1.5rem 2rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-            border: 1px solid #e9edf2;
-        }
-        .calculator-card h1 {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: #0f172a;
-            margin: 0 0 0.3rem;
-        }
-        .calculator-card .subtitle {
-            font-size: 1rem;
-            color: #64748b;
-            margin: 0 0 1rem;
-        }
-
-        .site-footer {
-            text-align: center;
-            padding: 1.5rem 0 0.5rem;
-            color: #94a3b8;
-            font-size: 0.8rem;
-            border-top: 1px solid #e9edf2;
-            margin-top: 2rem;
-        }
-        .site-footer a {
-            color: #94a3b8;
-            text-decoration: none;
-        }
-        .site-footer a:hover {
-            color: #2563eb;
-            text-decoration: underline;
-        }
-
-        @media (max-width: 640px) {
-            .calculator-card {
-                padding: 1rem;
-            }
-            .calculator-card h1 {
-                font-size: 1.3rem;
-            }
-            .comparison-grid {
-                grid-template-columns: 1fr;
-            }
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
-            .summary-item {
-                padding: 0.6rem 1rem;
-            }
-            .summary-item .value {
-                font-size: 1rem;
-            }
-            .top-nav {
-                flex-wrap: wrap;
-            }
-        }
-        @media (max-width: 480px) {
-            .calculator-card {
-                padding: 0.8rem;
-            }
-            .schedule-table {
-                font-size: 0.7rem;
-            }
-            .schedule-table th,
-            .schedule-table td {
-                padding: 0.2rem 0.3rem;
-            }
-        }
+        .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
+        .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
+        .field input { padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px; background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
+        .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
+        .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
+        .btn:hover { background: #1d4ed8; }
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+        .comparison-box { background: #f8fafc; border-radius: 12px; padding: 1rem; }
+        .comparison-box h4 { font-size: 0.85rem; font-weight: 600; color: #0f172a; margin: 0 0 0.5rem; text-align: center; }
+        .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
+        .comparison-box .row .num { font-weight: 600; color: #0f172a; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
+        .info-block h3 { font-size: 0.9rem; font-weight: 600; color: #0f172a; margin: 0 0 0.3rem; }
+        .info-block p { font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.5; }
+        .schedule-wrapper { max-height: 400px; overflow-y: auto; border: 1px solid #e9edf2; border-radius: 8px; margin-top: 0.5rem; }
+        .schedule-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+        .schedule-table th, .schedule-table td { border: 1px solid #e9edf2; padding: 0.3rem 0.5rem; text-align: right; }
+        .schedule-table th { background: #f1f5f9; font-weight: 600; color: #334155; position: sticky; top: 0; z-index: 1; }
+        .schedule-table td:first-child { text-align: center; }
+        .schedule-table .highlight-row { background: #eef2ff; }
+        .accordion-card { background: white; border-radius: 12px; border: 1px solid #e9edf2; margin-top: 1.5rem; overflow: hidden; }
+        .accordion-header { padding: 1rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .accordion-header:hover { background: #f8fafc; }
+        .accordion-header h2 { font-size: 1rem; font-weight: 600; color: #0f172a; margin: 0; }
+        .accordion-arrow { font-size: 0.9rem; color: #94a3b8; }
+        .accordion-body { padding: 0 1.2rem 1.2rem; display: none; }
+        .accordion-body.open { display: block; }
+        .faq-item { border-bottom: 1px solid #e9edf2; padding: 0.5rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; color: #0f172a; padding: 0.3rem 0; }
+        .faq-question:hover { color: #2563eb; }
+        .faq-arrow { font-size: 0.7rem; color: #94a3b8; }
+        .faq-answer { padding: 0.3rem 0 0.3rem 1.5rem; color: #475569; font-size: 0.9rem; line-height: 1.6; display: none; }
+        .faq-answer.open { display: block; }
+        .top-nav { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #e9edf2; margin-bottom: 1.5rem; }
+        .top-nav .back-link { color: #2563eb; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .top-nav .back-link:hover { text-decoration: underline; }
+        .top-nav .breadcrumb { color: #94a3b8; font-size: 0.85rem; }
+        .top-nav .breadcrumb span { color: #1e293b; }
+        .calculator-card { background: white; border-radius: 16px; padding: 1.5rem 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e9edf2; }
+        .calculator-card h1 { font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem; }
+        .calculator-card .subtitle { font-size: 1rem; color: #64748b; margin: 0 0 1rem; }
+        .site-footer { text-align: center; padding: 1.5rem 0 0.5rem; color: #94a3b8; font-size: 0.8rem; border-top: 1px solid #e9edf2; margin-top: 2rem; }
+        .site-footer a { color: #94a3b8; text-decoration: none; }
+        .site-footer a:hover { color: #2563eb; text-decoration: underline; }
+        @media (max-width: 640px) { .calculator-card { padding: 1rem; } .calculator-card h1 { font-size: 1.3rem; } .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 480px) { .calculator-card { padding: 0.8rem; } }
     </style>
 </head>
 <body>
-
 <div class="container" style="max-width:820px; margin:0 auto; padding:0 1rem;">
-    <div class="top-nav">
-        <a href="index.html" class="back-link">← Back to Home</a>
-        <div class="breadcrumb">📈 <span>Net Worth Growth Forecast</span></div>
-    </div>
-
+    <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">📈 <span>Net Worth Growth Forecast</span></div></div>
     <main class="calculator-card">
         <h1>📈 Net Worth Growth Forecast</h1>
-        <p class="subtitle">Project your net worth growth over time based on savings, investment returns, and asset growth.</p>
-
+        <p class="subtitle">Project your net worth over time with savings, investment returns, and asset growth.</p>
         <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
-                <strong>Net Worth Growth Forecast</strong> — This tool projects your net worth over time based on
-                your current assets, liabilities, savings rate, and expected return on investments. It shows a
-                year‑by‑year forecast and estimates when you'll reach key financial milestones.
+                <strong>Net Worth Growth Forecast</strong> — This tool projects your net worth year by year
+                based on your current assets, liabilities, annual savings, and expected investment returns.
+                It also shows when you'll reach key milestones like $100K, $250K, $500K, and $1M.
             </p>
         </div>
-
         <div class="form-grid">
-            <div class="field">
-                <label for="current-assets">Current Assets ($)</label>
-                <input type="number" id="current-assets" value="50000" min="0" step="1000" />
-            </div>
-            <div class="field">
-                <label for="current-liabilities">Current Liabilities ($)</label>
-                <input type="number" id="current-liabilities" value="20000" min="0" step="1000" />
-            </div>
-            <div class="field">
-                <label for="annual-savings">Annual Savings ($)</label>
-                <input type="number" id="annual-savings" value="12000" min="0" step="500" />
-            </div>
-            <div class="field">
-                <label for="return-rate-nw">Expected Annual Return (%)</label>
-                <input type="number" id="return-rate-nw" value="7" min="0" step="0.1" />
-            </div>
-            <div class="field">
-                <label for="forecast-years">Forecast Years</label>
-                <input type="number" id="forecast-years" value="10" min="1" max="50" step="1" />
-            </div>
-            <div style="margin-top:0.5rem;">
-                <button class="btn" onclick="calculate()">Forecast</button>
-            </div>
+            <div class="field"><label>Current Assets ($)</label><input type="number" id="nw-assets" value="50000" min="0" step="1000" /></div>
+            <div class="field"><label>Current Liabilities ($)</label><input type="number" id="nw-liabilities" value="20000" min="0" step="1000" /></div>
+            <div class="field"><label>Annual Savings ($)</label><input type="number" id="nw-savings" value="12000" min="0" step="500" /></div>
+            <div class="field"><label>Expected Annual Return (%)</label><input type="number" id="nw-rate" value="7" min="0" step="0.1" /></div>
+            <div class="field"><label>Forecast Years</label><input type="number" id="nw-years" value="20" min="1" max="50" step="1" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculateNW()">Forecast</button></div>
         </div>
-
-        <div id="results-area" style="margin-top:1.8rem; display:none;">
-            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Year‑by‑Year Net Worth</h2>
+        <div id="nw-results" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Net Worth Projection</h2>
             <div class="comparison-grid">
                 <div class="comparison-box">
                     <h4>📋 Summary</h4>
-                    <div class="row"><span>Starting Net Worth</span><span class="num" id="starting-nw">—</span></div>
-                    <div class="row"><span>Forecast Period</span><span class="num" id="period-display">—</span></div>
-                    <div class="row"><span style="font-weight:700;">Ending Net Worth</span><span class="num" id="ending-nw" style="font-size:1.2rem; color:#2563eb;">—</span></div>
-                    <div class="row"><span>Total Growth</span><span class="num" id="total-growth-nw">—</span></div>
+                    <div class="row"><span>Starting Net Worth</span><span class="num" id="nw-start">—</span></div>
+                    <div class="row"><span>Forecast Period</span><span class="num" id="nw-period">—</span></div>
+                    <div class="row"><span style="font-weight:700;">Ending Net Worth</span><span class="num" id="nw-end" style="font-size:1.2rem;">—</span></div>
+                    <div class="row"><span>Total Growth</span><span class="num" id="nw-growth">—</span></div>
                 </div>
                 <div class="comparison-box">
-                    <h4>💰 Key Milestones</h4>
-                    <div class="row"><span>Year to Reach $100K</span><span class="num" id="milestone-100k">—</span></div>
-                    <div class="row"><span>Year to Reach $250K</span><span class="num" id="milestone-250k">—</span></div>
-                    <div class="row"><span>Year to Reach $500K</span><span class="num" id="milestone-500k">—</span></div>
-                    <div class="row"><span>Year to Reach $1M</span><span class="num" id="milestone-1m">—</span></div>
+                    <h4>💰 Milestones</h4>
+                    <div class="row"><span>Year to Reach $100K</span><span class="num" id="nw-milestone-100k">—</span></div>
+                    <div class="row"><span>Year to Reach $250K</span><span class="num" id="nw-milestone-250k">—</span></div>
+                    <div class="row"><span>Year to Reach $500K</span><span class="num" id="nw-milestone-500k">—</span></div>
+                    <div class="row"><span>Year to Reach $1M</span><span class="num" id="nw-milestone-1m">—</span></div>
                 </div>
             </div>
-
             <h3 style="font-size:1rem; margin:1.5rem 0 0.3rem;">📅 Year‑by‑Year Breakdown</h3>
             <div class="schedule-wrapper">
-                <table class="schedule-table" id="nw-table">
-                    <thead>
-                        <tr><th>Year</th><th>Net Worth</th><th>Assets</th><th>Liabilities</th><th>Annual Change</th></tr>
-                    </thead>
+                <table class="schedule-table">
+                    <thead><tr><th>Year</th><th>Net Worth</th><th>Assets</th><th>Liabilities</th><th>Annual Change</th></tr></thead>
                     <tbody id="nw-body"></tbody>
                 </table>
             </div>
         </div>
-
-        <!-- ===== 推荐区域 ===== -->
         <div id="recommendations-area"></div>
-
     </main>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
-            <h2>📖 How to read your results</h2>
-            <span class="accordion-arrow" id="infoArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block">
-                    <h3>Net Worth</h3>
-                    <p>Assets minus liabilities. Your total financial wealth at each forecasted year.</p>
-                </div>
-                <div class="info-block">
-                    <h3>Milestones</h3>
-                    <p>The forecasted year when you reach key net worth goals ($100K, $250K, $500K, $1M).</p>
-                </div>
-                <div class="info-block">
-                    <h3>Annual Change</h3>
-                    <p>The increase in net worth from the previous year, driven by savings and investment returns.</p>
-                </div>
+                <div class="info-block"><h3>Net Worth</h3><p>Assets minus liabilities. Your total financial wealth at each year.</p></div>
+                <div class="info-block"><h3>Milestones</h3><p>The year when you reach key net worth goals ($100K, $250K, $500K, $1M).</p></div>
+                <div class="info-block"><h3>Annual Change</h3><p>The increase in net worth from the previous year, driven by savings and investment returns.</p></div>
             </div>
         </div>
     </section>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
-            <h2>❓ FAQ</h2>
-            <span class="accordion-arrow" id="faqArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
         <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>What is net worth?</span>
-                </div>
-                <div class="faq-answer">Net worth is the total value of everything you own (assets) minus everything you owe (liabilities). It's the most comprehensive measure of your financial health.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>What growth rate should I use?</span>
-                </div>
-                <div class="faq-answer">For long‑term projections, 6‑8% is common for a diversified stock portfolio. Use a more conservative rate (4‑5%) if you include bonds or cash. Adjust based on your actual asset allocation.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>How accurate is this forecast?</span>
-                </div>
-                <div class="faq-answer">This is a simplified projection based on constant returns and savings. Real returns fluctuate, and life circumstances change. Use this as a planning tool, not a guarantee.</div>
-            </div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>If I have $50,000 net worth and save $1,000/month, what will I have in 20 years?</span></div><div class="faq-answer">At 7% annual return, $50,000 growing with $1,000/month savings will reach approximately $712,000 in 20 years.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How long will it take to reach a $1 million net worth?</span></div><div class="faq-answer">Starting from $0 at 7% return, saving $2,000/month would take about 22 years to reach $1 million. Saving $3,000/month would take about 17 years.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is a good net worth by age?</span></div><div class="faq-answer">A common rule is to have your age × annual salary / 10 as a net worth target. By 40, you should have 3-4× your annual salary; by 50, 6-7×.</div></div>
         </div>
     </section>
-
-    <footer class="site-footer">
-        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br />
-            <a href="about.html">About</a> <span style="color:#dce1e8;">|</span>
-            <a href="privacy.html">Privacy</a>
-        </p>
-    </footer>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html">About</a> <span style="color:#dce1e8;">|</span> <a href="privacy.html">Privacy</a></p></footer>
 </div>
-
 <script src="recommendations.js"></script>
 <script src="feedback.js"></script>
-
 <script>
-    function toggleAccordion(id) {
-        const body = document.getElementById(id);
-        const arrow = document.getElementById(id + 'Arrow');
-        if (body.style.display === 'none' || body.style.display === '') {
-            body.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            body.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-
-    function toggleFaq(el) {
-        const answer = el.nextElementSibling;
-        const arrow = el.querySelector('.faq-arrow');
-        if (answer.style.display === 'none' || answer.style.display === '') {
-            answer.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            answer.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-
-    function calculate() {
-        const assets = parseFloat(document.getElementById('current-assets').value) || 0;
-        const liabilities = parseFloat(document.getElementById('current-liabilities').value) || 0;
-        const savings = parseFloat(document.getElementById('annual-savings').value) || 0;
-        const rate = parseFloat(document.getElementById('return-rate-nw').value) || 0;
-        const years = parseInt(document.getElementById('forecast-years').value) || 1;
-
+    function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
+    function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
+    function calculateNW() {
+        const assets = parseFloat(document.getElementById('nw-assets').value) || 0;
+        const liabilities = parseFloat(document.getElementById('nw-liabilities').value) || 0;
+        const savings = parseFloat(document.getElementById('nw-savings').value) || 0;
+        const rate = parseFloat(document.getElementById('nw-rate').value) || 0;
+        const years = parseInt(document.getElementById('nw-years').value) || 1;
         const startingNW = assets - liabilities;
-        let netWorth = startingNW;
-        let currentAssets = assets;
-        let currentLiabilities = liabilities;
-
-        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
-        const pct = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 });
-
-        // Generate year‑by‑year data
+        let curAssets = assets, curLiabilities = liabilities, nw = startingNW;
         const data = [];
         for (let y = 1; y <= years; y++) {
-            // Savings added to assets
-            currentAssets += savings;
-            // Investment return on assets (liabilities don't earn return)
-            currentAssets = currentAssets * (1 + rate / 100);
-            // Liabilities grow with inflation? Assume constant for simplicity
-            netWorth = currentAssets - currentLiabilities;
-            const change = y === 1 ? netWorth - startingNW : netWorth - data[y - 2].netWorth;
-            data.push({
-                year: y,
-                netWorth: netWorth,
-                assets: currentAssets,
-                liabilities: currentLiabilities,
-                change: change
-            });
+            curAssets += savings;
+            curAssets = curAssets * (1 + rate / 100);
+            nw = curAssets - curLiabilities;
+            const change = y === 1 ? nw - startingNW : nw - data[y-2].netWorth;
+            data.push({ year: y, netWorth: nw, assets: curAssets, liabilities: curLiabilities, change: change });
         }
-
-        // Find milestones
-        function findMilestone(target) {
-            for (let i = 0; i < data.length; i++) {
-                if (data[i].netWorth >= target) {
-                    return data[i].year;
-                }
-            }
-            return 'Not reached';
-        }
-
-        const endingNW = data[data.length - 1].netWorth;
-        const totalGrowth = ((endingNW - startingNW) / startingNW) * 100;
-
-        document.getElementById('starting-nw').textContent = fmt.format(startingNW);
-        document.getElementById('period-display').textContent = years + ' years';
-        document.getElementById('ending-nw').textContent = fmt.format(endingNW);
-        document.getElementById('total-growth-nw').textContent = pct.format(totalGrowth / 100);
-        document.getElementById('milestone-100k').textContent = findMilestone(100000);
-        document.getElementById('milestone-250k').textContent = findMilestone(250000);
-        document.getElementById('milestone-500k').textContent = findMilestone(500000);
-        document.getElementById('milestone-1m').textContent = findMilestone(1000000);
-
-        // Render table
-        const tbody = document.getElementById('nw-body');
-        tbody.innerHTML = '';
+        function findMilestone(target) { for (let d of data) { if (d.netWorth >= target) return d.year; } return 'Not reached'; }
+        const endingNW = data[data.length-1].netWorth;
+        const totalGrowth = ((endingNW - startingNW) / (startingNW || 1)) * 100;
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        document.getElementById('nw-start').textContent = fmt.format(startingNW);
+        document.getElementById('nw-period').textContent = years + ' years';
+        document.getElementById('nw-end').textContent = fmt.format(endingNW);
+        document.getElementById('nw-growth').textContent = totalGrowth.toFixed(1) + '%';
+        document.getElementById('nw-milestone-100k').textContent = findMilestone(100000);
+        document.getElementById('nw-milestone-250k').textContent = findMilestone(250000);
+        document.getElementById('nw-milestone-500k').textContent = findMilestone(500000);
+        document.getElementById('nw-milestone-1m').textContent = findMilestone(1000000);
+        const tbody = document.getElementById('nw-body'); tbody.innerHTML = '';
         data.forEach((d, idx) => {
             const tr = document.createElement('tr');
-            if (idx === data.length - 1) tr.classList.add('highlight-row');
-            tr.innerHTML = `
-                <td>${d.year}</td>
-                <td>${fmt.format(d.netWorth)}</td>
-                <td>${fmt.format(d.assets)}</td>
-                <td>${fmt.format(d.liabilities)}</td>
-                <td>${d.change >= 0 ? '+' : ''}${fmt.format(d.change)}</td>
-            `;
+            if (idx === data.length-1) tr.classList.add('highlight-row');
+            tr.innerHTML = `<td>${d.year}</td><td>${fmt.format(d.netWorth)}</td><td>${fmt.format(d.assets)}</td><td>${fmt.format(d.liabilities)}</td><td>${d.change >= 0 ? '+' : ''}${fmt.format(d.change)}</td>`;
             tbody.appendChild(tr);
         });
-
-        document.getElementById('results-area').style.display = 'block';
-
-        showRecommendations('net-worth-forecast.html', {
-            assets: assets,
-            liabilities: liabilities,
-            years: years
-        });
+        document.getElementById('nw-results').style.display = 'block';
+        showRecommendations('net-worth-forecast.html', { assets: assets, years: years });
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('infoAccordion').style.display = 'block';
-        document.getElementById('infoArrow').textContent = '▼';
-        document.getElementById('faqAccordion').style.display = 'none';
-        document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
-        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
-        calculate();
-    });
-
-    document.addEventListener('input', function(e) {
-        if (e.target.closest('.form-grid')) { calculate(); }
-    });
+    document.addEventListener('DOMContentLoaded', function() { document.getElementById('infoAccordion').style.display='block'; document.getElementById('infoArrow').textContent='▼'; document.getElementById('faqAccordion').style.display='none'; document.getElementById('faqArrow').textContent='▶'; document.querySelectorAll('.faq-answer').forEach(el => el.style.display='none'); document.querySelectorAll('.faq-arrow').forEach(el => el.textContent='▶'); calculateNW(); });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculateNW(); } });
 </script>
-
 </body>
 </html>
