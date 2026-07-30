@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Asset Allocation Rebalancing Calculator — Free Online Tool</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
+        .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
+        .field input {
+            padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px;
+            background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%;
+        }
+        .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
+        .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
+        .btn:hover { background: #1d4ed8; }
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+        .comparison-box { background: #f8fafc; border-radius: 12px; padding: 1rem; }
+        .comparison-box h4 { font-size: 0.85rem; font-weight: 600; color: #0f172a; margin: 0 0 0.5rem; text-align: center; }
+        .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
+        .comparison-box .row .num { font-weight: 600; color: #0f172a; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
+        @media (max-width: 640px) { .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">⚖️ <span>Asset Allocation Rebalancing Calculator</span></div></div>
+    <main class="calculator-card">
+        <h1>⚖️ Asset Allocation Rebalancing Calculator</h1>
+        <p class="subtitle">Calculate buy/sell amounts to bring your portfolio back to target asset allocation.</p>
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>Asset Allocation Rebalancing Calculator</strong> — This tool compares your current asset
+                allocation against your target allocation and tells you exactly how much to buy or sell to rebalance.
+            </p>
+        </div>
+        <div class="form-grid">
+            <div class="field"><label>Total Portfolio Value ($)</label><input type="number" id="portfolio-value" value="100000" min="0" step="1000" /></div>
+            <div class="field"><label>Asset 1 — Target (%)</label><input type="number" id="t1" value="40" min="0" max="100" step="1" /></div>
+            <div class="field"><label>Asset 1 — Current (%)</label><input type="number" id="c1" value="45" min="0" max="100" step="1" /></div>
+            <div class="field"><label>Asset 2 — Target (%)</label><input type="number" id="t2" value="30" min="0" max="100" step="1" /></div>
+            <div class="field"><label>Asset 2 — Current (%)</label><input type="number" id="c2" value="28" min="0" max="100" step="1" /></div>
+            <div class="field"><label>Asset 3 — Target (%)</label><input type="number" id="t3" value="20" min="0" max="100" step="1" /></div>
+            <div class="field"><label>Asset 3 — Current (%)</label><input type="number" id="c3" value="18" min="0" max="100" step="1" /></div>
+            <div class="field"><label>Asset 4 — Target (%)</label><input type="number" id="t4" value="10" min="0" max="100" step="1" /></div>
+            <div class="field"><label>Asset 4 — Current (%)</label><input type="number" id="c4" value="9" min="0" max="100" step="1" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculate()">Calculate</button></div>
+        </div>
+        <div id="results-area" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Rebalancing Actions</h2>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>📋 Asset Summary</h4>
+                    <div class="row"><span>Asset 1</span><span class="num" id="a1-action">—</span></div>
+                    <div class="row"><span>Asset 2</span><span class="num" id="a2-action">—</span></div>
+                    <div class="row"><span>Asset 3</span><span class="num" id="a3-action">—</span></div>
+                    <div class="row"><span>Asset 4</span><span class="num" id="a4-action">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>💰 Summary</h4>
+                    <div class="row"><span>Total Rebalancing Amount</span><span class="num" id="rebalancing-total">—</span></div>
+                    <div class="row"><span>Assets to Sell</span><span class="num" id="assets-to-sell">—</span></div>
+                    <div class="row"><span>Assets to Buy</span><span class="num" id="assets-to-buy">—</span></div>
+                </div>
+            </div>
+        </div>
+        <div id="recommendations-area"></div>
+    </main>
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
+        <div class="accordion-body" id="infoAccordion">
+            <div class="info-grid">
+                <div class="info-block"><h3>Action</h3><p>Positive = Buy, Negative = Sell. The amount in dollars to trade to reach your target allocation.</p></div>
+                <div class="info-block"><h3>Total Rebalancing</h3><p>The total amount of trades needed (sum of all positive buy orders).</p></div>
+                <div class="info-block"><h3>Frequency</h3><p>Most investors rebalance annually or when allocations drift more than 5‑10% from target.</p></div>
+            </div>
+        </div>
+    </section>
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
+        <div class="accordion-body" id="faqAccordion">
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is rebalancing?</span></div><div class="faq-answer">Rebalancing is the process of buying and selling assets to return your portfolio to its target allocation.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How often should I rebalance?</span></div><div class="faq-answer">Common approaches: annually, semi‑annually, or when allocations drift by more than 5% from target.</div></div>
+        </div>
+    </section>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p></footer>
+</div>
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+<script>
+    function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
+    function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
+    function calculate() {
+        const total = parseFloat(document.getElementById('portfolio-value').value) || 0;
+        const targets = [], currents = [];
+        for (let i = 1; i <= 4; i++) {
+            targets.push(parseFloat(document.getElementById('t'+i).value) || 0);
+            currents.push(parseFloat(document.getElementById('c'+i).value) || 0);
+        }
+        const targetTotal = targets.reduce((a,b) => a + b, 0);
+        const currentTotal = currents.reduce((a,b) => a + b, 0);
+        const actions = [];
+        let totalBuy = 0, totalSell = 0;
+        for (let i = 0; i < 4; i++) {
+            const targetVal = total * (targets[i] / targetTotal);
+            const currentVal = total * (currents[i] / currentTotal);
+            const action = targetVal - currentVal;
+            actions.push(action);
+            if (action > 0) totalBuy += action;
+            else totalSell += Math.abs(action);
+        }
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        for (let i = 0; i < 4; i++) {
+            const el = document.getElementById('a'+(i+1)+'-action');
+            const action = actions[i];
+            el.textContent = (action > 0 ? 'Buy ' : (action < 0 ? 'Sell ' : 'Hold ')) + fmt.format(Math.abs(action));
+            el.className = 'num' + (action > 0 ? ' positive' : (action < 0 ? ' negative' : ''));
+        }
+        document.getElementById('rebalancing-total').textContent = fmt.format(totalBuy);
+        document.getElementById('assets-to-sell').textContent = totalSell > 0 ? fmt.format(totalSell) : 'None';
+        document.getElementById('assets-to-buy').textContent = totalBuy > 0 ? fmt.format(totalBuy) : 'None';
+        document.getElementById('results-area').style.display = 'block';
+        showRecommendations('asset-rebalancing.html', { total: total });
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('infoAccordion').style.display = 'block'; document.getElementById('infoArrow').textContent = '▼';
+        document.getElementById('faqAccordion').style.display = 'none'; document.getElementById('faqArrow').textContent = '▶';
+        document.querySelectorAll('.faq-answer').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.faq-arrow').forEach(el => el.textContent = '▶');
+        calculate();
+    });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculate(); } });
+</script>
+</body>
+</html>
