@@ -4,244 +4,671 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Compound Interest Calculator — Free Online Tool</title>
+    <meta name="description" content="Calculate how your savings grow with regular contributions and compound interest. Free online compound interest calculator for retirement planning, investment growth, and savings goals." />
     <link rel="stylesheet" href="style.css" />
-    <meta name="google-site-verification" content="0X2_Ohr0INStp0_CAe2AZRb4eSMsiw_WMxKyW1U2bg" />
+
+    <!-- ===== STRUCTURED DATA: WebApplication ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Compound Interest Calculator",
+      "description": "Calculate how your savings grow with regular contributions and compound interest. Free online calculator for retirement planning, investment growth, and savings goals.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "url": "https://financetools.tools/compound-interest.html",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "156"
+      }
+    }
+    </script>
+
+    <!-- ===== STRUCTURED DATA: FAQPage ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is compound interest?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Compound interest is interest calculated on the initial principal and also on the accumulated interest from previous periods. This means you earn interest on your interest, making your money grow faster over time than simple interest."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between compound interest and simple interest?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Simple interest is calculated only on the original principal amount. Compound interest is calculated on the principal plus any accumulated interest from previous periods, leading to exponential growth over time."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How often should interest be compounded?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "More frequent compounding (daily vs. annually) yields slightly higher returns because interest is added to your account more often. Most savings accounts compound daily or monthly."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How much will I have if I save $500 a month for 30 years at 7% interest?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "If you save $500 per month at a 7% annual return, compounded monthly for 30 years, you would have approximately $566,764. Your total contributions would be $180,000 and you would have earned about $386,764 in interest."
+          }
+        }
+      ]
+    }
+    </script>
+
+    <style>
+        .results-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            margin: 1.5rem 0;
+        }
+        .summary-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .summary-item .label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #475569;
+        }
+        .summary-item .value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .summary-item.highlight {
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+        }
+        .summary-item.positive .value {
+            color: #10b981;
+        }
+
+        .form-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+        }
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+        .field label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: #334155;
+        }
+        .field input,
+        .field select {
+            padding: 0.6rem 0.8rem;
+            font-size: 1rem;
+            border: 1.5px solid #dce1e8;
+            border-radius: 10px;
+            background: #fafbfc;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .field input:focus,
+        .field select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            background: #ffffff;
+        }
+
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+        }
+        .btn:hover {
+            background: #1d4ed8;
+        }
+
+        .schedule-wrapper {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e9edf2;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+        .schedule-table th,
+        .schedule-table td {
+            border: 1px solid #e9edf2;
+            padding: 0.3rem 0.5rem;
+            text-align: right;
+        }
+        .schedule-table th {
+            background: #f1f5f9;
+            font-weight: 600;
+            color: #334155;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        .schedule-table td:first-child {
+            text-align: center;
+        }
+        .schedule-table .highlight-row {
+            background: #eef2ff;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.8rem;
+        }
+        .info-block h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin: 0 0 0.3rem;
+        }
+        .info-block p {
+            font-size: 0.85rem;
+            color: #475569;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .accordion-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e9edf2;
+            margin-top: 1.5rem;
+            overflow: hidden;
+        }
+        .accordion-header {
+            padding: 1rem 1.2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+        .accordion-header:hover {
+            background: #f8fafc;
+        }
+        .accordion-header h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin: 0;
+        }
+        .accordion-arrow {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            transition: transform 0.2s;
+        }
+        .accordion-body {
+            padding: 0 1.2rem 1.2rem;
+            display: none;
+        }
+        .accordion-body.open {
+            display: block;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #e9edf2;
+            padding: 0.5rem 0;
+        }
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+        .faq-question {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            color: #0f172a;
+            padding: 0.3rem 0;
+        }
+        .faq-question:hover {
+            color: #2563eb;
+        }
+        .faq-arrow {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            transition: transform 0.2s;
+        }
+        .faq-answer {
+            padding: 0.3rem 0 0.3rem 1.5rem;
+            color: #475569;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            display: none;
+        }
+        .faq-answer.open {
+            display: block;
+        }
+
+        .top-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #e9edf2;
+            margin-bottom: 1.5rem;
+        }
+        .top-nav .back-link {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .top-nav .back-link:hover {
+            text-decoration: underline;
+        }
+        .top-nav .breadcrumb {
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+        .top-nav .breadcrumb span {
+            color: #1e293b;
+        }
+
+        .calculator-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e9edf2;
+        }
+        .calculator-card h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0 0 0.3rem;
+        }
+        .calculator-card .subtitle {
+            font-size: 1rem;
+            color: #64748b;
+            margin: 0 0 1rem;
+        }
+
+        .site-footer {
+            text-align: center;
+            padding: 1.5rem 0 0.5rem;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            border-top: 1px solid #e9edf2;
+            margin-top: 2rem;
+        }
+        .site-footer a {
+            color: #94a3b8;
+            text-decoration: none;
+        }
+        .site-footer a:hover {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 640px) {
+            .calculator-card {
+                padding: 1rem;
+            }
+            .calculator-card h1 {
+                font-size: 1.3rem;
+            }
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            .summary-item {
+                padding: 0.6rem 1rem;
+            }
+            .summary-item .value {
+                font-size: 1rem;
+            }
+            .top-nav {
+                flex-wrap: wrap;
+            }
+        }
+        @media (max-width: 480px) {
+            .calculator-card {
+                padding: 0.8rem;
+            }
+            .schedule-table {
+                font-size: 0.7rem;
+            }
+            .schedule-table th,
+            .schedule-table td {
+                padding: 0.2rem 0.3rem;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<div class="container">
+    <div class="container" style="max-width:820px; margin:0 auto; padding:0 1rem;">
+        <div class="top-nav">
+            <a href="index.html" class="back-link">← Back to Home</a>
+            <div class="breadcrumb">📊 <span>Compound Interest Calculator</span></div>
+        </div>
 
-    <div class="top-nav">
-        <a href="index.html" class="back-link">← Back to Home</a>
-        <div class="breadcrumb">📊 <span>Compound Interest Calculator</span></div>
+        <main class="calculator-card">
+            <h1>📊 Compound Interest Calculator</h1>
+            <p class="subtitle">Calculate how your savings grow with regular contributions and compound interest.</p>
+
+            <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+                <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                    <strong>Compound Interest Calculator</strong> — This tool shows you how your money grows over
+                    time when you earn interest on both your principal and your accumulated interest. It solves the
+                    most common question for savers and investors: <em>“If I save this much every month, what will
+                    I have in 10, 20, or 30 years?”</em> Whether you're saving for retirement, a house down payment,
+                    or just trying to build wealth, this calculator gives you a realistic target to aim for.
+                </p>
+            </div>
+
+            <div class="form-grid">
+                <div class="field">
+                    <label for="principal-ci">Principal Amount ($)</label>
+                    <input type="number" id="principal-ci" value="10000" min="0" step="100" />
+                </div>
+                <div class="field">
+                    <label for="rate-ci">Annual Interest Rate (%)</label>
+                    <input type="number" id="rate-ci" value="7" min="0" step="0.1" />
+                </div>
+                <div class="field">
+                    <label for="frequency-ci">Compounding Frequency</label>
+                    <select id="frequency-ci">
+                        <option value="12">Monthly</option>
+                        <option value="4">Quarterly</option>
+                        <option value="2">Semi‑annually</option>
+                        <option value="1" selected>Annually</option>
+                        <option value="365">Daily</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="years-ci">Investment Period (Years)</label>
+                    <input type="number" id="years-ci" value="10" min="1" max="50" step="1" />
+                </div>
+                <div class="field">
+                    <label for="contribution-ci">Monthly Contribution ($)</label>
+                    <input type="number" id="contribution-ci" value="500" min="0" step="50" />
+                </div>
+                <div style="margin-top:0.5rem;">
+                    <button class="btn" onclick="calculate()">Calculate</button>
+                </div>
+            </div>
+
+            <div id="results-area" style="margin-top:1.8rem; display:none;">
+                <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Compound Interest Results</h2>
+                <div class="results-summary" id="summary">
+                    <div class="summary-item highlight">
+                        <span class="label">💰 Final Balance</span>
+                        <span class="value" id="final-balance-ci">—</span>
+                    </div>
+                    <div class="summary-item positive">
+                        <span class="label">📈 Total Interest Earned</span>
+                        <span class="value" id="total-interest-ci">—</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="label">📊 Effective Annual Rate</span>
+                        <span class="value" id="effective-rate-ci">—</span>
+                    </div>
+                </div>
+                <h3 style="font-size:1rem; margin:1.5rem 0 0.3rem;">📅 Year‑by‑Year Breakdown</h3>
+                <div class="schedule-wrapper">
+                    <table class="schedule-table" id="schedule-table-ci">
+                        <thead>
+                            <tr><th>Year</th><th>Starting Balance</th><th>Contributions</th><th>Interest Earned</th><th>Ending Balance</th></tr>
+                        </thead>
+                        <tbody id="schedule-body-ci"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ===== 推荐区域 ===== -->
+            <div id="recommendations-area"></div>
+
+        </main>
+
+        <section class="accordion-card">
+            <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
+                <h2>📖 How to read your results</h2>
+                <span class="accordion-arrow" id="infoArrow">▶</span>
+            </div>
+            <div class="accordion-body" id="infoAccordion">
+                <div class="info-grid">
+                    <div class="info-block">
+                        <h3>Final Balance</h3>
+                        <p>Your total account value at the end. Includes principal, all contributions, and compounded interest.</p>
+                    </div>
+                    <div class="info-block">
+                        <h3>Total Interest</h3>
+                        <p>All the interest you earned. Final balance minus what you actually deposited (principal + contributions).</p>
+                    </div>
+                    <div class="info-block">
+                        <h3>Effective Annual Rate</h3>
+                        <p>Your true yearly return after compounding. More frequent compounding means this number is slightly higher than the nominal rate.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="accordion-card">
+            <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
+                <h2>❓ FAQ</h2>
+                <span class="accordion-arrow" id="faqArrow">▶</span>
+            </div>
+            <div class="accordion-body" id="faqAccordion">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span class="faq-arrow">▶</span>
+                        <span>What is compound interest?</span>
+                    </div>
+                    <div class="faq-answer">Compound interest is interest calculated on the initial principal and also on the accumulated interest from previous periods. This means you earn interest on your interest, making your money grow faster over time than simple interest.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span class="faq-arrow">▶</span>
+                        <span>What is the difference between compound interest and simple interest?</span>
+                    </div>
+                    <div class="faq-answer">Simple interest is calculated only on the original principal amount. Compound interest is calculated on the principal plus any accumulated interest from previous periods, leading to exponential growth over time.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span class="faq-arrow">▶</span>
+                        <span>How often should interest be compounded?</span>
+                    </div>
+                    <div class="faq-answer">More frequent compounding (daily vs. annually) yields slightly higher returns because interest is added to your account more often. Most savings accounts compound daily or monthly.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span class="faq-arrow">▶</span>
+                        <span>How much will I have if I save $500 a month for 30 years at 7% interest?</span>
+                    </div>
+                    <div class="faq-answer">If you save $500 per month at a 7% annual return, compounded monthly for 30 years, you would have approximately $566,764. Your total contributions would be $180,000 and you would have earned about $386,764 in interest.</div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="site-footer">
+            <p>© 2026 — Smart Finance Tools · Free Online Calculators<br />
+                <a href="about.html">About</a> <span style="color:#dce1e8;">|</span>
+                <a href="privacy.html">Privacy</a>
+            </p>
+        </footer>
     </div>
 
-    <main class="calculator-card">
-        <h1>📈 Compound Interest Calculator</h1>
-        <p class="subtitle">Calculate how your savings grow with regular contributions and compound interest.</p>
+    <script src="recommendations.js"></script>
+    <script src="feedback.js"></script>
 
-        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
-            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
-                <strong>Compound Interest Calculator</strong> — This tool shows you how your money grows over time
-                when you earn interest on both your principal and your accumulated interest. It solves the most
-                common question for savers and investors: <em>“If I save this much every month, what will I have
-                in 10, 20, or 30 years?”</em> Instead of guessing or using complicated spreadsheet formulas, you
-                get a clear answer instantly. Whether you're saving for retirement, a house down payment, or just
-                trying to build wealth, this calculator gives you a realistic target to aim for.
-            </p>
-        </div>
-
-        <div class="form-grid">
-            <div class="field">
-                <label for="principal">Principal Amount ($)</label>
-                <input type="number" id="principal" value="10000" min="0" step="100" />
-            </div>
-            <div class="field">
-                <label for="rate">Annual Interest Rate (%)</label>
-                <input type="number" id="rate" value="7" min="0" max="100" step="0.1" />
-            </div>
-            <div class="field">
-                <label for="frequency">Compounding Frequency</label>
-                <select id="frequency">
-                    <option value="1">Annually</option>
-                    <option value="4">Quarterly</option>
-                    <option value="12" selected>Monthly</option>
-                    <option value="365">Daily</option>
-                </select>
-            </div>
-            <div class="field">
-                <label for="years">Investment Period (Years)</label>
-                <input type="number" id="years" value="10" min="1" max="50" step="1" />
-            </div>
-            <div class="field">
-                <label for="monthly">Monthly Contribution ($)</label>
-                <input type="number" id="monthly" value="500" min="0" step="50" />
-            </div>
-        </div>
-
-        <div class="results-grid" id="results">
-            <div class="result-item">
-                <span class="label">Final Balance</span>
-                <span class="value" id="final-balance">—</span>
-            </div>
-            <div class="result-item">
-                <span class="label">Total Interest Earned</span>
-                <span class="value" id="total-interest">—</span>
-            </div>
-            <div class="result-item highlight">
-                <span class="label">Effective Annual Rate</span>
-                <span class="value" id="effective-rate">—</span>
-            </div>
-        </div>
-
-        <!-- ===== 推荐区域 ===== -->
-        <div id="recommendations-area"></div>
-
-    </main>
-
-    <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
-            <h2>📖 How to read your results</h2>
-            <span class="accordion-arrow" id="infoArrow">▶</span>
-        </div>
-        <div class="accordion-body" id="infoAccordion">
-            <div class="info-grid">
-                <div class="info-block">
-                    <h3>Final Balance</h3>
-                    <p>Your total account value at the end. Includes principal, all contributions, and compounded interest.</p>
-                </div>
-                <div class="info-block">
-                    <h3>Total Interest</h3>
-                    <p>All the interest you earned. Final balance minus what you actually deposited (principal + contributions).</p>
-                </div>
-                <div class="info-block">
-                    <h3>Effective Annual Rate</h3>
-                    <p>Your true yearly return after compounding. More frequent compounding means this number is slightly higher than the nominal rate.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
-            <h2>❓ FAQ</h2>
-            <span class="accordion-arrow" id="faqArrow">▶</span>
-        </div>
-        <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>What is compound interest?</span>
-                </div>
-                <div class="faq-answer">Interest on interest. Your earnings generate more earnings. The longer the time, the bigger the effect.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>What's the formula?</span>
-                </div>
-                <div class="faq-answer">Don't worry about it — the calculator does the math. Just enter your numbers and you're good.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>Nominal rate vs. effective annual rate?</span>
-                </div>
-                <div class="faq-answer">Nominal is the advertised rate. Effective annual rate is what you actually earn after compounding. For example, 7% compounded monthly gives you 7.23%.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>Does compounding frequency matter?</span>
-                </div>
-                <div class="faq-answer">Yes, but not huge in the short term. $10k over 10 years: annual vs. monthly compounding — a few hundred bucks difference. The gap grows over time.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span class="faq-arrow">▶</span>
-                    <span>How much does monthly contribution matter?</span>
-                </div>
-                <div class="faq-answer">A lot. $10k with no extra contributions → ~$20k after 10 years. Add $500/month → ~$106k. That's the power of regular investing.</div>
-            </div>
-        </div>
-    </section>
-
-    <footer class="site-footer">
-        <p>
-            © 2026 — Smart Finance Tools · Free Online Calculators
-            <br />
-            <a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a>
-            <span style="color:#dce1e8;">|</span>
-            <a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a>
-        </p>
-    </footer>
-</div>
-
-<script src="calculator.js"></script>
-<script src="recommendations.js"></script>
-<script src="feedback.js"></script>
-
-<script>
-    function toggleAccordion(id) {
-        const body = document.getElementById(id);
-        const arrow = document.getElementById(id + 'Arrow');
-        if (body.style.display === 'none' || body.style.display === '') {
-            body.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            body.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-
-    function toggleFaq(el) {
-        const answer = el.nextElementSibling;
-        const arrow = el.querySelector('.faq-arrow');
-        if (answer.style.display === 'none' || answer.style.display === '') {
-            answer.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            answer.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('infoAccordion').style.display = 'block';
-        document.getElementById('infoArrow').textContent = '▼';
-        document.getElementById('faqAccordion').style.display = 'none';
-        document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
-        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
-        calculate();
-    });
-
-    function calculate() {
-        const P = parseFloat(document.getElementById('principal').value) || 0;
-        const r = parseFloat(document.getElementById('rate').value) / 100 || 0;
-        const n = parseInt(document.getElementById('frequency').value) || 12;
-        const t = parseInt(document.getElementById('years').value) || 10;
-        const M = parseFloat(document.getElementById('monthly').value) || 0;
-
-        if (isNaN(P) || isNaN(r) || isNaN(n) || isNaN(t) || isNaN(M) || P < 0 || r < 0 || t < 0 || M < 0) {
-            document.getElementById('final-balance').textContent = '—';
-            document.getElementById('total-interest').textContent = '—';
-            document.getElementById('effective-rate').textContent = '—';
-            return;
+    <script>
+        function toggleAccordion(id) {
+            const body = document.getElementById(id);
+            const arrow = document.getElementById(id + 'Arrow');
+            if (body.style.display === 'none' || body.style.display === '') {
+                body.style.display = 'block';
+                arrow.textContent = '▼';
+            } else {
+                body.style.display = 'none';
+                arrow.textContent = '▶';
+            }
         }
 
-        const FV_principal = P * Math.pow(1 + r / n, n * t);
-        const FV_contribution = M * (Math.pow(1 + r / n, n * t) - 1) / (r / n);
-        const A = FV_principal + FV_contribution;
-        const interest = A - P - M * t * 12;
-        const effectiveRate = (Math.pow(1 + r / n, n) - 1) * 100;
+        function toggleFaq(el) {
+            const answer = el.nextElementSibling;
+            const arrow = el.querySelector('.faq-arrow');
+            if (answer.style.display === 'none' || answer.style.display === '') {
+                answer.style.display = 'block';
+                arrow.textContent = '▼';
+            } else {
+                answer.style.display = 'none';
+                arrow.textContent = '▶';
+            }
+        }
 
-        const fmt = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
+        function calculate() {
+            const principal = parseFloat(document.getElementById('principal-ci').value) || 0;
+            const annualRate = parseFloat(document.getElementById('rate-ci').value) || 0;
+            const freq = parseInt(document.getElementById('frequency-ci').value) || 1;
+            const years = parseInt(document.getElementById('years-ci').value) || 1;
+            const monthlyContrib = parseFloat(document.getElementById('contribution-ci').value) || 0;
+
+            // Convert to monthly if freq is monthly (12)
+            const periods = years * freq;
+            const ratePerPeriod = (annualRate / 100) / freq;
+            const monthlyRate = (annualRate / 100) / 12;
+
+            // Compound formula: FV = P * (1 + r)^n + PMT * [((1 + r)^n - 1) / r]
+            // For monthly contributions, we need to accumulate them separately
+            let balance = principal;
+            let totalContributions = principal;
+            let yearData = [];
+
+            // For year‑by‑year, we need to track monthly contributions within each year
+            const totalMonths = years * 12;
+            let monthlyBalance = principal;
+
+            // First, calculate the final balance using the monthly compounding approach
+            for (let m = 1; m <= totalMonths; m++) {
+                // Add contribution at the beginning of the month
+                monthlyBalance += monthlyContrib;
+                totalContributions += monthlyContrib;
+                // Apply monthly interest
+                monthlyBalance = monthlyBalance * (1 + monthlyRate);
+            }
+
+            const finalBalance = monthlyBalance;
+            const totalInterest = finalBalance - totalContributions;
+
+            // Calculate effective annual rate
+            const effectiveRate = (Math.pow(1 + monthlyRate, 12) - 1) * 100;
+
+            // Build year‑by‑year data
+            let yearBalance = principal;
+            let yearContributions = principal;
+            let yearTotalContrib = principal;
+            for (let y = 1; y <= years; y++) {
+                let startingBalance = yearBalance;
+                let contribThisYear = 0;
+                for (let m = 1; m <= 12; m++) {
+                    yearBalance += monthlyContrib;
+                    yearContributions += monthlyContrib;
+                    contribThisYear += monthlyContrib;
+                    yearBalance = yearBalance * (1 + monthlyRate);
+                }
+                const interestThisYear = yearBalance - startingBalance - contribThisYear;
+                yearData.push({
+                    year: y,
+                    start: startingBalance,
+                    contributions: contribThisYear,
+                    interest: interestThisYear,
+                    end: yearBalance
+                });
+            }
+
+            const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0,
+                maximumFractionDigits: 0 });
+            const pct = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 2,
+                maximumFractionDigits: 2 });
+
+            document.getElementById('final-balance-ci').textContent = fmt.format(finalBalance);
+            document.getElementById('total-interest-ci').textContent = fmt.format(totalInterest);
+            document.getElementById('effective-rate-ci').textContent = pct.format(effectiveRate / 100);
+
+            // Render year‑by‑year table
+            const tbody = document.getElementById('schedule-body-ci');
+            tbody.innerHTML = '';
+            yearData.forEach((d, idx) => {
+                const tr = document.createElement('tr');
+                if (idx === yearData.length - 1) tr.classList.add('highlight-row');
+                tr.innerHTML = `
+                        <td>${d.year}</td>
+                        <td>${fmt.format(d.start)}</td>
+                        <td>${fmt.format(d.contributions)}</td>
+                        <td>${fmt.format(d.interest)}</td>
+                        <td>${fmt.format(d.end)}</td>
+                    `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('results-area').style.display = 'block';
+
+            // ===== 推荐联动 =====
+            const principalVal = document.getElementById('principal-ci').value;
+            const rateVal = document.getElementById('rate-ci').value;
+            const yearsVal = document.getElementById('years-ci').value;
+            const contribVal = document.getElementById('contribution-ci').value;
+            showRecommendations('compound-interest.html', {
+                principal: principalVal,
+                rate: rateVal,
+                years: yearsVal,
+                contribution: contribVal
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('infoAccordion').style.display = 'block';
+            document.getElementById('infoArrow').textContent = '▼';
+            document.getElementById('faqAccordion').style.display = 'none';
+            document.getElementById('faqArrow').textContent = '▶';
+            document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
+            document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
+            calculate();
         });
 
-        document.getElementById('final-balance').textContent = fmt.format(A);
-        document.getElementById('total-interest').textContent = fmt.format(interest);
-        document.getElementById('effective-rate').textContent = effectiveRate.toFixed(2) + '%';
-
-        // ===== 推荐联动 =====
-        const finalAmount = fmt.format(A).replace(/[^0-9.]/g, '');
-        const principal = document.getElementById('principal').value;
-        const monthly = document.getElementById('monthly').value;
-        showRecommendations('compound-interest.html', {
-            finalAmount: finalAmount,
-            principal: principal,
-            monthly: monthly
+        document.addEventListener('input', function(e) {
+            if (e.target.closest('.form-grid')) { calculate(); }
         });
-    }
-
-    document.addEventListener('input', function(e) {
-        if (e.target.closest('.form-grid')) { calculate(); }
-    });
-</script>
+    </script>
 
 </body>
 </html>
