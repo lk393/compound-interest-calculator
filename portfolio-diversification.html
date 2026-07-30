@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portfolio Diversification Calculator — Free Online Tool</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
+        .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
+        .field input {
+            padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px;
+            background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%;
+        }
+        .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
+        .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
+        .btn:hover { background: #1d4ed8; }
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+        .comparison-box { background: #f8fafc; border-radius: 12px; padding: 1rem; }
+        .comparison-box h4 { font-size: 0.85rem; font-weight: 600; color: #0f172a; margin: 0 0 0.5rem; text-align: center; }
+        .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
+        .comparison-box .row .num { font-weight: 600; color: #0f172a; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
+        @media (max-width: 640px) { .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">📊 <span>Portfolio Diversification Calculator</span></div></div>
+    <main class="calculator-card">
+        <h1>📊 Portfolio Diversification Calculator</h1>
+        <p class="subtitle">Analyze your portfolio's diversification using the Herfindahl‑Hirschman Index (HHI).</p>
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>Portfolio Diversification Calculator</strong> — This tool calculates the Herfindahl‑Hirschman
+                Index (HHI) to measure concentration in your investment portfolio. A lower HHI indicates better
+                diversification.
+            </p>
+        </div>
+        <div class="form-grid">
+            <div class="field"><label>Asset Class 1 — Allocation (%)</label><input type="number" id="asset1" value="40" min="0" max="100" step="1" /></div>
+            <div class="field"><label>Asset Class 2 — Allocation (%)</label><input type="number" id="asset2" value="30" min="0" max="100" step="1" /></div>
+            <div class="field"><label>Asset Class 3 — Allocation (%)</label><input type="number" id="asset3" value="20" min="0" max="100" step="1" /></div>
+            <div class="field"><label>Asset Class 4 — Allocation (%)</label><input type="number" id="asset4" value="10" min="0" max="100" step="1" /></div>
+            <div class="field"><label>Asset Class 5 — Allocation (%)</label><input type="number" id="asset5" value="0" min="0" max="100" step="1" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculate()">Analyze</button></div>
+        </div>
+        <div id="results-area" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Diversification Analysis</h2>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>📋 Allocations</h4>
+                    <div class="row"><span>Asset 1</span><span class="num" id="a1-display">—</span></div>
+                    <div class="row"><span>Asset 2</span><span class="num" id="a2-display">—</span></div>
+                    <div class="row"><span>Asset 3</span><span class="num" id="a3-display">—</span></div>
+                    <div class="row"><span>Asset 4</span><span class="num" id="a4-display">—</span></div>
+                    <div class="row"><span>Asset 5</span><span class="num" id="a5-display">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>📊 Diversification Score</h4>
+                    <div class="row"><span>Herfindahl‑Hirschman Index</span><span class="num" id="hhi-score">—</span></div>
+                    <div class="row"><span>Equivalent Number of Assets</span><span class="num" id="eq-assets">—</span></div>
+                    <div class="row"><span>Diversification Level</span><span class="num" id="diversity-level">—</span></div>
+                </div>
+            </div>
+        </div>
+        <div id="recommendations-area"></div>
+    </main>
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
+        <div class="accordion-body" id="infoAccordion">
+            <div class="info-grid">
+                <div class="info-block"><h3>HHI Score</h3><p>Ranges from 0 (perfectly diversified) to 10,000 (single asset). Lower scores = better diversification.</p></div>
+                <div class="info-block"><h3>Equivalent Assets</h3><p>The effective number of equally‑weighted assets that would give the same HHI.</p></div>
+                <div class="info-block"><h3>Level</h3><p>HHI &lt; 1,500 is "Well Diversified"; 1,500‑2,500 is "Moderately Concentrated"; &gt; 2,500 is "Concentrated".</p></div>
+            </div>
+        </div>
+    </section>
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
+        <div class="accordion-body" id="faqAccordion">
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is a good HHI score?</span></div><div class="faq-answer">Below 1,500 is considered well‑diversified. Above 2,500 suggests concentration risk.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is concentration risk?</span></div><div class="faq-answer">The risk that a single asset or a small number of assets dominate your portfolio. Poor diversification increases this risk.</div></div>
+        </div>
+    </section>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p></footer>
+</div>
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+<script>
+    function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
+    function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
+    function calculate() {
+        const assets = [];
+        for (let i = 1; i <= 5; i++) {
+            const val = parseFloat(document.getElementById('asset'+i).value) || 0;
+            if (val > 0) assets.push(val);
+        }
+        const total = assets.reduce((a,b) => a + b, 0);
+        const weights = assets.map(a => a / total);
+        const hhi = weights.reduce((a,b) => a + b * b * 10000, 0);
+        const eqAssets = 1 / weights.reduce((a,b) => a + b * b, 0);
+        let level = '';
+        if (hhi < 1500) level = '✅ Well Diversified';
+        else if (hhi < 2500) level = '⚠️ Moderately Concentrated';
+        else level = '❌ Highly Concentrated';
+        const pct = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 });
+        const fmt = new Intl.NumberFormat('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        for (let i = 1; i <= 5; i++) {
+            const val = parseFloat(document.getElementById('asset'+i).value) || 0;
+            document.getElementById('a'+i+'-display').textContent = pct.format(val / 100);
+        }
+        document.getElementById('hhi-score').textContent = fmt.format(hhi);
+        document.getElementById('eq-assets').textContent = fmt.format(eqAssets);
+        document.getElementById('diversity-level').textContent = level;
+        document.getElementById('results-area').style.display = 'block';
+        showRecommendations('portfolio-diversification.html', { hhi: hhi });
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('infoAccordion').style.display = 'block'; document.getElementById('infoArrow').textContent = '▼';
+        document.getElementById('faqAccordion').style.display = 'none'; document.getElementById('faqArrow').textContent = '▶';
+        document.querySelectorAll('.faq-answer').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.faq-arrow').forEach(el => el.textContent = '▶');
+        calculate();
+    });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculate(); } });
+</script>
+</body>
+</html>
