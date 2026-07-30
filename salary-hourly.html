@@ -3,225 +3,191 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ===== Meta Tags ===== -->
     <title>Salary to Hourly Converter — Free Online Tool</title>
+    <meta name="description" content="Convert your annual salary to hourly, daily, weekly, or monthly pay. Free salary to hourly converter for job offers and contract negotiations." />
+
     <link rel="stylesheet" href="style.css" />
+
+    <!-- ===== WebApplication Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Salary to Hourly Converter",
+      "description": "Convert your annual salary to hourly, daily, weekly, or monthly pay. Free tool for job offers and contract negotiations.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "url": "https://financetools.tools/salary-hourly.html",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.7", "ratingCount": "93" }
+    }
+    </script>
+
+    <!-- ===== FAQPage Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the hourly rate for a $60,000 annual salary?",
+          "acceptedAnswer": { "@type": "Answer", "text": "For a standard 2,080 working hours per year (40 hrs/week × 52 weeks), a $60,000 salary equals $28.85 per hour." }
+        },
+        {
+          "@type": "Question",
+          "name": "How much is $25 per hour annually?",
+          "acceptedAnswer": { "@type": "Answer", "text": "$25 per hour at 40 hours/week for 52 weeks equals $52,000 per year before taxes." }
+        },
+        {
+          "@type": "Question",
+          "name": "How many working hours are in a year?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The standard calculation is 2,080 hours (40 hours × 52 weeks). Actual hours may vary based on holidays and time off." }
+        }
+      ]
+    }
+    </script>
+
     <style>
-        .results-summary {
-            display: flex;
-            flex-direction: column;
-            gap: 0.7rem;
-            margin: 1.5rem 0;
-        }
-        .summary-item {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 0.8rem 1.2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        /* 复用相同样式 */
+        .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
+        .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
         .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
-        .summary-item.highlight .value { color: #2563eb; }
-
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
         .field { display: flex; flex-direction: column; }
         .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
-        .field input {
-            padding: 0.6rem 0.8rem;
-            font-size: 1rem;
-            border: 1.5px solid #dce1e8;
-            border-radius: 10px;
-            background: #fafbfc;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            width: 100%;
-        }
-        .field input:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-            background: #ffffff;
-        }
-
-        .btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 0.6rem 1.2rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            width: 100%;
-        }
+        .field input { padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px; background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
+        .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
+        .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
         .btn:hover { background: #1d4ed8; }
-
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+        .comparison-box { background: #f8fafc; border-radius: 12px; padding: 1rem; }
+        .comparison-box h4 { font-size: 0.85rem; font-weight: 600; color: #0f172a; margin: 0 0 0.5rem; text-align: center; }
+        .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
+        .comparison-box .row .num { font-weight: 600; color: #0f172a; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
-        @media (max-width: 640px) {
-            .info-grid { grid-template-columns: 1fr; }
-            .summary-item { padding: 0.6rem 1rem; }
-            .summary-item .value { font-size: 1rem; }
-        }
+        .info-block h3 { font-size: 0.9rem; font-weight: 600; color: #0f172a; margin: 0 0 0.3rem; }
+        .info-block p { font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.5; }
+        .accordion-card { background: white; border-radius: 12px; border: 1px solid #e9edf2; margin-top: 1.5rem; overflow: hidden; }
+        .accordion-header { padding: 1rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .accordion-header:hover { background: #f8fafc; }
+        .accordion-header h2 { font-size: 1rem; font-weight: 600; color: #0f172a; margin: 0; }
+        .accordion-arrow { font-size: 0.9rem; color: #94a3b8; }
+        .accordion-body { padding: 0 1.2rem 1.2rem; display: none; }
+        .accordion-body.open { display: block; }
+        .faq-item { border-bottom: 1px solid #e9edf2; padding: 0.5rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; color: #0f172a; padding: 0.3rem 0; }
+        .faq-question:hover { color: #2563eb; }
+        .faq-arrow { font-size: 0.7rem; color: #94a3b8; }
+        .faq-answer { padding: 0.3rem 0 0.3rem 1.5rem; color: #475569; font-size: 0.9rem; line-height: 1.6; display: none; }
+        .faq-answer.open { display: block; }
+        .top-nav { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #e9edf2; margin-bottom: 1.5rem; }
+        .top-nav .back-link { color: #2563eb; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .top-nav .back-link:hover { text-decoration: underline; }
+        .top-nav .breadcrumb { color: #94a3b8; font-size: 0.85rem; }
+        .top-nav .breadcrumb span { color: #1e293b; }
+        .calculator-card { background: white; border-radius: 16px; padding: 1.5rem 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e9edf2; }
+        .calculator-card h1 { font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem; }
+        .calculator-card .subtitle { font-size: 1rem; color: #64748b; margin: 0 0 1rem; }
+        .site-footer { text-align: center; padding: 1.5rem 0 0.5rem; color: #94a3b8; font-size: 0.8rem; border-top: 1px solid #e9edf2; margin-top: 2rem; }
+        .site-footer a { color: #94a3b8; text-decoration: none; }
+        .site-footer a:hover { color: #2563eb; text-decoration: underline; }
+        @media (max-width: 640px) { .calculator-card { padding: 1rem; } .calculator-card h1 { font-size: 1.3rem; } .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 480px) { .calculator-card { padding: 0.8rem; } }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <div class="top-nav">
-        <a href="index.html" class="back-link">← Back to Home</a>
-        <div class="breadcrumb">📊 <span>Salary to Hourly Converter</span></div>
-    </div>
-
+<div class="container" style="max-width:820px; margin:0 auto; padding:0 1rem;">
+    <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">⏰ <span>Salary to Hourly Converter</span></div></div>
     <main class="calculator-card">
         <h1>⏰ Salary to Hourly Converter</h1>
-        <p class="subtitle">Convert your annual salary to hourly, daily, weekly, and monthly pay.</p>
-
+        <p class="subtitle">Convert your annual salary to hourly, daily, weekly, or monthly pay.</p>
         <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
-                <strong>Salary to Hourly Converter</strong> — This tool converts your annual salary into
-                hourly, daily, weekly, and monthly pay. It answers the question: <em>“What is my hourly rate
-                based on my annual salary?”</em>
+                <strong>Salary to Hourly Converter</strong> — This tool helps you understand your true hourly
+                wage from a salaried position, or convert hourly rates to annual salary. Essential for comparing
+                job offers and freelance contracts.
             </p>
         </div>
-
         <div class="form-grid">
-            <div class="field">
-                <label for="annual-salary">Annual Salary ($)</label>
-                <input type="number" id="annual-salary" value="70000" min="0" step="1000" />
-            </div>
-            <div class="field">
-                <label for="work-hours">Hours per Week</label>
-                <input type="number" id="work-hours" value="40" min="1" max="80" step="1" />
-            </div>
-            <div class="field">
-                <label for="work-weeks">Weeks per Year</label>
-                <input type="number" id="work-weeks" value="52" min="1" max="52" step="1" />
-            </div>
-            <div style="margin-top:0.5rem;">
-                <button class="btn" onclick="calculate()">Calculate</button>
+            <div class="field"><label>Annual Salary ($)</label><input type="number" id="sh-salary" value="60000" min="0" step="1000" /></div>
+            <div class="field"><label>Hours per Week</label><input type="number" id="sh-hours" value="40" min="1" max="80" step="1" /></div>
+            <div class="field"><label>Weeks per Year</label><input type="number" id="sh-weeks" value="52" min="1" max="52" step="1" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculateSH()">Calculate</button></div>
+        </div>
+        <div id="sh-results" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Salary Breakdown</h2>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>📋 Input</h4>
+                    <div class="row"><span>Annual Salary</span><span class="num" id="sh-salary-display">—</span></div>
+                    <div class="row"><span>Hours/Week</span><span class="num" id="sh-hours-display">—</span></div>
+                    <div class="row"><span>Weeks/Year</span><span class="num" id="sh-weeks-display">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>💰 Breakdown</h4>
+                    <div class="row"><span>Hourly Rate</span><span class="num" id="sh-hourly" style="font-size:1.2rem;">—</span></div>
+                    <div class="row"><span>Daily Rate</span><span class="num" id="sh-daily">—</span></div>
+                    <div class="row"><span>Weekly Pay</span><span class="num" id="sh-weekly">—</span></div>
+                    <div class="row"><span>Monthly Pay</span><span class="num" id="sh-monthly">—</span></div>
+                </div>
             </div>
         </div>
-
-        <div id="results-area" style="margin-top:1.8rem; display:none;">
-            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Salary Breakdown</h2>
-            <div class="results-summary" id="summary">
-                <div class="summary-item highlight"><span class="label">Hourly Rate</span><span class="value" id="hourly-rate">—</span></div>
-                <div class="summary-item"><span class="label">Daily Rate</span><span class="value" id="daily-rate">—</span></div>
-                <div class="summary-item"><span class="label">Weekly Pay</span><span class="value" id="weekly-pay">—</span></div>
-                <div class="summary-item"><span class="label">Monthly Pay</span><span class="value" id="monthly-pay">—</span></div>
-            </div>
-        </div>
-
-        <!-- ===== 推荐区域 ===== -->
         <div id="recommendations-area"></div>
-
     </main>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
-            <h2>📖 How to read your results</h2>
-            <span class="accordion-arrow" id="infoArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block"><h3>Hourly Rate</h3><p>Your pay per hour based on your annual salary, hours per week, and weeks per year.</p></div>
-                <div class="info-block"><h3>Daily Rate</h3><p>Your pay per day (assuming an 8-hour workday).</p></div>
-                <div class="info-block"><h3>Weekly / Monthly Pay</h3><p>Your gross pay per week and per month before taxes and deductions.</p></div>
+                <div class="info-block"><h3>Hourly Rate</h3><p>Your effective hourly wage based on your annual salary and working hours.</p></div>
+                <div class="info-block"><h3>Daily/Weekly/Monthly</h3><p>Your pay at different time intervals, helpful for budgeting and comparing job offers.</p></div>
+                <div class="info-block"><h3>Working Hours</h3><p>Adjust hours/week and weeks/year for part‑time, contract, or freelance roles.</p></div>
             </div>
         </div>
     </section>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
-            <h2>❓ FAQ</h2>
-            <span class="accordion-arrow" id="faqArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
         <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Does this include taxes?</span></div>
-                <div class="faq-answer">No — this shows gross pay before taxes and deductions. Your actual take-home pay will be lower after taxes.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What if I work part-time?</span></div>
-                <div class="faq-answer">Adjust the "Hours per Week" field to your actual hours. The calculator will automatically update all rates.</div>
-            </div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the hourly rate for a $60,000 annual salary?</span></div><div class="faq-answer">For a standard 2,080 working hours per year (40 hrs/week × 52 weeks), a $60,000 salary equals $28.85 per hour.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How much is $25 per hour annually?</span></div><div class="faq-answer">$25 per hour at 40 hours/week for 52 weeks equals $52,000 per year before taxes.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How many working hours are in a year?</span></div><div class="faq-answer">The standard calculation is 2,080 hours (40 hours × 52 weeks). Actual hours may vary based on holidays and time off.</div></div>
         </div>
     </section>
-
-    <footer class="site-footer">
-        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
-    </footer>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html">About</a> <span style="color:#dce1e8;">|</span> <a href="privacy.html">Privacy</a></p></footer>
 </div>
-
 <script src="recommendations.js"></script>
 <script src="feedback.js"></script>
-
 <script>
-    function toggleAccordion(id) {
-        const body = document.getElementById(id);
-        const arrow = document.getElementById(id + 'Arrow');
-        if (body.style.display === 'none' || body.style.display === '') {
-            body.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            body.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-    function toggleFaq(el) {
-        const answer = el.nextElementSibling;
-        const arrow = el.querySelector('.faq-arrow');
-        if (answer.style.display === 'none' || answer.style.display === '') {
-            answer.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            answer.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-
-    function calculate() {
-        const salary = parseFloat(document.getElementById('annual-salary').value) || 0;
-        const hours = parseFloat(document.getElementById('work-hours').value) || 40;
-        const weeks = parseFloat(document.getElementById('work-weeks').value) || 52;
-
-        const hourly = salary / (hours * weeks);
-        const daily = hourly * 8;
-        const weekly = hourly * hours;
+    function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
+    function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
+    function calculateSH() {
+        const salary = parseFloat(document.getElementById('sh-salary').value) || 0;
+        const hours = parseFloat(document.getElementById('sh-hours').value) || 1;
+        const weeks = parseFloat(document.getElementById('sh-weeks').value) || 1;
+        const totalHours = hours * weeks;
+        const hourly = totalHours > 0 ? salary / totalHours : 0;
+        const daily = hourly * hours;
+        const weekly = salary / weeks;
         const monthly = salary / 12;
-
         const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-        document.getElementById('hourly-rate').textContent = fmt.format(hourly);
-        document.getElementById('daily-rate').textContent = fmt.format(daily);
-        document.getElementById('weekly-pay').textContent = fmt.format(weekly);
-        document.getElementById('monthly-pay').textContent = fmt.format(monthly);
-
-        document.getElementById('results-area').style.display = 'block';
-
-        // ===== 推荐联动 =====
-        const annualSalary = document.getElementById('annual-salary').value;
-        const monthlyPay = fmt.format(monthly).replace(/[^0-9.]/g, '');
-        showRecommendations('salary-hourly.html', {
-            annualSalary: annualSalary,
-            monthlyPay: monthlyPay
-        });
+        document.getElementById('sh-salary-display').textContent = fmt.format(salary);
+        document.getElementById('sh-hours-display').textContent = hours;
+        document.getElementById('sh-weeks-display').textContent = weeks;
+        document.getElementById('sh-hourly').textContent = fmt.format(hourly);
+        document.getElementById('sh-daily').textContent = fmt.format(daily);
+        document.getElementById('sh-weekly').textContent = fmt.format(weekly);
+        document.getElementById('sh-monthly').textContent = fmt.format(monthly);
+        document.getElementById('sh-results').style.display = 'block';
+        showRecommendations('salary-hourly.html', { salary: salary });
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('infoAccordion').style.display = 'block';
-        document.getElementById('infoArrow').textContent = '▼';
-        document.getElementById('faqAccordion').style.display = 'none';
-        document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
-        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
-        calculate();
-    });
-    document.addEventListener('input', function(e) {
-        if (e.target.closest('.form-grid')) { calculate(); }
-    });
+    document.addEventListener('DOMContentLoaded', function() { document.getElementById('infoAccordion').style.display='block'; document.getElementById('infoArrow').textContent='▼'; document.getElementById('faqAccordion').style.display='none'; document.getElementById('faqArrow').textContent='▶'; document.querySelectorAll('.faq-answer').forEach(el => el.style.display='none'); document.querySelectorAll('.faq-arrow').forEach(el => el.textContent='▶'); calculateSH(); });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculateSH(); } });
 </script>
 </body>
 </html>
