@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RSU Calculator — Free Online Tool</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
+        .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
+        .field input {
+            padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px;
+            background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%;
+        }
+        .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
+        .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
+        .btn:hover { background: #1d4ed8; }
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+        .comparison-box { background: #f8fafc; border-radius: 12px; padding: 1rem; }
+        .comparison-box h4 { font-size: 0.85rem; font-weight: 600; color: #0f172a; margin: 0 0 0.5rem; text-align: center; }
+        .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
+        .comparison-box .row .num { font-weight: 600; color: #0f172a; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
+        @media (max-width: 640px) { .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">📦 <span>RSU Calculator</span></div></div>
+    <main class="calculator-card">
+        <h1>📦 Restricted Stock Unit (RSU) Calculator</h1>
+        <p class="subtitle">Estimate the value of your RSUs after taxes and vesting schedule.</p>
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>RSU Calculator</strong> — This tool estimates the after‑tax value of your Restricted Stock
+                Units (RSUs) at vesting, considering the stock price, number of units, your tax rate, and a projected
+                growth rate until vesting.
+            </p>
+        </div>
+        <div class="form-grid">
+            <div class="field"><label>Number of RSUs</label><input type="number" id="rsu-count" value="1000" min="0" step="10" /></div>
+            <div class="field"><label>Current Stock Price ($)</label><input type="number" id="rsu-price" value="50" min="0" step="1" /></div>
+            <div class="field"><label>Projected Annual Growth Rate (%)</label><input type="number" id="rsu-growth" value="8" min="0" step="0.1" /></div>
+            <div class="field"><label>Years Until Vesting</label><input type="number" id="rsu-years" value="2" min="0.1" step="0.1" /></div>
+            <div class="field"><label>Marginal Tax Rate (%) (at vesting)</label><input type="number" id="rsu-tax" value="32" min="0" max="100" step="1" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculate()">Calculate</button></div>
+        </div>
+        <div id="results-area" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 RSU Value Projection</h2>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>📋 Input Summary</h4>
+                    <div class="row"><span>Number of RSUs</span><span class="num" id="count-display">—</span></div>
+                    <div class="row"><span>Current Price</span><span class="num" id="price-display">—</span></div>
+                    <div class="row"><span>Growth Rate</span><span class="num" id="growth-display">—</span></div>
+                    <div class="row"><span>Vesting Period</span><span class="num" id="years-display">—</span></div>
+                    <div class="row"><span>Tax Rate</span><span class="num" id="tax-display">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>💰 Value at Vesting</h4>
+                    <div class="row"><span>Projected Stock Price</span><span class="num" id="proj-price">—</span></div>
+                    <div class="row"><span>Gross Value</span><span class="num" id="gross-value" style="font-size:1.1rem;">—</span></div>
+                    <div class="row"><span>Tax Payable</span><span class="num" id="tax-payable">—</span></div>
+                    <div class="row"><span>After‑Tax Value</span><span class="num" id="after-tax" style="font-size:1.2rem;">—</span></div>
+                </div>
+            </div>
+        </div>
+        <div id="recommendations-area"></div>
+    </main>
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
+        <div class="accordion-body" id="infoAccordion">
+            <div class="info-grid">
+                <div class="info-block"><h3>Gross Value</h3><p>The total pre‑tax value of your RSUs at vesting (units × projected stock price).</p></div>
+                <div class="info-block"><h3>After‑Tax Value</h3><p>The net amount you'll receive after taxes are withheld at vesting.</p></div>
+                <div class="info-block"><h3>Growth Assumption</h3><p>The projected growth rate you entered. Actual returns may vary.</p></div>
+            </div>
+        </div>
+    </section>
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
+        <div class="accordion-body" id="faqAccordion">
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What are RSUs?</span></div><div class="faq-answer">Restricted Stock Units are company shares granted to employees that vest over time. You receive actual shares at vesting and pay ordinary income tax on them.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How are RSUs taxed?</span></div><div class="faq-answer">RSUs are taxed as ordinary income at vesting. The taxable amount is the fair market value of the shares on the vesting date.</div></div>
+        </div>
+    </section>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p></footer>
+</div>
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+<script>
+    function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
+    function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
+    function calculate() {
+        const count = parseFloat(document.getElementById('rsu-count').value) || 0;
+        const price = parseFloat(document.getElementById('rsu-price').value) || 0;
+        const growth = parseFloat(document.getElementById('rsu-growth').value) || 0;
+        const years = parseFloat(document.getElementById('rsu-years').value) || 0.1;
+        const taxRate = parseFloat(document.getElementById('rsu-tax').value) || 0;
+        const projPrice = price * Math.pow(1 + growth / 100, years);
+        const gross = count * projPrice;
+        const tax = gross * (taxRate / 100);
+        const afterTax = gross - tax;
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        const pct = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 });
+        document.getElementById('count-display').textContent = count;
+        document.getElementById('price-display').textContent = fmt.format(price);
+        document.getElementById('growth-display').textContent = pct.format(growth / 100);
+        document.getElementById('years-display').textContent = years.toFixed(1) + ' years';
+        document.getElementById('tax-display').textContent = pct.format(taxRate / 100);
+        document.getElementById('proj-price').textContent = fmt.format(projPrice);
+        document.getElementById('gross-value').textContent = fmt.format(gross);
+        document.getElementById('tax-payable').textContent = fmt.format(tax);
+        document.getElementById('after-tax').textContent = fmt.format(afterTax);
+        document.getElementById('results-area').style.display = 'block';
+        showRecommendations('rsu-calculator.html', { count: count, price: price });
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('infoAccordion').style.display = 'block'; document.getElementById('infoArrow').textContent = '▼';
+        document.getElementById('faqAccordion').style.display = 'none'; document.getElementById('faqArrow').textContent = '▶';
+        document.querySelectorAll('.faq-answer').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.faq-arrow').forEach(el => el.textContent = '▶');
+        calculate();
+    });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculate(); } });
+</script>
+</body>
+</html>
