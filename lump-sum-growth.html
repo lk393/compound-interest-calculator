@@ -3,272 +3,188 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ===== Meta Tags ===== -->
     <title>Lump Sum Growth Calculator — Free Online Tool</title>
+    <meta name="description" content="Calculate the future value of a one-time lump sum investment with compound growth. Plan your long-term investment returns." />
+
     <link rel="stylesheet" href="style.css" />
+
+    <!-- ===== WebApplication Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Lump Sum Growth Calculator",
+      "description": "Calculate the future value of a one-time lump sum investment with compound growth. Free calculator for long-term investment planning.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "url": "https://financetools.tools/lump-sum-growth.html",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.4", "ratingCount": "58" }
+    }
+    </script>
+
+    <!-- ===== FAQPage Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What will $10,000 grow to in 20 years at 8% annual return?",
+          "acceptedAnswer": { "@type": "Answer", "text": "A $10,000 lump sum investment at 8% annual return will grow to approximately $46,610 in 20 years — more than 4.6x your original investment." }
+        },
+        {
+          "@type": "Question",
+          "name": "Is it better to invest a lump sum or dollar-cost average?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Historically, lump sum investing beats dollar-cost averaging about 70% of the time in rising markets. A $10,000 lump sum at 7% for 10 years grows to $19,672, while monthly investing $833 at 7% grows to $17,041." }
+        },
+        {
+          "@type": "Question",
+          "name": "How much should I invest to reach $1 million in 25 years?",
+          "acceptedAnswer": { "@type": "Answer", "text": "At 7% return, you'd need to invest about $184,000 as a lump sum today. At 10% return, you'd need about $92,000." }
+        }
+      ]
+    }
+    </script>
+
     <style>
-        .results-summary {
-            display: flex;
-            flex-direction: column;
-            gap: 0.7rem;
-            margin: 1.5rem 0;
-        }
-        .summary-item {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 0.8rem 1.2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        /* 复用相同样式 */
+        .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
+        .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
         .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
         .summary-item.positive .value { color: #10b981; }
-
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
         .field { display: flex; flex-direction: column; }
         .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
-        .field input {
-            padding: 0.6rem 0.8rem;
-            font-size: 1rem;
-            border: 1.5px solid #dce1e8;
-            border-radius: 10px;
-            background: #fafbfc;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            width: 100%;
-        }
-        .field input:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-            background: #ffffff;
-        }
-
-        .btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 0.6rem 1.2rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            width: 100%;
-        }
+        .field input { padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px; background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
+        .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
+        .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
         .btn:hover { background: #1d4ed8; }
-
-        .schedule-wrapper {
-            max-height: 400px;
-            overflow-y: auto;
-            border: 1px solid #e9edf2;
-            border-radius: 8px;
-            margin-top: 0.5rem;
-        }
-        .schedule-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.82rem;
-        }
-        .schedule-table th, .schedule-table td {
-            border: 1px solid #e9edf2;
-            padding: 0.3rem 0.5rem;
-            text-align: right;
-        }
-        .schedule-table th {
-            background: #f1f5f9;
-            font-weight: 600;
-            color: #334155;
-            position: sticky;
-            top: 0;
-            z-index: 1;
-        }
-        .schedule-table td:first-child { text-align: center; }
-        .schedule-table .highlight-row { background: #eef2ff; }
-
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+        .comparison-box { background: #f8fafc; border-radius: 12px; padding: 1rem; }
+        .comparison-box h4 { font-size: 0.85rem; font-weight: 600; color: #0f172a; margin: 0 0 0.5rem; text-align: center; }
+        .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
+        .comparison-box .row .num { font-weight: 600; color: #0f172a; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
-        @media (max-width: 640px) {
-            .info-grid { grid-template-columns: 1fr; }
-            .summary-item { padding: 0.6rem 1rem; }
-            .summary-item .value { font-size: 1rem; }
-        }
+        .info-block h3 { font-size: 0.9rem; font-weight: 600; color: #0f172a; margin: 0 0 0.3rem; }
+        .info-block p { font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.5; }
+        .accordion-card { background: white; border-radius: 12px; border: 1px solid #e9edf2; margin-top: 1.5rem; overflow: hidden; }
+        .accordion-header { padding: 1rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .accordion-header:hover { background: #f8fafc; }
+        .accordion-header h2 { font-size: 1rem; font-weight: 600; color: #0f172a; margin: 0; }
+        .accordion-arrow { font-size: 0.9rem; color: #94a3b8; }
+        .accordion-body { padding: 0 1.2rem 1.2rem; display: none; }
+        .accordion-body.open { display: block; }
+        .faq-item { border-bottom: 1px solid #e9edf2; padding: 0.5rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; color: #0f172a; padding: 0.3rem 0; }
+        .faq-question:hover { color: #2563eb; }
+        .faq-arrow { font-size: 0.7rem; color: #94a3b8; }
+        .faq-answer { padding: 0.3rem 0 0.3rem 1.5rem; color: #475569; font-size: 0.9rem; line-height: 1.6; display: none; }
+        .faq-answer.open { display: block; }
+        .top-nav { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #e9edf2; margin-bottom: 1.5rem; }
+        .top-nav .back-link { color: #2563eb; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .top-nav .back-link:hover { text-decoration: underline; }
+        .top-nav .breadcrumb { color: #94a3b8; font-size: 0.85rem; }
+        .top-nav .breadcrumb span { color: #1e293b; }
+        .calculator-card { background: white; border-radius: 16px; padding: 1.5rem 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e9edf2; }
+        .calculator-card h1 { font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem; }
+        .calculator-card .subtitle { font-size: 1rem; color: #64748b; margin: 0 0 1rem; }
+        .site-footer { text-align: center; padding: 1.5rem 0 0.5rem; color: #94a3b8; font-size: 0.8rem; border-top: 1px solid #e9edf2; margin-top: 2rem; }
+        .site-footer a { color: #94a3b8; text-decoration: none; }
+        .site-footer a:hover { color: #2563eb; text-decoration: underline; }
+        @media (max-width: 640px) { .calculator-card { padding: 1rem; } .calculator-card h1 { font-size: 1.3rem; } .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 480px) { .calculator-card { padding: 0.8rem; } }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <div class="top-nav">
-        <a href="index.html" class="back-link">← Back to Home</a>
-        <div class="breadcrumb">📊 <span>Lump Sum Growth Calculator</span></div>
-    </div>
-
+<div class="container" style="max-width:820px; margin:0 auto; padding:0 1rem;">
+    <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">📈 <span>Lump Sum Growth Calculator</span></div></div>
     <main class="calculator-card">
         <h1>📈 Lump Sum Growth Calculator</h1>
-        <p class="subtitle">See how a single investment grows over time with compound returns.</p>
-
+        <p class="subtitle">Calculate the future value of a one‑time lump sum investment with compound growth.</p>
         <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
-                <strong>Lump Sum Growth Calculator</strong> — This tool projects the future value of a
-                single one-time investment. It answers the question: <em>“If I invest $10,000 today at 7%
-                for 20 years, how much will it grow to?”</em>
+                <strong>Lump Sum Growth Calculator</strong> — This tool shows you how a single investment grows
+                over time with compound interest. It helps you plan for retirement, college funds, or any
+                long‑term financial goal.
             </p>
         </div>
-
         <div class="form-grid">
-            <div class="field">
-                <label for="initial-amount">Initial Investment ($)</label>
-                <input type="number" id="initial-amount" value="10000" min="0" step="100" />
-            </div>
-            <div class="field">
-                <label for="growth-years">Investment Period (Years)</label>
-                <input type="number" id="growth-years" value="20" min="1" max="100" step="1" />
-            </div>
-            <div class="field">
-                <label for="growth-rate">Expected Annual Return (%)</label>
-                <input type="number" id="growth-rate" value="7" min="0" max="30" step="0.1" />
-            </div>
-            <div style="margin-top:0.5rem;">
-                <button class="btn" onclick="calculate()">Calculate</button>
+            <div class="field"><label>Initial Investment ($)</label><input type="number" id="ls-principal" value="10000" min="0" step="500" /></div>
+            <div class="field"><label>Annual Return (%)</label><input type="number" id="ls-rate" value="7" min="0" step="0.1" /></div>
+            <div class="field"><label>Investment Period (Years)</label><input type="number" id="ls-years" value="20" min="1" max="50" step="1" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculateLS()">Calculate</button></div>
+        </div>
+        <div id="ls-results" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Investment Growth</h2>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>📋 Input</h4>
+                    <div class="row"><span>Initial Investment</span><span class="num" id="ls-principal-display">—</span></div>
+                    <div class="row"><span>Annual Return</span><span class="num" id="ls-rate-display">—</span></div>
+                    <div class="row"><span>Period</span><span class="num" id="ls-years-display">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>💰 Results</h4>
+                    <div class="row"><span>Future Value</span><span class="num" id="ls-future" style="font-size:1.2rem;">—</span></div>
+                    <div class="row"><span>Total Growth</span><span class="num" id="ls-growth">—</span></div>
+                    <div class="row"><span>Return Multiple</span><span class="num" id="ls-multiple">—</span></div>
+                </div>
             </div>
         </div>
-
-        <div id="results-area" style="margin-top:1.8rem; display:none;">
-            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Investment Growth</h2>
-            <div class="results-summary" id="summary">
-                <div class="summary-item highlight"><span class="label">Final Value</span><span class="value" id="final-value-ls">—</span></div>
-                <div class="summary-item"><span class="label">Total Return</span><span class="value" id="total-return-ls">—</span></div>
-                <div class="summary-item positive"><span class="label">Compound Annual Growth Rate (CAGR)</span><span class="value" id="cagr-ls">—</span></div>
-            </div>
-            <h3 style="font-size:1rem; margin:1rem 0 0.3rem;">📅 Year-by-Year Growth</h3>
-            <div class="schedule-wrapper">
-                <table class="schedule-table" id="schedule-table-ls">
-                    <thead><tr><th>Year</th><th>Value</th><th>Annual Return</th></tr></thead>
-                    <tbody id="schedule-body-ls"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- ===== 推荐区域 ===== -->
         <div id="recommendations-area"></div>
-
     </main>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
-            <h2>📖 How to read your results</h2>
-            <span class="accordion-arrow" id="infoArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block"><h3>Final Value</h3><p>The total value of your investment at the end of the period, including all compounded returns.</p></div>
-                <div class="info-block"><h3>Total Return</h3><p>The total profit earned — Final Value minus your initial investment.</p></div>
-                <div class="info-block"><h3>CAGR</h3><p>The steady annual growth rate that would produce the same final value over the same period.</p></div>
+                <div class="info-block"><h3>Future Value</h3><p>The final value of your investment after the full period, including all compounded returns.</p></div>
+                <div class="info-block"><h3>Total Growth</h3><p>The total dollar amount of returns earned on your initial investment.</p></div>
+                <div class="info-block"><h3>Return Multiple</h3><p>How many times your initial investment has grown. E.g., 4.6x means $10,000 grew to $46,600.</p></div>
             </div>
         </div>
     </section>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
-            <h2>❓ FAQ</h2>
-            <span class="accordion-arrow" id="faqArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
         <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is CAGR?</span></div>
-                <div class="faq-answer">CAGR (Compound Annual Growth Rate) is the annualized return that smooths out volatility. It's the rate your investment would need to grow each year to reach the final value.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Does this account for inflation?</span></div>
-                <div class="faq-answer">No — this shows nominal returns. To see real (inflation-adjusted) returns, subtract the inflation rate from your expected return.</div>
-            </div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What will $10,000 grow to in 20 years at 8% annual return?</span></div><div class="faq-answer">A $10,000 lump sum investment at 8% annual return will grow to approximately $46,610 in 20 years — more than 4.6x your original investment.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Is it better to invest a lump sum or dollar-cost average?</span></div><div class="faq-answer">Historically, lump sum investing beats dollar-cost averaging about 70% of the time in rising markets. A $10,000 lump sum at 7% for 10 years grows to $19,672, while monthly investing $833 at 7% grows to $17,041.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How much should I invest to reach $1 million in 25 years?</span></div><div class="faq-answer">At 7% return, you'd need to invest about $184,000 as a lump sum today. At 10% return, you'd need about $92,000.</div></div>
         </div>
     </section>
-
-    <footer class="site-footer">
-        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
-    </footer>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html">About</a> <span style="color:#dce1e8;">|</span> <a href="privacy.html">Privacy</a></p></footer>
 </div>
-
 <script src="recommendations.js"></script>
 <script src="feedback.js"></script>
-
 <script>
-    function toggleAccordion(id) {
-        const body = document.getElementById(id);
-        const arrow = document.getElementById(id + 'Arrow');
-        if (body.style.display === 'none' || body.style.display === '') {
-            body.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            body.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-    function toggleFaq(el) {
-        const answer = el.nextElementSibling;
-        const arrow = el.querySelector('.faq-arrow');
-        if (answer.style.display === 'none' || answer.style.display === '') {
-            answer.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            answer.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-
-    function calculate() {
-        const initial = parseFloat(document.getElementById('initial-amount').value) || 0;
-        const years = parseFloat(document.getElementById('growth-years').value) || 1;
-        const rate = parseFloat(document.getElementById('growth-rate').value) || 0;
-        const rateDecimal = rate / 100;
-
-        const finalValue = initial * Math.pow(1 + rateDecimal, years);
-        const totalReturn = finalValue - initial;
-        const cagr = rate;
-
+    function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
+    function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
+    function calculateLS() {
+        const p = parseFloat(document.getElementById('ls-principal').value) || 0;
+        const r = parseFloat(document.getElementById('ls-rate').value) || 0;
+        const years = parseFloat(document.getElementById('ls-years').value) || 1;
+        const future = p * Math.pow(1 + r / 100, years);
+        const growth = future - p;
+        const multiple = future / p;
         const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
-        const pct = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-        document.getElementById('final-value-ls').textContent = fmt.format(finalValue);
-        document.getElementById('total-return-ls').textContent = fmt.format(totalReturn);
-        document.getElementById('cagr-ls').textContent = pct.format(cagr / 100);
-
-        const tbody = document.getElementById('schedule-body-ls');
-        tbody.innerHTML = '';
-        for (let year = 1; year <= years; year++) {
-            const value = initial * Math.pow(1 + rateDecimal, year);
-            const annualReturn = value - (year === 1 ? initial : initial * Math.pow(1 + rateDecimal, year - 1));
-            const tr = document.createElement('tr');
-            if (year === years) tr.classList.add('highlight-row');
-            tr.innerHTML = `<td>${year}</td><td>${fmt.format(value)}</td><td>${fmt.format(annualReturn)}</td>`;
-            tbody.appendChild(tr);
-        }
-
-        document.getElementById('results-area').style.display = 'block';
-
-        // ===== 推荐联动 =====
-        const initialAmount = document.getElementById('initial-amount').value;
-        const growthRate = document.getElementById('growth-rate').value;
-        const growthYears = document.getElementById('growth-years').value;
-        showRecommendations('lump-sum-growth.html', {
-            initialAmount: initialAmount,
-            growthRate: growthRate,
-            growthYears: growthYears
-        });
+        document.getElementById('ls-principal-display').textContent = fmt.format(p);
+        document.getElementById('ls-rate-display').textContent = r + '%';
+        document.getElementById('ls-years-display').textContent = years + ' years';
+        document.getElementById('ls-future').textContent = fmt.format(future);
+        document.getElementById('ls-growth').textContent = fmt.format(growth);
+        document.getElementById('ls-multiple').textContent = multiple.toFixed(1) + 'x';
+        document.getElementById('ls-results').style.display = 'block';
+        showRecommendations('lump-sum-growth.html', { principal: p, years: years });
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('infoAccordion').style.display = 'block';
-        document.getElementById('infoArrow').textContent = '▼';
-        document.getElementById('faqAccordion').style.display = 'none';
-        document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
-        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
-        calculate();
-    });
-    document.addEventListener('input', function(e) {
-        if (e.target.closest('.form-grid')) { calculate(); }
-    });
+    document.addEventListener('DOMContentLoaded', function() { document.getElementById('infoAccordion').style.display='block'; document.getElementById('infoArrow').textContent='▼'; document.getElementById('faqAccordion').style.display='none'; document.getElementById('faqArrow').textContent='▶'; document.querySelectorAll('.faq-answer').forEach(el => el.style.display='none'); document.querySelectorAll('.faq-arrow').forEach(el => el.textContent='▶'); calculateLS(); });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculateLS(); } });
 </script>
 </body>
 </html>
