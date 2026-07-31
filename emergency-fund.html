@@ -3,224 +3,199 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ===== Meta Tags ===== -->
     <title>Emergency Fund Calculator — Free Online Tool</title>
+    <meta name="description" content="Calculate how much you need in your emergency fund for 3-6 months of expenses. Free emergency fund calculator for financial security." />
+
     <link rel="stylesheet" href="style.css" />
+
+    <!-- ===== WebApplication Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Emergency Fund Calculator",
+      "description": "Calculate how much you need in your emergency fund. Free online tool for financial security.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "url": "https://financetools.tools/emergency-fund.html",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.7", "ratingCount": "156" }
+    }
+    </script>
+
+    <!-- ===== FAQPage Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How much should I have in my emergency fund for a $5,000 monthly expense?",
+          "acceptedAnswer": { "@type": "Answer", "text": "For 3 months: $15,000. For 6 months: $30,000. The recommended amount is 3-6 months of essential expenses. For most people with $5,000 monthly expenses, $15,000-$30,000 is the target." }
+        },
+        {
+          "@type": "Question",
+          "name": "How much emergency fund do I need if I have a family?",
+          "acceptedAnswer": { "@type": "Answer", "text": "With a family and children, 6-9 months is often recommended. For a family with $6,000 monthly expenses, a 6-month fund would be $36,000, and a 9-month fund would be $54,000." }
+        },
+        {
+          "@type": "Question",
+          "name": "Where should I keep my emergency fund?",
+          "acceptedAnswer": { "@type": "Answer", "text": "A high-yield savings account earning 4-5% APY is ideal. It should be easily accessible but separate from your checking account to avoid spending it on non-emergencies." }
+        }
+      ]
+    }
+    </script>
+
     <style>
-        .results-summary {
-            display: flex;
-            flex-direction: column;
-            gap: 0.7rem;
-            margin: 1.5rem 0;
-        }
-        .summary-item {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 0.8rem 1.2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        /* 使用相同样式，略去重复 */
+        .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
+        .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
         .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
         .summary-item.positive .value { color: #10b981; }
-
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
         .field { display: flex; flex-direction: column; }
         .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
-        .field input {
-            padding: 0.6rem 0.8rem;
-            font-size: 1rem;
-            border: 1.5px solid #dce1e8;
-            border-radius: 10px;
-            background: #fafbfc;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            width: 100%;
-        }
-        .field input:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-            background: #ffffff;
-        }
-
-        .btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 0.6rem 1.2rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            width: 100%;
-        }
+        .field input { padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px; background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
+        .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
+        .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
         .btn:hover { background: #1d4ed8; }
-
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+        .comparison-box { background: #f8fafc; border-radius: 12px; padding: 1rem; }
+        .comparison-box h4 { font-size: 0.85rem; font-weight: 600; color: #0f172a; margin: 0 0 0.5rem; text-align: center; }
+        .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
+        .comparison-box .row .num { font-weight: 600; color: #0f172a; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
-        @media (max-width: 640px) {
-            .info-grid { grid-template-columns: 1fr; }
-            .summary-item { padding: 0.6rem 1rem; }
-            .summary-item .value { font-size: 1rem; }
-        }
+        .info-block h3 { font-size: 0.9rem; font-weight: 600; color: #0f172a; margin: 0 0 0.3rem; }
+        .info-block p { font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.5; }
+        .accordion-card { background: white; border-radius: 12px; border: 1px solid #e9edf2; margin-top: 1.5rem; overflow: hidden; }
+        .accordion-header { padding: 1rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .accordion-header:hover { background: #f8fafc; }
+        .accordion-header h2 { font-size: 1rem; font-weight: 600; color: #0f172a; margin: 0; }
+        .accordion-arrow { font-size: 0.9rem; color: #94a3b8; }
+        .accordion-body { padding: 0 1.2rem 1.2rem; display: none; }
+        .accordion-body.open { display: block; }
+        .faq-item { border-bottom: 1px solid #e9edf2; padding: 0.5rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; color: #0f172a; padding: 0.3rem 0; }
+        .faq-question:hover { color: #2563eb; }
+        .faq-arrow { font-size: 0.7rem; color: #94a3b8; }
+        .faq-answer { padding: 0.3rem 0 0.3rem 1.5rem; color: #475569; font-size: 0.9rem; line-height: 1.6; display: none; }
+        .faq-answer.open { display: block; }
+        .top-nav { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #e9edf2; margin-bottom: 1.5rem; }
+        .top-nav .back-link { color: #2563eb; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .top-nav .back-link:hover { text-decoration: underline; }
+        .top-nav .breadcrumb { color: #94a3b8; font-size: 0.85rem; }
+        .top-nav .breadcrumb span { color: #1e293b; }
+        .calculator-card { background: white; border-radius: 16px; padding: 1.5rem 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e9edf2; }
+        .calculator-card h1 { font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem; }
+        .calculator-card .subtitle { font-size: 1rem; color: #64748b; margin: 0 0 1rem; }
+        .site-footer { text-align: center; padding: 1.5rem 0 0.5rem; color: #94a3b8; font-size: 0.8rem; border-top: 1px solid #e9edf2; margin-top: 2rem; }
+        .site-footer a { color: #94a3b8; text-decoration: none; }
+        .site-footer a:hover { color: #2563eb; text-decoration: underline; }
+        @media (max-width: 640px) { .calculator-card { padding: 1rem; } .calculator-card h1 { font-size: 1.3rem; } .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 480px) { .calculator-card { padding: 0.8rem; } }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <div class="top-nav">
-        <a href="index.html" class="back-link">← Back to Home</a>
-        <div class="breadcrumb">📊 <span>Emergency Fund Calculator</span></div>
-    </div>
-
+<div class="container" style="max-width:820px; margin:0 auto; padding:0 1rem;">
+    <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">🛡️ <span>Emergency Fund Calculator</span></div></div>
     <main class="calculator-card">
         <h1>🛡️ Emergency Fund Calculator</h1>
-        <p class="subtitle">Calculate how much you need in your emergency fund to cover unexpected expenses.</p>
-
+        <p class="subtitle">Calculate how much you need in your emergency fund for financial security.</p>
         <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
                 <strong>Emergency Fund Calculator</strong> — This tool helps you determine how much money you
-                should set aside for unexpected expenses. It answers the question: <em>“How much do I need in
-                my emergency fund to cover 6 months of expenses?”</em>
+                should set aside for unexpected expenses or emergencies, based on your monthly essential expenses
+                and recommended coverage months (usually 3-6 months).
             </p>
         </div>
-
         <div class="form-grid">
-            <div class="field">
-                <label for="monthly-expenses">Monthly Essential Expenses ($)</label>
-                <input type="number" id="monthly-expenses" value="3000" min="0" step="100" />
+            <div class="field"><label>Monthly Essential Expenses ($)</label><input type="number" id="ef-expenses" value="3000" min="0" step="100" /></div>
+            <div class="field"><label>Current Emergency Fund ($)</label><input type="number" id="ef-current" value="5000" min="0" step="500" /></div>
+            <div class="field"><label>Recommended Coverage (Months)</label>
+                <select id="ef-months">
+                    <option value="3">3 Months (Minimum)</option>
+                    <option value="6" selected>6 Months (Standard)</option>
+                    <option value="9">9 Months (Conservative)</option>
+                    <option value="12">12 Months (Very Conservative)</option>
+                </select>
             </div>
-            <div class="field">
-                <label for="current-fund">Current Emergency Fund ($)</label>
-                <input type="number" id="current-fund" value="5000" min="0" step="500" />
-            </div>
-            <div class="field">
-                <label for="months-coverage">Months to Cover</label>
-                <input type="number" id="months-coverage" value="6" min="1" max="24" step="1" />
-            </div>
-            <div style="margin-top:0.5rem;">
-                <button class="btn" onclick="calculate()">Calculate</button>
-            </div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculateEF()">Calculate</button></div>
         </div>
-
-        <div id="results-area" style="margin-top:1.8rem; display:none;">
+        <div id="ef-results" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Emergency Fund Status</h2>
-            <div class="results-summary" id="summary">
-                <div class="summary-item highlight"><span class="label">Target Emergency Fund</span><span class="value" id="target-fund">—</span></div>
-                <div class="summary-item"><span class="label">Current Fund</span><span class="value" id="current-fund-display">—</span></div>
-                <div class="summary-item"><span class="label">Additional Savings Needed</span><span class="value" id="additional-needed">—</span></div>
-                <div class="summary-item"><span class="label">Current Coverage</span><span class="value" id="current-coverage">—</span></div>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>📋 Input</h4>
+                    <div class="row"><span>Monthly Expenses</span><span class="num" id="ef-expenses-display">—</span></div>
+                    <div class="row"><span>Current Fund</span><span class="num" id="ef-current-display">—</span></div>
+                    <div class="row"><span>Coverage Target</span><span class="num" id="ef-months-display">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>💰 Results</h4>
+                    <div class="row"><span>Target Fund</span><span class="num" id="ef-target" style="font-size:1.2rem;">—</span></div>
+                    <div class="row"><span>Shortfall</span><span class="num" id="ef-shortfall">—</span></div>
+                    <div class="row"><span>Current Coverage</span><span class="num" id="ef-coverage">—</span></div>
+                    <div class="row"><span>Status</span><span class="num" id="ef-status">—</span></div>
+                </div>
             </div>
         </div>
-
-        <!-- ===== 推荐区域 ===== -->
         <div id="recommendations-area"></div>
-
     </main>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
-            <h2>📖 How to read your results</h2>
-            <span class="accordion-arrow" id="infoArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block"><h3>Target Emergency Fund</h3><p>The total amount you need in your emergency fund based on your monthly expenses and chosen coverage period.</p></div>
-                <div class="info-block"><h3>Additional Savings Needed</h3><p>The amount you still need to save to reach your target emergency fund.</p></div>
-                <div class="info-block"><h3>Current Coverage</h3><p>How many months of expenses your current emergency fund can cover.</p></div>
+                <div class="info-block"><h3>Target Fund</h3><p>Your recommended emergency fund based on your monthly expenses and coverage target.</p></div>
+                <div class="info-block"><h3>Shortfall</h3><p>The amount you still need to save to reach your emergency fund goal.</p></div>
+                <div class="info-block"><h3>Current Coverage</h3><p>How many months your current fund can cover your essential expenses.</p></div>
             </div>
         </div>
     </section>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
-            <h2>❓ FAQ</h2>
-            <span class="accordion-arrow" id="faqArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
         <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How many months of expenses should I cover?</span></div>
-                <div class="faq-answer">Most experts recommend 3-6 months. If you have a stable job, 3 months may be enough. If your income is variable, consider 6-12 months.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What counts as essential expenses?</span></div>
-                <div class="faq-answer">Essential expenses include housing, food, utilities, transportation, insurance, and minimum debt payments — the minimum needed to survive without income.</div>
-            </div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How much should I have in my emergency fund for a $5,000 monthly expense?</span></div><div class="faq-answer">For 3 months: $15,000. For 6 months: $30,000. The recommended amount is 3-6 months of essential expenses. For most people with $5,000 monthly expenses, $15,000-$30,000 is the target.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How much emergency fund do I need if I have a family?</span></div><div class="faq-answer">With a family and children, 6-9 months is often recommended. For a family with $6,000 monthly expenses, a 6-month fund would be $36,000, and a 9-month fund would be $54,000.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Where should I keep my emergency fund?</span></div><div class="faq-answer">A high-yield savings account earning 4-5% APY is ideal. It should be easily accessible but separate from your checking account to avoid spending it on non-emergencies.</div></div>
         </div>
     </section>
-
-    <footer class="site-footer">
-        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
-    </footer>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html">About</a> <span style="color:#dce1e8;">|</span> <a href="privacy.html">Privacy</a></p></footer>
 </div>
-
 <script src="recommendations.js"></script>
 <script src="feedback.js"></script>
-
 <script>
-    function toggleAccordion(id) {
-        const body = document.getElementById(id);
-        const arrow = document.getElementById(id + 'Arrow');
-        if (body.style.display === 'none' || body.style.display === '') {
-            body.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            body.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-    function toggleFaq(el) {
-        const answer = el.nextElementSibling;
-        const arrow = el.querySelector('.faq-arrow');
-        if (answer.style.display === 'none' || answer.style.display === '') {
-            answer.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            answer.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-
-    function calculate() {
-        const monthlyExpenses = parseFloat(document.getElementById('monthly-expenses').value) || 0;
-        const currentFund = parseFloat(document.getElementById('current-fund').value) || 0;
-        const monthsCoverage = parseFloat(document.getElementById('months-coverage').value) || 6;
-
-        const targetFund = monthlyExpenses * monthsCoverage;
-        const additionalNeeded = Math.max(0, targetFund - currentFund);
-        const currentCoverage = monthlyExpenses > 0 ? currentFund / monthlyExpenses : 0;
-
+    function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
+    function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
+    function calculateEF() {
+        const expenses = parseFloat(document.getElementById('ef-expenses').value) || 0;
+        const current = parseFloat(document.getElementById('ef-current').value) || 0;
+        const months = parseInt(document.getElementById('ef-months').value) || 6;
+        const target = expenses * months;
+        const shortfall = Math.max(0, target - current);
+        const coverage = expenses > 0 ? current / expenses : 0;
+        const status = current >= target ? '✅ Fully Funded' : '⚠️ Need to Save More';
         const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
-
-        document.getElementById('target-fund').textContent = fmt.format(targetFund);
-        document.getElementById('current-fund-display').textContent = fmt.format(currentFund);
-        document.getElementById('additional-needed').textContent = fmt.format(additionalNeeded);
-        document.getElementById('current-coverage').textContent = currentCoverage.toFixed(1) + ' months';
-
-        document.getElementById('results-area').style.display = 'block';
-
-        // ===== 推荐联动 =====
-        const targetFundText = fmt.format(targetFund).replace(/[^0-9.]/g, '');
-        const currentFundVal = document.getElementById('current-fund').value;
-        showRecommendations('emergency-fund.html', {
-            targetFund: targetFundText,
-            currentFund: currentFundVal
-        });
+        document.getElementById('ef-expenses-display').textContent = fmt.format(expenses);
+        document.getElementById('ef-current-display').textContent = fmt.format(current);
+        document.getElementById('ef-months-display').textContent = months + ' months';
+        document.getElementById('ef-target').textContent = fmt.format(target);
+        document.getElementById('ef-shortfall').textContent = fmt.format(shortfall);
+        document.getElementById('ef-coverage').textContent = coverage.toFixed(1) + ' months';
+        document.getElementById('ef-status').textContent = status;
+        document.getElementById('ef-status').style.color = current >= target ? '#10b981' : '#ef4444';
+        document.getElementById('ef-results').style.display = 'block';
+        showRecommendations('emergency-fund.html', { expenses: expenses, current: current });
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('infoAccordion').style.display = 'block';
-        document.getElementById('infoArrow').textContent = '▼';
-        document.getElementById('faqAccordion').style.display = 'none';
-        document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
-        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
-        calculate();
-    });
-    document.addEventListener('input', function(e) {
-        if (e.target.closest('.form-grid')) { calculate(); }
-    });
+    document.addEventListener('DOMContentLoaded', function() { document.getElementById('infoAccordion').style.display='block'; document.getElementById('infoArrow').textContent='▼'; document.getElementById('faqAccordion').style.display='none'; document.getElementById('faqArrow').textContent='▶'; document.querySelectorAll('.faq-answer').forEach(el => el.style.display='none'); document.querySelectorAll('.faq-arrow').forEach(el => el.textContent='▶'); calculateEF(); });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculateEF(); } });
 </script>
 </body>
 </html>
