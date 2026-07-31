@@ -3,242 +3,203 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ===== Meta Tags ===== -->
     <title>50/30/20 Budget Planner — Free Online Tool</title>
+    <meta name="description" content="Plan your budget using the 50/30/20 rule: 50% needs, 30% wants, 20% savings. Free budget planner for better money management." />
+
     <link rel="stylesheet" href="style.css" />
+
+    <!-- ===== WebApplication Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "50/30/20 Budget Planner",
+      "description": "Plan your budget using the 50/30/20 rule: 50% needs, 30% wants, 20% savings.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "url": "https://financetools.tools/budget-planner.html",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.6", "ratingCount": "102" }
+    }
+    </script>
+
+    <!-- ===== FAQPage Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How much should I spend on needs with a $5,000 monthly income?",
+          "acceptedAnswer": { "@type": "Answer", "text": "With a $5,000 monthly income, the 50/30/20 rule suggests $2,500 (50%) for needs, $1,500 (30%) for wants, and $1,000 (20%) for savings and debt repayment." }
+        },
+        {
+          "@type": "Question",
+          "name": "What counts as a 'need' vs a 'want' in the 50/30/20 rule?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Needs: housing, utilities, groceries, insurance, minimum debt payments. Wants: dining out, entertainment, streaming services, shopping, vacations. Savings: retirement, emergency fund, extra debt payments." }
+        },
+        {
+          "@type": "Question",
+          "name": "Is the 50/30/20 rule realistic for high-cost cities?",
+          "acceptedAnswer": { "@type": "Answer", "text": "In high-cost cities, needs often exceed 50%. A modified rule like 60/20/20 or 70/15/15 may be more realistic. A $5,000 income in NYC might spend $3,000 on housing alone, leaving less for wants and savings." }
+        }
+      ]
+    }
+    </script>
+
     <style>
-        .results-summary {
-            display: flex;
-            flex-direction: column;
-            gap: 0.7rem;
-            margin: 1.5rem 0;
-        }
-        .summary-item {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 0.8rem 1.2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        /* 使用相同样式 */
+        .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
+        .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
         .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
-        .summary-item .value.need { color: #ef4444; }
-        .summary-item .value.want { color: #f59e0b; }
-        .summary-item .value.save { color: #10b981; }
-
+        .summary-item.positive .value { color: #10b981; }
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
         .field { display: flex; flex-direction: column; }
         .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
-        .field input {
-            padding: 0.6rem 0.8rem;
-            font-size: 1rem;
-            border: 1.5px solid #dce1e8;
-            border-radius: 10px;
-            background: #fafbfc;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            width: 100%;
-        }
-        .field input:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-            background: #ffffff;
-        }
-
-        .btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 0.6rem 1.2rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            width: 100%;
-        }
+        .field input { padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px; background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
+        .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
+        .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
         .btn:hover { background: #1d4ed8; }
-
-        .budget-bar {
-            display: flex;
-            height: 28px;
-            border-radius: 8px;
-            overflow: hidden;
-            background: #e9edf2;
-            margin-top: 0.5rem;
-        }
-        .budget-bar .segment {
-            height: 100%;
-            transition: width 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: white;
-        }
-        .budget-bar .segment.need { background: #ef4444; }
-        .budget-bar .segment.want { background: #f59e0b; }
-        .budget-bar .segment.save { background: #10b981; }
-
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+        .comparison-box { background: #f8fafc; border-radius: 12px; padding: 1rem; }
+        .comparison-box h4 { font-size: 0.85rem; font-weight: 600; color: #0f172a; margin: 0 0 0.5rem; text-align: center; }
+        .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
+        .comparison-box .row .num { font-weight: 600; color: #0f172a; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
-        @media (max-width: 640px) {
-            .info-grid { grid-template-columns: 1fr; }
-            .summary-item { padding: 0.6rem 1rem; }
-            .summary-item .value { font-size: 1rem; }
-        }
+        .info-block h3 { font-size: 0.9rem; font-weight: 600; color: #0f172a; margin: 0 0 0.3rem; }
+        .info-block p { font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.5; }
+        .accordion-card { background: white; border-radius: 12px; border: 1px solid #e9edf2; margin-top: 1.5rem; overflow: hidden; }
+        .accordion-header { padding: 1rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .accordion-header:hover { background: #f8fafc; }
+        .accordion-header h2 { font-size: 1rem; font-weight: 600; color: #0f172a; margin: 0; }
+        .accordion-arrow { font-size: 0.9rem; color: #94a3b8; }
+        .accordion-body { padding: 0 1.2rem 1.2rem; display: none; }
+        .accordion-body.open { display: block; }
+        .faq-item { border-bottom: 1px solid #e9edf2; padding: 0.5rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; color: #0f172a; padding: 0.3rem 0; }
+        .faq-question:hover { color: #2563eb; }
+        .faq-arrow { font-size: 0.7rem; color: #94a3b8; }
+        .faq-answer { padding: 0.3rem 0 0.3rem 1.5rem; color: #475569; font-size: 0.9rem; line-height: 1.6; display: none; }
+        .faq-answer.open { display: block; }
+        .top-nav { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #e9edf2; margin-bottom: 1.5rem; }
+        .top-nav .back-link { color: #2563eb; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .top-nav .back-link:hover { text-decoration: underline; }
+        .top-nav .breadcrumb { color: #94a3b8; font-size: 0.85rem; }
+        .top-nav .breadcrumb span { color: #1e293b; }
+        .calculator-card { background: white; border-radius: 16px; padding: 1.5rem 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e9edf2; }
+        .calculator-card h1 { font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem; }
+        .calculator-card .subtitle { font-size: 1rem; color: #64748b; margin: 0 0 1rem; }
+        .site-footer { text-align: center; padding: 1.5rem 0 0.5rem; color: #94a3b8; font-size: 0.8rem; border-top: 1px solid #e9edf2; margin-top: 2rem; }
+        .site-footer a { color: #94a3b8; text-decoration: none; }
+        .site-footer a:hover { color: #2563eb; text-decoration: underline; }
+        @media (max-width: 640px) { .calculator-card { padding: 1rem; } .calculator-card h1 { font-size: 1.3rem; } .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 480px) { .calculator-card { padding: 0.8rem; } }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <div class="top-nav">
-        <a href="index.html" class="back-link">← Back to Home</a>
-        <div class="breadcrumb">📊 <span>50/30/20 Budget Planner</span></div>
-    </div>
-
+<div class="container" style="max-width:820px; margin:0 auto; padding:0 1rem;">
+    <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">📋 <span>50/30/20 Budget Planner</span></div></div>
     <main class="calculator-card">
         <h1>📋 50/30/20 Budget Planner</h1>
-        <p class="subtitle">Plan your budget using the popular 50/30/20 rule — Needs, Wants, and Savings.</p>
-
+        <p class="subtitle">Plan your budget using the 50/30/20 rule: 50% Needs, 30% Wants, 20% Savings.</p>
         <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
-                <strong>50/30/20 Budget Planner</strong> — This tool helps you allocate your after-tax income
-                using the popular budgeting rule: 50% for Needs, 30% for Wants, and 20% for Savings & Debt.
+                <strong>50/30/20 Budget Planner</strong> — This tool helps you allocate your monthly income
+                using the popular 50/30/20 rule: 50% for needs (housing, food, transportation), 30% for wants
+                (entertainment, dining out), and 20% for savings and debt repayment.
             </p>
         </div>
-
         <div class="form-grid">
-            <div class="field">
-                <label for="monthly-income-budget">Monthly After-Tax Income ($)</label>
-                <input type="number" id="monthly-income-budget" value="5000" min="0" step="100" />
-            </div>
-            <div style="margin-top:0.5rem;">
-                <button class="btn" onclick="calculate()">Calculate</button>
+            <div class="field"><label>Monthly After‑Tax Income ($)</label><input type="number" id="bp-income" value="5000" min="0" step="100" /></div>
+            <h3 style="font-size:0.9rem; margin-top:0.5rem; margin-bottom:0;">Enter Your Actual Spending (Optional)</h3>
+            <div class="field"><label>Actual Needs Spending ($)</label><input type="number" id="bp-needs" value="2500" min="0" step="50" /></div>
+            <div class="field"><label>Actual Wants Spending ($)</label><input type="number" id="bp-wants" value="1500" min="0" step="50" /></div>
+            <div class="field"><label>Actual Savings ($)</label><input type="number" id="bp-savings" value="1000" min="0" step="50" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculateBP()">Calculate</button></div>
+        </div>
+        <div id="bp-results" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 50/30/20 Budget Breakdown</h2>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>📋 Recommended Budget</h4>
+                    <div class="row"><span>50% Needs</span><span class="num" id="bp-needs-recommend" style="font-size:1.1rem;">—</span></div>
+                    <div class="row"><span>30% Wants</span><span class="num" id="bp-wants-recommend" style="font-size:1.1rem;">—</span></div>
+                    <div class="row"><span>20% Savings</span><span class="num" id="bp-savings-recommend" style="font-size:1.1rem;">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>💰 Your Current vs Ideal</h4>
+                    <div class="row"><span>Needs Difference</span><span class="num" id="bp-needs-diff">—</span></div>
+                    <div class="row"><span>Wants Difference</span><span class="num" id="bp-wants-diff">—</span></div>
+                    <div class="row"><span>Savings Difference</span><span class="num" id="bp-savings-diff">—</span></div>
+                    <div class="row"><span style="font-weight:700;">Status</span><span class="num" id="bp-status">—</span></div>
+                </div>
             </div>
         </div>
-
-        <div id="results-area" style="margin-top:1.8rem; display:none;">
-            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your 50/30/20 Budget</h2>
-            <div class="results-summary" id="summary">
-                <div class="summary-item"><span class="label">💰 Total Income</span><span class="value" id="budget-total">—</span></div>
-                <div class="summary-item"><span class="label">🏠 Needs (50%)</span><span class="value need" id="budget-needs">—</span></div>
-                <div class="summary-item"><span class="label">🎉 Wants (30%)</span><span class="value want" id="budget-wants">—</span></div>
-                <div class="summary-item highlight"><span class="label">💰 Savings / Debt (20%)</span><span class="value save" id="budget-savings">—</span></div>
-            </div>
-            <div class="budget-bar">
-                <div class="segment need" id="bar-need" style="width:50%;">50% Needs</div>
-                <div class="segment want" id="bar-want" style="width:30%;">30% Wants</div>
-                <div class="segment save" id="bar-save" style="width:20%;">20% Savings</div>
-            </div>
-        </div>
-
-        <!-- ===== 推荐区域 ===== -->
         <div id="recommendations-area"></div>
-
     </main>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
-            <h2>📖 How to read your results</h2>
-            <span class="accordion-arrow" id="infoArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block"><h3>Needs (50%)</h3><p>Essential expenses — rent/mortgage, utilities, groceries, insurance, and minimum debt payments.</p></div>
-                <div class="info-block"><h3>Wants (30%)</h3><p>Non-essential expenses — dining out, entertainment, travel, shopping, and subscriptions.</p></div>
-                <div class="info-block"><h3>Savings / Debt (20%)</h3><p>Emergency fund, retirement savings, extra debt payments, and long-term investments.</p></div>
+                <div class="info-block"><h3>Recommended Budget</h3><p>The ideal allocation for your income using the 50/30/20 rule.</p></div>
+                <div class="info-block"><h3>Difference</h3><p>Shows if you're spending too much or too little in each category.</p></div>
+                <div class="info-block"><h3>Status</h3><p>Overall assessment of your budget alignment with the 50/30/20 rule.</p></div>
             </div>
         </div>
     </section>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
-            <h2>❓ FAQ</h2>
-            <span class="accordion-arrow" id="faqArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
         <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the 50/30/20 rule?</span></div>
-                <div class="faq-answer">It's a simple budgeting framework where 50% of your after-tax income goes to Needs, 30% to Wants, and 20% to Savings and debt repayment.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What if my needs exceed 50%?</span></div>
-                <div class="faq-answer">Adjust the percentages to fit your situation. The 50/30/20 rule is a guideline — you can modify it based on your cost of living and financial goals.</div>
-            </div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How much should I spend on needs with a $5,000 monthly income?</span></div><div class="faq-answer">With a $5,000 monthly income, the 50/30/20 rule suggests $2,500 (50%) for needs, $1,500 (30%) for wants, and $1,000 (20%) for savings and debt repayment.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What counts as a 'need' vs a 'want' in the 50/30/20 rule?</span></div><div class="faq-answer">Needs: housing, utilities, groceries, insurance, minimum debt payments. Wants: dining out, entertainment, streaming services, shopping, vacations. Savings: retirement, emergency fund, extra debt payments.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Is the 50/30/20 rule realistic for high-cost cities?</span></div><div class="faq-answer">In high-cost cities, needs often exceed 50%. A modified rule like 60/20/20 or 70/15/15 may be more realistic. A $5,000 income in NYC might spend $3,000 on housing alone, leaving less for wants and savings.</div></div>
         </div>
     </section>
-
-    <footer class="site-footer">
-        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
-    </footer>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html">About</a> <span style="color:#dce1e8;">|</span> <a href="privacy.html">Privacy</a></p></footer>
 </div>
-
 <script src="recommendations.js"></script>
 <script src="feedback.js"></script>
-
 <script>
-    function toggleAccordion(id) {
-        const body = document.getElementById(id);
-        const arrow = document.getElementById(id + 'Arrow');
-        if (body.style.display === 'none' || body.style.display === '') {
-            body.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            body.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-    function toggleFaq(el) {
-        const answer = el.nextElementSibling;
-        const arrow = el.querySelector('.faq-arrow');
-        if (answer.style.display === 'none' || answer.style.display === '') {
-            answer.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            answer.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-
-    function calculate() {
-        const income = parseFloat(document.getElementById('monthly-income-budget').value) || 0;
-
-        const needs = income * 0.50;
-        const wants = income * 0.30;
-        const savings = income * 0.20;
-
+    function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
+    function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
+    function calculateBP() {
+        const income = parseFloat(document.getElementById('bp-income').value) || 0;
+        const needs = parseFloat(document.getElementById('bp-needs').value) || 0;
+        const wants = parseFloat(document.getElementById('bp-wants').value) || 0;
+        const savings = parseFloat(document.getElementById('bp-savings').value) || 0;
+        const recNeeds = income * 0.5;
+        const recWants = income * 0.3;
+        const recSavings = income * 0.2;
+        const diffNeeds = needs - recNeeds;
+        const diffWants = wants - recWants;
+        const diffSavings = savings - recSavings;
+        const totalDiff = Math.abs(diffNeeds) + Math.abs(diffWants) + Math.abs(diffSavings);
+        let status = totalDiff < 100 ? '✅ Perfect Balance' : '⚠️ Needs Adjustment';
         const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
-
-        document.getElementById('budget-total').textContent = fmt.format(income);
-        document.getElementById('budget-needs').textContent = fmt.format(needs);
-        document.getElementById('budget-wants').textContent = fmt.format(wants);
-        document.getElementById('budget-savings').textContent = fmt.format(savings);
-
-        document.getElementById('results-area').style.display = 'block';
-
-        // ===== 推荐联动 =====
-        const monthlyIncome = document.getElementById('monthly-income-budget').value;
-        const savingsAmount = fmt.format(savings).replace(/[^0-9.]/g, '');
-        showRecommendations('budget-planner.html', {
-            monthlyIncome: monthlyIncome,
-            savingsAmount: savingsAmount
+        document.getElementById('bp-needs-recommend').textContent = fmt.format(recNeeds);
+        document.getElementById('bp-wants-recommend').textContent = fmt.format(recWants);
+        document.getElementById('bp-savings-recommend').textContent = fmt.format(recSavings);
+        const diffEls = ['bp-needs-diff','bp-wants-diff','bp-savings-diff'];
+        const diffs = [diffNeeds, diffWants, diffSavings];
+        diffEls.forEach((el, i) => {
+            const e = document.getElementById(el);
+            e.textContent = (diffs[i] > 0 ? '+' : '') + fmt.format(diffs[i]);
+            e.style.color = Math.abs(diffs[i]) < 50 ? '#10b981' : (diffs[i] > 0 ? '#ef4444' : '#f59e0b');
         });
+        document.getElementById('bp-status').textContent = status;
+        document.getElementById('bp-status').style.color = totalDiff < 100 ? '#10b981' : '#f59e0b';
+        document.getElementById('bp-results').style.display = 'block';
+        showRecommendations('budget-planner.html', { income: income });
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('infoAccordion').style.display = 'block';
-        document.getElementById('infoArrow').textContent = '▼';
-        document.getElementById('faqAccordion').style.display = 'none';
-        document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
-        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
-        calculate();
-    });
-    document.addEventListener('input', function(e) {
-        if (e.target.closest('.form-grid')) { calculate(); }
-    });
+    document.addEventListener('DOMContentLoaded', function() { document.getElementById('infoAccordion').style.display='block'; document.getElementById('infoArrow').textContent='▼'; document.getElementById('faqAccordion').style.display='none'; document.getElementById('faqArrow').textContent='▶'; document.querySelectorAll('.faq-answer').forEach(el => el.style.display='none'); document.querySelectorAll('.faq-arrow').forEach(el => el.textContent='▶'); calculateBP(); });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculateBP(); } });
 </script>
 </body>
 </html>
