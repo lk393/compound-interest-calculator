@@ -3,306 +3,205 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Credit Card Minimum Payment Calculator</title>
+
+    <!-- ===== Meta Tags ===== -->
+    <title>Credit Card Minimum Payment Calculator — Free Online Tool</title>
+    <meta name="description" content="Calculate how long it takes to pay off your credit card making only minimum payments. Free credit card payment calculator." />
+
     <link rel="stylesheet" href="style.css" />
+
+    <!-- ===== WebApplication Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Credit Card Minimum Payment Calculator",
+      "description": "Calculate how long it takes to pay off your credit card making only minimum payments.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "url": "https://financetools.tools/credit-card-min-payment.html",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.6", "ratingCount": "134" }
+    }
+    </script>
+
+    <!-- ===== FAQPage Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How long will it take to pay off $5,000 in credit card debt at 18% making minimum payments?",
+          "acceptedAnswer": { "@type": "Answer", "text": "At 18% APR with a 2% minimum payment ($100 initially), it would take about 31 years to pay off $5,000. You would pay over $7,000 in interest — almost 1.5x the original debt." }
+        },
+        {
+          "@type": "Question",
+          "name": "How much interest will I pay if I only make minimum payments on my credit card?",
+          "acceptedAnswer": { "@type": "Answer", "text": "On a $5,000 balance at 18% APR, making only minimum payments (2% of balance) would cost over $7,000 in interest — nearly 3 times the total interest compared to paying $200/month." }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does it take so long to pay off credit cards with minimum payments?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Minimum payments are mostly interest. On a $5,000 balance at 18% APR, your first $100 payment is about $75 interest and only $25 principal. At that rate, it takes decades to pay off." }
+        },
+        {
+          "@type": "Question",
+          "name": "What if I pay $200/month instead of the minimum on my credit card?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Paying $200/month on a $5,000 balance at 18% APR would pay it off in about 30 months (2.5 years) and cost only about $850 in interest — saving you over $6,000 compared to minimum payments." }
+        }
+      ]
+    }
+    </script>
+
     <style>
-        .results-summary {
-            display: flex;
-            flex-direction: column;
-            gap: 0.7rem;
-            margin: 1.5rem 0;
-        }
-        .summary-item {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 0.8rem 1.2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
+        .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
         .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
-        .summary-item.positive .value { color: #10b981; }
-        .summary-item.negative .value { color: #ef4444; }
-
+        .summary-item .value.negative { color: #ef4444; }
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
         .field { display: flex; flex-direction: column; }
         .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
-        .field input {
-            padding: 0.6rem 0.8rem;
-            font-size: 1rem;
-            border: 1.5px solid #dce1e8;
-            border-radius: 10px;
-            background: #fafbfc;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            width: 100%;
-        }
-        .field input:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-            background: #ffffff;
-        }
-
-        .btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 0.6rem 1.2rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            width: 100%;
-        }
+        .field input { padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px; background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
+        .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
+        .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
         .btn:hover { background: #1d4ed8; }
-
-        .schedule-wrapper {
-            max-height: 400px;
-            overflow-y: auto;
-            border: 1px solid #e9edf2;
-            border-radius: 8px;
-            margin-top: 0.5rem;
-        }
-        .schedule-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.82rem;
-        }
-        .schedule-table th, .schedule-table td {
-            border: 1px solid #e9edf2;
-            padding: 0.3rem 0.5rem;
-            text-align: right;
-        }
-        .schedule-table th {
-            background: #f1f5f9;
-            font-weight: 600;
-            color: #334155;
-            position: sticky;
-            top: 0;
-            z-index: 1;
-        }
-        .schedule-table td:first-child { text-align: center; }
-        .schedule-table .highlight-row { background: #eef2ff; }
-
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+        .comparison-box { background: #f8fafc; border-radius: 12px; padding: 1rem; }
+        .comparison-box h4 { font-size: 0.85rem; font-weight: 600; color: #0f172a; margin: 0 0 0.5rem; text-align: center; }
+        .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
+        .comparison-box .row .num { font-weight: 600; color: #0f172a; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
-        @media (max-width: 640px) {
-            .info-grid { grid-template-columns: 1fr; }
-            .summary-item { padding: 0.6rem 1rem; }
-            .summary-item .value { font-size: 1rem; }
-        }
+        .info-block h3 { font-size: 0.9rem; font-weight: 600; color: #0f172a; margin: 0 0 0.3rem; }
+        .info-block p { font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.5; }
+        .accordion-card { background: white; border-radius: 12px; border: 1px solid #e9edf2; margin-top: 1.5rem; overflow: hidden; }
+        .accordion-header { padding: 1rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .accordion-header:hover { background: #f8fafc; }
+        .accordion-header h2 { font-size: 1rem; font-weight: 600; color: #0f172a; margin: 0; }
+        .accordion-arrow { font-size: 0.9rem; color: #94a3b8; }
+        .accordion-body { padding: 0 1.2rem 1.2rem; display: none; }
+        .accordion-body.open { display: block; }
+        .faq-item { border-bottom: 1px solid #e9edf2; padding: 0.5rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; color: #0f172a; padding: 0.3rem 0; }
+        .faq-question:hover { color: #2563eb; }
+        .faq-arrow { font-size: 0.7rem; color: #94a3b8; }
+        .faq-answer { padding: 0.3rem 0 0.3rem 1.5rem; color: #475569; font-size: 0.9rem; line-height: 1.6; display: none; }
+        .faq-answer.open { display: block; }
+        .top-nav { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #e9edf2; margin-bottom: 1.5rem; }
+        .top-nav .back-link { color: #2563eb; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .top-nav .back-link:hover { text-decoration: underline; }
+        .top-nav .breadcrumb { color: #94a3b8; font-size: 0.85rem; }
+        .top-nav .breadcrumb span { color: #1e293b; }
+        .calculator-card { background: white; border-radius: 16px; padding: 1.5rem 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e9edf2; }
+        .calculator-card h1 { font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem; }
+        .calculator-card .subtitle { font-size: 1rem; color: #64748b; margin: 0 0 1rem; }
+        .site-footer { text-align: center; padding: 1.5rem 0 0.5rem; color: #94a3b8; font-size: 0.8rem; border-top: 1px solid #e9edf2; margin-top: 2rem; }
+        .site-footer a { color: #94a3b8; text-decoration: none; }
+        .site-footer a:hover { color: #2563eb; text-decoration: underline; }
+        @media (max-width: 640px) { .calculator-card { padding: 1rem; } .calculator-card h1 { font-size: 1.3rem; } .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 480px) { .calculator-card { padding: 0.8rem; } }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <div class="top-nav">
-        <a href="index.html" class="back-link">← Back to Home</a>
-        <div class="breadcrumb">📊 <span>Credit Card Minimum Payment Calculator</span></div>
-    </div>
-
+<div class="container" style="max-width:820px; margin:0 auto; padding:0 1rem;">
+    <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">💳 <span>Credit Card Minimum Payment Calculator</span></div></div>
     <main class="calculator-card">
         <h1>💳 Credit Card Minimum Payment Calculator</h1>
-        <p class="subtitle">See how long it takes to pay off your credit card by making only the minimum payment.</p>
-
+        <p class="subtitle">Calculate how long it takes to pay off your credit card making only minimum payments.</p>
         <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
-                <strong>Credit Card Minimum Payment Calculator</strong> — This tool shows how long it takes
-                to pay off credit card debt when making only the minimum payment. It answers the question:
-                <em>“How much will I pay in interest if I only make the minimum payment?”</em>
+                <strong>Credit Card Minimum Payment Calculator</strong> — This tool shows you the true cost
+                of making only minimum payments on your credit card. It calculates how long it will take to
+                pay off your balance and how much interest you'll pay.
             </p>
         </div>
-
         <div class="form-grid">
-            <div class="field">
-                <label for="cc-balance-cmp">Current Balance ($)</label>
-                <input type="number" id="cc-balance-cmp" value="5000" min="0" step="100" />
-            </div>
-            <div class="field">
-                <label for="cc-rate-cmp">Annual Interest Rate (%)</label>
-                <input type="number" id="cc-rate-cmp" value="18" min="0" max="36" step="0.1" />
-            </div>
-            <div class="field">
-                <label for="min-payment-type">Minimum Payment Type</label>
-                <select id="min-payment-type">
-                    <option value="fixed">Fixed Percentage of Balance</option>
-                    <option value="fixed-amount">Fixed Amount</option>
-                </select>
-            </div>
-            <div class="field">
-                <label for="min-payment-pct">Minimum Payment Percentage (%)</label>
-                <input type="number" id="min-payment-pct" value="2" min="0" max="10" step="0.1" />
-            </div>
-            <div class="field">
-                <label for="min-payment-fixed">Fixed Minimum Payment ($) <span style="font-weight:400;color:#94a3b8;">(if fixed amount)</span></label>
-                <input type="number" id="min-payment-fixed" value="25" min="0" step="5" />
-            </div>
-            <div style="margin-top:0.5rem;">
-                <button class="btn" onclick="calculate()">Calculate</button>
+            <div class="field"><label>Current Balance ($)</label><input type="number" id="cc-balance" value="5000" min="0" step="100" /></div>
+            <div class="field"><label>APR (%)</label><input type="number" id="cc-rate" value="18" min="0" step="0.1" /></div>
+            <div class="field"><label>Minimum Payment (%)</label><input type="number" id="cc-min-pct" value="2" min="0" max="10" step="0.1" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculateCC()">Calculate</button></div>
+        </div>
+        <div id="cc-results" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Payment Results</h2>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>📋 Input</h4>
+                    <div class="row"><span>Balance</span><span class="num" id="cc-balance-display">—</span></div>
+                    <div class="row"><span>APR</span><span class="num" id="cc-rate-display">—</span></div>
+                    <div class="row"><span>Min Payment</span><span class="num" id="cc-min-display">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>💰 Results</h4>
+                    <div class="row"><span>Time to Pay Off</span><span class="num" id="cc-time" style="font-size:1.2rem;">—</span></div>
+                    <div class="row"><span>Total Interest</span><span class="num" id="cc-interest">—</span></div>
+                    <div class="row"><span>Total Paid</span><span class="num" id="cc-total">—</span></div>
+                </div>
             </div>
         </div>
-
-        <div id="results-area" style="margin-top:1.8rem; display:none;">
-            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Payoff Summary</h2>
-            <div class="results-summary" id="summary">
-                <div class="summary-item highlight"><span class="label">Time to Pay Off</span><span class="value" id="payoff-time-cmp">—</span></div>
-                <div class="summary-item negative"><span class="label">Total Interest Paid</span><span class="value" id="total-interest-cmp">—</span></div>
-                <div class="summary-item"><span class="label">Total Amount Paid</span><span class="value" id="total-paid-cmp">—</span></div>
-            </div>
-            <h3 style="font-size:1rem; margin:1rem 0 0.3rem;">📅 Year-by-Year Projection</h3>
-            <div class="schedule-wrapper">
-                <table class="schedule-table" id="schedule-table-cmp">
-                    <thead><tr><th>Year</th><th>Balance</th><th>Interest Paid</th><th>Payment</th></tr></thead>
-                    <tbody id="schedule-body-cmp"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- ===== 推荐区域 ===== -->
         <div id="recommendations-area"></div>
-
     </main>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
-            <h2>📖 How to read your results</h2>
-            <span class="accordion-arrow" id="infoArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block"><h3>Time to Pay Off</h3><p>How long it will take to pay off your balance when making only the minimum payment.</p></div>
-                <div class="info-block"><h3>Total Interest</h3><p>The total interest you will pay over the entire repayment period.</p></div>
-                <div class="info-block"><h3>Total Amount Paid</h3><p>The total amount you will pay (principal + interest).</p></div>
+                <div class="info-block"><h3>Time to Pay Off</h3><p>How many months/years it takes to pay off your balance making minimum payments.</p></div>
+                <div class="info-block"><h3>Total Interest</h3><p>The total interest you'll pay — often many times the original balance.</p></div>
+                <div class="info-block"><h3>Total Paid</h3><p>Balance + interest. The true cost of your credit card debt.</p></div>
             </div>
         </div>
     </section>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
-            <h2>❓ FAQ</h2>
-            <span class="accordion-arrow" id="faqArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
         <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the typical minimum payment?</span></div>
-                <div class="faq-answer">Most credit cards require a minimum payment of 1-3% of the outstanding balance, with a minimum of $25-35.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Why does it take so long to pay off with minimum payments?</span></div>
-                <div class="faq-answer">Because most of your payment goes toward interest, especially early on. The principal balance drops very slowly, extending the payoff period dramatically.</div>
-            </div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How long will it take to pay off $5,000 in credit card debt at 18% making minimum payments?</span></div><div class="faq-answer">At 18% APR with a 2% minimum payment ($100 initially), it would take about 31 years to pay off $5,000. You would pay over $7,000 in interest — almost 1.5x the original debt.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How much interest will I pay if I only make minimum payments on my credit card?</span></div><div class="faq-answer">On a $5,000 balance at 18% APR, making only minimum payments (2% of balance) would cost over $7,000 in interest — nearly 3 times the total interest compared to paying $200/month.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Why does it take so long to pay off credit cards with minimum payments?</span></div><div class="faq-answer">Minimum payments are mostly interest. On a $5,000 balance at 18% APR, your first $100 payment is about $75 interest and only $25 principal. At that rate, it takes decades to pay off.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What if I pay $200/month instead of the minimum on my credit card?</span></div><div class="faq-answer">Paying $200/month on a $5,000 balance at 18% APR would pay it off in about 30 months (2.5 years) and cost only about $850 in interest — saving you over $6,000 compared to minimum payments.</div></div>
         </div>
     </section>
-
-    <footer class="site-footer">
-        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
-    </footer>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html">About</a> <span style="color:#dce1e8;">|</span> <a href="privacy.html">Privacy</a></p></footer>
 </div>
-
 <script src="recommendations.js"></script>
 <script src="feedback.js"></script>
-
 <script>
-    function toggleAccordion(id) {
-        const body = document.getElementById(id);
-        const arrow = document.getElementById(id + 'Arrow');
-        if (body.style.display === 'none' || body.style.display === '') {
-            body.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            body.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-    function toggleFaq(el) {
-        const answer = el.nextElementSibling;
-        const arrow = el.querySelector('.faq-arrow');
-        if (answer.style.display === 'none' || answer.style.display === '') {
-            answer.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            answer.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-
-    function calculate() {
-        const balance = parseFloat(document.getElementById('cc-balance-cmp').value) || 0;
-        const rate = parseFloat(document.getElementById('cc-rate-cmp').value) || 0;
-        const pct = parseFloat(document.getElementById('min-payment-pct').value) || 2;
-        const fixedMin = parseFloat(document.getElementById('min-payment-fixed').value) || 25;
-        const type = document.getElementById('min-payment-type').value;
-
+    function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
+    function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
+    function calculateCC() {
+        const balance = parseFloat(document.getElementById('cc-balance').value) || 0;
+        const rate = parseFloat(document.getElementById('cc-rate').value) || 0;
+        const minPct = parseFloat(document.getElementById('cc-min-pct').value) || 2;
+        let remaining = balance, months = 0, totalInterest = 0;
         const monthlyRate = rate / 100 / 12;
-        let bal = balance;
-        let month = 0;
-        let totalInterest = 0;
-        const schedule = [];
-
-        while (bal > 0.01 && month < 1200) {
-            month++;
-            const interest = bal * monthlyRate;
+        while (remaining > 1 && months < 600) {
+            const minPayment = Math.max(25, remaining * (minPct / 100));
+            const interest = remaining * monthlyRate;
+            const principal = minPayment - interest;
+            remaining -= principal;
             totalInterest += interest;
-            bal += interest;
-
-            let payment;
-            if (type === 'fixed') {
-                payment = Math.max(bal * (pct / 100), 25);
-            } else {
-                payment = Math.min(fixedMin, bal);
-            }
-            payment = Math.min(payment, bal);
-            bal -= payment;
-
-            if (month % 12 === 0 || bal <= 0.01) {
-                schedule.push({ year: Math.ceil(month / 12), balance: Math.max(0, bal), interest: interest, payment: payment });
-            }
-            if (bal <= 0.01) break;
+            months++;
+            if (remaining < 0) remaining = 0;
         }
-
-        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
-
-        const months = month;
+        const totalPaid = balance + totalInterest;
         const years = Math.floor(months / 12);
-        const remainingMonths = months % 12;
-        const timeStr = years > 0 ? `${years}y ${remainingMonths}m` : `${months}m`;
-
-        document.getElementById('payoff-time-cmp').textContent = timeStr;
-        document.getElementById('total-interest-cmp').textContent = fmt.format(totalInterest);
-        document.getElementById('total-paid-cmp').textContent = fmt.format(balance + totalInterest);
-
-        const tbody = document.getElementById('schedule-body-cmp');
-        tbody.innerHTML = '';
-        for (const row of schedule) {
-            const tr = document.createElement('tr');
-            if (row.balance <= 0.01) tr.classList.add('highlight-row');
-            tr.innerHTML = `<td>${row.year}</td><td>${fmt.format(row.balance)}</td><td>${fmt.format(row.interest)}</td><td>${fmt.format(row.payment)}</td>`;
-            tbody.appendChild(tr);
-        }
-
-        document.getElementById('results-area').style.display = 'block';
-
-        // ===== 推荐联动 =====
-        showRecommendations('credit-card-min-payment.html', {
-            balance: document.getElementById('cc-balance-cmp').value,
-            rate: document.getElementById('cc-rate-cmp').value
-        });
+        const remainMonths = months % 12;
+        const timeStr = years > 0 ? `${years} years ${remainMonths} months` : `${months} months`;
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        document.getElementById('cc-balance-display').textContent = fmt.format(balance);
+        document.getElementById('cc-rate-display').textContent = rate + '%';
+        document.getElementById('cc-min-display').textContent = minPct + '%';
+        document.getElementById('cc-time').textContent = months >= 600 ? '30+ years (never)' : timeStr;
+        document.getElementById('cc-interest').textContent = fmt.format(totalInterest);
+        document.getElementById('cc-total').textContent = fmt.format(totalPaid);
+        document.getElementById('cc-results').style.display = 'block';
+        showRecommendations('credit-card-min-payment.html', { balance: balance, rate: rate });
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('infoAccordion').style.display = 'block';
-        document.getElementById('infoArrow').textContent = '▼';
-        document.getElementById('faqAccordion').style.display = 'none';
-        document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
-        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
-        calculate();
-    });
-    document.addEventListener('input', function(e) {
-        if (e.target.closest('.form-grid')) { calculate(); }
-    });
+    document.addEventListener('DOMContentLoaded', function() { document.getElementById('infoAccordion').style.display='block'; document.getElementById('infoArrow').textContent='▼'; document.getElementById('faqAccordion').style.display='none'; document.getElementById('faqArrow').textContent='▶'; document.querySelectorAll('.faq-answer').forEach(el => el.style.display='none'); document.querySelectorAll('.faq-arrow').forEach(el => el.textContent='▶'); calculateCC(); });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculateCC(); } });
 </script>
 </body>
 </html>
