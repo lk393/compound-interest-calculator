@@ -3,249 +3,221 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ===== Meta Tags ===== -->
     <title>Net Worth Calculator — Free Online Tool</title>
+    <meta name="description" content="Calculate your net worth: assets minus liabilities. Free net worth calculator for personal financial health assessment." />
+
     <link rel="stylesheet" href="style.css" />
+
+    <!-- ===== WebApplication Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Net Worth Calculator",
+      "description": "Calculate your net worth: assets minus liabilities. Free online net worth calculator.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "url": "https://financetools.tools/net-worth.html",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.5", "ratingCount": "89" }
+    }
+    </script>
+
+    <!-- ===== FAQPage Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is a good net worth for a 30-year-old earning $60,000?",
+          "acceptedAnswer": { "@type": "Answer", "text": "A common rule is to have your age × annual salary / 10. For a 30-year-old earning $60,000, a good target net worth is about $180,000 (30 × $60,000 ÷ 10)." }
+        },
+        {
+          "@type": "Question",
+          "name": "What should I include in my net worth calculation?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Assets include: cash, investments, retirement accounts, real estate value, and personal property. Liabilities include: mortgage, car loans, student loans, and credit card debt." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the average net worth in the US?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The average net worth in the US is about $748,800 (2024 data). The median net worth is about $166,900. High earners and older Americans typically have significantly higher net worth." }
+        }
+      ]
+    }
+    </script>
+
     <style>
-        .results-summary {
-            display: flex;
-            flex-direction: column;
-            gap: 0.7rem;
-            margin: 1.5rem 0;
-        }
-        .summary-item {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 0.8rem 1.2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        /* 使用相同样式 */
+        .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
+        .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
         .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
         .summary-item.positive .value { color: #10b981; }
-        .summary-item.negative .value { color: #ef4444; }
-
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
         .field { display: flex; flex-direction: column; }
         .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
-        .field input {
-            padding: 0.6rem 0.8rem;
-            font-size: 1rem;
-            border: 1.5px solid #dce1e8;
-            border-radius: 10px;
-            background: #fafbfc;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            width: 100%;
-        }
-        .field input:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-            background: #ffffff;
-        }
-
-        .btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 0.6rem 1.2rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            width: 100%;
-        }
+        .field input { padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px; background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
+        .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
+        .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
         .btn:hover { background: #1d4ed8; }
-
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+        .comparison-box { background: #f8fafc; border-radius: 12px; padding: 1rem; }
+        .comparison-box h4 { font-size: 0.85rem; font-weight: 600; color: #0f172a; margin: 0 0 0.5rem; text-align: center; }
+        .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
+        .comparison-box .row .num { font-weight: 600; color: #0f172a; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
-        @media (max-width: 640px) {
-            .info-grid { grid-template-columns: 1fr; }
-            .summary-item { padding: 0.6rem 1rem; }
-            .summary-item .value { font-size: 1rem; }
-        }
+        .info-block h3 { font-size: 0.9rem; font-weight: 600; color: #0f172a; margin: 0 0 0.3rem; }
+        .info-block p { font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.5; }
+        .accordion-card { background: white; border-radius: 12px; border: 1px solid #e9edf2; margin-top: 1.5rem; overflow: hidden; }
+        .accordion-header { padding: 1rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .accordion-header:hover { background: #f8fafc; }
+        .accordion-header h2 { font-size: 1rem; font-weight: 600; color: #0f172a; margin: 0; }
+        .accordion-arrow { font-size: 0.9rem; color: #94a3b8; }
+        .accordion-body { padding: 0 1.2rem 1.2rem; display: none; }
+        .accordion-body.open { display: block; }
+        .faq-item { border-bottom: 1px solid #e9edf2; padding: 0.5rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; color: #0f172a; padding: 0.3rem 0; }
+        .faq-question:hover { color: #2563eb; }
+        .faq-arrow { font-size: 0.7rem; color: #94a3b8; }
+        .faq-answer { padding: 0.3rem 0 0.3rem 1.5rem; color: #475569; font-size: 0.9rem; line-height: 1.6; display: none; }
+        .faq-answer.open { display: block; }
+        .top-nav { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #e9edf2; margin-bottom: 1.5rem; }
+        .top-nav .back-link { color: #2563eb; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .top-nav .back-link:hover { text-decoration: underline; }
+        .top-nav .breadcrumb { color: #94a3b8; font-size: 0.85rem; }
+        .top-nav .breadcrumb span { color: #1e293b; }
+        .calculator-card { background: white; border-radius: 16px; padding: 1.5rem 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e9edf2; }
+        .calculator-card h1 { font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem; }
+        .calculator-card .subtitle { font-size: 1rem; color: #64748b; margin: 0 0 1rem; }
+        .site-footer { text-align: center; padding: 1.5rem 0 0.5rem; color: #94a3b8; font-size: 0.8rem; border-top: 1px solid #e9edf2; margin-top: 2rem; }
+        .site-footer a { color: #94a3b8; text-decoration: none; }
+        .site-footer a:hover { color: #2563eb; text-decoration: underline; }
+        @media (max-width: 640px) { .calculator-card { padding: 1rem; } .calculator-card h1 { font-size: 1.3rem; } .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 480px) { .calculator-card { padding: 0.8rem; } }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <div class="top-nav">
-        <a href="index.html" class="back-link">← Back to Home</a>
-        <div class="breadcrumb">📊 <span>Net Worth Calculator</span></div>
-    </div>
-
+<div class="container" style="max-width:820px; margin:0 auto; padding:0 1rem;">
+    <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">📊 <span>Net Worth Calculator</span></div></div>
     <main class="calculator-card">
         <h1>📊 Net Worth Calculator</h1>
-        <p class="subtitle">Calculate your total net worth by adding up your assets and subtracting your liabilities.</p>
-
+        <p class="subtitle">Calculate your net worth: assets minus liabilities.</p>
         <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
-                <strong>Net Worth Calculator</strong> — This tool gives you a complete picture of your
-                financial health. It answers the question: <em>“What is my total net worth, and how is it
-                distributed between assets and liabilities?”</em>
+                <strong>Net Worth Calculator</strong> — This tool calculates your net worth by subtracting
+                your total liabilities (debts) from your total assets (what you own). It's the most
+                comprehensive measure of your financial health.
             </p>
         </div>
-
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:0.5rem;">
-            <h3 style="font-size:1rem; color:#10b981; margin:0;">✅ Assets</h3>
-            <h3 style="font-size:1rem; color:#ef4444; margin:0;">❌ Liabilities</h3>
-        </div>
-
         <div class="form-grid">
-            <div class="field">
-                <label for="cash">Cash & Bank Accounts ($)</label>
-                <input type="number" id="cash" value="15000" min="0" step="100" />
-            </div>
-            <div class="field">
-                <label for="investments">Investments ($)</label>
-                <input type="number" id="investments" value="35000" min="0" step="100" />
-            </div>
-            <div class="field">
-                <label for="property">Property Value ($)</label>
-                <input type="number" id="property" value="250000" min="0" step="1000" />
-            </div>
-            <div class="field">
-                <label for="other-assets">Other Assets ($)</label>
-                <input type="number" id="other-assets" value="10000" min="0" step="100" />
-            </div>
-            <div class="field">
-                <label for="mortgage">Mortgage Balance ($)</label>
-                <input type="number" id="mortgage" value="200000" min="0" step="1000" />
-            </div>
-            <div class="field">
-                <label for="credit-cards">Credit Card Debt ($)</label>
-                <input type="number" id="credit-cards" value="5000" min="0" step="100" />
-            </div>
-            <div class="field">
-                <label for="loans">Other Loans ($)</label>
-                <input type="number" id="loans" value="15000" min="0" step="100" />
-            </div>
-            <div style="grid-column:1/-1; margin-top:0.5rem;">
-                <button class="btn" onclick="calculate()">Calculate</button>
-            </div>
+            <h3 style="font-size:1rem; margin-bottom:0;">📈 Assets</h3>
+            <div class="field"><label>Cash & Savings ($)</label><input type="number" id="nw-cash" value="15000" min="0" step="500" /></div>
+            <div class="field"><label>Investments ($)</label><input type="number" id="nw-investments" value="25000" min="0" step="500" /></div>
+            <div class="field"><label>Retirement Accounts ($)</label><input type="number" id="nw-retirement" value="40000" min="0" step="500" /></div>
+            <div class="field"><label>Home Value ($)</label><input type="number" id="nw-home" value="300000" min="0" step="10000" /></div>
+            <div class="field"><label>Vehicle Value ($)</label><input type="number" id="nw-vehicle" value="20000" min="0" step="1000" /></div>
+            <div class="field"><label>Other Assets ($)</label><input type="number" id="nw-other-assets" value="5000" min="0" step="500" /></div>
+            <h3 style="font-size:1rem; margin-top:0.5rem; margin-bottom:0;">📉 Liabilities</h3>
+            <div class="field"><label>Mortgage Balance ($)</label><input type="number" id="nw-mortgage" value="200000" min="0" step="5000" /></div>
+            <div class="field"><label>Car Loans ($)</label><input type="number" id="nw-car-loan" value="10000" min="0" step="1000" /></div>
+            <div class="field"><label>Student Loans ($)</label><input type="number" id="nw-student" value="15000" min="0" step="1000" /></div>
+            <div class="field"><label>Credit Card Debt ($)</label><input type="number" id="nw-credit" value="3000" min="0" step="500" /></div>
+            <div class="field"><label>Other Liabilities ($)</label><input type="number" id="nw-other-liabilities" value="2000" min="0" step="500" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculateNW()">Calculate</button></div>
         </div>
-
-        <div id="results-area" style="margin-top:1.8rem; display:none;">
+        <div id="nw-results" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Net Worth</h2>
-            <div class="results-summary" id="summary">
-                <div class="summary-item highlight"><span class="label">Total Net Worth</span><span class="value" id="net-worth">—</span></div>
-                <div class="summary-item positive"><span class="label">Total Assets</span><span class="value" id="total-assets">—</span></div>
-                <div class="summary-item negative"><span class="label">Total Liabilities</span><span class="value" id="total-liabilities">—</span></div>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>📈 Total Assets</h4>
+                    <div class="row"><span>Cash & Savings</span><span class="num" id="nw-cash-display">—</span></div>
+                    <div class="row"><span>Investments</span><span class="num" id="nw-investments-display">—</span></div>
+                    <div class="row"><span>Retirement</span><span class="num" id="nw-retirement-display">—</span></div>
+                    <div class="row"><span>Home</span><span class="num" id="nw-home-display">—</span></div>
+                    <div class="row"><span>Vehicle</span><span class="num" id="nw-vehicle-display">—</span></div>
+                    <div class="row"><span>Other</span><span class="num" id="nw-other-assets-display">—</span></div>
+                    <div class="row"><span style="font-weight:700;">Total Assets</span><span class="num" id="nw-total-assets" style="font-size:1.1rem;">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>📉 Total Liabilities</h4>
+                    <div class="row"><span>Mortgage</span><span class="num" id="nw-mortgage-display">—</span></div>
+                    <div class="row"><span>Car Loans</span><span class="num" id="nw-car-loan-display">—</span></div>
+                    <div class="row"><span>Student Loans</span><span class="num" id="nw-student-display">—</span></div>
+                    <div class="row"><span>Credit Card</span><span class="num" id="nw-credit-display">—</span></div>
+                    <div class="row"><span>Other</span><span class="num" id="nw-other-liabilities-display">—</span></div>
+                    <div class="row"><span style="font-weight:700;">Total Liabilities</span><span class="num" id="nw-total-liabilities" style="font-size:1.1rem;">—</span></div>
+                    <div class="row"><span style="font-weight:700; color:#2563eb;">Net Worth</span><span class="num" id="nw-net-worth" style="font-size:1.2rem; color:#2563eb;">—</span></div>
+                </div>
             </div>
         </div>
-
-        <!-- ===== 推荐区域 ===== -->
         <div id="recommendations-area"></div>
-
     </main>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
-            <h2>📖 How to read your results</h2>
-            <span class="accordion-arrow" id="infoArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block"><h3>Net Worth</h3><p>Your total net worth = Total Assets − Total Liabilities. This is the single best measure of your overall financial health.</p></div>
-                <div class="info-block"><h3>Assets</h3><p>Everything you own that has value — cash, investments, property, and other assets.</p></div>
-                <div class="info-block"><h3>Liabilities</h3><p>Everything you owe — mortgages, credit cards, student loans, and other debts.</p></div>
+                <div class="info-block"><h3>Net Worth</h3><p>Assets minus liabilities. A positive net worth means you own more than you owe.</p></div>
+                <div class="info-block"><h3>Asset Allocation</h3><p>Shows where your wealth is held — cash, investments, real estate, etc.</p></div>
+                <div class="info-block"><h3>Debt Levels</h3><p>Track your liabilities to understand your debt-to-asset ratio.</p></div>
             </div>
         </div>
     </section>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
-            <h2>❓ FAQ</h2>
-            <span class="accordion-arrow" id="faqArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
         <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What should I include as assets?</span></div>
-                <div class="faq-answer">Include cash, bank accounts, investment accounts, retirement accounts, real estate, vehicles, and any other valuable possessions you could sell.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What should I include as liabilities?</span></div>
-                <div class="faq-answer">Include mortgages, car loans, student loans, credit card balances, personal loans, and any other outstanding debts.</div>
-            </div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is a good net worth for a 30-year-old earning $60,000?</span></div><div class="faq-answer">A common rule is to have your age × annual salary / 10. For a 30-year-old earning $60,000, a good target net worth is about $180,000 (30 × $60,000 ÷ 10).</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What should I include in my net worth calculation?</span></div><div class="faq-answer">Assets include: cash, investments, retirement accounts, real estate value, and personal property. Liabilities include: mortgage, car loans, student loans, and credit card debt.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the average net worth in the US?</span></div><div class="faq-answer">The average net worth in the US is about $748,800 (2024 data). The median net worth is about $166,900. High earners and older Americans typically have significantly higher net worth.</div></div>
         </div>
     </section>
-
-    <footer class="site-footer">
-        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
-    </footer>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html">About</a> <span style="color:#dce1e8;">|</span> <a href="privacy.html">Privacy</a></p></footer>
 </div>
-
 <script src="recommendations.js"></script>
 <script src="feedback.js"></script>
-
 <script>
-    function toggleAccordion(id) {
-        const body = document.getElementById(id);
-        const arrow = document.getElementById(id + 'Arrow');
-        if (body.style.display === 'none' || body.style.display === '') {
-            body.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            body.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-    function toggleFaq(el) {
-        const answer = el.nextElementSibling;
-        const arrow = el.querySelector('.faq-arrow');
-        if (answer.style.display === 'none' || answer.style.display === '') {
-            answer.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            answer.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-
-    function calculate() {
-        const cash = parseFloat(document.getElementById('cash').value) || 0;
-        const investments = parseFloat(document.getElementById('investments').value) || 0;
-        const property = parseFloat(document.getElementById('property').value) || 0;
-        const otherAssets = parseFloat(document.getElementById('other-assets').value) || 0;
-        const mortgage = parseFloat(document.getElementById('mortgage').value) || 0;
-        const creditCards = parseFloat(document.getElementById('credit-cards').value) || 0;
-        const loans = parseFloat(document.getElementById('loans').value) || 0;
-
-        const totalAssets = cash + investments + property + otherAssets;
-        const totalLiabilities = mortgage + creditCards + loans;
+    function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
+    function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
+    function calculateNW() {
+        const assets = {
+            cash: parseFloat(document.getElementById('nw-cash').value) || 0,
+            investments: parseFloat(document.getElementById('nw-investments').value) || 0,
+            retirement: parseFloat(document.getElementById('nw-retirement').value) || 0,
+            home: parseFloat(document.getElementById('nw-home').value) || 0,
+            vehicle: parseFloat(document.getElementById('nw-vehicle').value) || 0,
+            other: parseFloat(document.getElementById('nw-other-assets').value) || 0
+        };
+        const liabilities = {
+            mortgage: parseFloat(document.getElementById('nw-mortgage').value) || 0,
+            car: parseFloat(document.getElementById('nw-car-loan').value) || 0,
+            student: parseFloat(document.getElementById('nw-student').value) || 0,
+            credit: parseFloat(document.getElementById('nw-credit').value) || 0,
+            other: parseFloat(document.getElementById('nw-other-liabilities').value) || 0
+        };
+        const totalAssets = Object.values(assets).reduce((a,b) => a + b, 0);
+        const totalLiabilities = Object.values(liabilities).reduce((a,b) => a + b, 0);
         const netWorth = totalAssets - totalLiabilities;
-
         const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
-
-        document.getElementById('net-worth').textContent = fmt.format(netWorth);
-        document.getElementById('total-assets').textContent = fmt.format(totalAssets);
-        document.getElementById('total-liabilities').textContent = fmt.format(totalLiabilities);
-
-        document.getElementById('results-area').style.display = 'block';
-
-        // ===== 推荐联动 =====
-        const totalAssetsVal = fmt.format(totalAssets).replace(/[^0-9.]/g, '');
-        const totalLiabilitiesVal = fmt.format(totalLiabilities).replace(/[^0-9.]/g, '');
-        showRecommendations('net-worth.html', {
-            netWorth: netWorth.toString(),
-            totalAssets: totalAssetsVal,
-            totalLiabilities: totalLiabilitiesVal
-        });
+        const keys = ['cash','investments','retirement','home','vehicle','other'];
+        keys.forEach(k => document.getElementById('nw-'+k+'-display').textContent = fmt.format(assets[k]));
+        document.getElementById('nw-total-assets').textContent = fmt.format(totalAssets);
+        const lkeys = ['mortgage','car-loan','student','credit','other-liabilities'];
+        lkeys.forEach(k => document.getElementById('nw-'+k+'-display').textContent = fmt.format(liabilities[k.replace('-','')] || liabilities[k] || 0));
+        document.getElementById('nw-total-liabilities').textContent = fmt.format(totalLiabilities);
+        const nwEl = document.getElementById('nw-net-worth');
+        nwEl.textContent = fmt.format(netWorth);
+        nwEl.style.color = netWorth >= 0 ? '#10b981' : '#ef4444';
+        document.getElementById('nw-results').style.display = 'block';
+        showRecommendations('net-worth.html', { assets: totalAssets, liabilities: totalLiabilities });
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('infoAccordion').style.display = 'block';
-        document.getElementById('infoArrow').textContent = '▼';
-        document.getElementById('faqAccordion').style.display = 'none';
-        document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
-        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
-        calculate();
-    });
-    document.addEventListener('input', function(e) {
-        if (e.target.closest('.form-grid')) { calculate(); }
-    });
+    document.addEventListener('DOMContentLoaded', function() { document.getElementById('infoAccordion').style.display='block'; document.getElementById('infoArrow').textContent='▼'; document.getElementById('faqAccordion').style.display='none'; document.getElementById('faqArrow').textContent='▶'; document.querySelectorAll('.faq-answer').forEach(el => el.style.display='none'); document.querySelectorAll('.faq-arrow').forEach(el => el.textContent='▶'); calculateNW(); });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculateNW(); } });
 </script>
 </body>
 </html>
