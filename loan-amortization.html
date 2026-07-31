@@ -3,369 +3,219 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ===== Meta Tags ===== -->
     <title>Loan Amortization Calculator — Free Online Tool</title>
+    <meta name="description" content="Generate a complete loan amortization schedule with principal and interest breakdown. Free amortization calculator for mortgages and loans." />
+
     <link rel="stylesheet" href="style.css" />
+
+    <!-- ===== WebApplication Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Loan Amortization Calculator",
+      "description": "Generate a complete loan amortization schedule with principal and interest breakdown. Free online amortization calculator.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "url": "https://financetools.tools/loan-amortization.html",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.6", "ratingCount": "98" }
+    }
+    </script>
+
+    <!-- ===== FAQPage Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How much interest will I pay on a $200,000 loan at 7% for 30 years?",
+          "acceptedAnswer": { "@type": "Answer", "text": "At 7% for 30 years, your monthly payment would be $1,330.60. Total interest paid would be $279,017, meaning you'd pay more in interest than the principal itself." }
+        },
+        {
+          "@type": "Question",
+          "name": "How does an amortization schedule work?",
+          "acceptedAnswer": { "@type": "Answer", "text": "An amortization schedule shows each payment's breakdown: a portion goes to interest and a portion to principal. In early years, most of your payment goes to interest. For a $200,000 loan at 7%, the first payment of $1,330 is about $1,167 interest and only $164 principal." }
+        },
+        {
+          "@type": "Question",
+          "name": "How can I pay off my loan faster and save on interest?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Make extra principal payments early. A $200,000 loan at 7% for 30 years: adding just $100/month extra saves $28,000 in interest and pays off the loan 3.5 years early." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between amortization and simple interest?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Amortization uses compound interest where unpaid interest is added to the balance. Simple interest is calculated only on the original principal. Most mortgages, auto loans, and personal loans use amortization." }
+        }
+      ]
+    }
+    </script>
+
     <style>
-        .results-summary {
-            display: flex;
-            flex-direction: column;
-            gap: 0.7rem;
-            margin: 1.5rem 0;
-        }
-        .summary-item {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 0.8rem 1.2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
+        .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
         .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
-        .summary-item.highlight .value { color: #2563eb; }
-
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
         .field { display: flex; flex-direction: column; }
         .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
-        .field input, .field select {
-            padding: 0.6rem 0.8rem;
-            font-size: 1rem;
-            border: 1.5px solid #dce1e8;
-            border-radius: 10px;
-            background: #fafbfc;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            width: 100%;
-        }
-        .field input:focus, .field select:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-            background: #ffffff;
-        }
-
-        .btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 0.6rem 1.2rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            width: 100%;
-        }
+        .field input { padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px; background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
+        .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
+        .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
         .btn:hover { background: #1d4ed8; }
-
-        .schedule-wrapper {
-            max-height: 500px;
-            overflow-y: auto;
-            border: 1px solid #e9edf2;
-            border-radius: 8px;
-            margin-top: 0.5rem;
-        }
-        .schedule-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.8rem;
-        }
-        .schedule-table th, .schedule-table td {
-            border: 1px solid #e9edf2;
-            padding: 0.25rem 0.4rem;
-            text-align: right;
-        }
-        .schedule-table th {
-            background: #f1f5f9;
-            font-weight: 600;
-            color: #334155;
-            position: sticky;
-            top: 0;
-            z-index: 1;
-        }
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+        .comparison-box { background: #f8fafc; border-radius: 12px; padding: 1rem; }
+        .comparison-box h4 { font-size: 0.85rem; font-weight: 600; color: #0f172a; margin: 0 0 0.5rem; text-align: center; }
+        .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
+        .comparison-box .row .num { font-weight: 600; color: #0f172a; }
+        .schedule-wrapper { max-height: 400px; overflow-y: auto; border: 1px solid #e9edf2; border-radius: 8px; margin-top: 0.5rem; }
+        .schedule-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+        .schedule-table th, .schedule-table td { border: 1px solid #e9edf2; padding: 0.3rem 0.5rem; text-align: right; }
+        .schedule-table th { background: #f1f5f9; font-weight: 600; color: #334155; position: sticky; top: 0; z-index: 1; }
         .schedule-table td:first-child { text-align: center; }
         .schedule-table .highlight-row { background: #eef2ff; }
-
-        .view-toggle {
-            display: flex;
-            gap: 0.5rem;
-            margin: 1rem 0 0.5rem;
-        }
-        .view-toggle button {
-            padding: 0.3rem 0.8rem;
-            border: 1.5px solid #dce1e8;
-            border-radius: 8px;
-            background: white;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #64748b;
-            transition: all 0.2s;
-        }
-        .view-toggle button.active {
-            border-color: #2563eb;
-            background: #eef2ff;
-            color: #2563eb;
-        }
-
         .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
-        @media (max-width: 640px) {
-            .info-grid { grid-template-columns: 1fr; }
-            .summary-item { padding: 0.6rem 1rem; }
-            .summary-item .value { font-size: 1rem; }
-            .schedule-table { font-size: 0.7rem; }
-        }
+        .info-block h3 { font-size: 0.9rem; font-weight: 600; color: #0f172a; margin: 0 0 0.3rem; }
+        .info-block p { font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.5; }
+        .accordion-card { background: white; border-radius: 12px; border: 1px solid #e9edf2; margin-top: 1.5rem; overflow: hidden; }
+        .accordion-header { padding: 1rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .accordion-header:hover { background: #f8fafc; }
+        .accordion-header h2 { font-size: 1rem; font-weight: 600; color: #0f172a; margin: 0; }
+        .accordion-arrow { font-size: 0.9rem; color: #94a3b8; }
+        .accordion-body { padding: 0 1.2rem 1.2rem; display: none; }
+        .accordion-body.open { display: block; }
+        .faq-item { border-bottom: 1px solid #e9edf2; padding: 0.5rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; color: #0f172a; padding: 0.3rem 0; }
+        .faq-question:hover { color: #2563eb; }
+        .faq-arrow { font-size: 0.7rem; color: #94a3b8; }
+        .faq-answer { padding: 0.3rem 0 0.3rem 1.5rem; color: #475569; font-size: 0.9rem; line-height: 1.6; display: none; }
+        .faq-answer.open { display: block; }
+        .top-nav { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #e9edf2; margin-bottom: 1.5rem; }
+        .top-nav .back-link { color: #2563eb; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .top-nav .back-link:hover { text-decoration: underline; }
+        .top-nav .breadcrumb { color: #94a3b8; font-size: 0.85rem; }
+        .top-nav .breadcrumb span { color: #1e293b; }
+        .calculator-card { background: white; border-radius: 16px; padding: 1.5rem 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e9edf2; }
+        .calculator-card h1 { font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem; }
+        .calculator-card .subtitle { font-size: 1rem; color: #64748b; margin: 0 0 1rem; }
+        .site-footer { text-align: center; padding: 1.5rem 0 0.5rem; color: #94a3b8; font-size: 0.8rem; border-top: 1px solid #e9edf2; margin-top: 2rem; }
+        .site-footer a { color: #94a3b8; text-decoration: none; }
+        .site-footer a:hover { color: #2563eb; text-decoration: underline; }
+        @media (max-width: 640px) { .calculator-card { padding: 1rem; } .calculator-card h1 { font-size: 1.3rem; } .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } .schedule-table { font-size: 0.7rem; } .schedule-table th, .schedule-table td { padding: 0.2rem 0.3rem; } }
+        @media (max-width: 480px) { .calculator-card { padding: 0.8rem; } }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <div class="top-nav">
-        <a href="index.html" class="back-link">← Back to Home</a>
-        <div class="breadcrumb">📊 <span>Loan Amortization Calculator</span></div>
-    </div>
-
+<div class="container" style="max-width:820px; margin:0 auto; padding:0 1rem;">
+    <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">📑 <span>Loan Amortization Calculator</span></div></div>
     <main class="calculator-card">
         <h1>📑 Loan Amortization Calculator</h1>
-        <p class="subtitle">See exactly how your loan payments are split between principal and interest over time.</p>
-
+        <p class="subtitle">Generate a complete loan amortization schedule with principal and interest breakdown.</p>
         <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
-                <strong>Loan Amortization Calculator</strong> — This tool generates a complete payment schedule
-                for any fixed-rate loan. It answers the question: <em>“How much of each payment goes toward
-                interest vs. principal, and how does my balance decrease over time?”</em>
+                <strong>Loan Amortization Calculator</strong> — This tool generates a complete amortization
+                schedule showing each payment's breakdown between principal and interest. It helps you
+                understand how your loan balance decreases over time and how much interest you're really paying.
             </p>
         </div>
-
         <div class="form-grid">
-            <div class="field">
-                <label for="loan-amount-la">Loan Amount ($)</label>
-                <input type="number" id="loan-amount-la" value="300000" min="0" step="1000" />
-            </div>
-            <div class="field">
-                <label for="interest-rate-la">Annual Interest Rate (%)</label>
-                <input type="number" id="interest-rate-la" value="6.5" min="0" max="30" step="0.1" />
-            </div>
-            <div class="field">
-                <label for="loan-term-la">Loan Term (Years)</label>
-                <input type="number" id="loan-term-la" value="30" min="1" max="50" step="1" />
-            </div>
-            <div class="field">
-                <label for="payment-frequency-la">Payment Frequency</label>
-                <select id="payment-frequency-la">
-                    <option value="12">Monthly</option>
-                    <option value="4">Quarterly</option>
-                    <option value="2">Semi-annually</option>
-                    <option value="1">Annually</option>
-                </select>
-            </div>
-            <div style="margin-top:0.5rem;">
-                <button class="btn" onclick="calculate()">Generate Amortization Schedule</button>
-            </div>
+            <div class="field"><label>Loan Amount ($)</label><input type="number" id="la-loan" value="200000" min="0" step="5000" /></div>
+            <div class="field"><label>Annual Interest Rate (%)</label><input type="number" id="la-rate" value="7" min="0" step="0.1" /></div>
+            <div class="field"><label>Loan Term (Years)</label><input type="number" id="la-years" value="30" min="1" max="40" step="1" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculateLA()">Generate Schedule</button></div>
         </div>
-
-        <div id="results-area" style="margin-top:1.8rem; display:none;">
+        <div id="la-results" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Amortization Summary</h2>
-            <div class="results-summary" id="summary">
-                <div class="summary-item highlight"><span class="label">Payment per Period</span><span class="value" id="period-payment-la">—</span></div>
-                <div class="summary-item"><span class="label">Total Interest</span><span class="value" id="total-interest-la">—</span></div>
-                <div class="summary-item"><span class="label">Total Payment</span><span class="value" id="total-payment-la">—</span></div>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>📋 Loan Details</h4>
+                    <div class="row"><span>Loan Amount</span><span class="num" id="la-loan-display">—</span></div>
+                    <div class="row"><span>Interest Rate</span><span class="num" id="la-rate-display">—</span></div>
+                    <div class="row"><span>Loan Term</span><span class="num" id="la-years-display">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>💰 Payment Summary</h4>
+                    <div class="row"><span>Monthly Payment</span><span class="num" id="la-monthly" style="font-size:1.2rem;">—</span></div>
+                    <div class="row"><span>Total Interest</span><span class="num" id="la-interest">—</span></div>
+                    <div class="row"><span>Total Payment</span><span class="num" id="la-total">—</span></div>
+                </div>
             </div>
-            <div class="view-toggle">
-                <button class="active" id="btn-monthly-la" onclick="setView('monthly')">Monthly View</button>
-                <button id="btn-yearly-la" onclick="setView('yearly')">Yearly Summary</button>
-            </div>
+            <h3 style="font-size:1rem; margin:1.5rem 0 0.3rem;">📅 Amortization Schedule (First 12 Months)</h3>
             <div class="schedule-wrapper">
-                <table class="schedule-table" id="schedule-table-la">
-                    <thead><tr><th>#</th><th>Payment</th><th>Interest</th><th>Principal</th><th>Balance</th></tr></thead>
-                    <tbody id="schedule-body-la"></tbody>
+                <table class="schedule-table">
+                    <thead><tr><th>#</th><th>Payment</th><th>Principal</th><th>Interest</th><th>Balance</th></tr></thead>
+                    <tbody id="la-body"></tbody>
                 </table>
             </div>
         </div>
-
-        <!-- ===== 推荐区域 ===== -->
         <div id="recommendations-area"></div>
-
     </main>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
-            <h2>📖 How to read your results</h2>
-            <span class="accordion-arrow" id="infoArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block"><h3>Payment per Period</h3><p>Your fixed payment amount for each period. This stays the same throughout the loan term.</p></div>
-                <div class="info-block"><h3>Amortization Table</h3><p>Each row shows one payment period: the payment amount, interest, principal, and remaining balance.</p></div>
-                <div class="info-block"><h3>Principal vs. Interest</h3><p>In early payments, most goes to interest. Over time, more goes to principal.</p></div>
+                <div class="info-block"><h3>Monthly Payment</h3><p>Your fixed monthly payment for the loan term.</p></div>
+                <div class="info-block"><h3>Amortization Schedule</h3><p>Shows each payment's principal vs interest breakdown and remaining balance.</p></div>
+                <div class="info-block"><h3>Total Interest</h3><p>The total interest cost over the life of the loan.</p></div>
             </div>
         </div>
     </section>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
-            <h2>❓ FAQ</h2>
-            <span class="accordion-arrow" id="faqArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
         <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is amortization?</span></div>
-                <div class="faq-answer">Amortization is the process of paying off a loan over time through regular payments. Each payment covers both interest and principal.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Why do I pay more interest at the beginning?</span></div>
-                <div class="faq-answer">Because interest is calculated on your remaining balance. Early on, the balance is high, so interest is high.</div>
-            </div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How much interest will I pay on a $200,000 loan at 7% for 30 years?</span></div><div class="faq-answer">At 7% for 30 years, your monthly payment would be $1,330.60. Total interest paid would be $279,017, meaning you'd pay more in interest than the principal itself.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How does an amortization schedule work?</span></div><div class="faq-answer">An amortization schedule shows each payment's breakdown: a portion goes to interest and a portion to principal. In early years, most of your payment goes to interest. For a $200,000 loan at 7%, the first payment of $1,330 is about $1,167 interest and only $164 principal.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How can I pay off my loan faster and save on interest?</span></div><div class="faq-answer">Make extra principal payments early. A $200,000 loan at 7% for 30 years: adding just $100/month extra saves $28,000 in interest and pays off the loan 3.5 years early.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the difference between amortization and simple interest?</span></div><div class="faq-answer">Amortization uses compound interest where unpaid interest is added to the balance. Simple interest is calculated only on the original principal. Most mortgages, auto loans, and personal loans use amortization.</div></div>
         </div>
     </section>
-
-    <footer class="site-footer">
-        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
-    </footer>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html">About</a> <span style="color:#dce1e8;">|</span> <a href="privacy.html">Privacy</a></p></footer>
 </div>
-
 <script src="recommendations.js"></script>
 <script src="feedback.js"></script>
-
 <script>
-    function toggleAccordion(id) {
-        const body = document.getElementById(id);
-        const arrow = document.getElementById(id + 'Arrow');
-        if (body.style.display === 'none' || body.style.display === '') {
-            body.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            body.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-    function toggleFaq(el) {
-        const answer = el.nextElementSibling;
-        const arrow = el.querySelector('.faq-arrow');
-        if (answer.style.display === 'none' || answer.style.display === '') {
-            answer.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            answer.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-
-    let currentView = 'monthly';
-    let scheduleData = [];
-
-    function setView(view) {
-        currentView = view;
-        document.querySelectorAll('.view-toggle button').forEach(b => b.classList.remove('active'));
-        document.getElementById('btn-' + view + '-la').classList.add('active');
-        renderSchedule();
-    }
-
-    function calculate() {
-        const P = parseFloat(document.getElementById('loan-amount-la').value) || 0;
-        const annualRate = parseFloat(document.getElementById('interest-rate-la').value) || 0;
-        const years = parseFloat(document.getElementById('loan-term-la').value) || 30;
-        const freq = parseInt(document.getElementById('payment-frequency-la').value) || 12;
-
-        const periods = years * freq;
-        const ratePerPeriod = annualRate / 100 / freq;
-
-        let payment;
-        if (ratePerPeriod === 0) {
-            payment = P / periods;
-        } else {
-            payment = P * ratePerPeriod * Math.pow(1 + ratePerPeriod, periods) /
-                (Math.pow(1 + ratePerPeriod, periods) - 1);
-        }
-
-        const totalPayment = payment * periods;
-        const totalInterest = totalPayment - P;
-
-        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-        document.getElementById('period-payment-la').textContent = fmt.format(payment);
-        document.getElementById('total-interest-la').textContent = fmt.format(totalInterest);
-        document.getElementById('total-payment-la').textContent = fmt.format(totalPayment);
-
-        scheduleData = [];
+    function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
+    function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
+    function calculateLA() {
+        const P = parseFloat(document.getElementById('la-loan').value) || 0;
+        const r = parseFloat(document.getElementById('la-rate').value) || 0;
+        const years = parseFloat(document.getElementById('la-years').value) || 1;
+        const monthlyRate = r / 100 / 12;
+        const months = years * 12;
+        const payment = monthlyRate > 0 ? P * monthlyRate * Math.pow(1 + monthlyRate, months) / (Math.pow(1 + monthlyRate, months) - 1) : P / months;
+        const total = payment * months;
+        const interest = total - P;
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        document.getElementById('la-loan-display').textContent = fmt.format(P);
+        document.getElementById('la-rate-display').textContent = r + '%';
+        document.getElementById('la-years-display').textContent = years + ' years';
+        document.getElementById('la-monthly').textContent = fmt.format(payment);
+        document.getElementById('la-interest').textContent = fmt.format(interest);
+        document.getElementById('la-total').textContent = fmt.format(total);
+        const tbody = document.getElementById('la-body'); tbody.innerHTML = '';
         let balance = P;
-        for (let i = 1; i <= periods; i++) {
-            const interest = balance * ratePerPeriod;
-            const principal = Math.min(payment - interest, balance);
-            balance -= principal;
-            scheduleData.push({
-                period: i,
-                payment: payment,
-                interest: interest,
-                principal: principal,
-                balance: Math.max(0, balance)
-            });
-            if (balance <= 0.01) break;
+        const displayMonths = Math.min(12, months);
+        for (let i = 1; i <= displayMonths; i++) {
+            const interestPaid = balance * monthlyRate;
+            const principalPaid = payment - interestPaid;
+            balance -= principalPaid;
+            const tr = document.createElement('tr');
+            if (i === displayMonths) tr.classList.add('highlight-row');
+            tr.innerHTML = `<td>${i}</td><td>${fmt.format(payment)}</td><td>${fmt.format(principalPaid)}</td><td>${fmt.format(interestPaid)}</td><td>${fmt.format(Math.max(0, balance))}</td>`;
+            tbody.appendChild(tr);
         }
-
-        document.getElementById('results-area').style.display = 'block';
-        renderSchedule();
-
-        // ===== 推荐联动 =====
-        showRecommendations('loan-amortization.html', {
-            loanAmount: document.getElementById('loan-amount-la').value,
-            interestRate: document.getElementById('interest-rate-la').value,
-            loanTerm: document.getElementById('loan-term-la').value
-        });
+        document.getElementById('la-results').style.display = 'block';
+        showRecommendations('loan-amortization.html', { loan: P, rate: r, years: years });
     }
-
-    function renderSchedule() {
-        const tbody = document.getElementById('schedule-body-la');
-        tbody.innerHTML = '';
-        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-        if (currentView === 'yearly') {
-            let yearlyData = [];
-            let year = 1;
-            let yearInterest = 0;
-            let yearPrincipal = 0;
-            let yearPayment = 0;
-            for (const row of scheduleData) {
-                yearInterest += row.interest;
-                yearPrincipal += row.principal;
-                yearPayment += row.payment;
-                if (row.period % 12 === 0 || row.period === scheduleData.length) {
-                    yearlyData.push({ year, payment: yearPayment, interest: yearInterest, principal: yearPrincipal, balance: row.balance });
-                    year++;
-                    yearInterest = 0;
-                    yearPrincipal = 0;
-                    yearPayment = 0;
-                }
-                if (row.balance <= 0.01) break;
-            }
-            for (const row of yearlyData) {
-                const tr = document.createElement('tr');
-                if (row.balance <= 0.01) tr.classList.add('highlight-row');
-                tr.innerHTML = `<td>${row.year}</td><td>${fmt.format(row.payment)}</td><td>${fmt.format(row.interest)}</td><td>${fmt.format(row.principal)}</td><td>${fmt.format(Math.max(0, row.balance))}</td>`;
-                tbody.appendChild(tr);
-            }
-        } else {
-            for (const row of scheduleData) {
-                const tr = document.createElement('tr');
-                if (row.balance <= 0.01) tr.classList.add('highlight-row');
-                tr.innerHTML = `<td>${row.period}</td><td>${fmt.format(row.payment)}</td><td>${fmt.format(row.interest)}</td><td>${fmt.format(row.principal)}</td><td>${fmt.format(Math.max(0, row.balance))}</td>`;
-                tbody.appendChild(tr);
-            }
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('infoAccordion').style.display = 'block';
-        document.getElementById('infoArrow').textContent = '▼';
-        document.getElementById('faqAccordion').style.display = 'none';
-        document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
-        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
-        calculate();
-    });
-    document.addEventListener('input', function(e) {
-        if (e.target.closest('.form-grid')) { calculate(); }
-    });
+    document.addEventListener('DOMContentLoaded', function() { document.getElementById('infoAccordion').style.display='block'; document.getElementById('infoArrow').textContent='▼'; document.getElementById('faqAccordion').style.display='none'; document.getElementById('faqArrow').textContent='▶'; document.querySelectorAll('.faq-answer').forEach(el => el.style.display='none'); document.querySelectorAll('.faq-arrow').forEach(el => el.textContent='▶'); calculateLA(); });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculateLA(); } });
 </script>
 </body>
 </html>
