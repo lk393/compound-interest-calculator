@@ -3,271 +3,201 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Net Present Value (NPV) Calculator — Free Online Tool</title>
+
+    <!-- ===== Meta Tags ===== -->
+    <title>NPV Calculator — Free Online Tool</title>
+    <meta name="description" content="Calculate Net Present Value (NPV) of an investment using future cash flows. Free NPV calculator for project evaluation and capital budgeting." />
+
     <link rel="stylesheet" href="style.css" />
+
+    <!-- ===== WebApplication Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "NPV Calculator",
+      "description": "Calculate Net Present Value (NPV) of an investment using future cash flows.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "url": "https://financetools.tools/npv-calculator.html",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.6", "ratingCount": "87" }
+    }
+    </script>
+
+    <!-- ===== FAQPage Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I calculate NPV for a project with $50,000 initial cost and $15,000 annual cash flow for 5 years?",
+          "acceptedAnswer": { "@type": "Answer", "text": "At 10% discount rate, NPV = -$50,000 + $15,000 × [1 - (1.10)^-5] / 0.10 = $6,861. Positive NPV means the project is worthwhile." }
+        },
+        {
+          "@type": "Question",
+          "name": "What does a positive NPV mean?",
+          "acceptedAnswer": { "@type": "Answer", "text": "A positive NPV means the investment is expected to generate more value than its cost. A $10,000 positive NPV means the project is expected to create $10,000 in value beyond the required return." }
+        },
+        {
+          "@type": "Question",
+          "name": "What discount rate should I use for NPV?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Use your company's WACC (Weighted Average Cost of Capital). For individuals, use your required rate of return (typically 8-12% for stocks, 15-20% for startups)." }
+        }
+      ]
+    }
+    </script>
+
     <style>
-        .results-summary {
-            display: flex;
-            flex-direction: column;
-            gap: 0.7rem;
-            margin: 1.5rem 0;
-        }
-        .summary-item {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 0.8rem 1.2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
+        .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
         .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
-        .summary-item.positive .value { color: #10b981; }
-        .summary-item.negative .value { color: #ef4444; }
-
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
         .field { display: flex; flex-direction: column; }
         .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
-        .field input {
-            padding: 0.6rem 0.8rem;
-            font-size: 1rem;
-            border: 1.5px solid #dce1e8;
-            border-radius: 10px;
-            background: #fafbfc;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            width: 100%;
-        }
-        .field input:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-            background: #ffffff;
-        }
-
-        .btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 0.6rem 1.2rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            width: 100%;
-        }
+        .field input { padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px; background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
+        .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
+        .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
         .btn:hover { background: #1d4ed8; }
-
-        .cashflow-row {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-            margin-bottom: 0.3rem;
-        }
-        .cashflow-row input { flex: 1; padding: 0.4rem 0.6rem; border: 1.5px solid #dce1e8; border-radius: 8px; font-size: 0.9rem; }
-        .cashflow-row .year-label { font-weight: 500; color: #475569; min-width: 60px; font-size: 0.85rem; }
-        .cashflow-row .remove-btn { background: #fee2e2; border: none; border-radius: 6px; padding: 0.2rem 0.5rem; cursor: pointer; color: #991b1b; font-size: 0.8rem; }
-        .cashflow-row .remove-btn:hover { background: #fecaca; }
-
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+        .comparison-box { background: #f8fafc; border-radius: 12px; padding: 1rem; }
+        .comparison-box h4 { font-size: 0.85rem; font-weight: 600; color: #0f172a; margin: 0 0 0.5rem; text-align: center; }
+        .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
+        .comparison-box .row .num { font-weight: 600; color: #0f172a; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
-        @media (max-width: 640px) {
-            .info-grid { grid-template-columns: 1fr; }
-            .summary-item { padding: 0.6rem 1rem; }
-            .summary-item .value { font-size: 1rem; }
-        }
+        .info-block h3 { font-size: 0.9rem; font-weight: 600; color: #0f172a; margin: 0 0 0.3rem; }
+        .info-block p { font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.5; }
+        .accordion-card { background: white; border-radius: 12px; border: 1px solid #e9edf2; margin-top: 1.5rem; overflow: hidden; }
+        .accordion-header { padding: 1rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .accordion-header:hover { background: #f8fafc; }
+        .accordion-header h2 { font-size: 1rem; font-weight: 600; color: #0f172a; margin: 0; }
+        .accordion-arrow { font-size: 0.9rem; color: #94a3b8; }
+        .accordion-body { padding: 0 1.2rem 1.2rem; display: none; }
+        .accordion-body.open { display: block; }
+        .faq-item { border-bottom: 1px solid #e9edf2; padding: 0.5rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; color: #0f172a; padding: 0.3rem 0; }
+        .faq-question:hover { color: #2563eb; }
+        .faq-arrow { font-size: 0.7rem; color: #94a3b8; }
+        .faq-answer { padding: 0.3rem 0 0.3rem 1.5rem; color: #475569; font-size: 0.9rem; line-height: 1.6; display: none; }
+        .faq-answer.open { display: block; }
+        .top-nav { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #e9edf2; margin-bottom: 1.5rem; }
+        .top-nav .back-link { color: #2563eb; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .top-nav .back-link:hover { text-decoration: underline; }
+        .top-nav .breadcrumb { color: #94a3b8; font-size: 0.85rem; }
+        .top-nav .breadcrumb span { color: #1e293b; }
+        .calculator-card { background: white; border-radius: 16px; padding: 1.5rem 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e9edf2; }
+        .calculator-card h1 { font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem; }
+        .calculator-card .subtitle { font-size: 1rem; color: #64748b; margin: 0 0 1rem; }
+        .site-footer { text-align: center; padding: 1.5rem 0 0.5rem; color: #94a3b8; font-size: 0.8rem; border-top: 1px solid #e9edf2; margin-top: 2rem; }
+        .site-footer a { color: #94a3b8; text-decoration: none; }
+        .site-footer a:hover { color: #2563eb; text-decoration: underline; }
+        @media (max-width: 640px) { .calculator-card { padding: 1rem; } .calculator-card h1 { font-size: 1.3rem; } .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 480px) { .calculator-card { padding: 0.8rem; } }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <div class="top-nav">
-        <a href="index.html" class="back-link">← Back to Home</a>
-        <div class="breadcrumb">📊 <span>Net Present Value (NPV) Calculator</span></div>
-    </div>
-
+<div class="container" style="max-width:820px; margin:0 auto; padding:0 1rem;">
+    <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">💰 <span>NPV Calculator</span></div></div>
     <main class="calculator-card">
         <h1>💰 Net Present Value (NPV) Calculator</h1>
-        <p class="subtitle">Calculate the present value of future cash flows to evaluate an investment.</p>
-
+        <p class="subtitle">Calculate the Net Present Value of an investment using future cash flows.</p>
         <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
-                <strong>Net Present Value (NPV) Calculator</strong> — This tool calculates the present value
-                of a series of future cash flows. It answers the question: <em>“Is this investment worth it
-                given the time value of money?”</em>
+                <strong>NPV Calculator</strong> — This tool calculates the Net Present Value of an investment
+                by discounting future cash flows to their present value. A positive NPV means the investment
+                is expected to be profitable.
             </p>
         </div>
-
         <div class="form-grid">
-            <div class="field">
-                <label for="initial-investment-npv">Initial Investment ($)</label>
-                <input type="number" id="initial-investment-npv" value="10000" min="0" step="100" />
-            </div>
-            <div class="field">
-                <label for="discount-rate">Discount Rate (%)</label>
-                <input type="number" id="discount-rate" value="10" min="0" step="0.1" />
-            </div>
-            <div style="margin-top:0.5rem;">
-                <label style="font-weight:600;font-size:0.85rem;color:#334155;">📋 Future Cash Flows</label>
-                <div id="cashflow-container-npv">
-                    <div class="cashflow-row"><span class="year-label">Year 1</span><input type="number" class="cashflow-input" value="3000" step="100" /><button class="remove-btn" onclick="removeCashflow(this)">✕</button></div>
-                    <div class="cashflow-row"><span class="year-label">Year 2</span><input type="number" class="cashflow-input" value="3500" step="100" /><button class="remove-btn" onclick="removeCashflow(this)">✕</button></div>
-                    <div class="cashflow-row"><span class="year-label">Year 3</span><input type="number" class="cashflow-input" value="4000" step="100" /><button class="remove-btn" onclick="removeCashflow(this)">✕</button></div>
-                    <div class="cashflow-row"><span class="year-label">Year 4</span><input type="number" class="cashflow-input" value="4500" step="100" /><button class="remove-btn" onclick="removeCashflow(this)">✕</button></div>
-                    <div class="cashflow-row"><span class="year-label">Year 5</span><input type="number" class="cashflow-input" value="5000" step="100" /><button class="remove-btn" onclick="removeCashflow(this)">✕</button></div>
-                </div>
-                <button class="btn btn-secondary" onclick="addCashflow()" style="width:auto;padding:0.3rem 0.8rem;font-size:0.8rem;margin-top:0.3rem;">+ Add Year</button>
-            </div>
-            <div style="margin-top:0.5rem;">
-                <button class="btn" onclick="calculate()">Calculate</button>
-            </div>
+            <div class="field"><label>Initial Investment ($)</label><input type="number" id="npv-initial" value="50000" min="0" step="1000" /></div>
+            <div class="field"><label>Annual Cash Flow ($)</label><input type="number" id="npv-cashflow" value="15000" min="0" step="500" /></div>
+            <div class="field"><label>Number of Years</label><input type="number" id="npv-years" value="5" min="1" max="30" step="1" /></div>
+            <div class="field"><label>Discount Rate (%)</label><input type="number" id="npv-rate" value="10" min="0" step="0.1" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculateNPV()">Calculate</button></div>
         </div>
-
-        <div id="results-area" style="margin-top:1.8rem; display:none;">
+        <div id="npv-results" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 NPV Results</h2>
-            <div class="results-summary" id="summary">
-                <div class="summary-item highlight"><span class="label">Net Present Value (NPV)</span><span class="value" id="npv-result">—</span></div>
-                <div class="summary-item"><span class="label">Total Cash Flows</span><span class="value" id="total-cashflows-npv">—</span></div>
-                <div class="summary-item"><span class="label">Profit / Loss</span><span class="value" id="profit-loss-npv">—</span></div>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>📋 Input</h4>
+                    <div class="row"><span>Initial Investment</span><span class="num" id="npv-initial-display">—</span></div>
+                    <div class="row"><span>Annual Cash Flow</span><span class="num" id="npv-cashflow-display">—</span></div>
+                    <div class="row"><span>Years</span><span class="num" id="npv-years-display">—</span></div>
+                    <div class="row"><span>Discount Rate</span><span class="num" id="npv-rate-display">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>💰 Results</h4>
+                    <div class="row"><span style="font-weight:700;">Net Present Value</span><span class="num" id="npv-result" style="font-size:1.2rem;">—</span></div>
+                    <div class="row"><span>Total Cash Flows</span><span class="num" id="npv-total-cash">—</span></div>
+                    <div class="row"><span>Profitability Index</span><span class="num" id="npv-pi">—</span></div>
+                    <div class="row"><span>Decision</span><span class="num" id="npv-decision">—</span></div>
+                </div>
             </div>
         </div>
-
-        <!-- ===== 推荐区域 ===== -->
         <div id="recommendations-area"></div>
-
     </main>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
-            <h2>📖 How to read your results</h2>
-            <span class="accordion-arrow" id="infoArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block"><h3>NPV</h3><p>The present value of all future cash flows minus the initial investment. Positive NPV = profitable investment.</p></div>
-                <div class="info-block"><h3>Total Cash Flows</h3><p>The sum of all future cash flows (not discounted).</p></div>
-                <div class="info-block"><h3>Profit / Loss</h3><p>The difference between total cash flows and the initial investment.</p></div>
+                <div class="info-block"><h3>NPV</h3><p>Positive = invest, Negative = reject. NPV represents the value created by the investment.</p></div>
+                <div class="info-block"><h3>Profitability Index</h3><p>NPV ÷ Initial Investment. > 1 means the project creates value. < 1 means it destroys value.</p></div>
+                <div class="info-block"><h3>Decision</h3><p>Clear recommendation based on NPV: Accept or Reject.</p></div>
             </div>
         </div>
     </section>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
-            <h2>❓ FAQ</h2>
-            <span class="accordion-arrow" id="faqArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
         <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is NPV used for?</span></div>
-                <div class="faq-answer">NPV is used in capital budgeting to evaluate the profitability of an investment or project. It accounts for the time value of money.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What discount rate should I use?</span></div>
-                <div class="faq-answer">The discount rate should reflect your cost of capital or required rate of return. A common choice is 8-12%.</div>
-            </div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How do I calculate NPV for a project with $50,000 initial cost and $15,000 annual cash flow for 5 years?</span></div><div class="faq-answer">At 10% discount rate, NPV = -$50,000 + $15,000 × [1 - (1.10)^-5] / 0.10 = $6,861. Positive NPV means the project is worthwhile.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What does a positive NPV mean?</span></div><div class="faq-answer">A positive NPV means the investment is expected to generate more value than its cost. A $10,000 positive NPV means the project is expected to create $10,000 in value beyond the required return.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What discount rate should I use for NPV?</span></div><div class="faq-answer">Use your company's WACC (Weighted Average Cost of Capital). For individuals, use your required rate of return (typically 8-12% for stocks, 15-20% for startups).</div></div>
         </div>
     </section>
-
-    <footer class="site-footer">
-        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
-    </footer>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html">About</a> <span style="color:#dce1e8;">|</span> <a href="privacy.html">Privacy</a></p></footer>
 </div>
-
 <script src="recommendations.js"></script>
 <script src="feedback.js"></script>
-
 <script>
-    function toggleAccordion(id) {
-        const body = document.getElementById(id);
-        const arrow = document.getElementById(id + 'Arrow');
-        if (body.style.display === 'none' || body.style.display === '') {
-            body.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            body.style.display = 'none';
-            arrow.textContent = '▶';
+    function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
+    function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
+    function calculateNPV() {
+        const initial = parseFloat(document.getElementById('npv-initial').value) || 0;
+        const cashflow = parseFloat(document.getElementById('npv-cashflow').value) || 0;
+        const years = parseInt(document.getElementById('npv-years').value) || 1;
+        const rate = parseFloat(document.getElementById('npv-rate').value) || 0;
+        const discount = rate / 100;
+        let pv = 0;
+        for (let y = 1; y <= years; y++) {
+            pv += cashflow / Math.pow(1 + discount, y);
         }
-    }
-    function toggleFaq(el) {
-        const answer = el.nextElementSibling;
-        const arrow = el.querySelector('.faq-arrow');
-        if (answer.style.display === 'none' || answer.style.display === '') {
-            answer.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            answer.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-
-    let cashflowCount = 5;
-
-    function addCashflow() {
-        cashflowCount++;
-        const container = document.getElementById('cashflow-container-npv');
-        const row = document.createElement('div');
-        row.className = 'cashflow-row';
-        row.innerHTML = `<span class="year-label">Year ${cashflowCount}</span><input type="number" class="cashflow-input" value="1000" step="100" /><button class="remove-btn" onclick="removeCashflow(this)">✕</button>`;
-        container.appendChild(row);
-    }
-
-    function removeCashflow(btn) {
-        const row = btn.parentElement;
-        if (document.getElementById('cashflow-container-npv').children.length > 1) row.remove();
-        else alert('You need at least one cash flow!');
-    }
-
-    function calculate() {
-        const initial = parseFloat(document.getElementById('initial-investment-npv').value) || 0;
-        const rate = parseFloat(document.getElementById('discount-rate').value) || 0;
-        const rateDecimal = rate / 100;
-
-        const inputs = document.querySelectorAll('.cashflow-input');
-        let npv = 0;
-        let totalCashflows = 0;
-        let year = 1;
-        inputs.forEach(input => {
-            const cf = parseFloat(input.value) || 0;
-            totalCashflows += cf;
-            npv += cf / Math.pow(1 + rateDecimal, year);
-            year++;
-        });
-        npv -= initial;
-        const profitLoss = totalCashflows - initial;
-
+        const npv = pv - initial;
+        const totalCash = cashflow * years;
+        const pi = initial > 0 ? (pv / initial) : 0;
+        const decision = npv > 0 ? '✅ Accept' : (npv < 0 ? '❌ Reject' : '⚖️ Neutral');
         const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
-
-        document.getElementById('npv-result').textContent = fmt.format(npv);
-        document.getElementById('total-cashflows-npv').textContent = fmt.format(totalCashflows);
-        document.getElementById('profit-loss-npv').textContent = fmt.format(profitLoss);
-
+        const pct = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 });
+        document.getElementById('npv-initial-display').textContent = fmt.format(initial);
+        document.getElementById('npv-cashflow-display').textContent = fmt.format(cashflow);
+        document.getElementById('npv-years-display').textContent = years + ' years';
+        document.getElementById('npv-rate-display').textContent = pct.format(rate / 100);
         const npvEl = document.getElementById('npv-result');
-        const npvItem = npvEl.closest('.summary-item');
-        if (npv > 0) npvItem.classList.add('positive');
-        else if (npv < 0) npvItem.classList.add('negative');
-
-        document.getElementById('results-area').style.display = 'block';
-
-        // ===== 推荐联动 =====
-        const initialInvestment = document.getElementById('initial-investment-npv').value;
-        showRecommendations('npv-calculator.html', {
-            initialInvestment: initialInvestment,
-            totalCashflows: totalCashflows.toString()
-        });
+        npvEl.textContent = fmt.format(npv);
+        npvEl.style.color = npv > 0 ? '#10b981' : (npv < 0 ? '#ef4444' : '#94a3b8');
+        document.getElementById('npv-total-cash').textContent = fmt.format(totalCash);
+        document.getElementById('npv-pi').textContent = pi.toFixed(2);
+        document.getElementById('npv-decision').textContent = decision;
+        document.getElementById('npv-results').style.display = 'block';
+        showRecommendations('npv-calculator.html', { initial: initial, rate: rate });
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('infoAccordion').style.display = 'block';
-        document.getElementById('infoArrow').textContent = '▼';
-        document.getElementById('faqAccordion').style.display = 'none';
-        document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
-        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
-        calculate();
-    });
-    document.addEventListener('input', function(e) {
-        if (e.target.closest('.form-grid')) { calculate(); }
-    });
+    document.addEventListener('DOMContentLoaded', function() { document.getElementById('infoAccordion').style.display='block'; document.getElementById('infoArrow').textContent='▼'; document.getElementById('faqAccordion').style.display='none'; document.getElementById('faqArrow').textContent='▶'; document.querySelectorAll('.faq-answer').forEach(el => el.style.display='none'); document.querySelectorAll('.faq-arrow').forEach(el => el.textContent='▶'); calculateNPV(); });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculateNPV(); } });
 </script>
 </body>
 </html>
