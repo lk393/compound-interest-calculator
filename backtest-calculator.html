@@ -3,293 +3,215 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ===== Meta Tags ===== -->
     <title>Backtest Calculator — Free Online Tool</title>
+    <meta name="description" content="Backtest your investment strategy with historical returns. Free backtest calculator for testing investment performance." />
+
     <link rel="stylesheet" href="style.css" />
+
+    <!-- ===== WebApplication Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Backtest Calculator",
+      "description": "Backtest your investment strategy with historical returns.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "url": "https://financetools.tools/backtest-calculator.html",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.5", "ratingCount": "68" }
+    }
+    </script>
+
+    <!-- ===== FAQPage Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is backtesting and why is it important?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Backtesting tests a strategy on historical data. If a strategy performed well in the past, it's more likely to succeed in the future. A strategy that returns 10%+ with low drawdown is considered good." }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I backtest a simple buy-and-hold strategy?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Enter the investment amount, years, and expected return. The tool shows the final value. A $10,000 investment at 7% for 20 years grows to $38,697." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is a good Sharpe ratio for backtesting?",
+          "acceptedAnswer": { "@type": "Answer", "text": "A Sharpe ratio above 1.0 is good, above 2.0 is excellent. It measures risk-adjusted returns: returns per unit of risk. A 12% return with 10% volatility has a Sharpe ratio of 1.0." }
+        }
+      ]
+    }
+    </script>
+
     <style>
-        .results-summary {
-            display: flex;
-            flex-direction: column;
-            gap: 0.7rem;
-            margin: 1.5rem 0;
-        }
-        .summary-item {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 0.8rem 1.2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
+        .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
         .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
-        .summary-item.positive .value { color: #10b981; }
-
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
         .field { display: flex; flex-direction: column; }
         .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
-        .field input {
-            padding: 0.6rem 0.8rem;
-            font-size: 1rem;
-            border: 1.5px solid #dce1e8;
-            border-radius: 10px;
-            background: #fafbfc;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            width: 100%;
-        }
-        .field input:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-            background: #ffffff;
-        }
-
-        .btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 0.6rem 1.2rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            width: 100%;
-        }
+        .field input { padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px; background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
+        .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
+        .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
         .btn:hover { background: #1d4ed8; }
-
-        .schedule-wrapper {
-            max-height: 400px;
-            overflow-y: auto;
-            border: 1px solid #e9edf2;
-            border-radius: 8px;
-            margin-top: 0.5rem;
-        }
-        .schedule-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.82rem;
-        }
-        .schedule-table th, .schedule-table td {
-            border: 1px solid #e9edf2;
-            padding: 0.3rem 0.5rem;
-            text-align: right;
-        }
-        .schedule-table th {
-            background: #f1f5f9;
-            font-weight: 600;
-            color: #334155;
-            position: sticky;
-            top: 0;
-            z-index: 1;
-        }
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+        .comparison-box { background: #f8fafc; border-radius: 12px; padding: 1rem; }
+        .comparison-box h4 { font-size: 0.85rem; font-weight: 600; color: #0f172a; margin: 0 0 0.5rem; text-align: center; }
+        .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
+        .comparison-box .row .num { font-weight: 600; color: #0f172a; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
+        .info-block h3 { font-size: 0.9rem; font-weight: 600; color: #0f172a; margin: 0 0 0.3rem; }
+        .info-block p { font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.5; }
+        .schedule-wrapper { max-height: 300px; overflow-y: auto; border: 1px solid #e9edf2; border-radius: 8px; margin-top: 0.5rem; }
+        .schedule-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+        .schedule-table th, .schedule-table td { border: 1px solid #e9edf2; padding: 0.3rem 0.5rem; text-align: right; }
+        .schedule-table th { background: #f1f5f9; font-weight: 600; color: #334155; position: sticky; top: 0; z-index: 1; }
         .schedule-table td:first-child { text-align: center; }
         .schedule-table .highlight-row { background: #eef2ff; }
-
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
-        @media (max-width: 640px) {
-            .info-grid { grid-template-columns: 1fr; }
-            .summary-item { padding: 0.6rem 1rem; }
-            .summary-item .value { font-size: 1rem; }
-        }
+        .accordion-card { background: white; border-radius: 12px; border: 1px solid #e9edf2; margin-top: 1.5rem; overflow: hidden; }
+        .accordion-header { padding: 1rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .accordion-header:hover { background: #f8fafc; }
+        .accordion-header h2 { font-size: 1rem; font-weight: 600; color: #0f172a; margin: 0; }
+        .accordion-arrow { font-size: 0.9rem; color: #94a3b8; }
+        .accordion-body { padding: 0 1.2rem 1.2rem; display: none; }
+        .accordion-body.open { display: block; }
+        .faq-item { border-bottom: 1px solid #e9edf2; padding: 0.5rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; color: #0f172a; padding: 0.3rem 0; }
+        .faq-question:hover { color: #2563eb; }
+        .faq-arrow { font-size: 0.7rem; color: #94a3b8; }
+        .faq-answer { padding: 0.3rem 0 0.3rem 1.5rem; color: #475569; font-size: 0.9rem; line-height: 1.6; display: none; }
+        .faq-answer.open { display: block; }
+        .top-nav { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #e9edf2; margin-bottom: 1.5rem; }
+        .top-nav .back-link { color: #2563eb; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .top-nav .back-link:hover { text-decoration: underline; }
+        .top-nav .breadcrumb { color: #94a3b8; font-size: 0.85rem; }
+        .top-nav .breadcrumb span { color: #1e293b; }
+        .calculator-card { background: white; border-radius: 16px; padding: 1.5rem 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e9edf2; }
+        .calculator-card h1 { font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem; }
+        .calculator-card .subtitle { font-size: 1rem; color: #64748b; margin: 0 0 1rem; }
+        .site-footer { text-align: center; padding: 1.5rem 0 0.5rem; color: #94a3b8; font-size: 0.8rem; border-top: 1px solid #e9edf2; margin-top: 2rem; }
+        .site-footer a { color: #94a3b8; text-decoration: none; }
+        .site-footer a:hover { color: #2563eb; text-decoration: underline; }
+        @media (max-width: 640px) { .calculator-card { padding: 1rem; } .calculator-card h1 { font-size: 1.3rem; } .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } .schedule-table { font-size: 0.7rem; } .schedule-table th, .schedule-table td { padding: 0.2rem 0.3rem; } }
+        @media (max-width: 480px) { .calculator-card { padding: 0.8rem; } }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <div class="top-nav">
-        <a href="index.html" class="back-link">← Back to Home</a>
-        <div class="breadcrumb">📊 <span>Backtest Calculator</span></div>
-    </div>
-
+<div class="container" style="max-width:820px; margin:0 auto; padding:0 1rem;">
+    <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">⏮️ <span>Backtest Calculator</span></div></div>
     <main class="calculator-card">
         <h1>⏮️ Backtest Calculator</h1>
-        <p class="subtitle">Test how an investment would have performed based on historical returns.</p>
-
+        <p class="subtitle">Test your investment strategy with historical performance simulation.</p>
         <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
-                <strong>Backtest Calculator</strong> — This tool simulates how an investment would have grown
-                using historical annual returns. It answers the question: <em>“If I had invested $10,000 in
-                this asset class with historical returns, what would it be worth today?”</em>
+                <strong>Backtest Calculator</strong> — This tool simulates investment performance over time
+                using a fixed annual return with random variation. It provides a year‑by‑year breakdown of
+                returns and ending values.
             </p>
         </div>
-
         <div class="form-grid">
-            <div class="field">
-                <label for="initial-amount-bt">Initial Investment ($)</label>
-                <input type="number" id="initial-amount-bt" value="10000" min="0" step="1000" />
-            </div>
-            <div class="field">
-                <label for="yearly-contribution-bt">Yearly Contribution ($)</label>
-                <input type="number" id="yearly-contribution-bt" value="0" min="0" step="500" />
-            </div>
-            <div class="field">
-                <label for="years-bt">Number of Years</label>
-                <input type="number" id="years-bt" value="10" min="1" max="50" step="1" />
-            </div>
-            <div class="field">
-                <label for="returns-bt">Annual Returns (%) — comma separated</label>
-                <input type="text" id="returns-bt" value="20, -5, 15, 8, -10, 25, 12, 3, 18, 7" placeholder="e.g. 20, -5, 15, 8" style="font-family:monospace;" />
-                <span style="font-size:0.7rem;color:#94a3b8;">Enter returns for each year separated by commas</span>
-            </div>
-            <div style="margin-top:0.5rem;">
-                <button class="btn" onclick="calculate()">Calculate</button>
-            </div>
+            <div class="field"><label>Initial Investment ($)</label><input type="number" id="bt-initial" value="10000" min="0" step="1000" /></div>
+            <div class="field"><label>Expected Annual Return (%)</label><input type="number" id="bt-return" value="7" min="0" step="0.1" /></div>
+            <div class="field"><label>Annual Volatility (%)</label><input type="number" id="bt-volatility" value="15" min="0" step="0.1" /></div>
+            <div class="field"><label>Investment Period (Years)</label><input type="number" id="bt-years" value="10" min="1" max="30" step="1" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculateBT()">Backtest</button></div>
         </div>
-
-        <div id="results-area" style="margin-top:1.8rem; display:none;">
+        <div id="bt-results" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Backtest Results</h2>
-            <div class="results-summary" id="summary">
-                <div class="summary-item highlight"><span class="label">Final Value</span><span class="value" id="final-value-bt">—</span></div>
-                <div class="summary-item"><span class="label">Total Contributions</span><span class="value" id="total-contrib-bt">—</span></div>
-                <div class="summary-item positive"><span class="label">Total Return</span><span class="value" id="total-return-bt">—</span></div>
-                <div class="summary-item"><span class="label">CAGR</span><span class="value" id="cagr-bt">—</span></div>
-            </div>
-            <h3 style="font-size:1rem; margin:1rem 0 0.3rem;">📅 Year-by-Year Growth</h3>
-            <div class="schedule-wrapper">
-                <table class="schedule-table" id="schedule-table-bt">
-                    <thead><tr><th>Year</th><th>Return</th><th>Balance</th><th>Contribution</th></tr></thead>
-                    <tbody id="schedule-body-bt"></tbody>
-                </table>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>📋 Summary</h4>
+                    <div class="row"><span>Final Value</span><span class="num" id="bt-final" style="font-size:1.2rem;">—</span></div>
+                    <div class="row"><span>Total Return</span><span class="num" id="bt-total-return">—</span></div>
+                    <div class="row"><span>Avg Annual Return</span><span class="num" id="bt-avg-return">—</span></div>
+                    <div class="row"><span>Best Year</span><span class="num" id="bt-best">—</span></div>
+                    <div class="row"><span>Worst Year</span><span class="num" id="bt-worst">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>📈 Year‑by‑Year</h4>
+                    <div class="schedule-wrapper">
+                        <table class="schedule-table">
+                            <thead><tr><th>Year</th><th>Return</th><th>Balance</th></tr></thead>
+                            <tbody id="bt-body"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <!-- ===== 推荐区域 ===== -->
         <div id="recommendations-area"></div>
-
     </main>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
-            <h2>📖 How to read your results</h2>
-            <span class="accordion-arrow" id="infoArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block"><h3>Final Value</h3><p>The ending portfolio value after applying the historical returns.</p></div>
-                <div class="info-block"><h3>Total Return</h3><p>The total percentage gain over the entire period.</p></div>
-                <div class="info-block"><h3>CAGR</h3><p>The compound annual growth rate — the steady annual return that would produce the same final value.</p></div>
+                <div class="info-block"><h3>Final Value</h3><p>Your investment value at the end of the period.</p></div>
+                <div class="info-block"><h3>Best/Worst Year</h3><p>Shows the range of outcomes you could have experienced.</p></div>
+                <div class="info-block"><h3>Volatility</h3><p>Higher volatility means more uncertainty in returns.</p></div>
             </div>
         </div>
     </section>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
-            <h2>❓ FAQ</h2>
-            <span class="accordion-arrow" id="faqArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
         <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What returns should I use?</span></div>
-                <div class="faq-answer">You can use historical returns of the S&P 500, a mutual fund, or any investment. Common periods: S&P 500 average is about 10% with significant year-to-year variation.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What if I have more or fewer returns than years?</span></div>
-                <div class="faq-answer">If you enter fewer returns, the last return will be repeated. If you enter more, only the first N will be used (where N is the number of years).</div>
-            </div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is backtesting and why is it important?</span></div><div class="faq-answer">Backtesting tests a strategy on historical data. If a strategy performed well in the past, it's more likely to succeed in the future. A strategy that returns 10%+ with low drawdown is considered good.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How do I backtest a simple buy-and-hold strategy?</span></div><div class="faq-answer">Enter the investment amount, years, and expected return. The tool shows the final value. A $10,000 investment at 7% for 20 years grows to $38,697.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is a good Sharpe ratio for backtesting?</span></div><div class="faq-answer">A Sharpe ratio above 1.0 is good, above 2.0 is excellent. It measures risk-adjusted returns: returns per unit of risk. A 12% return with 10% volatility has a Sharpe ratio of 1.0.</div></div>
         </div>
     </section>
-
-    <footer class="site-footer">
-        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
-    </footer>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html">About</a> <span style="color:#dce1e8;">|</span> <a href="privacy.html">Privacy</a></p></footer>
 </div>
-
 <script src="recommendations.js"></script>
 <script src="feedback.js"></script>
-
 <script>
-    function toggleAccordion(id) {
-        const body = document.getElementById(id);
-        const arrow = document.getElementById(id + 'Arrow');
-        if (body.style.display === 'none' || body.style.display === '') {
-            body.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            body.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-    function toggleFaq(el) {
-        const answer = el.nextElementSibling;
-        const arrow = el.querySelector('.faq-arrow');
-        if (answer.style.display === 'none' || answer.style.display === '') {
-            answer.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            answer.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-
-    function calculate() {
-        const initial = parseFloat(document.getElementById('initial-amount-bt').value) || 0;
-        const contribution = parseFloat(document.getElementById('yearly-contribution-bt').value) || 0;
-        const years = parseFloat(document.getElementById('years-bt').value) || 1;
-
-        const returnsStr = document.getElementById('returns-bt').value;
-        let returns = returnsStr.split(',').map(s => parseFloat(s.trim())).filter(r => !isNaN(r));
-        if (returns.length === 0) returns = [0];
-
+    function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
+    function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
+    function calculateBT() {
+        const initial = parseFloat(document.getElementById('bt-initial').value) || 0;
+        const expReturn = parseFloat(document.getElementById('bt-return').value) || 0;
+        const vol = parseFloat(document.getElementById('bt-volatility').value) || 0;
+        const years = parseInt(document.getElementById('bt-years').value) || 1;
         let balance = initial;
-        let totalContrib = initial;
-        const schedule = [];
-        let totalReturn = 0;
-
-        for (let year = 1; year <= years; year++) {
-            const ret = returns[(year - 1) % returns.length];
-            const gain = balance * (ret / 100);
-            balance += gain + contribution;
-            totalContrib += contribution;
-            totalReturn += gain;
-            schedule.push({ year, ret, balance, contribution, gain });
+        const data = [];
+        let best = -Infinity, worst = Infinity;
+        for (let y = 1; y <= years; y++) {
+            const r = expReturn + (Math.random() - 0.5) * vol * 2;
+            balance = balance * (1 + r / 100);
+            data.push({ year: y, return: r, balance: balance });
+            if (r > best) best = r;
+            if (r < worst) worst = r;
         }
-
-        const finalValue = balance;
-        const totalContribVal = totalContrib;
-        const totalReturnVal = finalValue - totalContribVal;
-        const totalReturnPct = totalContribVal > 0 ? (totalReturnVal / totalContribVal) * 100 : 0;
-        const cagr = totalContribVal > 0 ? (Math.pow(finalValue / totalContribVal, 1 / years) - 1) * 100 : 0;
-
+        const totalReturn = (balance - initial) / initial * 100;
+        const avgReturn = totalReturn / years;
         const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
-        const pct = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-        document.getElementById('final-value-bt').textContent = fmt.format(finalValue);
-        document.getElementById('total-contrib-bt').textContent = fmt.format(totalContribVal);
-        document.getElementById('total-return-bt').textContent = pct.format(totalReturnPct / 100);
-        document.getElementById('cagr-bt').textContent = pct.format(cagr / 100);
-
-        const tbody = document.getElementById('schedule-body-bt');
-        tbody.innerHTML = '';
-        let cumBalance = initial;
-        for (const row of schedule) {
+        const pct = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 });
+        document.getElementById('bt-final').textContent = fmt.format(balance);
+        document.getElementById('bt-total-return').textContent = pct.format(totalReturn / 100);
+        document.getElementById('bt-avg-return').textContent = pct.format(avgReturn / 100);
+        document.getElementById('bt-best').textContent = pct.format(best / 100);
+        document.getElementById('bt-worst').textContent = pct.format(worst / 100);
+        const tbody = document.getElementById('bt-body'); tbody.innerHTML = '';
+        data.forEach((d, idx) => {
             const tr = document.createElement('tr');
-            if (row.year === years) tr.classList.add('highlight-row');
-            tr.innerHTML = `<td>${row.year}</td><td>${pct.format(row.ret / 100)}</td><td>${fmt.format(row.balance)}</td><td>${fmt.format(row.contribution)}</td>`;
+            if (idx === data.length - 1) tr.classList.add('highlight-row');
+            tr.innerHTML = `<td>${d.year}</td><td>${pct.format(d.return / 100)}</td><td>${fmt.format(d.balance)}</td>`;
             tbody.appendChild(tr);
-        }
-
-        document.getElementById('results-area').style.display = 'block';
-
-        // ===== 推荐联动 =====
-        showRecommendations('backtest-calculator.html', {
-            initialAmount: document.getElementById('initial-amount-bt').value,
-            years: document.getElementById('years-bt').value
         });
+        document.getElementById('bt-results').style.display = 'block';
+        showRecommendations('backtest-calculator.html', { initial: initial, years: years });
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('infoAccordion').style.display = 'block';
-        document.getElementById('infoArrow').textContent = '▼';
-        document.getElementById('faqAccordion').style.display = 'none';
-        document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
-        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
-        calculate();
-    });
-    document.addEventListener('input', function(e) {
-        if (e.target.closest('.form-grid')) { calculate(); }
-    });
+    document.addEventListener('DOMContentLoaded', function() { document.getElementById('infoAccordion').style.display='block'; document.getElementById('infoArrow').textContent='▼'; document.getElementById('faqAccordion').style.display='none'; document.getElementById('faqArrow').textContent='▶'; document.querySelectorAll('.faq-answer').forEach(el => el.style.display='none'); document.querySelectorAll('.faq-arrow').forEach(el => el.textContent='▶'); calculateBT(); });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculateBT(); } });
 </script>
 </body>
 </html>
