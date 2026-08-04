@@ -57,7 +57,6 @@
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
         .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
-        .summary-item .value.positive { color: #10b981; }
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
         .field { display: flex; flex-direction: column; }
         .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
@@ -77,4 +76,156 @@
         .accordion-header { padding: 1rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
         .accordion-header:hover { background: #f8fafc; }
         .accordion-header h2 { font-size: 1rem; font-weight: 600; color: #0f172a; margin: 0; }
-        .accordion-arrow { font-size: 0
+        .accordion-arrow { font-size: 0.9rem; color: #94a3b8; }
+        .accordion-body { padding: 0 1.2rem 1.2rem; display: none; }
+        .accordion-body.open { display: block; }
+        .faq-item { border-bottom: 1px solid #e9edf2; padding: 0.5rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; color: #0f172a; padding: 0.3rem 0; }
+        .faq-question:hover { color: #2563eb; }
+        .faq-arrow { font-size: 0.7rem; color: #94a3b8; }
+        .faq-answer { padding: 0.3rem 0 0.3rem 1.5rem; color: #475569; font-size: 0.9rem; line-height: 1.6; display: none; }
+        .faq-answer.open { display: block; }
+        .top-nav { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #e9edf2; margin-bottom: 1.5rem; }
+        .top-nav .back-link { color: #2563eb; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .top-nav .back-link:hover { text-decoration: underline; }
+        .top-nav .breadcrumb { color: #94a3b8; font-size: 0.85rem; }
+        .top-nav .breadcrumb span { color: #1e293b; }
+        .calculator-card { background: white; border-radius: 16px; padding: 1.5rem 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e9edf2; }
+        .calculator-card h1 { font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem; }
+        .calculator-card .subtitle { font-size: 1rem; color: #64748b; margin: 0 0 1rem; }
+        .site-footer { text-align: center; padding: 1.5rem 0 0.5rem; color: #94a3b8; font-size: 0.8rem; border-top: 1px solid #e9edf2; margin-top: 2rem; }
+        .site-footer a { color: #94a3b8; text-decoration: none; }
+        .site-footer a:hover { color: #2563eb; text-decoration: underline; }
+        @media (max-width: 640px) { .calculator-card { padding: 1rem; } .calculator-card h1 { font-size: 1.3rem; } .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 480px) { .calculator-card { padding: 0.8rem; } }
+    </style>
+</head>
+<body>
+<div class="container" style="max-width:820px; margin:0 auto; padding:0 1rem;">
+    <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">🎯 <span>Debt-Free Date Calculator</span></div></div>
+    <main class="calculator-card">
+        <h1>🎯 Debt-Free Date Calculator</h1>
+        <p class="subtitle">Find out exactly when you'll be debt-free with your current payment plan.</p>
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>Debt-Free Date Calculator</strong> — This tool calculates exactly how many months it
+                will take to pay off your debt based on your current balance, interest rate, and monthly payment.
+                It shows your debt-free date and total interest cost.
+            </p>
+        </div>
+        <div class="form-grid">
+            <div class="field"><label>Current Balance ($)</label><input type="number" id="dfd-balance" value="10000" min="0" step="500" /></div>
+            <div class="field"><label>Annual Interest Rate (%)</label><input type="number" id="dfd-rate" value="12" min="0" step="0.1" /></div>
+            <div class="field"><label>Monthly Payment ($)</label><input type="number" id="dfd-payment" value="500" min="0" step="50" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculateDFD()">Calculate</button></div>
+        </div>
+        <div id="dfd-results" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Debt-Free Timeline</h2>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>📋 Input Summary</h4>
+                    <div class="row"><span>Balance</span><span class="num" id="dfd-balance-display">—</span></div>
+                    <div class="row"><span>Rate</span><span class="num" id="dfd-rate-display">—</span></div>
+                    <div class="row"><span>Payment</span><span class="num" id="dfd-payment-display">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>🎯 Debt-Free Date</h4>
+                    <div class="row"><span style="font-weight:700;">Debt-Free Date</span><span class="num" id="dfd-date" style="font-size:1.2rem;">—</span></div>
+                    <div class="row"><span>Months to Pay Off</span><span class="num" id="dfd-months">—</span></div>
+                    <div class="row"><span>Total Interest</span><span class="num" id="dfd-interest">—</span></div>
+                    <div class="row"><span>Total Paid</span><span class="num" id="dfd-total">—</span></div>
+                </div>
+            </div>
+        </div>
+        <div id="recommendations-area"></div>
+    </main>
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
+        <div class="accordion-body" id="infoAccordion">
+            <div class="info-grid">
+                <div class="info-block"><h3>Debt-Free Date</h3><p>The month and year when your debt will be fully paid off.</p></div>
+                <div class="info-block"><h3>Total Interest</h3><p>The total interest you'll pay by the time the debt is cleared.</p></div>
+                <div class="info-block"><h3>Total Paid</h3><p>Balance + interest — the true cost of your debt.</p></div>
+            </div>
+        </div>
+    </section>
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
+        <div class="accordion-body" id="faqAccordion">
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>When will I be debt-free if I pay $500/month on $10,000 at 12%?</span></div><div class="faq-answer">You will be debt-free in 23 months (1 year 11 months). The debt-free date would be July 2028 if you start today.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the exact date I'll be debt-free?</span></div><div class="faq-answer">Enter your balance, rate, and monthly payment. The calculator gives you the exact month and year you'll make your final payment.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What if I increase my payment to $600/month on $10,000 at 12%?</span></div><div class="faq-answer">You would be debt-free in 18 months (1.5 years) instead of 23 months — 5 months earlier. You'd save about $400 in interest.</div></div>
+        </div>
+    </section>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html">About</a> <span style="color:#dce1e8;">|</span> <a href="privacy.html">Privacy</a></p></footer>
+</div>
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+<script>
+    function toggleAccordion(id) {
+        const body = document.getElementById(id);
+        const arrow = document.getElementById(id + 'Arrow');
+        if (body.style.display === 'none' || body.style.display === '') {
+            body.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            body.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+    function toggleFaq(el) {
+        const answer = el.nextElementSibling;
+        const arrow = el.querySelector('.faq-arrow');
+        if (answer.style.display === 'none' || answer.style.display === '') {
+            answer.style.display = 'block';
+            arrow.textContent = '▼';
+        } else {
+            answer.style.display = 'none';
+            arrow.textContent = '▶';
+        }
+    }
+    function calculateDFD() {
+        const balance = parseFloat(document.getElementById('dfd-balance').value) || 0;
+        const rate = parseFloat(document.getElementById('dfd-rate').value) || 0;
+        const payment = parseFloat(document.getElementById('dfd-payment').value) || 0;
+        let remaining = balance, months = 0, totalInterest = 0;
+        const monthlyRate = rate / 100 / 12;
+        while (remaining > 0.01 && months < 600) {
+            const interest = remaining * monthlyRate;
+            const principal = Math.min(payment, remaining + interest);
+            remaining += interest - principal;
+            totalInterest += interest;
+            months++;
+            if (remaining < 0) remaining = 0;
+        }
+        const totalPaid = balance + totalInterest;
+        const date = new Date();
+        date.setMonth(date.getMonth() + months);
+        const dateStr = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        document.getElementById('dfd-balance-display').textContent = fmt.format(balance);
+        document.getElementById('dfd-rate-display').textContent = rate + '%';
+        document.getElementById('dfd-payment-display').textContent = fmt.format(payment);
+        document.getElementById('dfd-date').textContent = months >= 600 ? 'Never (payment too low)' : dateStr;
+        document.getElementById('dfd-months').textContent = months >= 600 ? '∞' : months + ' months';
+        document.getElementById('dfd-interest').textContent = fmt.format(totalInterest);
+        document.getElementById('dfd-total').textContent = fmt.format(totalPaid);
+        document.getElementById('dfd-results').style.display = 'block';
+        showRecommendations('debt-free-date.html', { balance: balance, payment: payment });
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('infoAccordion').style.display = 'block';
+        document.getElementById('infoArrow').textContent = '▼';
+        document.getElementById('faqAccordion').style.display = 'none';
+        document.getElementById('faqArrow').textContent = '▶';
+        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
+        calculateDFD();
+    });
+    document.addEventListener('input', function(e) {
+        if (e.target.closest('.form-grid')) { calculateDFD(); }
+    });
+</script>
+</body>
+</html>
