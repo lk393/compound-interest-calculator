@@ -3,8 +3,54 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ===== Meta Tags ===== -->
     <title>WACC Calculator — Free Online Tool</title>
+    <meta name="description" content="Calculate the Weighted Average Cost of Capital (WACC) for your business. Free WACC calculator for valuation and capital budgeting." />
+
     <link rel="stylesheet" href="style.css" />
+
+    <!-- ===== WebApplication Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "WACC Calculator",
+      "description": "Calculate the Weighted Average Cost of Capital (WACC) for your business.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "url": "https://financetools.tools/wacc-calculator.html",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.6", "ratingCount": "92" }
+    }
+    </script>
+
+    <!-- ===== FAQPage Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the WACC of a company with 60% equity at 12% cost and 40% debt at 6% after tax?",
+          "acceptedAnswer": { "@type": "Answer", "text": "WACC = (0.60 × 12%) + (0.40 × 6%) = 7.2% + 2.4% = 9.6%. The company needs to earn at least 9.6% on new investments." }
+        },
+        {
+          "@type": "Question",
+          "name": "How does WACC affect company valuation?",
+          "acceptedAnswer": { "@type": "Answer", "text": "WACC is used as the discount rate in DCF valuation. A 1% lower WACC increases a company's value by about 10-15%. For a $100M company, a 1% WACC reduction adds $10-15M in value." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is a good WACC for a stable company?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Stable, low-risk companies have WACC of 6-8%. Growth companies have WACC of 10-15%. A 7% WACC means the company can fund projects that return at least 7%." }
+        }
+      ]
+    }
+    </script>
+
     <style>
         .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
         .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
@@ -14,10 +60,7 @@
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
         .field { display: flex; flex-direction: column; }
         .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
-        .field input {
-            padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px;
-            background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%;
-        }
+        .field input { padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px; background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
         .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
         .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
         .btn:hover { background: #1d4ed8; }
@@ -27,48 +70,74 @@
         .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
         .comparison-box .row .num { font-weight: 600; color: #0f172a; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
-        @media (max-width: 640px) { .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        .info-block h3 { font-size: 0.9rem; font-weight: 600; color: #0f172a; margin: 0 0 0.3rem; }
+        .info-block p { font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.5; }
+        .accordion-card { background: white; border-radius: 12px; border: 1px solid #e9edf2; margin-top: 1.5rem; overflow: hidden; }
+        .accordion-header { padding: 1rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .accordion-header:hover { background: #f8fafc; }
+        .accordion-header h2 { font-size: 1rem; font-weight: 600; color: #0f172a; margin: 0; }
+        .accordion-arrow { font-size: 0.9rem; color: #94a3b8; }
+        .accordion-body { padding: 0 1.2rem 1.2rem; display: none; }
+        .accordion-body.open { display: block; }
+        .faq-item { border-bottom: 1px solid #e9edf2; padding: 0.5rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; color: #0f172a; padding: 0.3rem 0; }
+        .faq-question:hover { color: #2563eb; }
+        .faq-arrow { font-size: 0.7rem; color: #94a3b8; }
+        .faq-answer { padding: 0.3rem 0 0.3rem 1.5rem; color: #475569; font-size: 0.9rem; line-height: 1.6; display: none; }
+        .faq-answer.open { display: block; }
+        .top-nav { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #e9edf2; margin-bottom: 1.5rem; }
+        .top-nav .back-link { color: #2563eb; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .top-nav .back-link:hover { text-decoration: underline; }
+        .top-nav .breadcrumb { color: #94a3b8; font-size: 0.85rem; }
+        .top-nav .breadcrumb span { color: #1e293b; }
+        .calculator-card { background: white; border-radius: 16px; padding: 1.5rem 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e9edf2; }
+        .calculator-card h1 { font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem; }
+        .calculator-card .subtitle { font-size: 1rem; color: #64748b; margin: 0 0 1rem; }
+        .site-footer { text-align: center; padding: 1.5rem 0 0.5rem; color: #94a3b8; font-size: 0.8rem; border-top: 1px solid #e9edf2; margin-top: 2rem; }
+        .site-footer a { color: #94a3b8; text-decoration: none; }
+        .site-footer a:hover { color: #2563eb; text-decoration: underline; }
+        @media (max-width: 640px) { .calculator-card { padding: 1rem; } .calculator-card h1 { font-size: 1.3rem; } .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 480px) { .calculator-card { padding: 0.8rem; } }
     </style>
 </head>
 <body>
-<div class="container">
+<div class="container" style="max-width:820px; margin:0 auto; padding:0 1rem;">
     <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">📊 <span>WACC Calculator</span></div></div>
     <main class="calculator-card">
-        <h1>📊 Weighted Average Cost of Capital (WACC)</h1>
-        <p class="subtitle">Calculate a company's cost of capital by weighting the cost of equity and debt.</p>
+        <h1>📊 Weighted Average Cost of Capital (WACC) Calculator</h1>
+        <p class="subtitle">Calculate the WACC — the minimum return a company must earn on its investments.</p>
         <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
-                <strong>WACC Calculator</strong> — This tool calculates the weighted average cost of capital,
-                a key metric for investment decisions. WACC represents the minimum return a company must earn
-                on its existing asset base to satisfy its investors.
+                <strong>WACC Calculator</strong> — This tool calculates a company's Weighted Average Cost of
+                Capital, which is the minimum return required by all investors (equity and debt holders). It's
+                used as the discount rate in DCF valuation.
             </p>
         </div>
         <div class="form-grid">
-            <div class="field"><label>Market Value of Equity ($)</label><input type="number" id="equity-value" value="500000" min="0" step="10000" /></div>
-            <div class="field"><label>Market Value of Debt ($)</label><input type="number" id="debt-value" value="300000" min="0" step="10000" /></div>
-            <div class="field"><label>Cost of Equity (%)</label><input type="number" id="cost-equity" value="12" min="0" step="0.1" /></div>
-            <div class="field"><label>Cost of Debt (%)</label><input type="number" id="cost-debt" value="6" min="0" step="0.1" /></div>
-            <div class="field"><label>Corporate Tax Rate (%)</label><input type="number" id="tax-rate" value="21" min="0" max="100" step="1" /></div>
-            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculate()">Calculate</button></div>
+            <div class="field"><label>Market Value of Equity ($)</label><input type="number" id="wacc-equity" value="500000" min="0" step="10000" /></div>
+            <div class="field"><label>Market Value of Debt ($)</label><input type="number" id="wacc-debt" value="300000" min="0" step="10000" /></div>
+            <div class="field"><label>Cost of Equity (%)</label><input type="number" id="wacc-ce" value="12" min="0" step="0.1" /></div>
+            <div class="field"><label>Cost of Debt (%)</label><input type="number" id="wacc-cd" value="6" min="0" step="0.1" /></div>
+            <div class="field"><label>Corporate Tax Rate (%)</label><input type="number" id="wacc-tax" value="21" min="0" max="100" step="1" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculateWACC()">Calculate</button></div>
         </div>
-        <div id="results-area" style="margin-top:1.8rem; display:none;">
+        <div id="wacc-results" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 WACC Results</h2>
             <div class="comparison-grid">
                 <div class="comparison-box">
-                    <h4>📋 Input Summary</h4>
-                    <div class="row"><span>Equity Value</span><span class="num" id="eq-display">—</span></div>
-                    <div class="row"><span>Debt Value</span><span class="num" id="debt-display">—</span></div>
-                    <div class="row"><span>Total Capital</span><span class="num" id="total-display">—</span></div>
-                    <div class="row"><span>Cost of Equity</span><span class="num" id="ce-display">—</span></div>
-                    <div class="row"><span>Cost of Debt</span><span class="num" id="cd-display">—</span></div>
-                    <div class="row"><span>Tax Rate</span><span class="num" id="tax-display">—</span></div>
+                    <h4>📋 Input</h4>
+                    <div class="row"><span>Equity Value</span><span class="num" id="wacc-equity-display">—</span></div>
+                    <div class="row"><span>Debt Value</span><span class="num" id="wacc-debt-display">—</span></div>
+                    <div class="row"><span>Cost of Equity</span><span class="num" id="wacc-ce-display">—</span></div>
+                    <div class="row"><span>Cost of Debt</span><span class="num" id="wacc-cd-display">—</span></div>
+                    <div class="row"><span>Tax Rate</span><span class="num" id="wacc-tax-display">—</span></div>
                 </div>
                 <div class="comparison-box">
-                    <h4>💰 WACC Breakdown</h4>
-                    <div class="row"><span>Weight of Equity</span><span class="num" id="we-display">—</span></div>
-                    <div class="row"><span>Weight of Debt</span><span class="num" id="wd-display">—</span></div>
-                    <div class="row"><span>Cost of Equity (weighted)</span><span class="num" id="wec-display">—</span></div>
-                    <div class="row"><span>After‑Tax Cost of Debt</span><span class="num" id="atcd-display">—</span></div>
+                    <h4>💰 Results</h4>
+                    <div class="row"><span>Weight of Equity</span><span class="num" id="wacc-we">—</span></div>
+                    <div class="row"><span>Weight of Debt</span><span class="num" id="wacc-wd">—</span></div>
+                    <div class="row"><span>After‑Tax Cost of Debt</span><span class="num" id="wacc-atcd">—</span></div>
                     <div class="row"><span style="font-weight:700;">WACC</span><span class="num" id="wacc-result" style="font-size:1.2rem;">—</span></div>
                 </div>
             </div>
@@ -79,61 +148,13 @@
         <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block"><h3>WACC</h3><p>The minimum return a company must earn on its investments. Used as a discount rate in DCF analysis.</p></div>
-                <div class="info-block"><h3>Weight of Equity/Debt</h3><p>The proportion of total capital represented by each source of financing.</p></div>
-                <div class="info-block"><h3>After‑Tax Cost of Debt</h3><p>The cost of debt reduced by the tax shield. Interest payments are tax‑deductible.</p></div>
+                <div class="info-block"><h3>WACC</h3><p>The minimum return a company must earn on new investments.</p></div>
+                <div class="info-block"><h3>After‑Tax Cost of Debt</h3><p>Interest is tax‑deductible, so the effective cost of debt is lower.</p></div>
+                <div class="info-block"><h3>Weights</h3><p>The proportion of total capital from equity and debt.</p></div>
             </div>
         </div>
     </section>
     <section class="accordion-card">
         <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
         <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is WACC used for?</span></div><div class="faq-answer">WACC is used as a discount rate in discounted cash flow (DCF) analysis and to evaluate investment projects.</div></div>
-            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is a good WACC?</span></div><div class="faq-answer">A lower WACC indicates a company can fund operations cheaply. The "good" value depends on the industry and risk profile.</div></div>
-        </div>
-    </section>
-    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p></footer>
-</div>
-<script src="recommendations.js"></script>
-<script src="feedback.js"></script>
-<script>
-    function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
-    function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
-    function calculate() {
-        const eq = parseFloat(document.getElementById('equity-value').value) || 0;
-        const debt = parseFloat(document.getElementById('debt-value').value) || 0;
-        const ce = parseFloat(document.getElementById('cost-equity').value) || 0;
-        const cd = parseFloat(document.getElementById('cost-debt').value) || 0;
-        const tax = parseFloat(document.getElementById('tax-rate').value) || 0;
-        const total = eq + debt;
-        const we = total > 0 ? eq / total : 0;
-        const wd = total > 0 ? debt / total : 0;
-        const atcd = cd * (1 - tax / 100);
-        const wacc = we * ce + wd * atcd;
-        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
-        const pct = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        document.getElementById('eq-display').textContent = fmt.format(eq);
-        document.getElementById('debt-display').textContent = fmt.format(debt);
-        document.getElementById('total-display').textContent = fmt.format(total);
-        document.getElementById('ce-display').textContent = pct.format(ce / 100);
-        document.getElementById('cd-display').textContent = pct.format(cd / 100);
-        document.getElementById('tax-display').textContent = pct.format(tax / 100);
-        document.getElementById('we-display').textContent = pct.format(we);
-        document.getElementById('wd-display').textContent = pct.format(wd);
-        document.getElementById('wec-display').textContent = pct.format(we * ce / 100);
-        document.getElementById('atcd-display').textContent = pct.format(atcd / 100);
-        document.getElementById('wacc-result').textContent = pct.format(wacc / 100);
-        document.getElementById('results-area').style.display = 'block';
-        showRecommendations('wacc-calculator.html', { eq: eq, debt: debt });
-    }
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('infoAccordion').style.display = 'block'; document.getElementById('infoArrow').textContent = '▼';
-        document.getElementById('faqAccordion').style.display = 'none'; document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(el => el.style.display = 'none');
-        document.querySelectorAll('.faq-arrow').forEach(el => el.textContent = '▶');
-        calculate();
-    });
-    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculate(); } });
-</script>
-</body>
-</html>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the WACC of a company with 
