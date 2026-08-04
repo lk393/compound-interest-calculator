@@ -157,4 +157,45 @@
     <section class="accordion-card">
         <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
         <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the WACC of a company with 
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the WACC of a company with 60% equity at 12% cost and 40% debt at 6% after tax?</span></div><div class="faq-answer">WACC = (0.60 × 12%) + (0.40 × 6%) = 7.2% + 2.4% = 9.6%. The company needs to earn at least 9.6% on new investments.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How does WACC affect company valuation?</span></div><div class="faq-answer">WACC is used as the discount rate in DCF valuation. A 1% lower WACC increases a company's value by about 10-15%. For a $100M company, a 1% WACC reduction adds $10-15M in value.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is a good WACC for a stable company?</span></div><div class="faq-answer">Stable, low-risk companies have WACC of 6-8%. Growth companies have WACC of 10-15%. A 7% WACC means the company can fund projects that return at least 7%.</div></div>
+        </div>
+    </section>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html">About</a> <span style="color:#dce1e8;">|</span> <a href="privacy.html">Privacy</a></p></footer>
+</div>
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+<script>
+    function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
+    function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
+    function calculateWACC() {
+        const eq = parseFloat(document.getElementById('wacc-equity').value) || 0;
+        const debt = parseFloat(document.getElementById('wacc-debt').value) || 0;
+        const ce = parseFloat(document.getElementById('wacc-ce').value) || 0;
+        const cd = parseFloat(document.getElementById('wacc-cd').value) || 0;
+        const tax = parseFloat(document.getElementById('wacc-tax').value) || 0;
+        const total = eq + debt;
+        const we = total > 0 ? eq / total : 0;
+        const wd = total > 0 ? debt / total : 0;
+        const atcd = cd * (1 - tax / 100);
+        const wacc = we * ce + wd * atcd;
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        const pct = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 });
+        document.getElementById('wacc-equity-display').textContent = fmt.format(eq);
+        document.getElementById('wacc-debt-display').textContent = fmt.format(debt);
+        document.getElementById('wacc-ce-display').textContent = pct.format(ce / 100);
+        document.getElementById('wacc-cd-display').textContent = pct.format(cd / 100);
+        document.getElementById('wacc-tax-display').textContent = pct.format(tax / 100);
+        document.getElementById('wacc-we').textContent = pct.format(we);
+        document.getElementById('wacc-wd').textContent = pct.format(wd);
+        document.getElementById('wacc-atcd').textContent = pct.format(atcd / 100);
+        document.getElementById('wacc-result').textContent = pct.format(wacc / 100);
+        document.getElementById('wacc-results').style.display = 'block';
+        showRecommendations('wacc-calculator.html', { eq: eq, debt: debt });
+    }
+    document.addEventListener('DOMContentLoaded', function() { document.getElementById('infoAccordion').style.display='block'; document.getElementById('infoArrow').textContent='▼'; document.getElementById('faqAccordion').style.display='none'; document.getElementById('faqArrow').textContent='▶'; document.querySelectorAll('.faq-answer').forEach(el => el.style.display='none'); document.querySelectorAll('.faq-arrow').forEach(el => el.textContent='▶'); calculateWACC(); });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculateWACC(); } });
+</script>
+</body>
+</html>
