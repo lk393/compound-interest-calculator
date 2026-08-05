@@ -181,4 +181,32 @@
         const d2 = d1 - (vol / 100) * Math.sqrt(T);
         function normCDF(x) {
             const a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741, a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
-            const sign = x < 0 ? -1 :
+            const sign = x < 0 ? -1 : 1; x = Math.abs(x);
+            const t = 1 / (1 + p * x);
+            const y = 1 - (((((a5 * t + a4) * t + a3) * t + a2) * t + a1) * t * Math.exp(-x * x / 2));
+            return 0.5 * (1 + sign * (1 - 2 * (1 - y)));
+        }
+        const N_d1 = normCDF(d1);
+        const N_d2 = normCDF(d2);
+        const optionValue = S * N_d1 - K * Math.exp(-(rf / 100) * T) * N_d2;
+        const timeValue = Math.max(0, optionValue - intrinsic);
+        const moneyness = ((S - K) / K * 100);
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const pct = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 });
+        document.getElementById('so-price-display').textContent = fmt.format(S);
+        document.getElementById('so-strike-display').textContent = fmt.format(K);
+        document.getElementById('so-volatility-display').textContent = pct.format(vol / 100);
+        document.getElementById('so-time-display').textContent = T + ' years';
+        document.getElementById('so-rf-display').textContent = pct.format(rf / 100);
+        document.getElementById('so-option-value').textContent = fmt.format(optionValue);
+        document.getElementById('so-intrinsic').textContent = fmt.format(intrinsic);
+        document.getElementById('so-time-value').textContent = fmt.format(timeValue);
+        document.getElementById('so-moneyness').textContent = (moneyness > 0 ? '+' : '') + moneyness.toFixed(0) + '%';
+        document.getElementById('so-results').style.display = 'block';
+        showRecommendations('stock-option-calculator.html', { S: S, K: K });
+    }
+    document.addEventListener('DOMContentLoaded', function() { document.getElementById('infoAccordion').style.display='block'; document.getElementById('infoArrow').textContent='▼'; document.getElementById('faqAccordion').style.display='none'; document.getElementById('faqArrow').textContent='▶'; document.querySelectorAll('.faq-answer').forEach(el => el.style.display='none'); document.querySelectorAll('.faq-arrow').forEach(el => el.textContent='▶'); calculateSO(); });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculateSO(); } });
+</script>
+</body>
+</html>
