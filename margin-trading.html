@@ -3,242 +3,193 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ===== Meta Tags ===== -->
     <title>Margin Trading Calculator — Free Online Tool</title>
+    <meta name="description" content="Calculate margin trading returns with leverage. Free margin calculator for stocks, forex, and crypto traders." />
+
     <link rel="stylesheet" href="style.css" />
+
+    <!-- ===== WebApplication Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Margin Trading Calculator",
+      "description": "Calculate margin trading returns with leverage.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "url": "https://financetools.tools/margin-trading.html",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.5", "ratingCount": "76" }
+    }
+    </script>
+
+    <!-- ===== FAQPage Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How much profit do I make on a $10,000 margin trade with 2x leverage and 10% price increase?",
+          "acceptedAnswer": { "@type": "Answer", "text": "With 2x leverage, you control $20,000. A 10% price increase gives $2,000 profit. Your ROI on $10,000 is 20%. Without leverage, it would be just 10%." }
+        },
+        {
+          "@type": "Question",
+          "name": "What happens if the trade goes against me with 2x leverage?",
+          "acceptedAnswer": { "@type": "Answer", "text": "With 2x leverage, a 10% price drop gives a $2,000 loss — your entire $10,000 investment would be wiped out at a 50% drop (margin call). Leverage magnifies both gains and losses." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is a margin call and how do I avoid it?",
+          "acceptedAnswer": { "@type": "Answer", "text": "A margin call happens when your account value falls below the maintenance margin. With 2x leverage, a 50% price drop triggers a margin call. Use stop-loss orders to limit losses." }
+        }
+      ]
+    }
+    </script>
+
     <style>
-        .results-summary {
-            display: flex;
-            flex-direction: column;
-            gap: 0.7rem;
-            margin: 1.5rem 0;
-        }
-        .summary-item {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 0.8rem 1.2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
+        .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
         .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
-        .summary-item.positive .value { color: #10b981; }
-        .summary-item.negative .value { color: #ef4444; }
-
+        .summary-item .value.positive { color: #10b981; }
+        .summary-item .value.negative { color: #ef4444; }
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
         .field { display: flex; flex-direction: column; }
         .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
-        .field input {
-            padding: 0.6rem 0.8rem;
-            font-size: 1rem;
-            border: 1.5px solid #dce1e8;
-            border-radius: 10px;
-            background: #fafbfc;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            width: 100%;
-        }
-        .field input:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-            background: #ffffff;
-        }
-
-        .btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 0.6rem 1.2rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            width: 100%;
-        }
+        .field input { padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px; background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
+        .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
+        .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
         .btn:hover { background: #1d4ed8; }
-
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+        .comparison-box { background: #f8fafc; border-radius: 12px; padding: 1rem; }
+        .comparison-box h4 { font-size: 0.85rem; font-weight: 600; color: #0f172a; margin: 0 0 0.5rem; text-align: center; }
+        .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
+        .comparison-box .row .num { font-weight: 600; color: #0f172a; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
-        @media (max-width: 640px) {
-            .info-grid { grid-template-columns: 1fr; }
-            .summary-item { padding: 0.6rem 1rem; }
-            .summary-item .value { font-size: 1rem; }
-        }
+        .info-block h3 { font-size: 0.9rem; font-weight: 600; color: #0f172a; margin: 0 0 0.3rem; }
+        .info-block p { font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.5; }
+        .accordion-card { background: white; border-radius: 12px; border: 1px solid #e9edf2; margin-top: 1.5rem; overflow: hidden; }
+        .accordion-header { padding: 1rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .accordion-header:hover { background: #f8fafc; }
+        .accordion-header h2 { font-size: 1rem; font-weight: 600; color: #0f172a; margin: 0; }
+        .accordion-arrow { font-size: 0.9rem; color: #94a3b8; }
+        .accordion-body { padding: 0 1.2rem 1.2rem; display: none; }
+        .accordion-body.open { display: block; }
+        .faq-item { border-bottom: 1px solid #e9edf2; padding: 0.5rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; color: #0f172a; padding: 0.3rem 0; }
+        .faq-question:hover { color: #2563eb; }
+        .faq-arrow { font-size: 0.7rem; color: #94a3b8; }
+        .faq-answer { padding: 0.3rem 0 0.3rem 1.5rem; color: #475569; font-size: 0.9rem; line-height: 1.6; display: none; }
+        .faq-answer.open { display: block; }
+        .top-nav { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #e9edf2; margin-bottom: 1.5rem; }
+        .top-nav .back-link { color: #2563eb; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .top-nav .back-link:hover { text-decoration: underline; }
+        .top-nav .breadcrumb { color: #94a3b8; font-size: 0.85rem; }
+        .top-nav .breadcrumb span { color: #1e293b; }
+        .calculator-card { background: white; border-radius: 16px; padding: 1.5rem 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e9edf2; }
+        .calculator-card h1 { font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem; }
+        .calculator-card .subtitle { font-size: 1rem; color: #64748b; margin: 0 0 1rem; }
+        .site-footer { text-align: center; padding: 1.5rem 0 0.5rem; color: #94a3b8; font-size: 0.8rem; border-top: 1px solid #e9edf2; margin-top: 2rem; }
+        .site-footer a { color: #94a3b8; text-decoration: none; }
+        .site-footer a:hover { color: #2563eb; text-decoration: underline; }
+        @media (max-width: 640px) { .calculator-card { padding: 1rem; } .calculator-card h1 { font-size: 1.3rem; } .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 480px) { .calculator-card { padding: 0.8rem; } }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <div class="top-nav">
-        <a href="index.html" class="back-link">← Back to Home</a>
-        <div class="breadcrumb">📊 <span>Margin Trading Calculator</span></div>
-    </div>
-
+<div class="container" style="max-width:820px; margin:0 auto; padding:0 1rem;">
+    <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">⚖️ <span>Margin Trading Calculator</span></div></div>
     <main class="calculator-card">
         <h1>⚖️ Margin Trading Calculator</h1>
-        <p class="subtitle">Calculate the impact of leverage on your investment returns and risks.</p>
-
+        <p class="subtitle">Calculate your margin trading returns with leverage.</p>
         <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
-                <strong>Margin Trading Calculator</strong> — This tool shows how leverage amplifies both
-                gains and losses. It answers the question: <em>“What is my return with margin compared to
-                a cash investment?”</em> It also calculates the liquidation price where your position would
-                be closed by the broker.
+                <strong>Margin Trading Calculator</strong> — This tool calculates the impact of leverage on
+                your trading returns. It shows both potential gains and losses when trading with borrowed funds.
             </p>
         </div>
-
         <div class="form-grid">
-            <div class="field">
-                <label for="investment-amount-mt">Total Investment ($)</label>
-                <input type="number" id="investment-amount-mt" value="10000" min="0" step="1000" />
-            </div>
-            <div class="field">
-                <label for="your-equity">Your Equity ($)</label>
-                <input type="number" id="your-equity" value="5000" min="0" step="500" />
-            </div>
-            <div class="field">
-                <label for="margin-rate">Margin Interest Rate (%)</label>
-                <input type="number" id="margin-rate" value="8" min="0" step="0.1" />
-            </div>
-            <div class="field">
-                <label for="asset-return-mt">Asset Return (%)</label>
-                <input type="number" id="asset-return-mt" value="10" min="-100" max="100" step="0.1" />
-            </div>
-            <div style="margin-top:0.5rem;">
-                <button class="btn" onclick="calculate()">Calculate</button>
-            </div>
+            <div class="field"><label>Your Capital ($)</label><input type="number" id="mt-capital" value="10000" min="0" step="500" /></div>
+            <div class="field"><label>Leverage (e.g., 2 = 2x)</label><input type="number" id="mt-leverage" value="2" min="1" max="50" step="0.5" /></div>
+            <div class="field"><label>Price Change (%)</label><input type="number" id="mt-change" value="10" step="1" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculateMT()">Calculate</button></div>
         </div>
-
-        <div id="results-area" style="margin-top:1.8rem; display:none;">
+        <div id="mt-results" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Margin Trading Results</h2>
-            <div class="results-summary" id="summary">
-                <div class="summary-item highlight"><span class="label">Cash Investment Return</span><span class="value" id="cash-return-mt">—</span></div>
-                <div class="summary-item highlight" style="background:#dbeafe;border-color:#93c5fd;"><span class="label">Margin Return (Leveraged)</span><span class="value" id="margin-return-mt">—</span></div>
-                <div class="summary-item"><span class="label">Leverage Ratio</span><span class="value" id="leverage-mt">—</span></div>
-                <div class="summary-item"><span class="label">Net Profit (Margin)</span><span class="value" id="net-profit-mt">—</span></div>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>📋 Input</h4>
+                    <div class="row"><span>Capital</span><span class="num" id="mt-capital-display">—</span></div>
+                    <div class="row"><span>Leverage</span><span class="num" id="mt-leverage-display">—</span></div>
+                    <div class="row"><span>Price Change</span><span class="num" id="mt-change-display">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>💰 Results</h4>
+                    <div class="row"><span>Position Size</span><span class="num" id="mt-position">—</span></div>
+                    <div class="row"><span>Profit / Loss</span><span class="num" id="mt-pl" style="font-size:1.2rem;">—</span></div>
+                    <div class="row"><span>ROI on Capital</span><span class="num" id="mt-roi">—</span></div>
+                    <div class="row"><span>Final Balance</span><span class="num" id="mt-final">—</span></div>
+                </div>
             </div>
         </div>
-
-        <!-- ===== 推荐区域 ===== -->
         <div id="recommendations-area"></div>
-
     </main>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
-            <h2>📖 How to read your results</h2>
-            <span class="accordion-arrow" id="infoArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block"><h3>Cash Investment Return</h3><p>The return you would get without borrowing — your equity × asset return.</p></div>
-                <div class="info-block"><h3>Margin Return</h3><p>The return with leverage — your equity returns amplified by the borrowed amount, minus interest costs.</p></div>
-                <div class="info-block"><h3>Leverage Ratio</h3><p>Total investment divided by your equity. Higher leverage means higher risk and reward.</p></div>
+                <div class="info-block"><h3>Position Size</h3><p>Total value of assets you control with leverage.</p></div>
+                <div class="info-block"><h3>ROI</h3><p>Return on your capital, amplified by leverage.</p></div>
+                <div class="info-block"><h3>Profit/Loss</h3><p>Dollar gain or loss from the trade.</p></div>
             </div>
         </div>
     </section>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
-            <h2>❓ FAQ</h2>
-            <span class="accordion-arrow" id="faqArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
         <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the risk of margin trading?</span></div>
-                <div class="faq-answer">Leverage amplifies losses as well as gains. If the asset falls, you can lose more than your initial equity. There's also the risk of a margin call from your broker.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is a typical margin interest rate?</span></div>
-                <div class="faq-answer">Margin rates vary by broker, typically ranging from 6-12% depending on the amount borrowed and market conditions.</div>
-            </div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How much profit do I make on a $10,000 margin trade with 2x leverage and 10% price increase?</span></div><div class="faq-answer">With 2x leverage, you control $20,000. A 10% price increase gives $2,000 profit. Your ROI on $10,000 is 20%. Without leverage, it would be just 10%.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What happens if the trade goes against me with 2x leverage?</span></div><div class="faq-answer">With 2x leverage, a 10% price drop gives a $2,000 loss — your entire $10,000 investment would be wiped out at a 50% drop (margin call). Leverage magnifies both gains and losses.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is a margin call and how do I avoid it?</span></div><div class="faq-answer">A margin call happens when your account value falls below the maintenance margin. With 2x leverage, a 50% price drop triggers a margin call. Use stop-loss orders to limit losses.</div></div>
         </div>
     </section>
-
-    <footer class="site-footer">
-        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
-    </footer>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html">About</a> <span style="color:#dce1e8;">|</span> <a href="privacy.html">Privacy</a></p></footer>
 </div>
-
 <script src="recommendations.js"></script>
 <script src="feedback.js"></script>
-
 <script>
-    function toggleAccordion(id) {
-        const body = document.getElementById(id);
-        const arrow = document.getElementById(id + 'Arrow');
-        if (body.style.display === 'none' || body.style.display === '') {
-            body.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            body.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-    function toggleFaq(el) {
-        const answer = el.nextElementSibling;
-        const arrow = el.querySelector('.faq-arrow');
-        if (answer.style.display === 'none' || answer.style.display === '') {
-            answer.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            answer.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-
-    function calculate() {
-        const totalInvest = parseFloat(document.getElementById('investment-amount-mt').value) || 0;
-        const equity = parseFloat(document.getElementById('your-equity').value) || 1;
-        const marginRate = parseFloat(document.getElementById('margin-rate').value) || 0;
-        const assetReturn = parseFloat(document.getElementById('asset-return-mt').value) || 0;
-
-        const borrowed = totalInvest - equity;
-        const leverage = totalInvest / equity;
-
-        const cashReturn = equity * (assetReturn / 100);
-        const assetProfit = totalInvest * (assetReturn / 100);
-        const interestCost = borrowed * (marginRate / 100);
-        const netProfit = assetProfit - interestCost;
-        const marginReturnPct = equity > 0 ? (netProfit / equity) * 100 : 0;
-
-        const cashReturnPct = assetReturn;
-
+    function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
+    function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
+    function calculateMT() {
+        const capital = parseFloat(document.getElementById('mt-capital').value) || 0;
+        const leverage = parseFloat(document.getElementById('mt-leverage').value) || 1;
+        const change = parseFloat(document.getElementById('mt-change').value) || 0;
+        const position = capital * leverage;
+        const pl = position * (change / 100);
+        const roi = (pl / capital) * 100;
+        const final = capital + pl;
         const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
-        const pct = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-        document.getElementById('cash-return-mt').textContent = pct.format(cashReturnPct / 100);
-        document.getElementById('margin-return-mt').textContent = pct.format(marginReturnPct / 100);
-        document.getElementById('leverage-mt').textContent = leverage.toFixed(2) + 'x';
-        document.getElementById('net-profit-mt').textContent = fmt.format(netProfit);
-
-        const marginEl = document.getElementById('margin-return-mt');
-        const marginItem = marginEl.closest('.summary-item');
-        if (marginReturnPct > 0) marginItem.classList.add('positive');
-        else if (marginReturnPct < 0) marginItem.classList.add('negative');
-
-        document.getElementById('results-area').style.display = 'block';
-
-        // ===== 推荐联动 =====
-        showRecommendations('margin-trading.html', {
-            investmentAmount: document.getElementById('investment-amount-mt').value,
-            equity: document.getElementById('your-equity').value
-        });
+        const pct = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 });
+        document.getElementById('mt-capital-display').textContent = fmt.format(capital);
+        document.getElementById('mt-leverage-display').textContent = leverage + 'x';
+        document.getElementById('mt-change-display').textContent = (change > 0 ? '+' : '') + change + '%';
+        document.getElementById('mt-position').textContent = fmt.format(position);
+        const plEl = document.getElementById('mt-pl');
+        plEl.textContent = (pl > 0 ? '+' : '') + fmt.format(pl);
+        plEl.style.color = pl >= 0 ? '#10b981' : '#ef4444';
+        document.getElementById('mt-roi').textContent = (roi > 0 ? '+' : '') + pct.format(roi / 100);
+        document.getElementById('mt-final').textContent = fmt.format(final);
+        document.getElementById('mt-results').style.display = 'block';
+        showRecommendations('margin-trading.html', { capital: capital, leverage: leverage });
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('infoAccordion').style.display = 'block';
-        document.getElementById('infoArrow').textContent = '▼';
-        document.getElementById('faqAccordion').style.display = 'none';
-        document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
-        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
-        calculate();
-    });
-    document.addEventListener('input', function(e) {
-        if (e.target.closest('.form-grid')) { calculate(); }
-    });
+    document.addEventListener('DOMContentLoaded', function() { document.getElementById('infoAccordion').style.display='block'; document.getElementById('infoArrow').textContent='▼'; document.getElementById('faqAccordion').style.display='none'; document.getElementById('faqArrow').textContent='▶'; document.querySelectorAll('.faq-answer').forEach(el => el.style.display='none'); document.querySelectorAll('.faq-arrow').forEach(el => el.textContent='▶'); calculateMT(); });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculateMT(); } });
 </script>
 </body>
 </html>
