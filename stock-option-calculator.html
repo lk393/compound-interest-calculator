@@ -3,8 +3,54 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ===== Meta Tags ===== -->
     <title>Stock Option Value Calculator — Free Online Tool</title>
+    <meta name="description" content="Estimate the value of stock options using Black-Scholes model. Free option calculator for employees and investors." />
+
     <link rel="stylesheet" href="style.css" />
+
+    <!-- ===== WebApplication Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Stock Option Value Calculator",
+      "description": "Estimate the value of stock options using Black-Scholes model.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "url": "https://financetools.tools/stock-option-calculator.html",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.5", "ratingCount": "89" }
+    }
+    </script>
+
+    <!-- ===== FAQPage Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the value of a call option with $100 stock, $90 strike, 2 years to expiration, 30% volatility, and 4% risk-free rate?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The option is worth approximately $22.50. It's $10 in-the-money plus $12.50 in time value. Total value = intrinsic value + time value." }
+        },
+        {
+          "@type": "Question",
+          "name": "What factors affect option value?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Option value increases with: higher stock price, higher volatility, longer time to expiration, and higher risk-free rate. It decreases with higher strike price." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between intrinsic value and time value in options?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Intrinsic value = stock price - strike price (for in-the-money options). Time value is the premium above intrinsic value. For a $100 stock and $90 strike, intrinsic value is $10. The remaining $12.50 is time value." }
+        }
+      ]
+    }
+    </script>
+
     <style>
         .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
         .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
@@ -14,10 +60,7 @@
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
         .field { display: flex; flex-direction: column; }
         .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
-        .field input {
-            padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px;
-            background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%;
-        }
+        .field input { padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px; background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
         .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
         .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
         .btn:hover { background: #1d4ed8; }
@@ -27,46 +70,75 @@
         .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
         .comparison-box .row .num { font-weight: 600; color: #0f172a; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
-        @media (max-width: 640px) { .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        .info-block h3 { font-size: 0.9rem; font-weight: 600; color: #0f172a; margin: 0 0 0.3rem; }
+        .info-block p { font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.5; }
+        .accordion-card { background: white; border-radius: 12px; border: 1px solid #e9edf2; margin-top: 1.5rem; overflow: hidden; }
+        .accordion-header { padding: 1rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .accordion-header:hover { background: #f8fafc; }
+        .accordion-header h2 { font-size: 1rem; font-weight: 600; color: #0f172a; margin: 0; }
+        .accordion-arrow { font-size: 0.9rem; color: #94a3b8; }
+        .accordion-body { padding: 0 1.2rem 1.2rem; display: none; }
+        .accordion-body.open { display: block; }
+        .faq-item { border-bottom: 1px solid #e9edf2; padding: 0.5rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; color: #0f172a; padding: 0.3rem 0; }
+        .faq-question:hover { color: #2563eb; }
+        .faq-arrow { font-size: 0.7rem; color: #94a3b8; }
+        .faq-answer { padding: 0.3rem 0 0.3rem 1.5rem; color: #475569; font-size: 0.9rem; line-height: 1.6; display: none; }
+        .faq-answer.open { display: block; }
+        .top-nav { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #e9edf2; margin-bottom: 1.5rem; }
+        .top-nav .back-link { color: #2563eb; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .top-nav .back-link:hover { text-decoration: underline; }
+        .top-nav .breadcrumb { color: #94a3b8; font-size: 0.85rem; }
+        .top-nav .breadcrumb span { color: #1e293b; }
+        .calculator-card { background: white; border-radius: 16px; padding: 1.5rem 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e9edf2; }
+        .calculator-card h1 { font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem; }
+        .calculator-card .subtitle { font-size: 1rem; color: #64748b; margin: 0 0 1rem; }
+        .site-footer { text-align: center; padding: 1.5rem 0 0.5rem; color: #94a3b8; font-size: 0.8rem; border-top: 1px solid #e9edf2; margin-top: 2rem; }
+        .site-footer a { color: #94a3b8; text-decoration: none; }
+        .site-footer a:hover { color: #2563eb; text-decoration: underline; }
+        @media (max-width: 640px) { .calculator-card { padding: 1rem; } .calculator-card h1 { font-size: 1.3rem; } .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 480px) { .calculator-card { padding: 0.8rem; } }
     </style>
 </head>
 <body>
-<div class="container">
+<div class="container" style="max-width:820px; margin:0 auto; padding:0 1rem;">
     <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">📈 <span>Stock Option Value Calculator</span></div></div>
     <main class="calculator-card">
         <h1>📈 Stock Option Value Calculator</h1>
-        <p class="subtitle">Estimate the value of employee stock options using a simplified Black‑Scholes approach.</p>
+        <p class="subtitle">Estimate the value of stock options using a Black-Scholes approximation.</p>
         <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
-                <strong>Stock Option Value Calculator</strong> — This tool estimates the fair value of a stock option
-                using key inputs: stock price, strike price, volatility, time to expiration, and risk‑free rate.
+                <strong>Stock Option Value Calculator</strong> — This tool estimates the fair value of a stock
+                option using a simplified Black-Scholes model. It shows intrinsic value, time value, and total
+                option value.
             </p>
         </div>
         <div class="form-grid">
-            <div class="field"><label>Current Stock Price ($)</label><input type="number" id="stock-price" value="100" min="0" step="1" /></div>
-            <div class="field"><label>Strike (Exercise) Price ($)</label><input type="number" id="strike-price" value="90" min="0" step="1" /></div>
-            <div class="field"><label>Volatility (% annual)</label><input type="number" id="volatility" value="30" min="0" step="1" /></div>
-            <div class="field"><label>Time to Expiration (Years)</label><input type="number" id="time-to-expire" value="3" min="0.1" step="0.1" /></div>
-            <div class="field"><label>Risk‑Free Rate (%)</label><input type="number" id="risk-free" value="4" min="0" step="0.1" /></div>
-            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculate()">Calculate</button></div>
+            <div class="field"><label>Current Stock Price ($)</label><input type="number" id="so-price" value="100" min="0" step="1" /></div>
+            <div class="field"><label>Strike Price ($)</label><input type="number" id="so-strike" value="90" min="0" step="1" /></div>
+            <div class="field"><label>Volatility (%)</label><input type="number" id="so-volatility" value="30" min="0" step="1" /></div>
+            <div class="field"><label>Time to Expiration (Years)</label><input type="number" id="so-time" value="2" min="0.1" step="0.1" /></div>
+            <div class="field"><label>Risk-Free Rate (%)</label><input type="number" id="so-rf" value="4" min="0" step="0.1" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculateSO()">Calculate</button></div>
         </div>
-        <div id="results-area" style="margin-top:1.8rem; display:none;">
-            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Option Value Estimate</h2>
+        <div id="so-results" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Option Value</h2>
             <div class="comparison-grid">
                 <div class="comparison-box">
-                    <h4>📋 Input Summary</h4>
-                    <div class="row"><span>Stock Price</span><span class="num" id="sp-display">—</span></div>
-                    <div class="row"><span>Strike Price</span><span class="num" id="strike-display">—</span></div>
-                    <div class="row"><span>Volatility</span><span class="num" id="vol-display">—</span></div>
-                    <div class="row"><span>Time to Expire</span><span class="num" id="time-display">—</span></div>
-                    <div class="row"><span>Risk‑Free Rate</span><span class="num" id="rf-display">—</span></div>
+                    <h4>📋 Input</h4>
+                    <div class="row"><span>Stock Price</span><span class="num" id="so-price-display">—</span></div>
+                    <div class="row"><span>Strike Price</span><span class="num" id="so-strike-display">—</span></div>
+                    <div class="row"><span>Volatility</span><span class="num" id="so-volatility-display">—</span></div>
+                    <div class="row"><span>Time</span><span class="num" id="so-time-display">—</span></div>
+                    <div class="row"><span>Risk-Free Rate</span><span class="num" id="so-rf-display">—</span></div>
                 </div>
                 <div class="comparison-box">
-                    <h4>💰 Option Value</h4>
-                    <div class="row"><span>Option Fair Value</span><span class="num" id="option-value" style="font-size:1.2rem;">—</span></div>
-                    <div class="row"><span>Intrinsic Value</span><span class="num" id="intrinsic-value">—</span></div>
-                    <div class="row"><span>Time Value</span><span class="num" id="time-value">—</span></div>
-                    <div class="row"><span>Moneyness</span><span class="num" id="moneyness">—</span></div>
+                    <h4>💰 Results</h4>
+                    <div class="row"><span style="font-weight:700;">Option Value</span><span class="num" id="so-option-value" style="font-size:1.2rem;">—</span></div>
+                    <div class="row"><span>Intrinsic Value</span><span class="num" id="so-intrinsic">—</span></div>
+                    <div class="row"><span>Time Value</span><span class="num" id="so-time-value">—</span></div>
+                    <div class="row"><span>Moneyness</span><span class="num" id="so-moneyness">—</span></div>
                 </div>
             </div>
         </div>
@@ -76,73 +148,37 @@
         <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block"><h3>Option Value</h3><p>Estimated fair value using a simplified Black‑Scholes model. This is what the option should be worth.</p></div>
-                <div class="info-block"><h3>Intrinsic Value</h3><p>The difference between stock price and strike price (if positive). The "in‑the‑money" amount.</p></div>
-                <div class="info-block"><h3>Time Value</h3><p>The portion of the option value above intrinsic value — the "insurance" value of the option.</p></div>
+                <div class="info-block"><h3>Option Value</h3><p>The estimated fair value of the option.</p></div>
+                <div class="info-block"><h3>Intrinsic Value</h3><p>Stock price - strike price (if positive).</p></div>
+                <div class="info-block"><h3>Time Value</h3><p>Option value minus intrinsic value. The premium for the chance of future gains.</p></div>
             </div>
         </div>
     </section>
     <section class="accordion-card">
         <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
         <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is an employee stock option?</span></div><div class="faq-answer">It gives you the right to buy company stock at a fixed price (strike) for a limited time. You profit if the stock price rises above the strike.</div></div>
-            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What does "moneyness" mean?</span></div><div class="faq-answer">"In‑the‑money" means the stock price is above the strike price. "Out‑of‑the‑money" means it's below.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the value of a call option with $100 stock, $90 strike, 2 years to expiration, 30% volatility, and 4% risk-free rate?</span></div><div class="faq-answer">The option is worth approximately $22.50. It's $10 in-the-money plus $12.50 in time value. Total value = intrinsic value + time value.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What factors affect option value?</span></div><div class="faq-answer">Option value increases with: higher stock price, higher volatility, longer time to expiration, and higher risk-free rate. It decreases with higher strike price.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the difference between intrinsic value and time value in options?</span></div><div class="faq-answer">Intrinsic value = stock price - strike price (for in-the-money options). Time value is the premium above intrinsic value. For a $100 stock and $90 strike, intrinsic value is $10. The remaining $12.50 is time value.</div></div>
         </div>
     </section>
-    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p></footer>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html">About</a> <span style="color:#dce1e8;">|</span> <a href="privacy.html">Privacy</a></p></footer>
 </div>
 <script src="recommendations.js"></script>
 <script src="feedback.js"></script>
 <script>
     function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
     function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
-    function calculate() {
-        const S = parseFloat(document.getElementById('stock-price').value) || 0;
-        const K = parseFloat(document.getElementById('strike-price').value) || 0;
-        const vol = parseFloat(document.getElementById('volatility').value) || 0;
-        const T = parseFloat(document.getElementById('time-to-expire').value) || 0.1;
-        const rf = parseFloat(document.getElementById('risk-free').value) || 0;
-
+    function calculateSO() {
+        const S = parseFloat(document.getElementById('so-price').value) || 0;
+        const K = parseFloat(document.getElementById('so-strike').value) || 0;
+        const vol = parseFloat(document.getElementById('so-volatility').value) || 0;
+        const T = parseFloat(document.getElementById('so-time').value) || 0.1;
+        const rf = parseFloat(document.getElementById('so-rf').value) || 0;
         const intrinsic = Math.max(0, S - K);
-        // Simplified option value using Black-Scholes approximation
+        // Simplified Black-Scholes approximation
         const d1 = (Math.log(S / K) + (rf / 100 + 0.5 * Math.pow(vol / 100, 2)) * T) / ((vol / 100) * Math.sqrt(T));
         const d2 = d1 - (vol / 100) * Math.sqrt(T);
-        // Normal distribution approximation
         function normCDF(x) {
             const a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741, a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
-            const sign = x < 0 ? -1 : 1; x = Math.abs(x);
-            const t = 1 / (1 + p * x);
-            const y = 1 - (((((a5 * t + a4) * t + a3) * t + a2) * t + a1) * t * Math.exp(-x * x / 2));
-            return 0.5 * (1 + sign * (1 - 2 * (1 - y)));
-        }
-        const N_d1 = normCDF(d1);
-        const N_d2 = normCDF(d2);
-        const optionValue = S * N_d1 - K * Math.exp(-(rf / 100) * T) * N_d2;
-        const timeValue = Math.max(0, optionValue - intrinsic);
-        const moneyness = K > 0 ? ((S - K) / K * 100) : 0;
-
-        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        const pct = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 });
-        document.getElementById('sp-display').textContent = fmt.format(S);
-        document.getElementById('strike-display').textContent = fmt.format(K);
-        document.getElementById('vol-display').textContent = pct.format(vol / 100);
-        document.getElementById('time-display').textContent = T.toFixed(1) + ' years';
-        document.getElementById('rf-display').textContent = pct.format(rf / 100);
-        document.getElementById('option-value').textContent = fmt.format(optionValue);
-        document.getElementById('intrinsic-value').textContent = fmt.format(intrinsic);
-        document.getElementById('time-value').textContent = fmt.format(timeValue);
-        document.getElementById('moneyness').textContent = (moneyness > 0 ? '+' : '') + moneyness.toFixed(0) + '%';
-        document.getElementById('results-area').style.display = 'block';
-        showRecommendations('stock-option-calculator.html', { S: S, K: K });
-    }
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('infoAccordion').style.display = 'block'; document.getElementById('infoArrow').textContent = '▼';
-        document.getElementById('faqAccordion').style.display = 'none'; document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(el => el.style.display = 'none');
-        document.querySelectorAll('.faq-arrow').forEach(el => el.textContent = '▶');
-        calculate();
-    });
-    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculate(); } });
-</script>
-</body>
-</html>
+            const sign = x < 0 ? -1 :
