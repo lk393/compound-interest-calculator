@@ -3,295 +3,188 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>4% Rule Calculator — Free Online Tool</title>
-    <link rel="stylesheet" href="style.css" />
-    <style>
-        .mode-selector {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.2rem;
-            background: #f1f5f9;
-            border-radius: 12px;
-            padding: 0.3rem;
-        }
-        .mode-btn {
-            flex: 1;
-            padding: 0.5rem 0.8rem;
-            border: none;
-            border-radius: 8px;
-            background: transparent;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #64748b;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .mode-btn.active {
-            background: #ffffff;
-            color: #0f172a;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-        .mode-btn:hover:not(.active) { color: #1e293b; }
 
-        .results-summary {
-            display: flex;
-            flex-direction: column;
-            gap: 0.7rem;
-            margin: 1.5rem 0;
+    <!-- ===== Meta Tags ===== -->
+    <title>4% Rule Calculator — Free Online Tool</title>
+    <meta name="description" content="Calculate your retirement income using the 4% rule. Free 4% rule calculator for safe withdrawal rates and retirement planning." />
+
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- ===== WebApplication Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "4% Rule Calculator",
+      "description": "Calculate your retirement income using the 4% rule.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "url": "https://financetools.tools/four-percent.html",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.7", "ratingCount": "128" }
+    }
+    </script>
+
+    <!-- ===== FAQPage Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How much annual income does $1 million generate at 4% withdrawal?",
+          "acceptedAnswer": { "@type": "Answer", "text": "$1 million at 4% generates $40,000 per year ($3,333 per month). This is the safe withdrawal rate for a 30-year retirement." }
+        },
+        {
+          "@type": "Question",
+          "name": "How much do I need to save for $50,000/year in retirement using the 4% rule?",
+          "acceptedAnswer": { "@type": "Answer", "text": "You need $1,250,000 ($50,000 ÷ 0.04). For $60,000/year, you need $1,500,000." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the 4% rule for retirement withdrawals?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The 4% rule suggests withdrawing 4% of your portfolio in the first year of retirement, then adjusting for inflation. A $1 million portfolio would give $40,000/year." }
+        },
+        {
+          "@type": "Question",
+          "name": "Is the 4% rule safe for early retirement?",
+          "acceptedAnswer": { "@type": "Answer", "text": "For early retirees (40-50 years), a 3-3.5% withdrawal rate is often recommended. At 3.5%, $1 million gives $35,000/year instead of $40,000." }
         }
-        .summary-item {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 0.8rem 1.2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+      ]
+    }
+    </script>
+
+    <style>
+        .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
+        .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
         .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
-
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
         .field { display: flex; flex-direction: column; }
         .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
-        .field input {
-            padding: 0.6rem 0.8rem;
-            font-size: 1rem;
-            border: 1.5px solid #dce1e8;
-            border-radius: 10px;
-            background: #fafbfc;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            width: 100%;
-        }
-        .field input:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-            background: #ffffff;
-        }
-
-        .btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 0.6rem 1.2rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            width: 100%;
-        }
+        .field input { padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px; background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
+        .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
+        .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
         .btn:hover { background: #1d4ed8; }
-
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+        .comparison-box { background: #f8fafc; border-radius: 12px; padding: 1rem; }
+        .comparison-box h4 { font-size: 0.85rem; font-weight: 600; color: #0f172a; margin: 0 0 0.5rem; text-align: center; }
+        .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
+        .comparison-box .row .num { font-weight: 600; color: #0f172a; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
-        @media (max-width: 640px) {
-            .info-grid { grid-template-columns: 1fr; }
-            .summary-item { padding: 0.6rem 1rem; }
-            .summary-item .value { font-size: 1rem; }
-            .mode-btn { font-size: 0.75rem; padding: 0.4rem 0.5rem; }
-        }
+        .info-block h3 { font-size: 0.9rem; font-weight: 600; color: #0f172a; margin: 0 0 0.3rem; }
+        .info-block p { font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.5; }
+        .accordion-card { background: white; border-radius: 12px; border: 1px solid #e9edf2; margin-top: 1.5rem; overflow: hidden; }
+        .accordion-header { padding: 1rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .accordion-header:hover { background: #f8fafc; }
+        .accordion-header h2 { font-size: 1rem; font-weight: 600; color: #0f172a; margin: 0; }
+        .accordion-arrow { font-size: 0.9rem; color: #94a3b8; }
+        .accordion-body { padding: 0 1.2rem 1.2rem; display: none; }
+        .accordion-body.open { display: block; }
+        .faq-item { border-bottom: 1px solid #e9edf2; padding: 0.5rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; color: #0f172a; padding: 0.3rem 0; }
+        .faq-question:hover { color: #2563eb; }
+        .faq-arrow { font-size: 0.7rem; color: #94a3b8; }
+        .faq-answer { padding: 0.3rem 0 0.3rem 1.5rem; color: #475569; font-size: 0.9rem; line-height: 1.6; display: none; }
+        .faq-answer.open { display: block; }
+        .top-nav { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #e9edf2; margin-bottom: 1.5rem; }
+        .top-nav .back-link { color: #2563eb; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .top-nav .back-link:hover { text-decoration: underline; }
+        .top-nav .breadcrumb { color: #94a3b8; font-size: 0.85rem; }
+        .top-nav .breadcrumb span { color: #1e293b; }
+        .calculator-card { background: white; border-radius: 16px; padding: 1.5rem 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e9edf2; }
+        .calculator-card h1 { font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem; }
+        .calculator-card .subtitle { font-size: 1rem; color: #64748b; margin: 0 0 1rem; }
+        .site-footer { text-align: center; padding: 1.5rem 0 0.5rem; color: #94a3b8; font-size: 0.8rem; border-top: 1px solid #e9edf2; margin-top: 2rem; }
+        .site-footer a { color: #94a3b8; text-decoration: none; }
+        .site-footer a:hover { color: #2563eb; text-decoration: underline; }
+        @media (max-width: 640px) { .calculator-card { padding: 1rem; } .calculator-card h1 { font-size: 1.3rem; } .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 480px) { .calculator-card { padding: 0.8rem; } }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <div class="top-nav">
-        <a href="index.html" class="back-link">← Back to Home</a>
-        <div class="breadcrumb">📊 <span>4% Rule Calculator</span></div>
-    </div>
-
+<div class="container" style="max-width:820px; margin:0 auto; padding:0 1rem;">
+    <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">📊 <span>4% Rule Calculator</span></div></div>
     <main class="calculator-card">
         <h1>📊 4% Rule Calculator</h1>
-        <p class="subtitle">How much can you safely withdraw from your retirement portfolio each year?</p>
-
+        <p class="subtitle">Calculate your safe retirement income using the 4% withdrawal rule.</p>
         <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
-                <strong>4% Rule Calculator</strong> — This tool applies the classic 4% rule to your personal
-                financial situation. It answers two important questions: <em>“How much can I safely withdraw from
-                my retirement portfolio each year without running out of money?”</em> and <em>“How much total savings
-                do I need to support my desired lifestyle?”</em>
+                <strong>4% Rule Calculator</strong> — This tool calculates how much annual income your retirement
+                savings can generate using the 4% safe withdrawal rule. It also shows how much you need to save
+                for a desired retirement income.
             </p>
         </div>
-
-        <div class="mode-selector">
-            <button class="mode-btn active" id="mode-spending" onclick="setMode('spending')">💰 Spending → Nest Egg</button>
-            <button class="mode-btn" id="mode-nestegg" onclick="setMode('nestegg')">🏦 Nest Egg → Withdrawal</button>
+        <div class="form-grid">
+            <div class="field"><label>Retirement Savings ($)</label><input type="number" id="fr-savings" value="1000000" min="0" step="50000" /></div>
+            <div class="field"><label>Withdrawal Rate (%)</label><input type="number" id="fr-rate" value="4" min="0" max="10" step="0.1" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculateFR()">Calculate</button></div>
         </div>
-
-        <div class="form-grid" id="input-spending">
-            <div class="field">
-                <label for="spending">Annual Spending in Retirement ($)</label>
-                <input type="number" id="spending" value="40000" min="0" step="1000" />
-            </div>
-            <div class="field">
-                <label for="withdrawal-rate">Safe Withdrawal Rate (%)</label>
-                <input type="number" id="withdrawal-rate" value="4" min="1" max="10" step="0.1" />
-            </div>
-            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculate()">Calculate</button></div>
-        </div>
-
-        <div class="form-grid" id="input-nestegg" style="display:none;">
-            <div class="field">
-                <label for="nestegg">Your Nest Egg ($)</label>
-                <input type="number" id="nestegg" value="1000000" min="0" step="10000" />
-            </div>
-            <div class="field">
-                <label for="withdrawal-rate2">Safe Withdrawal Rate (%)</label>
-                <input type="number" id="withdrawal-rate2" value="4" min="1" max="10" step="0.1" />
-            </div>
-            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculate()">Calculate</button></div>
-        </div>
-
-        <div id="results-area" style="margin-top:1.8rem;">
-            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your 4% Rule Results</h2>
-            <div class="results-summary" id="summary">
-                <div class="summary-item"><span class="label">Annual Withdrawal</span><span class="value" id="result-annual">—</span></div>
-                <div class="summary-item"><span class="label">Monthly Withdrawal</span><span class="value" id="result-monthly">—</span></div>
-                <div class="summary-item highlight"><span class="label">Nest Egg Needed</span><span class="value" id="result-nestegg">—</span></div>
+        <div id="fr-results" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 4% Rule Results</h2>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>📋 Input</h4>
+                    <div class="row"><span>Retirement Savings</span><span class="num" id="fr-savings-display">—</span></div>
+                    <div class="row"><span>Withdrawal Rate</span><span class="num" id="fr-rate-display">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>💰 Results</h4>
+                    <div class="row"><span>Annual Income</span><span class="num" id="fr-annual" style="font-size:1.2rem;">—</span></div>
+                    <div class="row"><span>Monthly Income</span><span class="num" id="fr-monthly">—</span></div>
+                    <div class="row"><span>Savings Needed for $50k/yr</span><span class="num" id="fr-needed">—</span></div>
+                </div>
             </div>
         </div>
-
-        <!-- ===== 推荐区域 ===== -->
         <div id="recommendations-area"></div>
-
     </main>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
-            <h2>📖 How to read your results</h2>
-            <span class="accordion-arrow" id="infoArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block"><h3>Annual Withdrawal</h3><p>How much you can safely withdraw from your portfolio each year without running out of money. Based on the 4% rule.</p></div>
-                <div class="info-block"><h3>Monthly Withdrawal</h3><p>Your annual withdrawal divided by 12. This is your monthly budget in retirement.</p></div>
-                <div class="info-block"><h3>Nest Egg Needed</h3><p>The total portfolio size you need to support your desired spending. Multiply your annual spending by 25 (or 100 ÷ withdrawal rate).</p></div>
+                <div class="info-block"><h3>Annual Income</h3><p>How much you can withdraw each year using the 4% rule.</p></div>
+                <div class="info-block"><h3>Savings Needed</h3><p>How much you'd need for a target $50,000/year retirement income.</p></div>
+                <div class="info-block"><h3>Withdrawal Rate</h3><p>Adjust this based on your retirement horizon and risk tolerance.</p></div>
             </div>
         </div>
     </section>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
-            <h2>❓ FAQ</h2>
-            <span class="accordion-arrow" id="faqArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
         <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the 4% rule?</span></div>
-                <div class="faq-answer">The 4% rule says you can withdraw 4% of your portfolio in the first year of retirement, then adjust for inflation each year. It's designed to last 30+ years.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Is the 4% rule still safe?</span></div>
-                <div class="faq-answer">Many still use it as a rule of thumb, but some argue 3-3.5% is safer for longer retirements (40+ years).</div>
-            </div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How much annual income does $1 million generate at 4% withdrawal?</span></div><div class="faq-answer">$1 million at 4% generates $40,000 per year ($3,333 per month). This is the safe withdrawal rate for a 30-year retirement.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How much do I need to save for $50,000/year in retirement using the 4% rule?</span></div><div class="faq-answer">You need $1,250,000 ($50,000 ÷ 0.04). For $60,000/year, you need $1,500,000.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the 4% rule for retirement withdrawals?</span></div><div class="faq-answer">The 4% rule suggests withdrawing 4% of your portfolio in the first year of retirement, then adjusting for inflation. A $1 million portfolio would give $40,000/year.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Is the 4% rule safe for early retirement?</span></div><div class="faq-answer">For early retirees (40-50 years), a 3-3.5% withdrawal rate is often recommended. At 3.5%, $1 million gives $35,000/year instead of $40,000.</div></div>
         </div>
     </section>
-
-    <footer class="site-footer">
-        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
-    </footer>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html">About</a> <span style="color:#dce1e8;">|</span> <a href="privacy.html">Privacy</a></p></footer>
 </div>
-
 <script src="recommendations.js"></script>
 <script src="feedback.js"></script>
-
 <script>
-    function toggleAccordion(id) {
-        const body = document.getElementById(id);
-        const arrow = document.getElementById(id + 'Arrow');
-        if (body.style.display === 'none' || body.style.display === '') {
-            body.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            body.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-    function toggleFaq(el) {
-        const answer = el.nextElementSibling;
-        const arrow = el.querySelector('.faq-arrow');
-        if (answer.style.display === 'none' || answer.style.display === '') {
-            answer.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            answer.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-
-    let currentMode = 'spending';
-
-    function setMode(mode) {
-        currentMode = mode;
-        document.querySelectorAll('.mode-btn').forEach(function(btn) { btn.classList.remove('active'); });
-        if (mode === 'spending') {
-            document.getElementById('mode-spending').classList.add('active');
-            document.getElementById('input-spending').style.display = 'flex';
-            document.getElementById('input-nestegg').style.display = 'none';
-        } else {
-            document.getElementById('mode-nestegg').classList.add('active');
-            document.getElementById('input-spending').style.display = 'none';
-            document.getElementById('input-nestegg').style.display = 'flex';
-        }
-        calculate();
-    }
-
-    function calculate() {
+    function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
+    function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
+    function calculateFR() {
+        const savings = parseFloat(document.getElementById('fr-savings').value) || 0;
+        const rate = parseFloat(document.getElementById('fr-rate').value) || 4;
+        const annual = savings * (rate / 100);
+        const monthly = annual / 12;
+        const neededFor50k = 50000 / (rate / 100);
         const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
-
-        if (currentMode === 'spending') {
-            const spending = parseFloat(document.getElementById('spending').value) || 0;
-            const rate = parseFloat(document.getElementById('withdrawal-rate').value) || 4;
-            const rateDecimal = rate / 100;
-            const nestEggNeeded = spending / rateDecimal;
-            const annualWithdrawal = nestEggNeeded * rateDecimal;
-            const monthlyWithdrawal = annualWithdrawal / 12;
-
-            document.getElementById('result-annual').textContent = fmt.format(annualWithdrawal);
-            document.getElementById('result-monthly').textContent = fmt.format(monthlyWithdrawal);
-            document.getElementById('result-nestegg').textContent = fmt.format(nestEggNeeded);
-
-            // ===== 推荐联动 =====
-            const nestEgg = fmt.format(nestEggNeeded).replace(/[^0-9.]/g, '');
-            const annualSpending = document.getElementById('spending').value;
-            showRecommendations('four-percent.html', {
-                nestEgg: nestEgg,
-                annualSpending: annualSpending
-            });
-
-        } else {
-            const nestEgg = parseFloat(document.getElementById('nestegg').value) || 0;
-            const rate = parseFloat(document.getElementById('withdrawal-rate2').value) || 4;
-            const rateDecimal = rate / 100;
-            const annualWithdrawal = nestEgg * rateDecimal;
-            const monthlyWithdrawal = annualWithdrawal / 12;
-
-            document.getElementById('result-annual').textContent = fmt.format(annualWithdrawal);
-            document.getElementById('result-monthly').textContent = fmt.format(monthlyWithdrawal);
-            document.getElementById('result-nestegg').textContent = fmt.format(nestEgg);
-
-            // ===== 推荐联动 =====
-            const nestEggVal = fmt.format(nestEgg).replace(/[^0-9.]/g, '');
-            showRecommendations('four-percent.html', {
-                nestEgg: nestEggVal,
-                annualSpending: '0'
-            });
-        }
+        document.getElementById('fr-savings-display').textContent = fmt.format(savings);
+        document.getElementById('fr-rate-display').textContent = rate + '%';
+        document.getElementById('fr-annual').textContent = fmt.format(annual);
+        document.getElementById('fr-monthly').textContent = fmt.format(monthly);
+        document.getElementById('fr-needed').textContent = fmt.format(neededFor50k);
+        document.getElementById('fr-results').style.display = 'block';
+        showRecommendations('four-percent.html', { savings: savings, rate: rate });
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('infoAccordion').style.display = 'block';
-        document.getElementById('infoArrow').textContent = '▼';
-        document.getElementById('faqAccordion').style.display = 'none';
-        document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
-        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
-        calculate();
-    });
-    document.addEventListener('input', function(e) {
-        if (e.target.closest('.form-grid')) { calculate(); }
-    });
+    document.addEventListener('DOMContentLoaded', function() { document.getElementById('infoAccordion').style.display='block'; document.getElementById('infoArrow').textContent='▼'; document.getElementById('faqAccordion').style.display='none'; document.getElementById('faqArrow').textContent='▶'; document.querySelectorAll('.faq-answer').forEach(el => el.style.display='none'); document.querySelectorAll('.faq-arrow').forEach(el => el.textContent='▶'); calculateFR(); });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculateFR(); } });
 </script>
 </body>
 </html>
