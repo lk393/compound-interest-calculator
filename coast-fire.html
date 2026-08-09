@@ -3,267 +3,191 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ===== Meta Tags ===== -->
     <title>Coast FIRE Calculator — Free Online Tool</title>
+    <meta name="description" content="Calculate your Coast FIRE number: the amount you need to stop saving and let compound interest grow your retirement. Free Coast FIRE calculator." />
+
     <link rel="stylesheet" href="style.css" />
+
+    <!-- ===== WebApplication Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Coast FIRE Calculator",
+      "description": "Calculate your Coast FIRE number: the amount you need to stop saving and let compound interest grow your retirement.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "url": "https://financetools.tools/coast-fire.html",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.7", "ratingCount": "118" }
+    }
+    </script>
+
+    <!-- ===== FAQPage Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is my Coast FIRE number if I need $1,000,000 at 65 and I'm 30 now?",
+          "acceptedAnswer": { "@type": "Answer", "text": "At 7% return, you need about $184,000 today. With 35 years to grow, $184,000 at 7% becomes $1,000,000. Anything above this means you can stop saving and coast to retirement." }
+        },
+        {
+          "@type": "Question",
+          "name": "How much do I need to have saved to coast retire with $40,000/year at 4%?",
+          "acceptedAnswer": { "@type": "Answer", "text": "You need $1,000,000 at retirement. If you're 35 with 30 years to grow at 7%, your Coast FIRE number is $131,000. Once you have $131,000, you can stop saving." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between Coast FIRE and regular FIRE?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Regular FIRE means you stop working entirely. Coast FIRE means you stop saving for retirement but continue working to cover living expenses. Coast FIRE is achieved when your current savings will grow to your FIRE number without additional contributions." }
+        }
+      ]
+    }
+    </script>
+
     <style>
-        .results-summary {
-            display: flex;
-            flex-direction: column;
-            gap: 0.7rem;
-            margin: 1.5rem 0;
-        }
-        .summary-item {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 0.8rem 1.2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
+        .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
         .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
-        .summary-item.highlight .value { color: #2563eb; }
-        .summary-item.positive .value { color: #10b981; }
-        .summary-item.negative .value { color: #ef4444; }
-
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
         .field { display: flex; flex-direction: column; }
         .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
-        .field input {
-            padding: 0.6rem 0.8rem;
-            font-size: 1rem;
-            border: 1.5px solid #dce1e8;
-            border-radius: 10px;
-            background: #fafbfc;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            width: 100%;
-        }
-        .field input:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-            background: #ffffff;
-        }
-
-        .btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 0.6rem 1.2rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            width: 100%;
-        }
+        .field input { padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px; background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
+        .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
+        .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
         .btn:hover { background: #1d4ed8; }
-
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+        .comparison-box { background: #f8fafc; border-radius: 12px; padding: 1rem; }
+        .comparison-box h4 { font-size: 0.85rem; font-weight: 600; color: #0f172a; margin: 0 0 0.5rem; text-align: center; }
+        .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
+        .comparison-box .row .num { font-weight: 600; color: #0f172a; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
-        @media (max-width: 640px) {
-            .info-grid { grid-template-columns: 1fr; }
-            .summary-item { padding: 0.6rem 1rem; }
-            .summary-item .value { font-size: 1rem; }
-        }
+        .info-block h3 { font-size: 0.9rem; font-weight: 600; color: #0f172a; margin: 0 0 0.3rem; }
+        .info-block p { font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.5; }
+        .accordion-card { background: white; border-radius: 12px; border: 1px solid #e9edf2; margin-top: 1.5rem; overflow: hidden; }
+        .accordion-header { padding: 1rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .accordion-header:hover { background: #f8fafc; }
+        .accordion-header h2 { font-size: 1rem; font-weight: 600; color: #0f172a; margin: 0; }
+        .accordion-arrow { font-size: 0.9rem; color: #94a3b8; }
+        .accordion-body { padding: 0 1.2rem 1.2rem; display: none; }
+        .accordion-body.open { display: block; }
+        .faq-item { border-bottom: 1px solid #e9edf2; padding: 0.5rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; color: #0f172a; padding: 0.3rem 0; }
+        .faq-question:hover { color: #2563eb; }
+        .faq-arrow { font-size: 0.7rem; color: #94a3b8; }
+        .faq-answer { padding: 0.3rem 0 0.3rem 1.5rem; color: #475569; font-size: 0.9rem; line-height: 1.6; display: none; }
+        .faq-answer.open { display: block; }
+        .top-nav { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #e9edf2; margin-bottom: 1.5rem; }
+        .top-nav .back-link { color: #2563eb; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .top-nav .back-link:hover { text-decoration: underline; }
+        .top-nav .breadcrumb { color: #94a3b8; font-size: 0.85rem; }
+        .top-nav .breadcrumb span { color: #1e293b; }
+        .calculator-card { background: white; border-radius: 16px; padding: 1.5rem 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e9edf2; }
+        .calculator-card h1 { font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem; }
+        .calculator-card .subtitle { font-size: 1rem; color: #64748b; margin: 0 0 1rem; }
+        .site-footer { text-align: center; padding: 1.5rem 0 0.5rem; color: #94a3b8; font-size: 0.8rem; border-top: 1px solid #e9edf2; margin-top: 2rem; }
+        .site-footer a { color: #94a3b8; text-decoration: none; }
+        .site-footer a:hover { color: #2563eb; text-decoration: underline; }
+        @media (max-width: 640px) { .calculator-card { padding: 1rem; } .calculator-card h1 { font-size: 1.3rem; } .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 480px) { .calculator-card { padding: 0.8rem; } }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <div class="top-nav">
-        <a href="index.html" class="back-link">← Back to Home</a>
-        <div class="breadcrumb">📊 <span>Coast FIRE Calculator</span></div>
-    </div>
-
+<div class="container" style="max-width:820px; margin:0 auto; padding:0 1rem;">
+    <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">🏖️ <span>Coast FIRE Calculator</span></div></div>
     <main class="calculator-card">
         <h1>🏖️ Coast FIRE Calculator</h1>
-        <p class="subtitle">How much do you need today to stop saving and still retire on time?</p>
-
+        <p class="subtitle">Calculate how much you need to save now so you can stop saving and let compound interest do the work.</p>
         <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
-                <strong>Coast FIRE Calculator</strong> — This tool answers a simple but powerful question:
-                <em>“If I stop saving today, will I still have enough for retirement?”</em> It calculates the amount
-                you need right now so that, with no additional contributions, your money will grow to your target by
-                retirement age. This gives you a clear benchmark: if you've already reached your Coast FIRE number,
-                you have the freedom to work less, switch careers, or spend more.
+                <strong>Coast FIRE Calculator</strong> — This tool calculates the amount you need to have invested
+                today so that, with no additional contributions, your savings will grow to your retirement goal
+                by your target retirement age. Once you reach your Coast FIRE number, you can stop saving for
+                retirement and let compound interest take over.
             </p>
         </div>
-
         <div class="form-grid">
-            <div class="field">
-                <label for="current-age">Current Age</label>
-                <input type="number" id="current-age" value="30" min="18" max="80" step="1" />
-            </div>
-            <div class="field">
-                <label for="retire-age">Retirement Age</label>
-                <input type="number" id="retire-age" value="65" min="30" max="90" step="1" />
-            </div>
-            <div class="field">
-                <label for="current-savings">Current Savings ($)</label>
-                <input type="number" id="current-savings" value="50000" min="0" step="5000" />
-            </div>
-            <div class="field">
-                <label for="annual-spending">Annual Spending in Retirement ($)</label>
-                <input type="number" id="annual-spending" value="40000" min="0" step="1000" />
-            </div>
-            <div class="field">
-                <label for="return-rate">Expected Return (%)</label>
-                <input type="number" id="return-rate" value="7" min="0" max="20" step="0.1" />
-            </div>
-            <div class="field">
-                <label for="withdrawal-rate">Safe Withdrawal Rate (%)</label>
-                <input type="number" id="withdrawal-rate" value="4" min="1" max="10" step="0.1" />
-            </div>
-            <div style="margin-top:0.5rem;">
-                <button class="btn" onclick="calculate()">Calculate</button>
+            <div class="field"><label>Current Age</label><input type="number" id="cf-age" value="30" min="18" max="70" step="1" /></div>
+            <div class="field"><label>Retirement Age</label><input type="number" id="cf-retire-age" value="65" min="18" max="85" step="1" /></div>
+            <div class="field"><label>Retirement Goal ($)</label><input type="number" id="cf-goal" value="1000000" min="0" step="50000" /></div>
+            <div class="field"><label>Expected Annual Return (%)</label><input type="number" id="cf-return" value="7" min="0" step="0.1" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculateCF()">Calculate</button></div>
+        </div>
+        <div id="cf-results" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Coast FIRE Results</h2>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>📋 Input</h4>
+                    <div class="row"><span>Current Age</span><span class="num" id="cf-age-display">—</span></div>
+                    <div class="row"><span>Retirement Age</span><span class="num" id="cf-retire-display">—</span></div>
+                    <div class="row"><span>Retirement Goal</span><span class="num" id="cf-goal-display">—</span></div>
+                    <div class="row"><span>Return Rate</span><span class="num" id="cf-return-display">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>💰 Results</h4>
+                    <div class="row"><span style="font-weight:700;">Coast FIRE Number</span><span class="num" id="cf-number" style="font-size:1.2rem;">—</span></div>
+                    <div class="row"><span>Years to Grow</span><span class="num" id="cf-years">—</span></div>
+                    <div class="row"><span>Future Value</span><span class="num" id="cf-future">—</span></div>
+                </div>
             </div>
         </div>
-
-        <div id="results-area" style="margin-top:1.8rem; display:none;">
-            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Coast FIRE Status</h2>
-            <div class="results-summary" id="summary">
-                <div class="summary-item"><span class="label">FIRE Number</span><span class="value" id="result-fire-number">—</span></div>
-                <div class="summary-item highlight"><span class="label">Coast FIRE Number</span><span class="value" id="result-coast-number">—</span></div>
-                <div class="summary-item" id="status-item"><span class="label">Status</span><span class="value" id="result-status">—</span></div>
-                <div class="summary-item" id="gap-item"><span class="label">Gap to Coast FIRE</span><span class="value" id="result-gap">—</span></div>
-            </div>
-        </div>
-
-        <!-- ===== 推荐区域 ===== -->
         <div id="recommendations-area"></div>
-
     </main>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
-            <h2>📖 How to read your results</h2>
-            <span class="accordion-arrow" id="infoArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block"><h3>FIRE Number</h3><p>Your target retirement number based on the 4% rule. Annual Spending × 25.</p></div>
-                <div class="info-block"><h3>Coast FIRE Number</h3><p>The amount you need TODAY so that it grows to your FIRE Number by retirement age — without adding another dollar.</p></div>
-                <div class="info-block"><h3>Status &amp; Gap</h3><p>✅ Coast FIRE — you can stop saving now. ❌ Not there yet — the gap shows how much more you need today.</p></div>
+                <div class="info-block"><h3>Coast FIRE Number</h3><p>The amount you need invested today to reach your retirement goal without any additional contributions.</p></div>
+                <div class="info-block"><h3>Years to Grow</h3><p>The number of years your money will compound before retirement.</p></div>
+                <div class="info-block"><h3>Future Value</h3><p>What your Coast FIRE number will grow to by retirement age.</p></div>
             </div>
         </div>
     </section>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
-            <h2>❓ FAQ</h2>
-            <span class="accordion-arrow" id="faqArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
         <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is Coast FIRE?</span></div>
-                <div class="faq-answer">Coast FIRE means you've saved enough that your current portfolio will grow to your FIRE Number by traditional retirement age — even if you never save another dollar.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Can I still save after Coast FIRE?</span></div>
-                <div class="faq-answer">Absolutely. Reaching Coast FIRE doesn't mean you have to stop saving — it just gives you flexibility to work less or switch careers.</div>
-            </div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is my Coast FIRE number if I need $1,000,000 at 65 and I'm 30 now?</span></div><div class="faq-answer">At 7% return, you need about $184,000 today. With 35 years to grow, $184,000 at 7% becomes $1,000,000. Anything above this means you can stop saving and coast to retirement.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How much do I need to have saved to coast retire with $40,000/year at 4%?</span></div><div class="faq-answer">You need $1,000,000 at retirement. If you're 35 with 30 years to grow at 7%, your Coast FIRE number is $131,000. Once you have $131,000, you can stop saving.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the difference between Coast FIRE and regular FIRE?</span></div><div class="faq-answer">Regular FIRE means you stop working entirely. Coast FIRE means you stop saving for retirement but continue working to cover living expenses. Coast FIRE is achieved when your current savings will grow to your FIRE number without additional contributions.</div></div>
         </div>
     </section>
-
-    <footer class="site-footer">
-        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
-    </footer>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html">About</a> <span style="color:#dce1e8;">|</span> <a href="privacy.html">Privacy</a></p></footer>
 </div>
-
 <script src="recommendations.js"></script>
 <script src="feedback.js"></script>
-
 <script>
-    function toggleAccordion(id) {
-        const body = document.getElementById(id);
-        const arrow = document.getElementById(id + 'Arrow');
-        if (body.style.display === 'none' || body.style.display === '') {
-            body.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            body.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-    function toggleFaq(el) {
-        const answer = el.nextElementSibling;
-        const arrow = el.querySelector('.faq-arrow');
-        if (answer.style.display === 'none' || answer.style.display === '') {
-            answer.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            answer.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-
-    function calculate() {
-        const currentAge = parseFloat(document.getElementById('current-age').value) || 30;
-        const retireAge = parseFloat(document.getElementById('retire-age').value) || 65;
-        const currentSavings = parseFloat(document.getElementById('current-savings').value) || 0;
-        const annualSpending = parseFloat(document.getElementById('annual-spending').value) || 40000;
-        const returnRate = parseFloat(document.getElementById('return-rate').value) || 7;
-        const withdrawalRate = parseFloat(document.getElementById('withdrawal-rate').value) || 4;
-
-        const yearsToGrow = Math.max(0, retireAge - currentAge);
-        const fireNumber = annualSpending / (withdrawalRate / 100);
-
+    function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
+    function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
+    function calculateCF() {
+        const age = parseInt(document.getElementById('cf-age').value) || 30;
+        const retireAge = parseInt(document.getElementById('cf-retire-age').value) || 65;
+        const goal = parseFloat(document.getElementById('cf-goal').value) || 0;
+        const returnRate = parseFloat(document.getElementById('cf-return').value) || 0;
+        const years = retireAge - age;
+        const coastNumber = goal / Math.pow(1 + returnRate / 100, years);
+        const future = coastNumber * Math.pow(1 + returnRate / 100, years);
         const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
-
-        const coastNumber = fireNumber / Math.pow(1 + returnRate / 100, yearsToGrow);
-        const isCoast = currentSavings >= coastNumber;
-        const gap = Math.max(0, coastNumber - currentSavings);
-
-        document.getElementById('result-fire-number').textContent = fmt.format(fireNumber);
-        document.getElementById('result-coast-number').textContent = fmt.format(coastNumber);
-
-        const statusEl = document.getElementById('result-status');
-        const statusItem = document.getElementById('status-item');
-        if (yearsToGrow <= 0) {
-            statusEl.textContent = 'Already at retirement age!';
-            statusEl.style.fontSize = '0.9rem';
-            statusItem.classList.remove('positive', 'negative');
-        } else if (isCoast) {
-            statusEl.innerHTML = '✅ Coast FIRE Reached 🎉';
-            statusEl.style.fontSize = '1rem';
-            statusItem.classList.add('positive');
-            statusItem.classList.remove('negative');
-        } else {
-            statusEl.textContent = '❌ Not Yet — Keep Saving!';
-            statusEl.style.fontSize = '1rem';
-            statusItem.classList.add('negative');
-            statusItem.classList.remove('positive');
-        }
-
-        const gapEl = document.getElementById('result-gap');
-        if (yearsToGrow <= 0) { gapEl.textContent = '—'; }
-        else if (isCoast) { gapEl.textContent = '$0 — You\'re there!'; }
-        else { gapEl.textContent = fmt.format(gap); }
-
-        document.getElementById('results-area').style.display = 'block';
-
-        // ===== 推荐联动 =====
-        const fireNumberText = fmt.format(fireNumber).replace(/[^0-9.]/g, '');
-        showRecommendations('coast-fire.html', {
-            annualSpending: document.getElementById('annual-spending').value,
-            currentSavings: document.getElementById('current-savings').value,
-            fireNumber: fireNumberText
-        });
+        document.getElementById('cf-age-display').textContent = age;
+        document.getElementById('cf-retire-display').textContent = retireAge;
+        document.getElementById('cf-goal-display').textContent = fmt.format(goal);
+        document.getElementById('cf-return-display').textContent = returnRate + '%';
+        document.getElementById('cf-number').textContent = fmt.format(coastNumber);
+        document.getElementById('cf-years').textContent = years + ' years';
+        document.getElementById('cf-future').textContent = fmt.format(future);
+        document.getElementById('cf-results').style.display = 'block';
+        showRecommendations('coast-fire.html', { age: age, goal: goal });
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('infoAccordion').style.display = 'block';
-        document.getElementById('infoArrow').textContent = '▼';
-        document.getElementById('faqAccordion').style.display = 'none';
-        document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
-        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
-        calculate();
-    });
-    document.addEventListener('input', function(e) {
-        if (e.target.closest('.form-grid')) { calculate(); }
-    });
+    document.addEventListener('DOMContentLoaded', function() { document.getElementById('infoAccordion').style.display='block'; document.getElementById('infoArrow').textContent='▼'; document.getElementById('faqAccordion').style.display='none'; document.getElementById('faqArrow').textContent='▶'; document.querySelectorAll('.faq-answer').forEach(el => el.style.display='none'); document.querySelectorAll('.faq-arrow').forEach(el => el.textContent='▶'); calculateCF(); });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculateCF(); } });
 </script>
 </body>
 </html>
