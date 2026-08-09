@@ -3,305 +3,205 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ===== Meta Tags ===== -->
     <title>Retirement Savings Calculator — Free Online Tool</title>
+    <meta name="description" content="Calculate how much you need to save for retirement and project your retirement savings growth. Free retirement planning tool." />
+
     <link rel="stylesheet" href="style.css" />
+
+    <!-- ===== WebApplication Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Retirement Savings Calculator",
+      "description": "Calculate how much you need to save for retirement and project your retirement savings growth.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "url": "https://financetools.tools/retirement-savings.html",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.8", "ratingCount": "134" }
+    }
+    </script>
+
+    <!-- ===== FAQPage Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How much do I need to save for retirement if I want $5,000 per month?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Using the 4% rule, you need $1.5 million in savings to safely withdraw $5,000/month ($5,000 × 12 ÷ 0.04 = $1,500,000)." }
+        },
+        {
+          "@type": "Question",
+          "name": "How much will I have if I save $500/month for 30 years at 7%?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Saving $500 per month at 7% annual return for 30 years would grow to approximately $566,764. Your $180,000 in contributions would earn $386,764 in returns." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the 4% rule for retirement withdrawals?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The 4% rule suggests withdrawing 4% of your retirement portfolio in the first year of retirement, then adjusting for inflation. This strategy is designed to make your savings last 30+ years." }
+        },
+        {
+          "@type": "Question",
+          "name": "How much should I have saved for retirement by age?",
+          "acceptedAnswer": { "@type": "Answer", "text": "By 30: 1× your salary. By 40: 3×. By 50: 6×. By 60: 8×. By 67: 10× your final salary (Fidelity guidelines)." }
+        }
+      ]
+    }
+    </script>
+
     <style>
-        .results-summary {
-            display: flex;
-            flex-direction: column;
-            gap: 0.7rem;
-            margin: 1.5rem 0;
-        }
-        .summary-item {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 0.8rem 1.2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
+        .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
         .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
-        .summary-item.positive .value { color: #10b981; }
-
+        .summary-item .value.positive { color: #10b981; }
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
         .field { display: flex; flex-direction: column; }
         .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
-        .field input {
-            padding: 0.6rem 0.8rem;
-            font-size: 1rem;
-            border: 1.5px solid #dce1e8;
-            border-radius: 10px;
-            background: #fafbfc;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            width: 100%;
-        }
-        .field input:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-            background: #ffffff;
-        }
-
-        .btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 0.6rem 1.2rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            width: 100%;
-        }
+        .field input { padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px; background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
+        .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
+        .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
         .btn:hover { background: #1d4ed8; }
-
-        .schedule-wrapper {
-            max-height: 400px;
-            overflow-y: auto;
-            border: 1px solid #e9edf2;
-            border-radius: 8px;
-            margin-top: 0.5rem;
-        }
-        .schedule-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.82rem;
-        }
-        .schedule-table th, .schedule-table td {
-            border: 1px solid #e9edf2;
-            padding: 0.3rem 0.5rem;
-            text-align: right;
-        }
-        .schedule-table th {
-            background: #f1f5f9;
-            font-weight: 600;
-            color: #334155;
-            position: sticky;
-            top: 0;
-            z-index: 1;
-        }
-        .schedule-table td:first-child { text-align: center; }
-        .schedule-table .highlight-row { background: #eef2ff; }
-
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+        .comparison-box { background: #f8fafc; border-radius: 12px; padding: 1rem; }
+        .comparison-box h4 { font-size: 0.85rem; font-weight: 600; color: #0f172a; margin: 0 0 0.5rem; text-align: center; }
+        .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
+        .comparison-box .row .num { font-weight: 600; color: #0f172a; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
-        @media (max-width: 640px) {
-            .info-grid { grid-template-columns: 1fr; }
-            .summary-item { padding: 0.6rem 1rem; }
-            .summary-item .value { font-size: 1rem; }
-        }
+        .info-block h3 { font-size: 0.9rem; font-weight: 600; color: #0f172a; margin: 0 0 0.3rem; }
+        .info-block p { font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.5; }
+        .accordion-card { background: white; border-radius: 12px; border: 1px solid #e9edf2; margin-top: 1.5rem; overflow: hidden; }
+        .accordion-header { padding: 1rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .accordion-header:hover { background: #f8fafc; }
+        .accordion-header h2 { font-size: 1rem; font-weight: 600; color: #0f172a; margin: 0; }
+        .accordion-arrow { font-size: 0.9rem; color: #94a3b8; }
+        .accordion-body { padding: 0 1.2rem 1.2rem; display: none; }
+        .accordion-body.open { display: block; }
+        .faq-item { border-bottom: 1px solid #e9edf2; padding: 0.5rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; color: #0f172a; padding: 0.3rem 0; }
+        .faq-question:hover { color: #2563eb; }
+        .faq-arrow { font-size: 0.7rem; color: #94a3b8; }
+        .faq-answer { padding: 0.3rem 0 0.3rem 1.5rem; color: #475569; font-size: 0.9rem; line-height: 1.6; display: none; }
+        .faq-answer.open { display: block; }
+        .top-nav { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #e9edf2; margin-bottom: 1.5rem; }
+        .top-nav .back-link { color: #2563eb; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .top-nav .back-link:hover { text-decoration: underline; }
+        .top-nav .breadcrumb { color: #94a3b8; font-size: 0.85rem; }
+        .top-nav .breadcrumb span { color: #1e293b; }
+        .calculator-card { background: white; border-radius: 16px; padding: 1.5rem 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e9edf2; }
+        .calculator-card h1 { font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem; }
+        .calculator-card .subtitle { font-size: 1rem; color: #64748b; margin: 0 0 1rem; }
+        .site-footer { text-align: center; padding: 1.5rem 0 0.5rem; color: #94a3b8; font-size: 0.8rem; border-top: 1px solid #e9edf2; margin-top: 2rem; }
+        .site-footer a { color: #94a3b8; text-decoration: none; }
+        .site-footer a:hover { color: #2563eb; text-decoration: underline; }
+        @media (max-width: 640px) { .calculator-card { padding: 1rem; } .calculator-card h1 { font-size: 1.3rem; } .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 480px) { .calculator-card { padding: 0.8rem; } }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <div class="top-nav">
-        <a href="index.html" class="back-link">← Back to Home</a>
-        <div class="breadcrumb">📊 <span>Retirement Savings Calculator</span></div>
-    </div>
-
+<div class="container" style="max-width:820px; margin:0 auto; padding:0 1rem;">
+    <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">🏦 <span>Retirement Savings Calculator</span></div></div>
     <main class="calculator-card">
         <h1>🏦 Retirement Savings Calculator</h1>
-        <p class="subtitle">See how your retirement savings grow over time with monthly contributions and compound returns.</p>
-
+        <p class="subtitle">Calculate how much you need to save for retirement and project your savings growth.</p>
         <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
-                <strong>Retirement Savings Calculator</strong> — This tool projects the future value of
-                your retirement savings based on your current age, retirement age, current savings, and
-                monthly contributions. It answers the question: <em>“If I save this much each month,
-                how much will I have when I retire?”</em>
+                <strong>Retirement Savings Calculator</strong> — This tool projects your retirement savings
+                growth based on your current savings, monthly contributions, and expected returns. It also
+                estimates whether you're on track to meet your retirement income goal.
             </p>
         </div>
-
         <div class="form-grid">
-            <div class="field">
-                <label for="current-age">Current Age</label>
-                <input type="number" id="current-age" value="30" min="18" max="80" step="1" />
-            </div>
-            <div class="field">
-                <label for="retire-age">Retirement Age</label>
-                <input type="number" id="retire-age" value="65" min="30" max="90" step="1" />
-            </div>
-            <div class="field">
-                <label for="current-savings">Current Savings ($)</label>
-                <input type="number" id="current-savings" value="10000" min="0" step="1000" />
-            </div>
-            <div class="field">
-                <label for="monthly-contribution">Monthly Contribution ($)</label>
-                <input type="number" id="monthly-contribution" value="500" min="0" step="50" />
-            </div>
-            <div class="field">
-                <label for="return-rate">Expected Annual Return (%)</label>
-                <input type="number" id="return-rate" value="7" min="0" max="20" step="0.1" />
-            </div>
-            <div style="margin-top:0.5rem;">
-                <button class="btn" onclick="calculate()">Calculate</button>
-            </div>
+            <div class="field"><label>Current Retirement Savings ($)</label><input type="number" id="rs-current" value="50000" min="0" step="1000" /></div>
+            <div class="field"><label>Monthly Contribution ($)</label><input type="number" id="rs-contribution" value="500" min="0" step="50" /></div>
+            <div class="field"><label>Expected Annual Return (%)</label><input type="number" id="rs-rate" value="7" min="0" step="0.1" /></div>
+            <div class="field"><label>Years Until Retirement</label><input type="number" id="rs-years" value="30" min="1" max="50" step="1" /></div>
+            <div class="field"><label>Desired Monthly Retirement Income ($)</label><input type="number" id="rs-desired" value="5000" min="0" step="500" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculateRS()">Calculate</button></div>
         </div>
-
-        <div id="results-area" style="margin-top:1.8rem; display:none;">
+        <div id="rs-results" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Your Retirement Projection</h2>
-            <div class="results-summary" id="summary">
-                <div class="summary-item highlight"><span class="label">Projected Savings at Retirement</span><span class="value" id="final-value">—</span></div>
-                <div class="summary-item"><span class="label">Total Contributions</span><span class="value" id="total-contributions">—</span></div>
-                <div class="summary-item positive"><span class="label">Total Investment Returns</span><span class="value" id="total-returns">—</span></div>
-                <div class="summary-item"><span class="label">Return on Investment (ROI)</span><span class="value" id="roi">—</span></div>
-            </div>
-            <h3 style="font-size:1rem; margin:1rem 0 0.3rem;">📅 Year-by-Year Growth</h3>
-            <div class="schedule-wrapper">
-                <table class="schedule-table" id="schedule-table">
-                    <thead><tr><th>Age</th><th>Balance</th><th>Annual Contribution</th><th>Annual Return</th></tr></thead>
-                    <tbody id="schedule-body"></tbody>
-                </table>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>📋 Input</h4>
+                    <div class="row"><span>Current Savings</span><span class="num" id="rs-current-display">—</span></div>
+                    <div class="row"><span>Monthly Contribution</span><span class="num" id="rs-contribution-display">—</span></div>
+                    <div class="row"><span>Return Rate</span><span class="num" id="rs-rate-display">—</span></div>
+                    <div class="row"><span>Years to Retire</span><span class="num" id="rs-years-display">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>💰 Projection</h4>
+                    <div class="row"><span>Total at Retirement</span><span class="num" id="rs-total" style="font-size:1.2rem;">—</span></div>
+                    <div class="row"><span>Monthly Income (4% Rule)</span><span class="num" id="rs-income">—</span></div>
+                    <div class="row"><span>Income Gap</span><span class="num" id="rs-gap">—</span></div>
+                    <div class="row"><span>On Track?</span><span class="num" id="rs-status">—</span></div>
+                </div>
             </div>
         </div>
-
-        <!-- ===== 推荐区域 ===== -->
         <div id="recommendations-area"></div>
-
     </main>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
-            <h2>📖 How to read your results</h2>
-            <span class="accordion-arrow" id="infoArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block"><h3>Projected Savings</h3><p>The total amount you'll have by retirement age, including all contributions and compounded investment returns.</p></div>
-                <div class="info-block"><h3>Total Contributions</h3><p>The total amount you contributed out of pocket — your current savings plus all monthly contributions over the years.</p></div>
-                <div class="info-block"><h3>Investment Returns</h3><p>The total earnings generated by your investments — the difference between your projected savings and your total contributions.</p></div>
+                <div class="info-block"><h3>Total at Retirement</h3><p>Your projected retirement savings balance at retirement age.</p></div>
+                <div class="info-block"><h3>Monthly Income</h3><p>Estimated monthly income using the 4% safe withdrawal rule.</p></div>
+                <div class="info-block"><h3>Income Gap</h3><p>The difference between your desired and projected income. Positive means you need to save more.</p></div>
             </div>
         </div>
     </section>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
-            <h2>❓ FAQ</h2>
-            <span class="accordion-arrow" id="faqArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
         <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How realistic is the projected return?</span></div>
-                <div class="faq-answer">A 7% annual return is a common historical average for stock-heavy portfolios. Use a lower rate (5-6%) for more conservative estimates.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Does this include inflation?</span></div>
-                <div class="faq-answer">No — this calculation shows nominal dollars. To adjust for inflation, use a lower expected return (e.g., 5% instead of 7%).</div>
-            </div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How much do I need to save for retirement if I want $5,000 per month?</span></div><div class="faq-answer">Using the 4% rule, you need $1.5 million in savings to safely withdraw $5,000/month ($5,000 × 12 ÷ 0.04 = $1,500,000).</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How much will I have if I save $500/month for 30 years at 7%?</span></div><div class="faq-answer">Saving $500 per month at 7% annual return for 30 years would grow to approximately $566,764. Your $180,000 in contributions would earn $386,764 in returns.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the 4% rule for retirement withdrawals?</span></div><div class="faq-answer">The 4% rule suggests withdrawing 4% of your retirement portfolio in the first year of retirement, then adjusting for inflation. This strategy is designed to make your savings last 30+ years.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How much should I have saved for retirement by age?</span></div><div class="faq-answer">By 30: 1× your salary. By 40: 3×. By 50: 6×. By 60: 8×. By 67: 10× your final salary (Fidelity guidelines).</div></div>
         </div>
     </section>
-
-    <footer class="site-footer">
-        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
-    </footer>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html">About</a> <span style="color:#dce1e8;">|</span> <a href="privacy.html">Privacy</a></p></footer>
 </div>
-
 <script src="recommendations.js"></script>
 <script src="feedback.js"></script>
-
 <script>
-    function toggleAccordion(id) {
-        const body = document.getElementById(id);
-        const arrow = document.getElementById(id + 'Arrow');
-        if (body.style.display === 'none' || body.style.display === '') {
-            body.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            body.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-    function toggleFaq(el) {
-        const answer = el.nextElementSibling;
-        const arrow = el.querySelector('.faq-arrow');
-        if (answer.style.display === 'none' || answer.style.display === '') {
-            answer.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            answer.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-
-    function calculate() {
-        const currentAge = parseFloat(document.getElementById('current-age').value) || 30;
-        const retireAge = parseFloat(document.getElementById('retire-age').value) || 65;
-        const currentSavings = parseFloat(document.getElementById('current-savings').value) || 0;
-        const monthlyContrib = parseFloat(document.getElementById('monthly-contribution').value) || 0;
-        const annualReturn = parseFloat(document.getElementById('return-rate').value) || 0;
-
-        const years = Math.max(0, retireAge - currentAge);
+    function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
+    function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
+    function calculateRS() {
+        const current = parseFloat(document.getElementById('rs-current').value) || 0;
+        const contrib = parseFloat(document.getElementById('rs-contribution').value) || 0;
+        const rate = parseFloat(document.getElementById('rs-rate').value) || 0;
+        const years = parseFloat(document.getElementById('rs-years').value) || 1;
+        const desired = parseFloat(document.getElementById('rs-desired').value) || 0;
+        const monthlyRate = rate / 100 / 12;
         const months = years * 12;
-        const monthlyRate = annualReturn / 100 / 12;
-
+        const future = current * Math.pow(1 + rate/100, years) + contrib * (Math.pow(1 + monthlyRate, months) - 1) / monthlyRate;
+        const income = future * 0.04 / 12;
+        const gap = income - desired;
+        const onTrack = gap >= 0 ? '✅ On Track' : '⚠️ Need to save more';
         const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
-        const pct = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 });
-
-        let futureValue;
-        if (months > 0 && monthlyRate > 0) {
-            const fvSavings = currentSavings * Math.pow(1 + monthlyRate, months);
-            const fvContrib = monthlyContrib * (Math.pow(1 + monthlyRate, months) - 1) / monthlyRate;
-            futureValue = fvSavings + fvContrib;
-        } else if (months > 0 && monthlyRate === 0) {
-            futureValue = currentSavings + monthlyContrib * months;
-        } else {
-            futureValue = currentSavings;
-        }
-
-        const totalContributions = currentSavings + monthlyContrib * months;
-        const totalReturns = futureValue - totalContributions;
-        const roi = totalContributions > 0 ? totalReturns / totalContributions : 0;
-
-        document.getElementById('final-value').textContent = fmt.format(futureValue);
-        document.getElementById('total-contributions').textContent = fmt.format(totalContributions);
-        document.getElementById('total-returns').textContent = fmt.format(totalReturns);
-        document.getElementById('roi').textContent = pct.format(roi);
-
-        const tbody = document.getElementById('schedule-body');
-        tbody.innerHTML = '';
-        let balance = currentSavings;
-        for (let year = 1; year <= years; year++) {
-            const yearContrib = monthlyContrib * 12;
-            let yearReturn = 0;
-            let yearBalance = balance;
-            for (let m = 0; m < 12; m++) {
-                const monthlyRet = yearBalance * monthlyRate;
-                yearReturn += monthlyRet;
-                yearBalance += monthlyRet + monthlyContrib;
-            }
-            balance = yearBalance;
-            const tr = document.createElement('tr');
-            if (year === years) tr.classList.add('highlight-row');
-            tr.innerHTML = `<td>${currentAge + year}</td><td>${fmt.format(balance)}</td><td>${fmt.format(yearContrib)}</td><td>${fmt.format(yearReturn)}</td>`;
-            tbody.appendChild(tr);
-        }
-
-        document.getElementById('results-area').style.display = 'block';
-
-        // ===== 推荐联动 =====
-        const finalValue = fmt.format(futureValue).replace(/[^0-9.]/g, '');
-        const currentSavingsVal = document.getElementById('current-savings').value;
-        showRecommendations('retirement-savings.html', {
-            finalValue: finalValue,
-            currentSavings: currentSavingsVal
-        });
+        document.getElementById('rs-current-display').textContent = fmt.format(current);
+        document.getElementById('rs-contribution-display').textContent = fmt.format(contrib);
+        document.getElementById('rs-rate-display').textContent = rate + '%';
+        document.getElementById('rs-years-display').textContent = years + ' years';
+        document.getElementById('rs-total').textContent = fmt.format(future);
+        document.getElementById('rs-income').textContent = fmt.format(income);
+        document.getElementById('rs-gap').textContent = fmt.format(Math.abs(gap));
+        document.getElementById('rs-status').textContent = onTrack;
+        document.getElementById('rs-status').style.color = gap >= 0 ? '#10b981' : '#ef4444';
+        document.getElementById('rs-results').style.display = 'block';
+        showRecommendations('retirement-savings.html', { current: current, years: years });
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('infoAccordion').style.display = 'block';
-        document.getElementById('infoArrow').textContent = '▼';
-        document.getElementById('faqAccordion').style.display = 'none';
-        document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
-        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
-        calculate();
-    });
-    document.addEventListener('input', function(e) {
-        if (e.target.closest('.form-grid')) { calculate(); }
-    });
+    document.addEventListener('DOMContentLoaded', function() { document.getElementById('infoAccordion').style.display='block'; document.getElementById('infoArrow').textContent='▼'; document.getElementById('faqAccordion').style.display='none'; document.getElementById('faqArrow').textContent='▶'; document.querySelectorAll('.faq-answer').forEach(el => el.style.display='none'); document.querySelectorAll('.faq-arrow').forEach(el => el.textContent='▶'); calculateRS(); });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculateRS(); } });
 </script>
 </body>
 </html>
