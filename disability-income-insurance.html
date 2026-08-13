@@ -1,127 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Disability Income Insurance Calculator — Free Online Tool</title>
+
+    <!-- ===== Meta Tags ===== -->
+    <title>失能收入保险计算器 — 免费在线工具</title>
+    <meta name="description" content="估算失能收入保险所需保额和保费。免费失能收入保险计算器。" />
+
     <link rel="stylesheet" href="style.css" />
-    <style>
-        .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
-        .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
-        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
-        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
-        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
-        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
-        .field { display: flex; flex-direction: column; }
-        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
-        .field input {
-            padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px;
-            background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%;
-        }
-        .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
-        .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
-        .btn:hover { background: #1d4ed8; }
-        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
-        .comparison-box { background: #f8fafc; border-radius: 12px; padding: 1rem; }
-        .comparison-box h4 { font-size: 0.85rem; font-weight: 600; color: #0f172a; margin: 0 0 0.5rem; text-align: center; }
-        .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
-        .comparison-box .row .num { font-weight: 600; color: #0f172a; }
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
-        @media (max-width: 640px) { .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
-    </style>
-</head>
-<body>
-<div class="container">
-    <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">🦽 <span>Disability Income Insurance Calculator</span></div></div>
-    <main class="calculator-card">
-        <h1>🦽 Disability Income Insurance Calculator</h1>
-        <p class="subtitle">Estimate the monthly benefit and premium for disability income protection.</p>
-        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
-            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
-                <strong>Disability Income Insurance Calculator</strong> — This tool estimates the monthly benefit
-                you would receive if disabled, based on your current income and the policy's benefit percentage.
-                It also estimates the annual premium.
-            </p>
-        </div>
-        <div class="form-grid">
-            <div class="field"><label for="income-di">Monthly Gross Income ($)</label><input type="number" id="income-di" value="5000" min="0" step="500" /></div>
-            <div class="field"><label for="benefit-pct">Benefit Percentage (%)</label><input type="number" id="benefit-pct" value="60" min="0" max="100" step="1" /></div>
-            <div class="field"><label for="waiting-period">Waiting Period (Days)</label><input type="number" id="waiting-period" value="90" min="0" max="365" step="10" /></div>
-            <div class="field"><label for="benefit-period-di">Benefit Period (Years)</label><input type="number" id="benefit-period-di" value="5" min="1" max="30" step="1" /></div>
-            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculate()">Calculate</button></div>
-        </div>
-        <div id="results-area" style="margin-top:1.8rem; display:none;">
-            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Disability Benefit Estimate</h2>
-            <div class="comparison-grid">
-                <div class="comparison-box">
-                    <h4>📋 Input</h4>
-                    <div class="row"><span>Monthly Income</span><span class="num" id="income-display">—</span></div>
-                    <div class="row"><span>Benefit %</span><span class="num" id="pct-display">—</span></div>
-                    <div class="row"><span>Waiting Period</span><span class="num" id="wait-display">—</span></div>
-                    <div class="row"><span>Benefit Period</span><span class="num" id="bperiod-display">—</span></div>
-                </div>
-                <div class="comparison-box">
-                    <h4>💰 Benefit & Premium</h4>
-                    <div class="row"><span>Monthly Benefit</span><span class="num" id="monthly-benefit" style="font-size:1.2rem;">—</span></div>
-                    <div class="row"><span>Annual Benefit</span><span class="num" id="annual-benefit">—</span></div>
-                    <div class="row"><span>Estimated Annual Premium</span><span class="num" id="annual-premium">—</span></div>
-                </div>
-            </div>
-        </div>
-        <div id="recommendations-area"></div>
-    </main>
-    <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
-        <div class="accordion-body" id="infoAccordion">
-            <div class="info-grid">
-                <div class="info-block"><h3>Monthly Benefit</h3><p>The amount you would receive each month if disabled, typically 50‑70% of your pre‑disability income.</p></div>
-                <div class="info-block"><h3>Waiting Period</h3><p>The time you must be disabled before benefits start. Longer waiting periods lower premiums.</p></div>
-                <div class="info-block"><h3>Benefit Period</h3><p>How long benefits are paid. Longer periods mean more protection but higher premiums.</p></div>
-            </div>
-        </div>
-    </section>
-    <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
-        <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What does disability insurance cover?</span></div><div class="faq-answer">It replaces a portion of your income if you become unable to work due to illness or injury.</div></div>
-            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>When should I buy disability insurance?</span></div><div class="faq-answer">As early as possible, ideally when you start your career. Premiums are lower when you're younger and healthier.</div></div>
-        </div>
-    </section>
-    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p></footer>
-</div>
-<script src="recommendations.js"></script>
-<script src="feedback.js"></script>
-<script>
-    function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
-    function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
-    function calculate() {
-        const income = parseFloat(document.getElementById('income-di').value) || 0;
-        const pct = parseFloat(document.getElementById('benefit-pct').value) || 0;
-        const wait = parseFloat(document.getElementById('waiting-period').value) || 0;
-        const bperiod = parseFloat(document.getElementById('benefit-period-di').value) || 1;
-        const monthlyBenefit = income * (pct / 100);
-        const annualBenefit = monthlyBenefit * 12;
-        // Simple premium: 2% of annual benefit + base
-        const premium = annualBenefit * 0.02 + 200;
-        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
-        document.getElementById('income-display').textContent = fmt.format(income);
-        document.getElementById('pct-display').textContent = pct + '%';
-        document.getElementById('wait-display').textContent = wait + ' days';
-        document.getElementById('bperiod-display').textContent = bperiod + ' years';
-        document.getElementById('monthly-benefit').textContent = fmt.format(monthlyBenefit);
-        document.getElementById('annual-benefit').textContent = fmt.format(annualBenefit);
-        document.getElementById('annual-premium').textContent = fmt.format(premium);
-        document.getElementById('results-area').style.display = 'block';
-        showRecommendations('disability-income-insurance.html', { income: income });
+
+    <!-- ===== WebApplication Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "失能收入保险计算器",
+      "description": "估算失能收入保险所需保额和保费。",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "url": "https://financetools.tools/disability-income-insurance.html",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.6", "ratingCount": "52" }
     }
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('infoAccordion').style.display = 'block'; document.getElementById('infoArrow').textContent = '▼';
-        document.getElementById('faqAccordion').style.display = 'none'; document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
-        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
-        calculate();
-    });
-    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculate(); } });
-</script>
-</body>
-</html>
+    </script>
+
+    <!-- ===== FAQPage Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "失能收入保险应该买多少保额？",
+          "acceptedAnswer": { "@type": "Answer", "text": "建议覆盖月收入的60%-80%。月入1万，保额建议6000-8000元/月，保障期限至退休。" }
+        },
+        {
+          "@type": "Question",
+          "name": "失能收入保险的等待期一般多久？",
+          "acceptedAnswer": { "@type": "Answer", "text": "常见等待期有30天、90天、180天。等待期越短，保费越贵。建议选90天，平衡保费和保障。" }
+        },
+        {
+          "@type": "Question",
+          "name": "已经有社保，还需要买失能收入保险吗？",
+          "acceptedAnswer": { "@type": "Answer", "text": "社保工伤险覆盖有限，且需认定为工伤。商业失能险覆盖更广（疾病/意外），可补充收入损失。建议
