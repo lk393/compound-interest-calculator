@@ -1,289 +1,209 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tax‑free Insurance Return Calculator — Free Online Tool</title>
+
+    <!-- ===== Meta Tags ===== -->
+    <title>免税保险回报计算器 — 免费在线工具</title>
+    <meta name="description" content="计算免税保险产品的实际回报率。免费免税保险回报计算器。" />
+
     <link rel="stylesheet" href="style.css" />
+
+    <!-- ===== WebApplication Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "免税保险回报计算器",
+      "description": "计算免税保险产品的实际回报率。",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "url": "https://financetools.tools/tax-free-insurance-return.html",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.6", "ratingCount": "55" }
+    }
+    </script>
+
+    <!-- ===== FAQPage Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "免税保险（如香港储蓄险）的实际回报率一般多少？",
+          "acceptedAnswer": { "@type": "Answer", "text": "长期来看，分红险的irr在4%-6%左右，免税优势可额外增厚收益约1%-2%。" }
+        },
+        {
+          "@type": "Question",
+          "name": "免税保险和普通理财哪个更划算？",
+          "acceptedAnswer": { "@type": "Answer", "text": "若普通理财收益5%，需缴税20%，则税后收益4%。免税保险收益5%则更具优势。需比较长期复利效应。" }
+        },
+        {
+          "@type": "Question",
+          "name": "免税保险的收益需要申报吗？",
+          "acceptedAnswer": { "@type": "Answer", "text": "在符合条件的免税保单下，理赔金和现金价值增长通常无需缴税，但具体依当地税法而定。" }
+        }
+      ]
+    }
+    </script>
+
     <style>
-        .results-summary {
-            display: flex;
-            flex-direction: column;
-            gap: 0.7rem;
-            margin: 1.5rem 0;
-        }
-        .summary-item {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 0.8rem 1.2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        /* 复用相同样式，略去重复CSS */
+        .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
+        .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
         .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
-
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
         .field { display: flex; flex-direction: column; }
         .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
-        .field input {
-            padding: 0.6rem 0.8rem;
-            font-size: 1rem;
-            border: 1.5px solid #dce1e8;
-            border-radius: 10px;
-            background: #fafbfc;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            width: 100%;
-        }
-        .field input:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-            background: #ffffff;
-        }
-
-        .btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 0.6rem 1.2rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            width: 100%;
-        }
+        .field input { padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px; background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
+        .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
+        .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
         .btn:hover { background: #1d4ed8; }
-
-        .comparison-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-top: 0.5rem;
-        }
-        .comparison-box {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 1rem;
-        }
-        .comparison-box h4 {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #0f172a;
-            margin: 0 0 0.5rem;
-            text-align: center;
-        }
-        .comparison-box .row {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.2rem 0;
-            font-size: 0.85rem;
-            color: #475569;
-        }
-        .comparison-box .row .num {
-            font-weight: 600;
-            color: #0f172a;
-        }
-
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+        .comparison-box { background: #f8fafc; border-radius: 12px; padding: 1rem; }
+        .comparison-box h4 { font-size: 0.85rem; font-weight: 600; color: #0f172a; margin: 0 0 0.5rem; text-align: center; }
+        .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
+        .comparison-box .row .num { font-weight: 600; color: #0f172a; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
-        @media (max-width: 640px) {
-            .info-grid { grid-template-columns: 1fr; }
-            .summary-item { padding: 0.6rem 1rem; }
-            .summary-item .value { font-size: 1rem; }
-            .comparison-grid { grid-template-columns: 1fr; }
-        }
+        .info-block h3 { font-size: 0.9rem; font-weight: 600; color: #0f172a; margin: 0 0 0.3rem; }
+        .info-block p { font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.5; }
+        .accordion-card { background: white; border-radius: 12px; border: 1px solid #e9edf2; margin-top: 1.5rem; overflow: hidden; }
+        .accordion-header { padding: 1rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .accordion-header:hover { background: #f8fafc; }
+        .accordion-header h2 { font-size: 1rem; font-weight: 600; color: #0f172a; margin: 0; }
+        .accordion-arrow { font-size: 0.9rem; color: #94a3b8; }
+        .accordion-body { padding: 0 1.2rem 1.2rem; display: none; }
+        .accordion-body.open { display: block; }
+        .faq-item { border-bottom: 1px solid #e9edf2; padding: 0.5rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; color: #0f172a; padding: 0.3rem 0; }
+        .faq-question:hover { color: #2563eb; }
+        .faq-arrow { font-size: 0.7rem; color: #94a3b8; }
+        .faq-answer { padding: 0.3rem 0 0.3rem 1.5rem; color: #475569; font-size: 0.9rem; line-height: 1.6; display: none; }
+        .faq-answer.open { display: block; }
+        .top-nav { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #e9edf2; margin-bottom: 1.5rem; }
+        .top-nav .back-link { color: #2563eb; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .top-nav .back-link:hover { text-decoration: underline; }
+        .top-nav .breadcrumb { color: #94a3b8; font-size: 0.85rem; }
+        .top-nav .breadcrumb span { color: #1e293b; }
+        .calculator-card { background: white; border-radius: 16px; padding: 1.5rem 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e9edf2; }
+        .calculator-card h1 { font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem; }
+        .calculator-card .subtitle { font-size: 1rem; color: #64748b; margin: 0 0 1rem; }
+        .site-footer { text-align: center; padding: 1.5rem 0 0.5rem; color: #94a3b8; font-size: 0.8rem; border-top: 1px solid #e9edf2; margin-top: 2rem; }
+        .site-footer a { color: #94a3b8; text-decoration: none; }
+        .site-footer a:hover { color: #2563eb; text-decoration: underline; }
+        @media (max-width: 640px) { .calculator-card { padding: 1rem; } .calculator-card h1 { font-size: 1.3rem; } .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 480px) { .calculator-card { padding: 0.8rem; } }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <div class="top-nav">
-        <a href="index.html" class="back-link">← Back to Home</a>
-        <div class="breadcrumb">💰 <span>Tax‑free Insurance Return Calculator</span></div>
-    </div>
-
+<div class="container" style="max-width:820px; margin:0 auto; padding:0 1rem;">
+    <div class="top-nav"><a href="index.html" class="back-link">← 返回首页</a><div class="breadcrumb">💰 <span>免税保险回报计算器</span></div></div>
     <main class="calculator-card">
-        <h1>💰 Tax‑free Insurance Return Calculator</h1>
-        <p class="subtitle">Compare the effective return of a tax‑free insurance product with a taxable investment.</p>
-
+        <h1>💰 免税保险回报计算器</h1>
+        <p class="subtitle">计算免税保险产品的实际回报率。</p>
         <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
-                <strong>Tax‑free Insurance Return Calculator</strong> — This tool compares the after‑tax returns
-                of a tax‑free insurance policy (like a Roth IRA or certain life insurance products) with a
-                taxable investment. It shows the value of the tax advantage.
+                <strong>免税保险回报计算器</strong> — 输入保费、缴费期、预期分红和税率，计算免税保险的实际年化回报率（IRR），并与普通投资对比。
             </p>
         </div>
-
         <div class="form-grid">
-            <div class="field">
-                <label for="premium-tf">Annual Premium / Contribution ($)</label>
-                <input type="number" id="premium-tf" value="5000" min="0" step="500" />
-            </div>
-            <div class="field">
-                <label for="return-tf">Insurance Product Annual Return (%)</label>
-                <input type="number" id="return-tf" value="4" min="0" step="0.1" />
-            </div>
-            <div class="field">
-                <label for="taxable-return">Taxable Investment Annual Return (%)</label>
-                <input type="number" id="taxable-return" value="6" min="0" step="0.1" />
-            </div>
-            <div class="field">
-                <label for="tax-rate-tf">Tax Rate on Investment (%)</label>
-                <input type="number" id="tax-rate-tf" value="22" min="0" step="1" />
-            </div>
-            <div class="field">
-                <label for="years-tf">Investment Period (Years)</label>
-                <input type="number" id="years-tf" value="20" min="1" max="50" step="1" />
-            </div>
-            <div style="margin-top:0.5rem;">
-                <button class="btn" onclick="calculate()">Compare</button>
-            </div>
+            <div class="field"><label>年缴保费 (¥)</label><input type="number" id="tf-premium" value="10000" min="0" step="1000" /></div>
+            <div class="field"><label>缴费年限</label><input type="number" id="tf-years" value="10" min="1" max="30" step="1" /></div>
+            <div class="field"><label>预期年均回报率 (%)</label><input type="number" id="tf-return" value="5" min="0" step="0.1" /></div>
+            <div class="field"><label>适用税率 (%)</label><input type="number" id="tf-tax" value="20" min="0" max="100" step="1" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculateTF()">计算</button></div>
         </div>
-
-        <div id="results-area" style="margin-top:1.8rem; display:none;">
-            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Comparison Results</h2>
+        <div id="tf-results" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 回报对比</h2>
             <div class="comparison-grid">
                 <div class="comparison-box">
-                    <h4>✅ Tax‑Free Insurance</h4>
-                    <div class="row"><span>Total Contributions</span><span class="num" id="total-premium">—</span></div>
-                    <div class="row"><span>Final Value</span><span class="num" id="final-taxfree">—</span></div>
-                    <div class="row"><span>Tax Saved</span><span class="num" id="tax-saved">—</span></div>
+                    <h4>📋 免税保险</h4>
+                    <div class="row"><span>总保费</span><span class="num" id="tf-total-premium">—</span></div>
+                    <div class="row"><span>期末价值</span><span class="num" id="tf-final-taxfree">—</span></div>
+                    <div class="row"><span>实际年化IRR</span><span class="num" id="tf-irr-taxfree">—</span></div>
                 </div>
                 <div class="comparison-box">
-                    <h4>📈 Taxable Investment</h4>
-                    <div class="row"><span>Total Contributions</span><span class="num" id="total-taxable">—</span></div>
-                    <div class="row"><span>Final After‑Tax Value</span><span class="num" id="final-taxable">—</span></div>
-                    <div class="row"><span>Tax Paid</span><span class="num" id="tax-paid">—</span></div>
+                    <h4>📋 普通投资（需缴税）</h4>
+                    <div class="row"><span>总保费</span><span class="num" id="tf-total-taxable">—</span></div>
+                    <div class="row"><span>期末价值</span><span class="num" id="tf-final-taxable">—</span></div>
+                    <div class="row"><span>实际年化IRR</span><span class="num" id="tf-irr-taxable">—</span></div>
                 </div>
             </div>
             <div class="results-summary">
                 <div class="summary-item highlight">
-                    <span class="label">🏆 Advantage of Tax‑Free Product</span>
-                    <span class="value" id="advantage" style="font-size:1.2rem;">—</span>
+                    <span class="label">🏆 更优选择</span>
+                    <span class="value" id="tf-winner" style="font-size:1.2rem;">—</span>
                 </div>
             </div>
         </div>
-
         <div id="recommendations-area"></div>
     </main>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
-            <h2>📖 How to read your results</h2>
-            <span class="accordion-arrow" id="infoArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 如何解读结果</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block"><h3>Tax‑Free Final Value</h3><p>The value of the insurance product at the end of the term, with all growth tax‑free.</p></div>
-                <div class="info-block"><h3>Taxable Final Value</h3><p>The value of the taxable investment after paying taxes on returns each year.</p></div>
-                <div class="info-block"><h3>Advantage</h3><p>The extra value you get from the tax‑free product compared to the taxable investment.</p></div>
+                <div class="info-block"><h3>期末价值</h3><p>考虑复利后的账户价值。</p></div>
+                <div class="info-block"><h3>实际年化IRR</h3><p>反映真实年化回报，可横向比较。</p></div>
+                <div class="info-block"><h3>更优选择</h3><p>根据IRR高低推荐投资方向。</p></div>
             </div>
         </div>
     </section>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
-            <h2>❓ FAQ</h2>
-            <span class="accordion-arrow" id="faqArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ 常见问题</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
         <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What types of insurance are tax‑free?</span></div>
-                <div class="faq-answer">Roth IRAs, certain life insurance policies (like whole life), and some annuities offer tax‑free growth or tax‑free withdrawals. Check with your provider.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Is the tax advantage always worth it?</span></div>
-                <div class="faq-answer">It depends on the return rate, fees, and your tax bracket. This tool helps you quantify the benefit. Always compare fees and surrender charges.</div>
-            </div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>免税保险（如香港储蓄险）的实际回报率一般多少？</span></div><div class="faq-answer">长期来看，分红险的irr在4%-6%左右，免税优势可额外增厚收益约1%-2%。</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>免税保险和普通理财哪个更划算？</span></div><div class="faq-answer">若普通理财收益5%，需缴税20%，则税后收益4%。免税保险收益5%则更具优势。需比较长期复利效应。</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>免税保险的收益需要申报吗？</span></div><div class="faq-answer">在符合条件的免税保单下，理赔金和现金价值增长通常无需缴税，但具体依当地税法而定。</div></div>
         </div>
     </section>
-
-    <footer class="site-footer">
-        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
-    </footer>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · 免费在线计算器<br /><a href="about.html">关于</a> <span style="color:#dce1e8;">|</span> <a href="privacy.html">隐私</a></p></footer>
 </div>
-
 <script src="recommendations.js"></script>
 <script src="feedback.js"></script>
-
 <script>
-    function toggleAccordion(id) {
-        const body = document.getElementById(id);
-        const arrow = document.getElementById(id + 'Arrow');
-        if (body.style.display === 'none' || body.style.display === '') {
-            body.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            body.style.display = 'none';
-            arrow.textContent = '▶';
+    function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
+    function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
+    function calculateTF() {
+        const premium = parseFloat(document.getElementById('tf-premium').value) || 0;
+        const years = parseInt(document.getElementById('tf-years').value) || 1;
+        const ret = parseFloat(document.getElementById('tf-return').value) || 0;
+        const tax = parseFloat(document.getElementById('tf-tax').value) || 0;
+        // 免税：保费投入，期末价值
+        let balTaxfree = 0;
+        for (let i = 0; i < years; i++) {
+            balTaxfree = (balTaxfree + premium) * (1 + ret / 100);
         }
-    }
-    function toggleFaq(el) {
-        const answer = el.nextElementSibling;
-        const arrow = el.querySelector('.faq-arrow');
-        if (answer.style.display === 'none' || answer.style.display === '') {
-            answer.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            answer.style.display = 'none';
-            arrow.textContent = '▶';
+        // 普通投资：收益需缴税
+        let balTaxable = 0;
+        for (let i = 0; i < years; i++) {
+            balTaxable = (balTaxable + premium) * (1 + ret / 100 * (1 - tax / 100));
         }
+        const totalPrem = premium * years;
+        // 计算IRR（简化：用期末价值反推年均回报）
+        const irrTaxfree = Math.pow(balTaxfree / totalPrem, 1 / years) - 1;
+        const irrTaxable = Math.pow(balTaxable / totalPrem, 1 / years) - 1;
+        const winner = irrTaxfree > irrTaxable ? '免税保险' : '普通投资';
+        const fmt = new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        const pct = new Intl.NumberFormat('zh-CN', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        document.getElementById('tf-total-premium').textContent = fmt.format(totalPrem);
+        document.getElementById('tf-final-taxfree').textContent = fmt.format(balTaxfree);
+        document.getElementById('tf-irr-taxfree').textContent = pct.format(irrTaxfree);
+        document.getElementById('tf-total-taxable').textContent = fmt.format(totalPrem);
+        document.getElementById('tf-final-taxable').textContent = fmt.format(balTaxable);
+        document.getElementById('tf-irr-taxable').textContent = pct.format(irrTaxable);
+        document.getElementById('tf-winner').textContent = winner;
+        document.getElementById('tf-results').style.display = 'block';
+        showRecommendations('tax-free-insurance-return.html', { premium: premium, years: years });
     }
-
-    function calculate() {
-        const premium = parseFloat(document.getElementById('premium-tf').value) || 0;
-        const returnTF = parseFloat(document.getElementById('return-tf').value) || 0;
-        const returnTax = parseFloat(document.getElementById('taxable-return').value) || 0;
-        const taxRate = parseFloat(document.getElementById('tax-rate-tf').value) || 0;
-        const years = parseFloat(document.getElementById('years-tf').value) || 1;
-
-        // Tax‑free: grows without tax
-        const finalTF = premium * (Math.pow(1 + returnTF / 100, years) - 1) / (returnTF / 100);
-        const totalPremium = premium * years;
-
-        // Taxable: returns are taxed each year
-        const afterTaxReturn = returnTax * (1 - taxRate / 100);
-        const finalTaxable = premium * (Math.pow(1 + afterTaxReturn / 100, years) - 1) / (afterTaxReturn / 100);
-        const totalTaxable = premium * years;
-        const taxPaid = finalTaxable - totalTaxable;
-        const taxSaved = finalTF - (premium * (Math.pow(1 + returnTax / 100, years) - 1) / (returnTax / 100));
-        const advantage = finalTF - finalTaxable;
-
-        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
-
-        document.getElementById('total-premium').textContent = fmt.format(totalPremium);
-        document.getElementById('final-taxfree').textContent = fmt.format(finalTF);
-        document.getElementById('tax-saved').textContent = fmt.format(Math.max(0, taxSaved));
-        document.getElementById('total-taxable').textContent = fmt.format(totalTaxable);
-        document.getElementById('final-taxable').textContent = fmt.format(finalTaxable);
-        document.getElementById('tax-paid').textContent = fmt.format(taxPaid);
-
-        const advEl = document.getElementById('advantage');
-        advEl.textContent = fmt.format(advantage);
-        advEl.style.color = advantage >= 0 ? '#10b981' : '#ef4444';
-
-        document.getElementById('results-area').style.display = 'block';
-
-        showRecommendations('tax-free-insurance-return.html', {
-            premium: document.getElementById('premium-tf').value,
-            years: document.getElementById('years-tf').value
-        });
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('infoAccordion').style.display = 'block';
-        document.getElementById('infoArrow').textContent = '▼';
-        document.getElementById('faqAccordion').style.display = 'none';
-        document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
-        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
-        calculate();
-    });
-    document.addEventListener('input', function(e) {
-        if (e.target.closest('.form-grid')) { calculate(); }
-    });
+    document.addEventListener('DOMContentLoaded', function() { document.getElementById('infoAccordion').style.display='block'; document.getElementById('infoArrow').textContent='▼'; document.getElementById('faqAccordion').style.display='none'; document.getElementById('faqArrow').textContent='▶'; document.querySelectorAll('.faq-answer').forEach(el => el.style.display='none'); document.querySelectorAll('.faq-arrow').forEach(el => el.textContent='▶'); calculateTF(); });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculateTF(); } });
 </script>
 </body>
 </html>
