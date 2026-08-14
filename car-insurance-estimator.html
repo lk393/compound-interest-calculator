@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- ===== Meta Tags ===== -->
-    <title>车险估算器 — 免费在线工具</title>
-    <meta name="description" content="根据车辆价值、年龄和驾驶记录估算车险保费。免费车险估算器。" />
+    <title>Car Insurance Estimator — Free Online Tool</title>
+    <meta name="description" content="Estimate your car insurance premium based on vehicle value, age, and driving record. Free car insurance estimator." />
 
     <link rel="stylesheet" href="style.css" />
 
@@ -15,8 +15,8 @@
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "车险估算器",
-      "description": "根据车辆价值、年龄和驾驶记录估算车险保费。",
+      "name": "Car Insurance Estimator",
+      "description": "Estimate your car insurance premium based on vehicle value, age, and driving record.",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "All",
       "browserRequirements": "Requires JavaScript",
@@ -34,18 +34,18 @@
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "10万左右的车，车险大概多少钱？",
-          "acceptedAnswer": { "@type": "Answer", "text": "交强险+车损险+三者险（100万）合计约4000-5000元。具体因地区和出险记录而异。" }
+          "name": "How much does car insurance cost for a $25,000 vehicle with a clean record?",
+          "acceptedAnswer": { "@type": "Answer", "text": "On average, $1,200-$1,800 per year for full coverage. Your rate depends on your location, age, and driving history." }
         },
         {
           "@type": "Question",
-          "name": "新车第一年车险为什么贵？",
-          "acceptedAnswer": { "@type": "Answer", "text": "新车折旧少，车损险保费高；且第一年无折扣，价格较贵，通常比续保贵30%-50%。" }
+          "name": "Why is car insurance more expensive for new cars?",
+          "acceptedAnswer": { "@type": "Answer", "text": "New cars have higher replacement costs and repair costs. A $30,000 new car costs about $1,500-$2,000/year to insure, vs $800-$1,200 for a 5-year-old car." }
         },
         {
           "@type": "Question",
-          "name": "出险一次第二年保费涨多少？",
-          "acceptedAnswer": { "@type": "Answer", "text": "一般来说，一次有责事故后，第二年保费可能上涨10%-20%，如之前有折扣，可能取消折扣，实际涨幅可能达30%。" }
+          "name": "How much does a speeding ticket increase insurance rates?",
+          "acceptedAnswer": { "@type": "Answer", "text": "A single speeding ticket can increase your premium by 20-30% on average. A $1,500 premium could increase to $1,800-$1,950 for 3-5 years." }
         }
       ]
     }
@@ -104,65 +104,66 @@
 </head>
 <body>
 <div class="container" style="max-width:820px; margin:0 auto; padding:0 1rem;">
-    <div class="top-nav"><a href="index.html" class="back-link">← 返回首页</a><div class="breadcrumb">🚗 <span>车险估算器</span></div></div>
+    <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">🚗 <span>Car Insurance Estimator</span></div></div>
     <main class="calculator-card">
-        <h1>🚗 车险估算器</h1>
-        <p class="subtitle">根据车辆价值、年龄和驾驶记录估算车险保费。</p>
+        <h1>🚗 Car Insurance Estimator</h1>
+        <p class="subtitle">Estimate your car insurance premium based on vehicle value, age, and driving record.</p>
         <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
-                <strong>车险估算器</strong> — 基于车辆当前价值、车龄、驾驶记录等因素，估算交强险和商业险的大致保费。
+                <strong>Car Insurance Estimator</strong> — This tool estimates your annual car insurance
+                premium based on your vehicle's value, age, and driving record. Premiums vary by state and
+                insurance company.
             </p>
         </div>
         <div class="form-grid">
-            <div class="field"><label>车辆当前价值 (¥)</label><input type="number" id="ci-value" value="100000" min="0" step="10000" /></div>
-            <div class="field"><label>车龄 (年)</label><input type="number" id="ci-age" value="3" min="0" max="20" step="1" /></div>
-            <div class="field"><label>驾驶记录 (0=无事故, 1=一次事故, 2=多次事故)</label>
+            <div class="field"><label>Vehicle Value ($)</label><input type="number" id="ci-value" value="25000" min="0" step="1000" /></div>
+            <div class="field"><label>Vehicle Age (Years)</label><input type="number" id="ci-age" value="3" min="0" max="20" step="1" /></div>
+            <div class="field"><label>Driving Record</label>
                 <select id="ci-record">
-                    <option value="0">无事故</option>
-                    <option value="1" selected>一次事故</option>
-                    <option value="2">多次事故</option>
+                    <option value="0">Clean Record</option>
+                    <option value="1" selected>1 Accident/Ticket</option>
+                    <option value="2">Multiple Accidents/Tickets</option>
                 </select>
             </div>
-            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculateCI()">估算</button></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculateCI()">Estimate</button></div>
         </div>
         <div id="ci-results" style="margin-top:1.8rem; display:none;">
-            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 保费估算</h2>
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Premium Estimate</h2>
             <div class="comparison-grid">
                 <div class="comparison-box">
-                    <h4>📋 输入</h4>
-                    <div class="row"><span>车辆价值</span><span class="num" id="ci-value-display">—</span></div>
-                    <div class="row"><span>车龄</span><span class="num" id="ci-age-display">—</span></div>
-                    <div class="row"><span>驾驶记录</span><span class="num" id="ci-record-display">—</span></div>
+                    <h4>📋 Input</h4>
+                    <div class="row"><span>Vehicle Value</span><span class="num" id="ci-value-display">—</span></div>
+                    <div class="row"><span>Vehicle Age</span><span class="num" id="ci-age-display">—</span></div>
+                    <div class="row"><span>Driving Record</span><span class="num" id="ci-record-display">—</span></div>
                 </div>
                 <div class="comparison-box">
-                    <h4>💰 保费</h4>
-                    <div class="row"><span style="font-weight:700;">年度总保费</span><span class="num" id="ci-total" style="font-size:1.2rem;">—</span></div>
-                    <div class="row"><span>交强险</span><span class="num" id="ci-compulsory">—</span></div>
-                    <div class="row"><span>商业险</span><span class="num" id="ci-commercial">—</span></div>
+                    <h4>💰 Premium</h4>
+                    <div class="row"><span style="font-weight:700;">Estimated Annual Premium</span><span class="num" id="ci-total" style="font-size:1.2rem;">—</span></div>
+                    <div class="row"><span>Estimated Monthly</span><span class="num" id="ci-monthly">—</span></div>
                 </div>
             </div>
         </div>
         <div id="recommendations-area"></div>
     </main>
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 如何解读结果</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block"><h3>年度总保费</h3><p>交强险+商业险的合计估算值。</p></div>
-                <div class="info-block"><h3>商业险</h3><p>主要包括车损险、三者险、盗抢险等，占保费大头。</p></div>
-                <div class="info-block"><h3>驾驶记录影响</h3><p>事故记录会显著提高保费，最多可达无事故的2倍。</p></div>
+                <div class="info-block"><h3>Annual Premium</h3><p>Estimated total yearly cost for full coverage insurance.</p></div>
+                <div class="info-block"><h3>Monthly</h3><p>Average monthly payment for your insurance.</p></div>
+                <div class="info-block"><h3>Record Impact</h3><p>Accidents/tickets can increase premiums by 20-50%.</p></div>
             </div>
         </div>
     </section>
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ 常见问题</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
         <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>10万左右的车，车险大概多少钱？</span></div><div class="faq-answer">交强险+车损险+三者险（100万）合计约4000-5000元。具体因地区和出险记录而异。</div></div>
-            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>新车第一年车险为什么贵？</span></div><div class="faq-answer">新车折旧少，车损险保费高；且第一年无折扣，价格较贵，通常比续保贵30%-50%。</div></div>
-            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>出险一次第二年保费涨多少？</span></div><div class="faq-answer">一般来说，一次有责事故后，第二年保费可能上涨10%-20%，如之前有折扣，可能取消折扣，实际涨幅可能达30%。</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How much does car insurance cost for a $25,000 vehicle with a clean record?</span></div><div class="faq-answer">On average, $1,200-$1,800 per year for full coverage. Your rate depends on your location, age, and driving history.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Why is car insurance more expensive for new cars?</span></div><div class="faq-answer">New cars have higher replacement costs and repair costs. A $30,000 new car costs about $1,500-$2,000/year to insure, vs $800-$1,200 for a 5-year-old car.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How much does a speeding ticket increase insurance rates?</span></div><div class="faq-answer">A single speeding ticket can increase your premium by 20-30% on average. A $1,500 premium could increase to $1,800-$1,950 for 3-5 years.</div></div>
         </div>
     </section>
-    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · 免费在线计算器<br /><a href="about.html">关于</a> <span style="color:#dce1e8;">|</span> <a href="privacy.html">隐私</a></p></footer>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html">About</a> <span style="color:#dce1e8;">|</span> <a href="privacy.html">Privacy</a></p></footer>
 </div>
 <script src="recommendations.js"></script>
 <script src="feedback.js"></script>
@@ -173,22 +174,17 @@
         const value = parseFloat(document.getElementById('ci-value').value) || 0;
         const age = parseInt(document.getElementById('ci-age').value) || 0;
         const record = parseInt(document.getElementById('ci-record').value) || 0;
-        // 简单模型：交强险约950，商业险根据车价*系数
-        const compulsory = 950;
-        let baseCommercial = value * 0.03; // 车损+三者基础费率
-        // 车龄调整：车龄越老，车损险费率下降
-        const ageFactor = Math.max(0.7, 1 - age * 0.03);
-        // 驾驶记录调整
-        const recordFactor = [1.0, 1.3, 2.0];
-        const commercial = baseCommercial * ageFactor * recordFactor[record];
-        const total = compulsory + commercial;
-        const fmt = new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        const baseRate = value * 0.045;
+        const ageFactor = Math.max(0.7, 1 - age * 0.025);
+        const recordFactors = [1.0, 1.35, 2.0];
+        const annual = baseRate * ageFactor * recordFactors[record];
+        const monthly = annual / 12;
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
         document.getElementById('ci-value-display').textContent = fmt.format(value);
-        document.getElementById('ci-age-display').textContent = age + ' 年';
-        document.getElementById('ci-record-display').textContent = ['无事故', '一次事故', '多次事故'][record];
-        document.getElementById('ci-compulsory').textContent = fmt.format(compulsory);
-        document.getElementById('ci-commercial').textContent = fmt.format(commercial);
-        document.getElementById('ci-total').textContent = fmt.format(total);
+        document.getElementById('ci-age-display').textContent = age + ' years';
+        document.getElementById('ci-record-display').textContent = ['Clean Record', '1 Accident/Ticket', 'Multiple Accidents/Tickets'][record];
+        document.getElementById('ci-total').textContent = fmt.format(annual);
+        document.getElementById('ci-monthly').textContent = fmt.format(monthly);
         document.getElementById('ci-results').style.display = 'block';
         showRecommendations('car-insurance-estimator.html', { value: value, age: age });
     }
