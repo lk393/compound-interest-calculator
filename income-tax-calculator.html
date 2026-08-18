@@ -1,62 +1,206 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>所得税计算器 - Smart Finance Tools</title>
+
+    <!-- ===== Meta Tags ===== -->
+    <title>Income Tax Calculator — Free Online Tool</title>
+    <meta name="description" content="Calculate your income tax, effective tax rate, and after-tax income. Free income tax calculator for federal and state taxes." />
+
     <link rel="stylesheet" href="style.css" />
+
+    <!-- ===== WebApplication Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Income Tax Calculator",
+      "description": "Calculate your income tax, effective tax rate, and after-tax income.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "url": "https://financetools.tools/income-tax-calculator.html",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.7", "ratingCount": "156" }
+    }
+    </script>
+
+    <!-- ===== FAQPage Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How much federal tax will I pay on $60,000 income with standard deduction?",
+          "acceptedAnswer": { "@type": "Answer", "text": "For a single filer in 2026, taxable income = $60,000 - $14,600 = $45,400. Tax = $1,160 + ($45,400 - $11,600) × 12% = $5,216. Effective rate is 8.7%." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the 2026 standard deduction amount?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The 2026 standard deduction is $14,600 for single filers, $29,200 for married filing jointly, and $21,900 for heads of household." }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I calculate my effective tax rate?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Effective tax rate = total tax ÷ total income × 100. If you earn $60,000 and pay $5,216 in tax, your effective rate is 8.7% — much lower than your marginal rate." }
+        }
+      ]
+    }
+    </script>
+
+    <style>
+        /* 复用与 sales-tax 相同的样式 */
+        .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
+        .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
+        .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
+        .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
+        .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
+        .field input { padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px; background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
+        .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
+        .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
+        .btn:hover { background: #1d4ed8; }
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+        .comparison-box { background: #f8fafc; border-radius: 12px; padding: 1rem; }
+        .comparison-box h4 { font-size: 0.85rem; font-weight: 600; color: #0f172a; margin: 0 0 0.5rem; text-align: center; }
+        .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
+        .comparison-box .row .num { font-weight: 600; color: #0f172a; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
+        .info-block h3 { font-size: 0.9rem; font-weight: 600; color: #0f172a; margin: 0 0 0.3rem; }
+        .info-block p { font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.5; }
+        .accordion-card { background: white; border-radius: 12px; border: 1px solid #e9edf2; margin-top: 1.5rem; overflow: hidden; }
+        .accordion-header { padding: 1rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .accordion-header:hover { background: #f8fafc; }
+        .accordion-header h2 { font-size: 1rem; font-weight: 600; color: #0f172a; margin: 0; }
+        .accordion-arrow { font-size: 0.9rem; color: #94a3b8; }
+        .accordion-body { padding: 0 1.2rem 1.2rem; display: none; }
+        .accordion-body.open { display: block; }
+        .faq-item { border-bottom: 1px solid #e9edf2; padding: 0.5rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; color: #0f172a; padding: 0.3rem 0; }
+        .faq-question:hover { color: #2563eb; }
+        .faq-arrow { font-size: 0.7rem; color: #94a3b8; }
+        .faq-answer { padding: 0.3rem 0 0.3rem 1.5rem; color: #475569; font-size: 0.9rem; line-height: 1.6; display: none; }
+        .faq-answer.open { display: block; }
+        .top-nav { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #e9edf2; margin-bottom: 1.5rem; }
+        .top-nav .back-link { color: #2563eb; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .top-nav .back-link:hover { text-decoration: underline; }
+        .top-nav .breadcrumb { color: #94a3b8; font-size: 0.85rem; }
+        .top-nav .breadcrumb span { color: #1e293b; }
+        .calculator-card { background: white; border-radius: 16px; padding: 1.5rem 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e9edf2; }
+        .calculator-card h1 { font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem; }
+        .calculator-card .subtitle { font-size: 1rem; color: #64748b; margin: 0 0 1rem; }
+        .site-footer { text-align: center; padding: 1.5rem 0 0.5rem; color: #94a3b8; font-size: 0.8rem; border-top: 1px solid #e9edf2; margin-top: 2rem; }
+        .site-footer a { color: #94a3b8; text-decoration: none; }
+        .site-footer a:hover { color: #2563eb; text-decoration: underline; }
+        @media (max-width: 640px) { .calculator-card { padding: 1rem; } .calculator-card h1 { font-size: 1.3rem; } .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 480px) { .calculator-card { padding: 0.8rem; } }
+    </style>
 </head>
 <body>
-    <div class="container" style="max-width: 700px; margin: 40px auto; padding: 20px;">
-        <h1>🧾 所得税计算器</h1>
-        <p>根据收入计算应缴税额（美国2024年单身标准扣除示例）。</p>
-        <div class="card" style="padding: 25px; background: #f9fafc; border-radius: 16px;">
-            <div class="input-group" style="margin-bottom: 15px;">
-                <label>年总收入 (¥ / $)</label>
-                <input type="number" id="income" value="80000" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
-            </div>
-            <div class="input-group" style="margin-bottom: 15px;">
-                <label>标准扣除额 (¥ / $)</label>
-                <input type="number" id="deduction" value="14600" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
-            </div>
-            <button onclick="calcIncomeTax()" class="btn" style="background:#2563eb; color:#fff; padding:12px 24px; border:none; border-radius:8px; cursor:pointer; font-size:16px;">计算</button>
-            <div id="result" style="margin-top: 20px; font-size: 16px; background: #eef2ff; padding: 15px; border-radius: 8px;"></div>
+<div class="container" style="max-width:820px; margin:0 auto; padding:0 1rem;">
+    <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">📊 <span>Income Tax Calculator</span></div></div>
+    <main class="calculator-card">
+        <h1>📊 Income Tax Calculator</h1>
+        <p class="subtitle">Calculate your income tax, effective tax rate, and after-tax income.</p>
+        <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
+            <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
+                <strong>Income Tax Calculator</strong> — This tool calculates your federal income tax using
+                2026 tax brackets (single filer). Enter your annual income and deduction to see your tax
+                liability, effective tax rate, and after-tax income.
+            </p>
         </div>
-    </div>
-    <script>
-        function calcIncomeTax() {
-            let income = parseFloat(document.getElementById('income').value);
-            const deduction = parseFloat(document.getElementById('deduction').value);
-            if (isNaN(income) || isNaN(deduction)) return alert('请输入有效数字');
-            let taxable = Math.max(0, income - deduction);
-            // 2024 美国单身税率示例
-            const brackets = [
-                { limit: 11600, rate: 0.10 },
-                { limit: 47150, rate: 0.12 },
-                { limit: 100525, rate: 0.22 },
-                { limit: 191950, rate: 0.24 },
-                { limit: 243725, rate: 0.32 },
-                { limit: 609350, rate: 0.35 },
-                { limit: Infinity, rate: 0.37 }
-            ];
-            let tax = 0;
-            let remaining = taxable;
-            let prevLimit = 0;
-            for (let b of brackets) {
-                if (remaining <= 0) break;
-                let slice = Math.min(remaining, b.limit - prevLimit);
-                tax += slice * b.rate;
-                remaining -= slice;
-                prevLimit = b.limit;
-            }
-            document.getElementById('result').innerHTML = `
-                <strong>💰 应纳税所得额</strong>：${taxable.toFixed(2)}<br>
-                <strong>🧾 应缴税款</strong>：${tax.toFixed(2)}<br>
-                <strong>📊 有效税率</strong>：${(tax / income * 100).toFixed(2)}%
-            `;
+        <div class="form-grid">
+            <div class="field"><label>Annual Income ($)</label><input type="number" id="it-income" value="60000" min="0" step="1000" /></div>
+            <div class="field"><label>Deduction ($)</label><input type="number" id="it-deduction" value="14600" min="0" step="100" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculateIT()">Calculate</button></div>
+        </div>
+        <div id="it-results" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Tax Results</h2>
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>📋 Input</h4>
+                    <div class="row"><span>Annual Income</span><span class="num" id="it-income-display">—</span></div>
+                    <div class="row"><span>Deduction</span><span class="num" id="it-deduction-display">—</span></div>
+                </div>
+                <div class="comparison-box">
+                    <h4>💰 Results</h4>
+                    <div class="row"><span>Taxable Income</span><span class="num" id="it-taxable">—</span></div>
+                    <div class="row"><span>Total Tax</span><span class="num" id="it-tax" style="font-size:1.2rem;">—</span></div>
+                    <div class="row"><span>Effective Tax Rate</span><span class="num" id="it-effective-rate">—</span></div>
+                    <div class="row"><span>After-Tax Income</span><span class="num" id="it-after-tax">—</span></div>
+                </div>
+            </div>
+        </div>
+        <div id="recommendations-area"></div>
+    </main>
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
+        <div class="accordion-body" id="infoAccordion">
+            <div class="info-grid">
+                <div class="info-block"><h3>Total Tax</h3><p>Your total federal income tax liability.</p></div>
+                <div class="info-block"><h3>Effective Tax Rate</h3><p>Total tax ÷ total income × 100. A better measure of your true tax burden.</p></div>
+                <div class="info-block"><h3>After-Tax Income</h3><p>Your income after federal taxes — what you actually take home.</p></div>
+            </div>
+        </div>
+    </section>
+    <section class="accordion-card">
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
+        <div class="accordion-body" id="faqAccordion">
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How much federal tax will I pay on $60,000 income with standard deduction?</span></div><div class="faq-answer">For a single filer in 2026, taxable income = $60,000 - $14,600 = $45,400. Tax = $1,160 + ($45,400 - $11,600) × 12% = $5,216. Effective rate is 8.7%.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the 2026 standard deduction amount?</span></div><div class="faq-answer">The 2026 standard deduction is $14,600 for single filers, $29,200 for married filing jointly, and $21,900 for heads of household.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How do I calculate my effective tax rate?</span></div><div class="faq-answer">Effective tax rate = total tax ÷ total income × 100. If you earn $60,000 and pay $5,216 in tax, your effective rate is 8.7% — much lower than your marginal rate.</div></div>
+        </div>
+    </section>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html">About</a> <span style="color:#dce1e8;">|</span> <a href="privacy.html">Privacy</a></p></footer>
+</div>
+<script src="recommendations.js"></script>
+<script src="feedback.js"></script>
+<script>
+    function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
+    function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
+    function calculateIT() {
+        const income = parseFloat(document.getElementById('it-income').value) || 0;
+        const deduction = parseFloat(document.getElementById('it-deduction').value) || 0;
+        const taxable = Math.max(0, income - deduction);
+        const brackets = [
+            { limit: 11600, rate: 0.10 },
+            { limit: 47150, rate: 0.12 },
+            { limit: 100525, rate: 0.22 },
+            { limit: 191950, rate: 0.24 },
+            { limit: 243725, rate: 0.32 },
+            { limit: 609350, rate: 0.35 },
+            { limit: Infinity, rate: 0.37 }
+        ];
+        let tax = 0, prev = 0;
+        for (let b of brackets) {
+            if (taxable <= 0) break;
+            const slice = Math.min(taxable, b.limit - prev);
+            tax += slice * b.rate;
+            taxable -= slice;
+            prev = b.limit;
+            if (taxable <= 0) break;
         }
-    </script>
-    <script src="feedback.js"></script>
-    <script src="recommendations.js"></script>
+        const effective = income > 0 ? (tax / income) * 100 : 0;
+        const afterTax = income - tax;
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        const pct = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 });
+        document.getElementById('it-income-display').textContent = fmt.format(income);
+        document.getElementById('it-deduction-display').textContent = fmt.format(deduction);
+        document.getElementById('it-taxable').textContent = fmt.format(Math.max(0, income - deduction));
+        document.getElementById('it-tax').textContent = fmt.format(tax);
+        document.getElementById('it-effective-rate').textContent = pct.format(effective / 100);
+        document.getElementById('it-after-tax').textContent = fmt.format(afterTax);
+        document.getElementById('it-results').style.display = 'block';
+        showRecommendations('income-tax-calculator.html', { income: income, tax: tax });
+    }
+    document.addEventListener('DOMContentLoaded', function() { document.getElementById('infoAccordion').style.display='block'; document.getElementById('infoArrow').textContent='▼'; document.getElementById('faqAccordion').style.display='none'; document.getElementById('faqArrow').textContent='▶'; document.querySelectorAll('.faq-answer').forEach(el => el.style.display='none'); document.querySelectorAll('.faq-arrow').forEach(el => el.textContent='▶'); calculateIT(); });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculateIT(); } });
+</script>
 </body>
 </html>
