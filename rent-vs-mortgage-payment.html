@@ -181,4 +181,30 @@
         const down = parseFloat(document.getElementById('rvm-down').value) || 0;
         const rate = parseFloat(document.getElementById('rvm-rate').value) || 0;
         const term = parseFloat(document.getElementById('rvm-term').value) || 1;
-        const taxes = parseFloat(document.getElementById('rvm-taxes').value
+        const taxes = parseFloat(document.getElementById('rvm-taxes').value) || 0;
+        const insurance = parseFloat(document.getElementById('rvm-insurance').value) || 0;
+        const maintenance = parseFloat(document.getElementById('rvm-maintenance').value) || 0;
+        const loan = price - down;
+        const monthlyRate = rate / 100 / 12;
+        const months = term * 12;
+        const payment = monthlyRate > 0 ? loan * monthlyRate * Math.pow(1 + monthlyRate, months) / (Math.pow(1 + monthlyRate, months) - 1) : loan / months;
+        const monthlyAddons = taxes / 12 + insurance / 12 + maintenance / 12;
+        const totalMonthly = payment + monthlyAddons;
+        const diff = totalMonthly - rent;
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        document.getElementById('rvm-rent-display').textContent = fmt.format(rent);
+        document.getElementById('rvm-rent-annual').textContent = fmt.format(rent * 12);
+        document.getElementById('rvm-mortgage').textContent = fmt.format(payment);
+        document.getElementById('rvm-addons').textContent = fmt.format(monthlyAddons);
+        document.getElementById('rvm-total').textContent = fmt.format(totalMonthly);
+        const diffEl = document.getElementById('rvm-diff');
+        diffEl.textContent = (diff > 0 ? '+' : '') + fmt.format(diff);
+        diffEl.style.color = diff >= 0 ? '#ef4444' : '#10b981';
+        document.getElementById('rvm-results').style.display = 'block';
+        showRecommendations('rent-vs-mortgage-payment.html', { price: price, rent: rent });
+    }
+    document.addEventListener('DOMContentLoaded', function() { document.getElementById('infoAccordion').style.display='block'; document.getElementById('infoArrow').textContent='▼'; document.getElementById('faqAccordion').style.display='none'; document.getElementById('faqArrow').textContent='▶'; document.querySelectorAll('.faq-answer').forEach(el => el.style.display='none'); document.querySelectorAll('.faq-arrow').forEach(el => el.textContent='▶'); calculateRVM(); });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculateRVM(); } });
+</script>
+</body>
+</html>
