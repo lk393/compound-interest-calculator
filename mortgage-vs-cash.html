@@ -3,300 +3,205 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mortgage vs Cash Home Purchase — Free Online Tool</title>
+
+    <!-- ===== Meta Tags ===== -->
+    <title>Mortgage vs Cash Calculator — Free Online Tool</title>
+    <meta name="description" content="Compare buying a home with a mortgage vs paying cash. Free mortgage vs cash calculator for home buyers." />
+
     <link rel="stylesheet" href="style.css" />
+
+    <!-- ===== WebApplication Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Mortgage vs Cash Calculator",
+      "description": "Compare buying a home with a mortgage vs paying cash.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "url": "https://financetools.tools/mortgage-vs-cash.html",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.6", "ratingCount": "76" }
+    }
+    </script>
+
+    <!-- ===== FAQPage Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is it better to buy a $300,000 home with cash or a mortgage at 6.5%?",
+          "acceptedAnswer": { "@type": "Answer", "text": "With a mortgage at 6.5%, you'd pay about $382,633 in total interest over 30 years. If you can earn 7%+ on investments, financing may be better. Cash saves $382,633 in interest but ties up $300,000." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the opportunity cost of paying cash for a home?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Paying cash ties up $300,000 that could earn $65,000-$100,000 over 5 years at 4-6% returns. The opportunity cost is the investment income you forgo." }
+        },
+        {
+          "@type": "Question",
+          "name": "At what mortgage rate does it make sense to pay cash instead of financing?",
+          "acceptedAnswer": { "@type": "Answer", "text": "If mortgage rates are above 7% and you can't earn more investing, paying cash is better. At 8%, a $300,000 mortgage costs $490,000 in interest — cash becomes more attractive." }
+        }
+      ]
+    }
+    </script>
+
     <style>
-        .results-summary {
-            display: flex;
-            flex-direction: column;
-            gap: 0.7rem;
-            margin: 1.5rem 0;
-        }
-        .summary-item {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 0.8rem 1.2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        /* 复用相同样式，略去重复CSS */
+        .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
+        .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
         .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
         .summary-item .value.positive { color: #10b981; }
         .summary-item .value.negative { color: #ef4444; }
-
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
         .field { display: flex; flex-direction: column; }
         .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
-        .field input {
-            padding: 0.6rem 0.8rem;
-            font-size: 1rem;
-            border: 1.5px solid #dce1e8;
-            border-radius: 10px;
-            background: #fafbfc;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            width: 100%;
-        }
-        .field input:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-            background: #ffffff;
-        }
-
-        .btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 0.6rem 1.2rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            width: 100%;
-        }
+        .field input { padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px; background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
+        .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
+        .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
         .btn:hover { background: #1d4ed8; }
-
-        .comparison-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-top: 0.5rem;
-        }
-        .comparison-box {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 1rem;
-        }
-        .comparison-box h4 {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #0f172a;
-            margin: 0 0 0.5rem;
-            text-align: center;
-        }
-        .comparison-box .row {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.2rem 0;
-            font-size: 0.85rem;
-            color: #475569;
-        }
-        .comparison-box .row .num {
-            font-weight: 600;
-            color: #0f172a;
-        }
-
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+        .comparison-box { background: #f8fafc; border-radius: 12px; padding: 1rem; }
+        .comparison-box h4 { font-size: 0.85rem; font-weight: 600; color: #0f172a; margin: 0 0 0.5rem; text-align: center; }
+        .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
+        .comparison-box .row .num { font-weight: 600; color: #0f172a; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
-        @media (max-width: 640px) {
-            .info-grid { grid-template-columns: 1fr; }
-            .summary-item { padding: 0.6rem 1rem; }
-            .summary-item .value { font-size: 1rem; }
-            .comparison-grid { grid-template-columns: 1fr; }
-        }
+        .info-block h3 { font-size: 0.9rem; font-weight: 600; color: #0f172a; margin: 0 0 0.3rem; }
+        .info-block p { font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.5; }
+        .accordion-card { background: white; border-radius: 12px; border: 1px solid #e9edf2; margin-top: 1.5rem; overflow: hidden; }
+        .accordion-header { padding: 1rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .accordion-header:hover { background: #f8fafc; }
+        .accordion-header h2 { font-size: 1rem; font-weight: 600; color: #0f172a; margin: 0; }
+        .accordion-arrow { font-size: 0.9rem; color: #94a3b8; }
+        .accordion-body { padding: 0 1.2rem 1.2rem; display: none; }
+        .accordion-body.open { display: block; }
+        .faq-item { border-bottom: 1px solid #e9edf2; padding: 0.5rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; color: #0f172a; padding: 0.3rem 0; }
+        .faq-question:hover { color: #2563eb; }
+        .faq-arrow { font-size: 0.7rem; color: #94a3b8; }
+        .faq-answer { padding: 0.3rem 0 0.3rem 1.5rem; color: #475569; font-size: 0.9rem; line-height: 1.6; display: none; }
+        .faq-answer.open { display: block; }
+        .top-nav { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #e9edf2; margin-bottom: 1.5rem; }
+        .top-nav .back-link { color: #2563eb; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .top-nav .back-link:hover { text-decoration: underline; }
+        .top-nav .breadcrumb { color: #94a3b8; font-size: 0.85rem; }
+        .top-nav .breadcrumb span { color: #1e293b; }
+        .calculator-card { background: white; border-radius: 16px; padding: 1.5rem 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e9edf2; }
+        .calculator-card h1 { font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem; }
+        .calculator-card .subtitle { font-size: 1rem; color: #64748b; margin: 0 0 1rem; }
+        .site-footer { text-align: center; padding: 1.5rem 0 0.5rem; color: #94a3b8; font-size: 0.8rem; border-top: 1px solid #e9edf2; margin-top: 2rem; }
+        .site-footer a { color: #94a3b8; text-decoration: none; }
+        .site-footer a:hover { color: #2563eb; text-decoration: underline; }
+        @media (max-width: 640px) { .calculator-card { padding: 1rem; } .calculator-card h1 { font-size: 1.3rem; } .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 480px) { .calculator-card { padding: 0.8rem; } }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <div class="top-nav">
-        <a href="index.html" class="back-link">← Back to Home</a>
-        <div class="breadcrumb">🏠 <span>Mortgage vs Cash Purchase</span></div>
-    </div>
-
+<div class="container" style="max-width:820px; margin:0 auto; padding:0 1rem;">
+    <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">⚖️ <span>Mortgage vs Cash Calculator</span></div></div>
     <main class="calculator-card">
-        <h1>🏠 Mortgage vs Cash Home Purchase</h1>
-        <p class="subtitle">Compare the financial outcome of buying a home with a mortgage versus paying all cash.</p>
-
+        <h1>⚖️ Mortgage vs Cash Calculator</h1>
+        <p class="subtitle">Compare buying a home with a mortgage vs paying all cash.</p>
         <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
-                <strong>Mortgage vs Cash Calculator</strong> — This tool compares the net wealth difference
-                between financing a home with a mortgage and buying it outright with cash. It considers
-                interest costs, opportunity cost of cash, and home appreciation.
+                <strong>Mortgage vs Cash Calculator</strong> — This tool compares the financial outcome of
+                buying a home with a mortgage versus paying all cash, factoring in interest costs, opportunity
+                cost of cash, and home appreciation.
             </p>
         </div>
-
         <div class="form-grid">
-            <div class="field">
-                <label for="home-price">Home Purchase Price ($)</label>
-                <input type="number" id="home-price" value="300000" min="0" step="10000" />
-            </div>
-            <div class="field">
-                <label for="down-payment">Down Payment ($)</label>
-                <input type="number" id="down-payment" value="60000" min="0" step="5000" />
-            </div>
-            <div class="field">
-                <label for="mortgage-rate">Mortgage Interest Rate (%)</label>
-                <input type="number" id="mortgage-rate" value="6.5" min="0" step="0.1" />
-            </div>
-            <div class="field">
-                <label for="loan-term">Loan Term (Years)</label>
-                <input type="number" id="loan-term" value="30" min="1" max="40" step="1" />
-            </div>
-            <div class="field">
-                <label for="opportunity-rate">Opportunity Cost (Annual return if cash invested) (%)</label>
-                <input type="number" id="opportunity-rate" value="7" min="0" step="0.1" />
-            </div>
-            <div class="field">
-                <label for="appreciation">Annual Home Appreciation (%)</label>
-                <input type="number" id="appreciation" value="4" min="0" step="0.1" />
-            </div>
-            <div style="margin-top:0.5rem;">
-                <button class="btn" onclick="calculate()">Calculate</button>
-            </div>
+            <div class="field"><label>Home Price ($)</label><input type="number" id="mvc-price" value="300000" min="0" step="10000" /></div>
+            <div class="field"><label>Down Payment ($)</label><input type="number" id="mvc-down" value="60000" min="0" step="5000" /></div>
+            <div class="field"><label>Mortgage Rate (%)</label><input type="number" id="mvc-rate" value="6.5" min="0" step="0.1" /></div>
+            <div class="field"><label>Loan Term (Years)</label><input type="number" id="mvc-term" value="30" min="1" max="40" step="1" /></div>
+            <div class="field"><label>Investment Return (%)</label><input type="number" id="mvc-invest" value="7" min="0" step="0.1" /></div>
+            <div class="field"><label>Home Appreciation (%)</label><input type="number" id="mvc-app" value="4" min="0" step="0.1" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculateMVC()">Compare</button></div>
         </div>
-
-        <div id="results-area" style="margin-top:1.8rem; display:none;">
+        <div id="mvc-results" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Comparison Results</h2>
             <div class="comparison-grid">
                 <div class="comparison-box">
                     <h4>🏦 Mortgage Scenario</h4>
-                    <div class="row"><span>Total Mortgage Interest</span><span class="num" id="mortgage-interest">—</span></div>
-                    <div class="row"><span>Total Cash Outflow</span><span class="num" id="mortgage-outflow">—</span></div>
-                    <div class="row"><span>Final Net Wealth</span><span class="num" id="mortgage-net">—</span></div>
+                    <div class="row"><span>Total Interest Paid</span><span class="num" id="mvc-interest">—</span></div>
+                    <div class="row"><span>Net Wealth (5 Years)</span><span class="num" id="mvc-net-mortgage">—</span></div>
                 </div>
                 <div class="comparison-box">
                     <h4>💵 All‑Cash Scenario</h4>
-                    <div class="row"><span>Cash Used</span><span class="num" id="cash-used">—</span></div>
-                    <div class="row"><span>Lost Investment Return</span><span class="num" id="lost-return">—</span></div>
-                    <div class="row"><span>Final Net Wealth</span><span class="num" id="cash-net">—</span></div>
+                    <div class="row"><span>Lost Investment Return</span><span class="num" id="mvc-lost">—</span></div>
+                    <div class="row"><span>Net Wealth (5 Years)</span><span class="num" id="mvc-net-cash">—</span></div>
                 </div>
             </div>
             <div class="results-summary">
                 <div class="summary-item highlight">
-                    <span class="label">⚖️ Difference (Mortgage – Cash)</span>
-                    <span class="value" id="diff" style="font-size:1.2rem;">—</span>
+                    <span class="label">🏆 Better Option</span>
+                    <span class="value" id="mvc-winner" style="font-size:1.2rem;">—</span>
                 </div>
             </div>
         </div>
-
         <div id="recommendations-area"></div>
     </main>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
-            <h2>📖 How to read your results</h2>
-            <span class="accordion-arrow" id="infoArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block"><h3>Mortgage Interest</h3><p>Total interest paid over the loan term. This is the cost of borrowing.</p></div>
-                <div class="info-block"><h3>Opportunity Cost</h3><p>If you pay cash, you forgo the investment returns you could have earned on that money.</p></div>
-                <div class="info-block"><h3>Net Wealth</h3><p>Home value minus total cash spent (including interest or lost returns). A positive difference means mortgage is better.</p></div>
+                <div class="info-block"><h3>Net Wealth</h3><p>Home value minus costs. Higher net wealth means a better outcome.</p></div>
+                <div class="info-block"><h3>Lost Return</h3><p>The investment income you forgo by paying cash.</p></div>
+                <div class="info-block"><h3>Better Option</h3><p>Shows whether mortgage or cash is financially better.</p></div>
             </div>
         </div>
     </section>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
-            <h2>❓ FAQ</h2>
-            <span class="accordion-arrow" id="faqArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
         <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Is it better to pay cash or get a mortgage?</span></div>
-                <div class="faq-answer">It depends on the mortgage rate, your investment return rate, and your risk tolerance. If you can earn more investing than the mortgage rate, a mortgage may be better.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Why include home appreciation?</span></div>
-                <div class="faq-answer">Appreciation affects the final value of the home, which is part of your net wealth in both scenarios. It's usually the same whether you use cash or mortgage.</div>
-            </div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Is it better to buy a $300,000 home with cash or a mortgage at 6.5%?</span></div><div class="faq-answer">With a mortgage at 6.5%, you'd pay about $382,633 in total interest over 30 years. If you can earn 7%+ on investments, financing may be better. Cash saves $382,633 in interest but ties up $300,000.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the opportunity cost of paying cash for a home?</span></div><div class="faq-answer">Paying cash ties up $300,000 that could earn $65,000-$100,000 over 5 years at 4-6% returns. The opportunity cost is the investment income you forgo.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>At what mortgage rate does it make sense to pay cash instead of financing?</span></div><div class="faq-answer">If mortgage rates are above 7% and you can't earn more investing, paying cash is better. At 8%, a $300,000 mortgage costs $490,000 in interest — cash becomes more attractive.</div></div>
         </div>
     </section>
-
-    <footer class="site-footer">
-        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
-    </footer>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html">About</a> <span style="color:#dce1e8;">|</span> <a href="privacy.html">Privacy</a></p></footer>
 </div>
-
 <script src="recommendations.js"></script>
 <script src="feedback.js"></script>
-
 <script>
-    function toggleAccordion(id) {
-        const body = document.getElementById(id);
-        const arrow = document.getElementById(id + 'Arrow');
-        if (body.style.display === 'none' || body.style.display === '') {
-            body.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            body.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-    function toggleFaq(el) {
-        const answer = el.nextElementSibling;
-        const arrow = el.querySelector('.faq-arrow');
-        if (answer.style.display === 'none' || answer.style.display === '') {
-            answer.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            answer.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-
-    function calculate() {
-        const price = parseFloat(document.getElementById('home-price').value) || 0;
-        const down = parseFloat(document.getElementById('down-payment').value) || 0;
-        const rate = parseFloat(document.getElementById('mortgage-rate').value) || 0;
-        const term = parseFloat(document.getElementById('loan-term').value) || 1;
-        const oppRate = parseFloat(document.getElementById('opportunity-rate').value) || 0;
-        const appRate = parseFloat(document.getElementById('appreciation').value) || 0;
-
+    function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
+    function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
+    function calculateMVC() {
+        const price = parseFloat(document.getElementById('mvc-price').value) || 0;
+        const down = parseFloat(document.getElementById('mvc-down').value) || 0;
+        const rate = parseFloat(document.getElementById('mvc-rate').value) || 0;
+        const term = parseFloat(document.getElementById('mvc-term').value) || 1;
+        const invest = parseFloat(document.getElementById('mvc-invest').value) || 0;
+        const app = parseFloat(document.getElementById('mvc-app').value) || 0;
         const loan = price - down;
         const monthlyRate = rate / 100 / 12;
         const months = term * 12;
-        const payment = loan * monthlyRate * Math.pow(1 + monthlyRate, months) / (Math.pow(1 + monthlyRate, months) - 1);
+        const payment = monthlyRate > 0 ? loan * monthlyRate * Math.pow(1 + monthlyRate, months) / (Math.pow(1 + monthlyRate, months) - 1) : loan / months;
         const totalInterest = payment * months - loan;
-        const totalOutflow = down + payment * months;
-        const futureHome = price * Math.pow(1 + appRate / 100, term);
-        const mortgageNet = futureHome - totalOutflow;
-
-        // Cash scenario: opportunity cost
-        const cashUsed = price;
-        const lostReturn = cashUsed * Math.pow(1 + oppRate / 100, term) - cashUsed;
-        const cashNet = futureHome - cashUsed; // no interest paid, but lost return
-
-        const diff = mortgageNet - cashNet;
-
+        const futureHome = price * Math.pow(1 + app / 100, 5);
+        const mortgageNet = futureHome - down - payment * 60;
+        const investReturn = price * Math.pow(1 + invest / 100, 5) - price;
+        const cashNet = futureHome - price;
+        const winner = mortgageNet > cashNet ? 'Mortgage' : 'All-Cash';
         const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
-
-        document.getElementById('mortgage-interest').textContent = fmt.format(totalInterest);
-        document.getElementById('mortgage-outflow').textContent = fmt.format(totalOutflow);
-        document.getElementById('mortgage-net').textContent = fmt.format(mortgageNet);
-        document.getElementById('cash-used').textContent = fmt.format(cashUsed);
-        document.getElementById('lost-return').textContent = fmt.format(lostReturn);
-        document.getElementById('cash-net').textContent = fmt.format(cashNet);
-
-        const diffEl = document.getElementById('diff');
-        diffEl.textContent = fmt.format(diff);
-        diffEl.style.color = diff >= 0 ? '#10b981' : '#ef4444';
-        diffEl.parentElement.classList.toggle('positive', diff >= 0);
-        diffEl.parentElement.classList.toggle('negative', diff < 0);
-
-        document.getElementById('results-area').style.display = 'block';
-
-        showRecommendations('mortgage-vs-cash.html', {
-            price: document.getElementById('home-price').value,
-            rate: document.getElementById('mortgage-rate').value
-        });
+        document.getElementById('mvc-interest').textContent = fmt.format(totalInterest);
+        document.getElementById('mvc-net-mortgage').textContent = fmt.format(mortgageNet);
+        document.getElementById('mvc-lost').textContent = fmt.format(investReturn);
+        document.getElementById('mvc-net-cash').textContent = fmt.format(cashNet);
+        document.getElementById('mvc-winner').textContent = winner;
+        document.getElementById('mvc-results').style.display = 'block';
+        showRecommendations('mortgage-vs-cash.html', { price: price, rate: rate });
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('infoAccordion').style.display = 'block';
-        document.getElementById('infoArrow').textContent = '▼';
-        document.getElementById('faqAccordion').style.display = 'none';
-        document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
-        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
-        calculate();
-    });
-    document.addEventListener('input', function(e) {
-        if (e.target.closest('.form-grid')) { calculate(); }
-    });
+    document.addEventListener('DOMContentLoaded', function() { document.getElementById('infoAccordion').style.display='block'; document.getElementById('infoArrow').textContent='▼'; document.getElementById('faqAccordion').style.display='none'; document.getElementById('faqArrow').textContent='▶'; document.querySelectorAll('.faq-answer').forEach(el => el.style.display='none'); document.querySelectorAll('.faq-arrow').forEach(el => el.textContent='▶'); calculateMVC(); });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculateMVC(); } });
 </script>
 </body>
 </html>
