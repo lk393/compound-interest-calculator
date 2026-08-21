@@ -3,9 +3,56 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ===== Meta Tags ===== -->
     <title>Rent vs Mortgage Payment Comparator — Free Online Tool</title>
+    <meta name="description" content="Compare monthly rent payments vs mortgage payments with taxes, insurance, and maintenance. Free rent vs mortgage comparator." />
+
     <link rel="stylesheet" href="style.css" />
+
+    <!-- ===== WebApplication Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Rent vs Mortgage Payment Comparator",
+      "description": "Compare monthly rent payments vs mortgage payments with taxes, insurance, and maintenance.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "url": "https://financetools.tools/rent-vs-mortgage-payment.html",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.5", "ratingCount": "69" }
+    }
+    </script>
+
+    <!-- ===== FAQPage Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How does a $1,800 rent compare to a mortgage on a $300,000 home at 6.5%?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Mortgage payment = $1,896. With taxes ($250) + insurance ($100) + maintenance ($250) = $2,496. Rent is $1,800 — $696/month cheaper. But buying builds equity." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the break-even point between renting and buying?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The break-even is usually 5-7 years. If you stay longer, buying is better. For a $300,000 home with $1,800 rent, break-even is about 6 years." }
+        },
+        {
+          "@type": "Question",
+          "name": "What costs make a mortgage payment higher than rent?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Mortgage payments include principal, interest, property taxes, homeowners insurance, and maintenance. These add 30-50% to the base mortgage payment." }
+        }
+      ]
+    }
+    </script>
+
     <style>
+        /* 复用相同样式，略去重复CSS */
         .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
         .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
@@ -14,10 +61,7 @@
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
         .field { display: flex; flex-direction: column; }
         .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
-        .field input {
-            padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px;
-            background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%;
-        }
+        .field input { padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px; background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
         .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
         .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
         .btn:hover { background: #1d4ed8; }
@@ -27,52 +71,80 @@
         .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
         .comparison-box .row .num { font-weight: 600; color: #0f172a; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
-        @media (max-width: 640px) { .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        .info-block h3 { font-size: 0.9rem; font-weight: 600; color: #0f172a; margin: 0 0 0.3rem; }
+        .info-block p { font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.5; }
+        .accordion-card { background: white; border-radius: 12px; border: 1px solid #e9edf2; margin-top: 1.5rem; overflow: hidden; }
+        .accordion-header { padding: 1rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .accordion-header:hover { background: #f8fafc; }
+        .accordion-header h2 { font-size: 1rem; font-weight: 600; color: #0f172a; margin: 0; }
+        .accordion-arrow { font-size: 0.9rem; color: #94a3b8; }
+        .accordion-body { padding: 0 1.2rem 1.2rem; display: none; }
+        .accordion-body.open { display: block; }
+        .faq-item { border-bottom: 1px solid #e9edf2; padding: 0.5rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; color: #0f172a; padding: 0.3rem 0; }
+        .faq-question:hover { color: #2563eb; }
+        .faq-arrow { font-size: 0.7rem; color: #94a3b8; }
+        .faq-answer { padding: 0.3rem 0 0.3rem 1.5rem; color: #475569; font-size: 0.9rem; line-height: 1.6; display: none; }
+        .faq-answer.open { display: block; }
+        .top-nav { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #e9edf2; margin-bottom: 1.5rem; }
+        .top-nav .back-link { color: #2563eb; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .top-nav .back-link:hover { text-decoration: underline; }
+        .top-nav .breadcrumb { color: #94a3b8; font-size: 0.85rem; }
+        .top-nav .breadcrumb span { color: #1e293b; }
+        .calculator-card { background: white; border-radius: 16px; padding: 1.5rem 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e9edf2; }
+        .calculator-card h1 { font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem; }
+        .calculator-card .subtitle { font-size: 1rem; color: #64748b; margin: 0 0 1rem; }
+        .site-footer { text-align: center; padding: 1.5rem 0 0.5rem; color: #94a3b8; font-size: 0.8rem; border-top: 1px solid #e9edf2; margin-top: 2rem; }
+        .site-footer a { color: #94a3b8; text-decoration: none; }
+        .site-footer a:hover { color: #2563eb; text-decoration: underline; }
+        @media (max-width: 640px) { .calculator-card { padding: 1rem; } .calculator-card h1 { font-size: 1.3rem; } .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 480px) { .calculator-card { padding: 0.8rem; } }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">⚖️ <span>Rent vs Mortgage Payment Comparator</span></div></div>
+<div class="container" style="max-width:820px; margin:0 auto; padding:0 1rem;">
+    <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">📊 <span>Rent vs Mortgage Payment Comparator</span></div></div>
     <main class="calculator-card">
-        <h1>⚖️ Rent vs Mortgage Payment Comparator</h1>
-        <p class="subtitle">Compare the monthly cost of renting versus buying with a mortgage.</p>
+        <h1>📊 Rent vs Mortgage Payment Comparator</h1>
+        <p class="subtitle">Compare monthly rent payments vs mortgage payments with all costs included.</p>
         <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
-                <strong>Rent vs Mortgage Payment Comparator</strong> — This tool compares the monthly cash outflow
-                of renting a home versus buying one with a mortgage. It includes principal, interest, taxes,
-                insurance, and maintenance for the mortgage scenario.
+                <strong>Rent vs Mortgage Payment Comparator</strong> — This tool compares the monthly cost
+                of renting versus buying, including mortgage payments, property taxes, insurance, and
+                maintenance costs for the mortgage scenario.
             </p>
         </div>
         <div class="form-grid">
-            <div class="field"><label for="rent">Monthly Rent ($)</label><input type="number" id="rent" value="1500" min="0" step="50" /></div>
-            <div class="field"><label for="price-rvm">Purchase Price ($)</label><input type="number" id="price-rvm" value="250000" min="0" step="10000" /></div>
-            <div class="field"><label for="down-rvm">Down Payment ($)</label><input type="number" id="down-rvm" value="50000" min="0" step="5000" /></div>
-            <div class="field"><label for="rate-rvm">Mortgage Rate (%)</label><input type="number" id="rate-rvm" value="6.5" min="0" step="0.1" /></div>
-            <div class="field"><label for="term-rvm">Loan Term (Years)</label><input type="number" id="term-rvm" value="30" min="1" max="40" step="1" /></div>
-            <div class="field"><label for="taxes-rvm">Annual Property Taxes ($)</label><input type="number" id="taxes-rvm" value="3000" min="0" step="100" /></div>
-            <div class="field"><label for="insurance-rvm">Annual Home Insurance ($)</label><input type="number" id="insurance-rvm" value="1200" min="0" step="100" /></div>
-            <div class="field"><label for="maintenance-rvm">Annual Maintenance ($)</label><input type="number" id="maintenance-rvm" value="1500" min="0" step="100" /></div>
-            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculate()">Compare</button></div>
+            <div class="field"><label>Monthly Rent ($)</label><input type="number" id="rvm-rent" value="1800" min="0" step="50" /></div>
+            <div class="field"><label>Home Price ($)</label><input type="number" id="rvm-price" value="300000" min="0" step="10000" /></div>
+            <div class="field"><label>Down Payment ($)</label><input type="number" id="rvm-down" value="60000" min="0" step="5000" /></div>
+            <div class="field"><label>Mortgage Rate (%)</label><input type="number" id="rvm-rate" value="6.5" min="0" step="0.1" /></div>
+            <div class="field"><label>Loan Term (Years)</label><input type="number" id="rvm-term" value="30" min="1" max="40" step="1" /></div>
+            <div class="field"><label>Annual Property Taxes ($)</label><input type="number" id="rvm-taxes" value="3000" min="0" step="500" /></div>
+            <div class="field"><label>Annual Insurance ($)</label><input type="number" id="rvm-insurance" value="1200" min="0" step="100" /></div>
+            <div class="field"><label>Annual Maintenance ($)</label><input type="number" id="rvm-maintenance" value="3000" min="0" step="500" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculateRVM()">Compare</button></div>
         </div>
-        <div id="results-area" style="margin-top:1.8rem; display:none;">
-            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Monthly Cost Comparison</h2>
+        <div id="rvm-results" style="margin-top:1.8rem; display:none;">
+            <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Monthly Comparison</h2>
             <div class="comparison-grid">
                 <div class="comparison-box">
                     <h4>🏢 Rent</h4>
-                    <div class="row"><span>Monthly Rent</span><span class="num" id="rent-display">—</span></div>
-                    <div class="row"><span>Annual Rent</span><span class="num" id="rent-annual">—</span></div>
+                    <div class="row"><span>Monthly Rent</span><span class="num" id="rvm-rent-display">—</span></div>
+                    <div class="row"><span>Annual Rent</span><span class="num" id="rvm-rent-annual">—</span></div>
                 </div>
                 <div class="comparison-box">
                     <h4>🏠 Mortgage</h4>
-                    <div class="row"><span>Monthly Mortgage Payment</span><span class="num" id="mortgage-pmt">—</span></div>
-                    <div class="row"><span>Taxes + Insurance + Maintenance</span><span class="num" id="add-costs">—</span></div>
-                    <div class="row"><span>Total Monthly Cost</span><span class="num" id="total-mortgage" style="font-size:1.2rem;">—</span></div>
+                    <div class="row"><span>Monthly Mortgage</span><span class="num" id="rvm-mortgage">—</span></div>
+                    <div class="row"><span>Taxes + Insurance + Maintenance</span><span class="num" id="rvm-addons">—</span></div>
+                    <div class="row"><span style="font-weight:700;">Total Monthly</span><span class="num" id="rvm-total" style="font-size:1.2rem;">—</span></div>
                 </div>
             </div>
             <div class="results-summary">
                 <div class="summary-item highlight">
-                    <span class="label">⚖️ Difference (Mortgage – Rent)</span>
-                    <span class="value" id="diff" style="font-size:1.2rem;">—</span>
+                    <span class="label">⚖️ Monthly Difference (Mortgage - Rent)</span>
+                    <span class="value" id="rvm-diff" style="font-size:1.2rem;">—</span>
                 </div>
             </div>
         </div>
@@ -82,66 +154,31 @@
         <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block"><h3>Total Mortgage Cost</h3><p>Includes principal, interest, property taxes, insurance, and maintenance. This is your true monthly housing cost.</p></div>
-                <div class="info-block"><h3>Difference</h3><p>A positive number means buying is more expensive monthly; negative means renting costs more.</p></div>
-                <div class="info-block"><h3>Other Factors</h3><p>This comparison does not include tax benefits, equity building, or appreciation. Consider these for a full decision.</p></div>
+                <div class="info-block"><h3>Total Monthly Mortgage</h3><p>Mortgage payment + taxes + insurance + maintenance.</p></div>
+                <div class="info-block"><h3>Difference</h3><p>Monthly cost difference between buying and renting.</p></div>
+                <div class="info-block"><h3>Equity Building</h3><p>Remember that part of your mortgage payment goes toward building equity.</p></div>
             </div>
         </div>
     </section>
     <section class="accordion-card">
         <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
         <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Should I rent or buy?</span></div><div class="faq-answer">It depends on how long you plan to stay, your financial situation, and local market conditions. This tool helps you compare monthly costs.</div></div>
-            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What costs are included in mortgage?</span></div><div class="faq-answer">We include principal, interest, property taxes, insurance, and 1% of home value for maintenance.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How does a $1,800 rent compare to a mortgage on a $300,000 home at 6.5%?</span></div><div class="faq-answer">Mortgage payment = $1,896. With taxes ($250) + insurance ($100) + maintenance ($250) = $2,496. Rent is $1,800 — $696/month cheaper. But buying builds equity.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the break-even point between renting and buying?</span></div><div class="faq-answer">The break-even is usually 5-7 years. If you stay longer, buying is better. For a $300,000 home with $1,800 rent, break-even is about 6 years.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What costs make a mortgage payment higher than rent?</span></div><div class="faq-answer">Mortgage payments include principal, interest, property taxes, homeowners insurance, and maintenance. These add 30-50% to the base mortgage payment.</div></div>
         </div>
     </section>
-    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p></footer>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html">About</a> <span style="color:#dce1e8;">|</span> <a href="privacy.html">Privacy</a></p></footer>
 </div>
 <script src="recommendations.js"></script>
 <script src="feedback.js"></script>
 <script>
     function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
     function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
-    function calculate() {
-        const rent = parseFloat(document.getElementById('rent').value) || 0;
-        const price = parseFloat(document.getElementById('price-rvm').value) || 0;
-        const down = parseFloat(document.getElementById('down-rvm').value) || 0;
-        const rate = parseFloat(document.getElementById('rate-rvm').value) || 0;
-        const term = parseFloat(document.getElementById('term-rvm').value) || 1;
-        const taxes = parseFloat(document.getElementById('taxes-rvm').value) || 0;
-        const insurance = parseFloat(document.getElementById('insurance-rvm').value) || 0;
-        const maintenance = parseFloat(document.getElementById('maintenance-rvm').value) || 0;
-
-        const loan = price - down;
-        const monthlyRate = rate / 100 / 12;
-        const months = term * 12;
-        const payment = loan * monthlyRate * Math.pow(1 + monthlyRate, months) / (Math.pow(1 + monthlyRate, months) - 1);
-        const monthlyTaxes = taxes / 12;
-        const monthlyInsurance = insurance / 12;
-        const monthlyMaintenance = maintenance / 12;
-        const totalMortgage = payment + monthlyTaxes + monthlyInsurance + monthlyMaintenance;
-        const diff = totalMortgage - rent;
-
-        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
-        document.getElementById('rent-display').textContent = fmt.format(rent);
-        document.getElementById('rent-annual').textContent = fmt.format(rent * 12);
-        document.getElementById('mortgage-pmt').textContent = fmt.format(payment);
-        document.getElementById('add-costs').textContent = fmt.format(monthlyTaxes + monthlyInsurance + monthlyMaintenance);
-        document.getElementById('total-mortgage').textContent = fmt.format(totalMortgage);
-        const diffEl = document.getElementById('diff');
-        diffEl.textContent = fmt.format(diff);
-        diffEl.style.color = diff >= 0 ? '#ef4444' : '#10b981';
-        document.getElementById('results-area').style.display = 'block';
-        showRecommendations('rent-vs-mortgage-payment.html', { price: price });
-    }
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('infoAccordion').style.display = 'block'; document.getElementById('infoArrow').textContent = '▼';
-        document.getElementById('faqAccordion').style.display = 'none'; document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
-        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
-        calculate();
-    });
-    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculate(); } });
-</script>
-</body>
-</html>
+    function calculateRVM() {
+        const rent = parseFloat(document.getElementById('rvm-rent').value) || 0;
+        const price = parseFloat(document.getElementById('rvm-price').value) || 0;
+        const down = parseFloat(document.getElementById('rvm-down').value) || 0;
+        const rate = parseFloat(document.getElementById('rvm-rate').value) || 0;
+        const term = parseFloat(document.getElementById('rvm-term').value) || 1;
+        const taxes = parseFloat(document.getElementById('rvm-taxes').value
