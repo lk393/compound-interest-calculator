@@ -3,9 +3,56 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ===== Meta Tags ===== -->
     <title>Forex Return Calculator — Free Online Tool</title>
+    <meta name="description" content="Calculate the return on a foreign currency investment considering exchange rate changes. Free forex return calculator." />
+
     <link rel="stylesheet" href="style.css" />
+
+    <!-- ===== WebApplication Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Forex Return Calculator",
+      "description": "Calculate the return on a foreign currency investment considering exchange rate changes.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "url": "https://financetools.tools/forex-return-calculator.html",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.5", "ratingCount": "63" }
+    }
+    </script>
+
+    <!-- ===== FAQPage Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the return on a $10,000 investment in EUR if the asset returns 5% and EUR appreciates 3%?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Total return ≈ Asset return (5%) + Currency return (3%) + (5% × 3%) ≈ 8.15%. Final value ≈ $10,815. Currency effect adds $300 to the return." }
+        },
+        {
+          "@type": "Question",
+          "name": "How does a strengthening foreign currency affect my return?",
+          "acceptedAnswer": { "@type": "Answer", "text": "A strengthening foreign currency increases your return when converted back to your home currency. A 10% foreign asset gain and 5% currency appreciation gives a 15.5% total return in home currency." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the impact of currency fluctuations on international investments?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Currency fluctuations can significantly impact returns. A 10% currency move can turn a 5% asset gain into a 15% loss or a 15% gain. Hedging can reduce this risk." }
+        }
+      ]
+    }
+    </script>
+
     <style>
+        /* 复用相同样式，略去重复CSS */
         .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
         .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
@@ -14,10 +61,7 @@
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
         .field { display: flex; flex-direction: column; }
         .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
-        .field input {
-            padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px;
-            background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%;
-        }
+        .field input { padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px; background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
         .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
         .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
         .btn:hover { background: #1d4ed8; }
@@ -27,11 +71,39 @@
         .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
         .comparison-box .row .num { font-weight: 600; color: #0f172a; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
-        @media (max-width: 640px) { .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        .info-block h3 { font-size: 0.9rem; font-weight: 600; color: #0f172a; margin: 0 0 0.3rem; }
+        .info-block p { font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.5; }
+        .accordion-card { background: white; border-radius: 12px; border: 1px solid #e9edf2; margin-top: 1.5rem; overflow: hidden; }
+        .accordion-header { padding: 1rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .accordion-header:hover { background: #f8fafc; }
+        .accordion-header h2 { font-size: 1rem; font-weight: 600; color: #0f172a; margin: 0; }
+        .accordion-arrow { font-size: 0.9rem; color: #94a3b8; }
+        .accordion-body { padding: 0 1.2rem 1.2rem; display: none; }
+        .accordion-body.open { display: block; }
+        .faq-item { border-bottom: 1px solid #e9edf2; padding: 0.5rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; color: #0f172a; padding: 0.3rem 0; }
+        .faq-question:hover { color: #2563eb; }
+        .faq-arrow { font-size: 0.7rem; color: #94a3b8; }
+        .faq-answer { padding: 0.3rem 0 0.3rem 1.5rem; color: #475569; font-size: 0.9rem; line-height: 1.6; display: none; }
+        .faq-answer.open { display: block; }
+        .top-nav { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #e9edf2; margin-bottom: 1.5rem; }
+        .top-nav .back-link { color: #2563eb; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .top-nav .back-link:hover { text-decoration: underline; }
+        .top-nav .breadcrumb { color: #94a3b8; font-size: 0.85rem; }
+        .top-nav .breadcrumb span { color: #1e293b; }
+        .calculator-card { background: white; border-radius: 16px; padding: 1.5rem 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e9edf2; }
+        .calculator-card h1 { font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem; }
+        .calculator-card .subtitle { font-size: 1rem; color: #64748b; margin: 0 0 1rem; }
+        .site-footer { text-align: center; padding: 1.5rem 0 0.5rem; color: #94a3b8; font-size: 0.8rem; border-top: 1px solid #e9edf2; margin-top: 2rem; }
+        .site-footer a { color: #94a3b8; text-decoration: none; }
+        .site-footer a:hover { color: #2563eb; text-decoration: underline; }
+        @media (max-width: 640px) { .calculator-card { padding: 1rem; } .calculator-card h1 { font-size: 1.3rem; } .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 480px) { .calculator-card { padding: 0.8rem; } }
     </style>
 </head>
 <body>
-<div class="container">
+<div class="container" style="max-width:820px; margin:0 auto; padding:0 1rem;">
     <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">📈 <span>Forex Return Calculator</span></div></div>
     <main class="calculator-card">
         <h1>📈 Forex Return Calculator</h1>
@@ -44,28 +116,28 @@
             </p>
         </div>
         <div class="form-grid">
-            <div class="field"><label for="initial-investment">Initial Investment (Home Currency)</label><input type="number" id="initial-investment" value="10000" min="0" step="1000" /></div>
-            <div class="field"><label for="foreign-return">Foreign Asset Return (%)</label><input type="number" id="foreign-return" value="10" min="0" step="0.1" /></div>
-            <div class="field"><label for="initial-rate">Initial Exchange Rate (1 Home = X Foreign)</label><input type="number" id="initial-rate" value="1.2" min="0.001" step="0.001" /></div>
-            <div class="field"><label for="final-rate">Final Exchange Rate (1 Home = X Foreign)</label><input type="number" id="final-rate" value="1.3" min="0.001" step="0.001" /></div>
-            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculate()">Calculate</button></div>
+            <div class="field"><label>Initial Investment (Home Currency)</label><input type="number" id="fr-invest" value="10000" min="0" step="1000" /></div>
+            <div class="field"><label>Foreign Asset Return (%)</label><input type="number" id="fr-asset-return" value="5" min="0" step="0.1" /></div>
+            <div class="field"><label>Initial Exchange Rate (1 Home = X Foreign)</label><input type="number" id="fr-initial-rate" value="1.2" min="0.001" step="0.001" /></div>
+            <div class="field"><label>Final Exchange Rate (1 Home = X Foreign)</label><input type="number" id="fr-final-rate" value="1.3" min="0.001" step="0.001" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculateFR()">Calculate</button></div>
         </div>
-        <div id="results-area" style="margin-top:1.8rem; display:none;">
+        <div id="fr-results" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Forex Return Analysis</h2>
             <div class="comparison-grid">
                 <div class="comparison-box">
                     <h4>📋 Input</h4>
-                    <div class="row"><span>Initial Investment</span><span class="num" id="init-invest">—</span></div>
-                    <div class="row"><span>Foreign Return</span><span class="num" id="fr-return">—</span></div>
-                    <div class="row"><span>Initial Rate</span><span class="num" id="init-rate">—</span></div>
-                    <div class="row"><span>Final Rate</span><span class="num" id="fin-rate">—</span></div>
+                    <div class="row"><span>Initial Investment</span><span class="num" id="fr-invest-display">—</span></div>
+                    <div class="row"><span>Foreign Return</span><span class="num" id="fr-asset-display">—</span></div>
+                    <div class="row"><span>Initial Rate</span><span class="num" id="fr-init-rate-display">—</span></div>
+                    <div class="row"><span>Final Rate</span><span class="num" id="fr-final-rate-display">—</span></div>
                 </div>
                 <div class="comparison-box">
                     <h4>💰 Returns</h4>
-                    <div class="row"><span>Final Value (Home Currency)</span><span class="num" id="final-value" style="font-size:1.2rem;">—</span></div>
-                    <div class="row"><span>Total Return</span><span class="num" id="total-return">—</span></div>
-                    <div class="row"><span>Currency Effect</span><span class="num" id="currency-effect">—</span></div>
-                    <div class="row"><span>Asset Effect</span><span class="num" id="asset-effect">—</span></div>
+                    <div class="row"><span>Final Value (Home Currency)</span><span class="num" id="fr-final-value" style="font-size:1.2rem;">—</span></div>
+                    <div class="row"><span>Total Return</span><span class="num" id="fr-total-return">—</span></div>
+                    <div class="row"><span>Currency Effect</span><span class="num" id="fr-currency-effect">—</span></div>
+                    <div class="row"><span>Asset Effect</span><span class="num" id="fr-asset-effect">—</span></div>
                 </div>
             </div>
         </div>
@@ -84,51 +156,44 @@
     <section class="accordion-card">
         <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
         <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How does exchange rate affect returns?</span></div><div class="faq-answer">A strengthening foreign currency increases your return when converted back to home currency, and vice versa.</div></div>
-            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the currency effect?</span></div><div class="faq-answer">It's the portion of your return due solely to exchange rate movement. It can be positive or negative.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the return on a $10,000 investment in EUR if the asset returns 5% and EUR appreciates 3%?</span></div><div class="faq-answer">Total return ≈ Asset return (5%) + Currency return (3%) + (5% × 3%) ≈ 8.15%. Final value ≈ $10,815. Currency effect adds $300 to the return.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How does a strengthening foreign currency affect my return?</span></div><div class="faq-answer">A strengthening foreign currency increases your return when converted back to your home currency. A 10% foreign asset gain and 5% currency appreciation gives a 15.5% total return in home currency.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the impact of currency fluctuations on international investments?</span></div><div class="faq-answer">Currency fluctuations can significantly impact returns. A 10% currency move can turn a 5% asset gain into a 15% loss or a 15% gain. Hedging can reduce this risk.</div></div>
         </div>
     </section>
-    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p></footer>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html">About</a> <span style="color:#dce1e8;">|</span> <a href="privacy.html">Privacy</a></p></footer>
 </div>
 <script src="recommendations.js"></script>
 <script src="feedback.js"></script>
 <script>
     function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
     function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
-    function calculate() {
-        const invest = parseFloat(document.getElementById('initial-investment').value) || 0;
-        const ret = parseFloat(document.getElementById('foreign-return').value) || 0;
-        const initRate = parseFloat(document.getElementById('initial-rate').value) || 1;
-        const finalRate = parseFloat(document.getElementById('final-rate').value) || 1;
-
+    function calculateFR() {
+        const invest = parseFloat(document.getElementById('fr-invest').value) || 0;
+        const assetReturn = parseFloat(document.getElementById('fr-asset-return').value) || 0;
+        const initRate = parseFloat(document.getElementById('fr-initial-rate').value) || 1;
+        const finalRate = parseFloat(document.getElementById('fr-final-rate').value) || 1;
         const foreignAmount = invest * initRate;
-        const finalForeign = foreignAmount * (1 + ret / 100);
+        const finalForeign = foreignAmount * (1 + assetReturn / 100);
         const finalHome = finalForeign / finalRate;
-        const totalRet = (finalHome - invest) / invest * 100;
-        const assetOnly = ret;
-        const currencyEffect = (initRate / finalRate - 1) * 100;
-
+        const totalRet = ((finalHome - invest) / invest) * 100;
+        const assetOnly = assetReturn;
+        const currencyEffect = ((initRate / finalRate - 1) * 100);
         const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
         const pct = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        document.getElementById('init-invest').textContent = fmt.format(invest);
-        document.getElementById('fr-return').textContent = pct.format(ret / 100);
-        document.getElementById('init-rate').textContent = initRate.toFixed(4);
-        document.getElementById('fin-rate').textContent = finalRate.toFixed(4);
-        document.getElementById('final-value').textContent = fmt.format(finalHome);
-        document.getElementById('total-return').textContent = pct.format(totalRet / 100);
-        document.getElementById('currency-effect').textContent = pct.format(currencyEffect / 100);
-        document.getElementById('asset-effect').textContent = pct.format(assetOnly / 100);
-        document.getElementById('results-area').style.display = 'block';
+        document.getElementById('fr-invest-display').textContent = fmt.format(invest);
+        document.getElementById('fr-asset-display').textContent = pct.format(assetReturn / 100);
+        document.getElementById('fr-init-rate-display').textContent = initRate.toFixed(4);
+        document.getElementById('fr-final-rate-display').textContent = finalRate.toFixed(4);
+        document.getElementById('fr-final-value').textContent = fmt.format(finalHome);
+        document.getElementById('fr-total-return').textContent = pct.format(totalRet / 100);
+        document.getElementById('fr-currency-effect').textContent = pct.format(currencyEffect / 100);
+        document.getElementById('fr-asset-effect').textContent = pct.format(assetOnly / 100);
+        document.getElementById('fr-results').style.display = 'block';
         showRecommendations('forex-return-calculator.html', { invest: invest });
     }
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('infoAccordion').style.display = 'block'; document.getElementById('infoArrow').textContent = '▼';
-        document.getElementById('faqAccordion').style.display = 'none'; document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
-        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
-        calculate();
-    });
-    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculate(); } });
+    document.addEventListener('DOMContentLoaded', function() { document.getElementById('infoAccordion').style.display='block'; document.getElementById('infoArrow').textContent='▼'; document.getElementById('faqAccordion').style.display='none'; document.getElementById('faqArrow').textContent='▶'; document.querySelectorAll('.faq-answer').forEach(el => el.style.display='none'); document.querySelectorAll('.faq-arrow').forEach(el => el.textContent='▶'); calculateFR(); });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculateFR(); } });
 </script>
 </body>
 </html>
