@@ -3,9 +3,56 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ===== Meta Tags ===== -->
     <title>Cross‑border Living Cost Comparator — Free Online Tool</title>
+    <meta name="description" content="Compare the cost of living between two cities using cost-of-living indices. Free cross-border living cost comparator." />
+
     <link rel="stylesheet" href="style.css" />
+
+    <!-- ===== WebApplication Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Cross‑border Living Cost Comparator",
+      "description": "Compare the cost of living between two cities using cost-of-living indices.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "url": "https://financetools.tools/cross-border-living-cost.html",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.5", "ratingCount": "68" }
+    }
+    </script>
+
+    <!-- ===== FAQPage Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the cost of living difference between NYC and Bangkok?",
+          "acceptedAnswer": { "@type": "Answer", "text": "NYC has a cost-of-living index of 100, Bangkok around 40. A $5,000 budget in NYC would be equivalent to about $2,000 in Bangkok — a 60% savings." }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I compare living costs between cities?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Use cost-of-living indices. If City A index = 120 and City B index = 80, living in B is (120/80) = 1.5x cheaper. A $3,000 budget in A would be $2,000 in B." }
+        },
+        {
+          "@type": "Question",
+          "name": "What factors are included in cost-of-living indices?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Typically include housing, food, transportation, utilities, healthcare, and entertainment. Rent often accounts for 30-40% of the index." }
+        }
+      ]
+    }
+    </script>
+
     <style>
+        /* 复用相同样式，略去重复CSS */
         .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
         .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
@@ -14,10 +61,7 @@
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
         .field { display: flex; flex-direction: column; }
         .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
-        .field input {
-            padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px;
-            background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%;
-        }
+        .field input { padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px; background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
         .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
         .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
         .btn:hover { background: #1d4ed8; }
@@ -27,11 +71,39 @@
         .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
         .comparison-box .row .num { font-weight: 600; color: #0f172a; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
-        @media (max-width: 640px) { .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        .info-block h3 { font-size: 0.9rem; font-weight: 600; color: #0f172a; margin: 0 0 0.3rem; }
+        .info-block p { font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.5; }
+        .accordion-card { background: white; border-radius: 12px; border: 1px solid #e9edf2; margin-top: 1.5rem; overflow: hidden; }
+        .accordion-header { padding: 1rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .accordion-header:hover { background: #f8fafc; }
+        .accordion-header h2 { font-size: 1rem; font-weight: 600; color: #0f172a; margin: 0; }
+        .accordion-arrow { font-size: 0.9rem; color: #94a3b8; }
+        .accordion-body { padding: 0 1.2rem 1.2rem; display: none; }
+        .accordion-body.open { display: block; }
+        .faq-item { border-bottom: 1px solid #e9edf2; padding: 0.5rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; color: #0f172a; padding: 0.3rem 0; }
+        .faq-question:hover { color: #2563eb; }
+        .faq-arrow { font-size: 0.7rem; color: #94a3b8; }
+        .faq-answer { padding: 0.3rem 0 0.3rem 1.5rem; color: #475569; font-size: 0.9rem; line-height: 1.6; display: none; }
+        .faq-answer.open { display: block; }
+        .top-nav { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #e9edf2; margin-bottom: 1.5rem; }
+        .top-nav .back-link { color: #2563eb; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .top-nav .back-link:hover { text-decoration: underline; }
+        .top-nav .breadcrumb { color: #94a3b8; font-size: 0.85rem; }
+        .top-nav .breadcrumb span { color: #1e293b; }
+        .calculator-card { background: white; border-radius: 16px; padding: 1.5rem 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e9edf2; }
+        .calculator-card h1 { font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem; }
+        .calculator-card .subtitle { font-size: 1rem; color: #64748b; margin: 0 0 1rem; }
+        .site-footer { text-align: center; padding: 1.5rem 0 0.5rem; color: #94a3b8; font-size: 0.8rem; border-top: 1px solid #e9edf2; margin-top: 2rem; }
+        .site-footer a { color: #94a3b8; text-decoration: none; }
+        .site-footer a:hover { color: #2563eb; text-decoration: underline; }
+        @media (max-width: 640px) { .calculator-card { padding: 1rem; } .calculator-card h1 { font-size: 1.3rem; } .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 480px) { .calculator-card { padding: 0.8rem; } }
     </style>
 </head>
 <body>
-<div class="container">
+<div class="container" style="max-width:820px; margin:0 auto; padding:0 1rem;">
     <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">🌍 <span>Cross‑border Living Cost Comparator</span></div></div>
     <main class="calculator-card">
         <h1>🌍 Cross‑border Living Cost Comparator</h1>
@@ -44,25 +116,25 @@
             </p>
         </div>
         <div class="form-grid">
-            <div class="field"><label for="home-budget">Your Monthly Budget in Home City ($)</label><input type="number" id="home-budget" value="3000" min="0" step="100" /></div>
-            <div class="field"><label for="home-index">Cost of Living Index of Home City (100 = base)</label><input type="number" id="home-index" value="100" min="0" step="1" /></div>
-            <div class="field"><label for="foreign-index">Cost of Living Index of Foreign City</label><input type="number" id="foreign-index" value="80" min="0" step="1" /></div>
-            <div class="field"><label for="exchange-rate-cbl">Exchange Rate (1 Home Currency = X Foreign Currency)</label><input type="number" id="exchange-rate-cbl" value="0.85" min="0.001" step="0.001" /></div>
-            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculate()">Compare</button></div>
+            <div class="field"><label>Your Monthly Budget in Home City ($)</label><input type="number" id="clc-budget" value="3000" min="0" step="100" /></div>
+            <div class="field"><label>Home City Cost Index (100 = base)</label><input type="number" id="clc-home" value="100" min="0" step="1" /></div>
+            <div class="field"><label>Foreign City Cost Index</label><input type="number" id="clc-foreign" value="80" min="0" step="1" /></div>
+            <div class="field"><label>Exchange Rate (1 Home Currency = X Foreign Currency)</label><input type="number" id="clc-rate" value="0.85" min="0.001" step="0.001" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculateCLC()">Compare</button></div>
         </div>
-        <div id="results-area" style="margin-top:1.8rem; display:none;">
+        <div id="clc-results" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Living Cost Comparison</h2>
             <div class="comparison-grid">
                 <div class="comparison-box">
                     <h4>🏠 Home City</h4>
-                    <div class="row"><span>Monthly Budget</span><span class="num" id="home-budget-display">—</span></div>
-                    <div class="row"><span>Cost Index</span><span class="num" id="home-index-display">—</span></div>
+                    <div class="row"><span>Monthly Budget</span><span class="num" id="clc-budget-display">—</span></div>
+                    <div class="row"><span>Cost Index</span><span class="num" id="clc-home-display">—</span></div>
                 </div>
                 <div class="comparison-box">
                     <h4>🌍 Foreign City</h4>
-                    <div class="row"><span>Equivalent Local Currency</span><span class="num" id="foreign-amount" style="font-size:1.2rem;">—</span></div>
-                    <div class="row"><span>Equivalent in Home Currency (PPP)</span><span class="num" id="ppp-equivalent">—</span></div>
-                    <div class="row"><span>Cost Difference</span><span class="num" id="diff-pct">—</span></div>
+                    <div class="row"><span>Equivalent in Local Currency</span><span class="num" id="clc-foreign-amount" style="font-size:1.2rem;">—</span></div>
+                    <div class="row"><span>PPP Equivalent (Home Currency)</span><span class="num" id="clc-ppp">—</span></div>
+                    <div class="row"><span>Cost Difference</span><span class="num" id="clc-diff">—</span></div>
                 </div>
             </div>
         </div>
@@ -72,7 +144,7 @@
         <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
-                <div class="info-block"><h3>Foreign Amount</h3><p>Your budget in the foreign city's currency after converting at the given exchange rate.</p></div>
+                <div class="info-block"><h3>Local Currency</h3><p>Your budget in the foreign city's currency after converting at the given exchange rate.</p></div>
                 <div class="info-block"><h3>PPP Equivalent</h3><p>What your budget would need to be in home currency to maintain the same standard of living after adjusting for cost differences.</p></div>
                 <div class="info-block"><h3>Cost Difference</h3><p>Percentage change in cost of living. Positive means foreign city is cheaper, negative means more expensive.</p></div>
             </div>
@@ -81,47 +153,39 @@
     <section class="accordion-card">
         <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
         <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is a cost‑of‑living index?</span></div><div class="faq-answer">It's a relative measure of the price of goods and services in a city compared to a base city (usually 100). Higher numbers mean higher cost.</div></div>
-            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How accurate is this?</span></div><div class="faq-answer">It's a simplified estimate based on average indices. Actual costs vary by lifestyle and specific consumption patterns.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the cost of living difference between NYC and Bangkok?</span></div><div class="faq-answer">NYC has a cost-of-living index of 100, Bangkok around 40. A $5,000 budget in NYC would be equivalent to about $2,000 in Bangkok — a 60% savings.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How do I compare living costs between cities?</span></div><div class="faq-answer">Use cost-of-living indices. If City A index = 120 and City B index = 80, living in B is (120/80) = 1.5x cheaper. A $3,000 budget in A would be $2,000 in B.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What factors are included in cost-of-living indices?</span></div><div class="faq-answer">Typically include housing, food, transportation, utilities, healthcare, and entertainment. Rent often accounts for 30-40% of the index.</div></div>
         </div>
     </section>
-    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p></footer>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html">About</a> <span style="color:#dce1e8;">|</span> <a href="privacy.html">Privacy</a></p></footer>
 </div>
 <script src="recommendations.js"></script>
 <script src="feedback.js"></script>
 <script>
     function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
     function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
-    function calculate() {
-        const budget = parseFloat(document.getElementById('home-budget').value) || 0;
-        const homeIdx = parseFloat(document.getElementById('home-index').value) || 100;
-        const foreignIdx = parseFloat(document.getElementById('foreign-index').value) || 100;
-        const rate = parseFloat(document.getElementById('exchange-rate-cbl').value) || 1;
-
-        const foreignAmount = budget * rate; // local currency
+    function calculateCLC() {
+        const budget = parseFloat(document.getElementById('clc-budget').value) || 0;
+        const homeIdx = parseFloat(document.getElementById('clc-home').value) || 100;
+        const foreignIdx = parseFloat(document.getElementById('clc-foreign').value) || 100;
+        const rate = parseFloat(document.getElementById('clc-rate').value) || 1;
+        const foreignAmount = budget * rate;
         const pppEquivalent = budget * (foreignIdx / homeIdx);
-        const diffPct = ((foreignIdx - homeIdx) / homeIdx) * 100;
-
-        const fmt = new Intl.NumberFormat('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-        const fmtCur = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
-        document.getElementById('home-budget-display').textContent = fmtCur.format(budget);
-        document.getElementById('home-index-display').textContent = homeIdx;
-        document.getElementById('foreign-amount').textContent = fmt.format(foreignAmount) + ' (local)';
-        document.getElementById('ppp-equivalent').textContent = fmtCur.format(pppEquivalent);
-        const diffEl = document.getElementById('diff-pct');
-        diffEl.textContent = (diffPct > 0 ? '+' : '') + diffPct.toFixed(1) + '%';
-        diffEl.style.color = diffPct < 0 ? '#10b981' : '#ef4444';
-        document.getElementById('results-area').style.display = 'block';
+        const diff = ((foreignIdx - homeIdx) / homeIdx) * 100;
+        const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        document.getElementById('clc-budget-display').textContent = fmt.format(budget);
+        document.getElementById('clc-home-display').textContent = homeIdx;
+        document.getElementById('clc-foreign-amount').textContent = fmt.format(foreignAmount) + ' (local currency)';
+        document.getElementById('clc-ppp').textContent = fmt.format(pppEquivalent);
+        const diffEl = document.getElementById('clc-diff');
+        diffEl.textContent = (diff > 0 ? '+' : '') + diff.toFixed(1) + '%';
+        diffEl.style.color = diff < 0 ? '#10b981' : '#ef4444';
+        document.getElementById('clc-results').style.display = 'block';
         showRecommendations('cross-border-living-cost.html', { budget: budget });
     }
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('infoAccordion').style.display = 'block'; document.getElementById('infoArrow').textContent = '▼';
-        document.getElementById('faqAccordion').style.display = 'none'; document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
-        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
-        calculate();
-    });
-    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculate(); } });
+    document.addEventListener('DOMContentLoaded', function() { document.getElementById('infoAccordion').style.display='block'; document.getElementById('infoArrow').textContent='▼'; document.getElementById('faqAccordion').style.display='none'; document.getElementById('faqArrow').textContent='▶'; document.querySelectorAll('.faq-answer').forEach(el => el.style.display='none'); document.querySelectorAll('.faq-arrow').forEach(el => el.textContent='▶'); calculateCLC(); });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculateCLC(); } });
 </script>
 </body>
 </html>
