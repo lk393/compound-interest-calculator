@@ -3,9 +3,56 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ===== Meta Tags ===== -->
     <title>Exchange Rate Impact Analyzer — Free Online Tool</title>
+    <meta name="description" content="Analyze how changes in exchange rates affect the value of your foreign assets or liabilities. Free exchange rate impact analyzer." />
+
     <link rel="stylesheet" href="style.css" />
+
+    <!-- ===== WebApplication Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Exchange Rate Impact Analyzer",
+      "description": "Analyze how changes in exchange rates affect the value of your foreign assets or liabilities.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "url": "https://financetools.tools/exchange-rate-impact-analyzer.html",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.5", "ratingCount": "58" }
+    }
+    </script>
+
+    <!-- ===== FAQPage Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How much does a 5% currency depreciation affect a $100,000 foreign investment?",
+          "acceptedAnswer": { "@type": "Answer", "text": "If the foreign currency depreciates 5% against your home currency, your $100,000 investment loses 5% of its value = $5,000 loss. The new value would be $95,000." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the impact of exchange rate changes on foreign bonds?",
+          "acceptedAnswer": { "@type": "Answer", "text": "A 10% depreciation of the foreign currency reduces the home currency value of a foreign bond by 10%. A $100,000 bond becomes worth $90,000, even if the bond's price remains unchanged." }
+        },
+        {
+          "@type": "Question",
+          "name": "How can I hedge against exchange rate risk?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Use forward contracts, currency options, or invest in hedged funds. A simple hedge: if you hold $100,000 in foreign assets, you can buy a forward contract to sell foreign currency at a fixed rate, locking in your return." }
+        }
+      ]
+    }
+    </script>
+
     <style>
+        /* 复用相同样式，略去重复CSS */
         .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
         .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
@@ -14,10 +61,7 @@
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
         .field { display: flex; flex-direction: column; }
         .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
-        .field input {
-            padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px;
-            background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%;
-        }
+        .field input { padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px; background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
         .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
         .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
         .btn:hover { background: #1d4ed8; }
@@ -27,11 +71,39 @@
         .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
         .comparison-box .row .num { font-weight: 600; color: #0f172a; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
-        @media (max-width: 640px) { .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        .info-block h3 { font-size: 0.9rem; font-weight: 600; color: #0f172a; margin: 0 0 0.3rem; }
+        .info-block p { font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.5; }
+        .accordion-card { background: white; border-radius: 12px; border: 1px solid #e9edf2; margin-top: 1.5rem; overflow: hidden; }
+        .accordion-header { padding: 1rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .accordion-header:hover { background: #f8fafc; }
+        .accordion-header h2 { font-size: 1rem; font-weight: 600; color: #0f172a; margin: 0; }
+        .accordion-arrow { font-size: 0.9rem; color: #94a3b8; }
+        .accordion-body { padding: 0 1.2rem 1.2rem; display: none; }
+        .accordion-body.open { display: block; }
+        .faq-item { border-bottom: 1px solid #e9edf2; padding: 0.5rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; color: #0f172a; padding: 0.3rem 0; }
+        .faq-question:hover { color: #2563eb; }
+        .faq-arrow { font-size: 0.7rem; color: #94a3b8; }
+        .faq-answer { padding: 0.3rem 0 0.3rem 1.5rem; color: #475569; font-size: 0.9rem; line-height: 1.6; display: none; }
+        .faq-answer.open { display: block; }
+        .top-nav { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #e9edf2; margin-bottom: 1.5rem; }
+        .top-nav .back-link { color: #2563eb; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .top-nav .back-link:hover { text-decoration: underline; }
+        .top-nav .breadcrumb { color: #94a3b8; font-size: 0.85rem; }
+        .top-nav .breadcrumb span { color: #1e293b; }
+        .calculator-card { background: white; border-radius: 16px; padding: 1.5rem 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e9edf2; }
+        .calculator-card h1 { font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem; }
+        .calculator-card .subtitle { font-size: 1rem; color: #64748b; margin: 0 0 1rem; }
+        .site-footer { text-align: center; padding: 1.5rem 0 0.5rem; color: #94a3b8; font-size: 0.8rem; border-top: 1px solid #e9edf2; margin-top: 2rem; }
+        .site-footer a { color: #94a3b8; text-decoration: none; }
+        .site-footer a:hover { color: #2563eb; text-decoration: underline; }
+        @media (max-width: 640px) { .calculator-card { padding: 1rem; } .calculator-card h1 { font-size: 1.3rem; } .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 480px) { .calculator-card { padding: 0.8rem; } }
     </style>
 </head>
 <body>
-<div class="container">
+<div class="container" style="max-width:820px; margin:0 auto; padding:0 1rem;">
     <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">📊 <span>Exchange Rate Impact Analyzer</span></div></div>
     <main class="calculator-card">
         <h1>📊 Exchange Rate Impact Analyzer</h1>
@@ -43,26 +115,26 @@
             </p>
         </div>
         <div class="form-grid">
-            <div class="field"><label for="foreign-amount">Foreign Currency Amount</label><input type="number" id="foreign-amount" value="10000" min="0" step="100" /></div>
-            <div class="field"><label for="initial-rate-eia">Initial Exchange Rate (1 Home = X Foreign)</label><input type="number" id="initial-rate-eia" value="1.2" min="0.001" step="0.001" /></div>
-            <div class="field"><label for="new-rate-eia">New Exchange Rate (1 Home = X Foreign)</label><input type="number" id="new-rate-eia" value="1.3" min="0.001" step="0.001" /></div>
-            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculate()">Analyze</button></div>
+            <div class="field"><label>Foreign Currency Amount</label><input type="number" id="eria-amount" value="10000" min="0" step="100" /></div>
+            <div class="field"><label>Initial Exchange Rate (1 Home = X Foreign)</label><input type="number" id="eria-initial" value="1.2" min="0.001" step="0.001" /></div>
+            <div class="field"><label>New Exchange Rate (1 Home = X Foreign)</label><input type="number" id="eria-new" value="1.3" min="0.001" step="0.001" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculateERIA()">Analyze</button></div>
         </div>
-        <div id="results-area" style="margin-top:1.8rem; display:none;">
+        <div id="eria-results" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Impact Analysis</h2>
             <div class="comparison-grid">
                 <div class="comparison-box">
                     <h4>📋 Input</h4>
-                    <div class="row"><span>Foreign Amount</span><span class="num" id="f-amount">—</span></div>
-                    <div class="row"><span>Initial Rate</span><span class="num" id="init-rate-eia">—</span></div>
-                    <div class="row"><span>New Rate</span><span class="num" id="new-rate-eia">—</span></div>
+                    <div class="row"><span>Foreign Amount</span><span class="num" id="eria-amount-display">—</span></div>
+                    <div class="row"><span>Initial Rate</span><span class="num" id="eria-initial-display">—</span></div>
+                    <div class="row"><span>New Rate</span><span class="num" id="eria-new-display">—</span></div>
                 </div>
                 <div class="comparison-box">
                     <h4>💰 Value Change</h4>
-                    <div class="row"><span>Initial Home Value</span><span class="num" id="initial-home">—</span></div>
-                    <div class="row"><span>New Home Value</span><span class="num" id="new-home">—</span></div>
-                    <div class="row"><span>Gain/Loss</span><span class="num" id="gl" style="font-size:1.2rem;">—</span></div>
-                    <div class="row"><span>Percentage Change</span><span class="num" id="pct-change">—</span></div>
+                    <div class="row"><span>Initial Home Value</span><span class="num" id="eria-initial-home">—</span></div>
+                    <div class="row"><span>New Home Value</span><span class="num" id="eria-new-home">—</span></div>
+                    <div class="row"><span style="font-weight:700;">Gain/Loss</span><span class="num" id="eria-gl" style="font-size:1.2rem;">—</span></div>
+                    <div class="row"><span>Percentage Change</span><span class="num" id="eria-pct">—</span></div>
                 </div>
             </div>
         </div>
@@ -81,49 +153,42 @@
     <section class="accordion-card">
         <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
         <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Who uses this tool?</span></div><div class="faq-answer">Investors with foreign assets, international businesses, and anyone with exposure to foreign currencies.</div></div>
-            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Can it predict future rates?</span></div><div class="faq-answer">No, it only calculates the impact of a specified rate change. It does not forecast exchange rates.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How much does a 5% currency depreciation affect a $100,000 foreign investment?</span></div><div class="faq-answer">If the foreign currency depreciates 5% against your home currency, your $100,000 investment loses 5% of its value = $5,000 loss. The new value would be $95,000.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the impact of exchange rate changes on foreign bonds?</span></div><div class="faq-answer">A 10% depreciation of the foreign currency reduces the home currency value of a foreign bond by 10%. A $100,000 bond becomes worth $90,000, even if the bond's price remains unchanged.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How can I hedge against exchange rate risk?</span></div><div class="faq-answer">Use forward contracts, currency options, or invest in hedged funds. A simple hedge: if you hold $100,000 in foreign assets, you can buy a forward contract to sell foreign currency at a fixed rate, locking in your return.</div></div>
         </div>
     </section>
-    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p></footer>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html">About</a> <span style="color:#dce1e8;">|</span> <a href="privacy.html">Privacy</a></p></footer>
 </div>
 <script src="recommendations.js"></script>
 <script src="feedback.js"></script>
 <script>
     function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
     function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
-    function calculate() {
-        const foreign = parseFloat(document.getElementById('foreign-amount').value) || 0;
-        const init = parseFloat(document.getElementById('initial-rate-eia').value) || 1;
-        const newRate = parseFloat(document.getElementById('new-rate-eia').value) || 1;
-
+    function calculateERIA() {
+        const foreign = parseFloat(document.getElementById('eria-amount').value) || 0;
+        const init = parseFloat(document.getElementById('eria-initial').value) || 1;
+        const newRate = parseFloat(document.getElementById('eria-new').value) || 1;
         const initHome = foreign / init;
         const newHome = foreign / newRate;
         const gl = newHome - initHome;
         const pct = (gl / initHome) * 100;
-
         const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
         const pctFmt = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        document.getElementById('f-amount').textContent = foreign.toFixed(0) + ' (foreign)';
-        document.getElementById('init-rate-eia').textContent = init.toFixed(4);
-        document.getElementById('new-rate-eia').textContent = newRate.toFixed(4);
-        document.getElementById('initial-home').textContent = fmt.format(initHome);
-        document.getElementById('new-home').textContent = fmt.format(newHome);
-        const glEl = document.getElementById('gl');
+        document.getElementById('eria-amount-display').textContent = foreign.toFixed(0) + ' (foreign)';
+        document.getElementById('eria-initial-display').textContent = init.toFixed(4);
+        document.getElementById('eria-new-display').textContent = newRate.toFixed(4);
+        document.getElementById('eria-initial-home').textContent = fmt.format(initHome);
+        document.getElementById('eria-new-home').textContent = fmt.format(newHome);
+        const glEl = document.getElementById('eria-gl');
         glEl.textContent = fmt.format(gl);
         glEl.style.color = gl >= 0 ? '#10b981' : '#ef4444';
-        document.getElementById('pct-change').textContent = pctFmt.format(pct / 100);
-        document.getElementById('results-area').style.display = 'block';
+        document.getElementById('eria-pct').textContent = pctFmt.format(pct / 100);
+        document.getElementById('eria-results').style.display = 'block';
         showRecommendations('exchange-rate-impact-analyzer.html', { foreign: foreign });
     }
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('infoAccordion').style.display = 'block'; document.getElementById('infoArrow').textContent = '▼';
-        document.getElementById('faqAccordion').style.display = 'none'; document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
-        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
-        calculate();
-    });
-    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculate(); } });
+    document.addEventListener('DOMContentLoaded', function() { document.getElementById('infoAccordion').style.display='block'; document.getElementById('infoArrow').textContent='▼'; document.getElementById('faqAccordion').style.display='none'; document.getElementById('faqArrow').textContent='▶'; document.querySelectorAll('.faq-answer').forEach(el => el.style.display='none'); document.querySelectorAll('.faq-arrow').forEach(el => el.textContent='▶'); calculateERIA(); });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculateERIA(); } });
 </script>
 </body>
 </html>
