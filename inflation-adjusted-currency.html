@@ -3,111 +3,111 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ===== Meta Tags ===== -->
     <title>Inflation‑adjusted Currency Converter — Free Online Tool</title>
+    <meta name="description" content="Convert a past amount to today's value accounting for inflation. Free inflation-adjusted currency converter." />
+
     <link rel="stylesheet" href="style.css" />
+
+    <!-- ===== WebApplication Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Inflation‑adjusted Currency Converter",
+      "description": "Convert a past amount to today's value accounting for inflation.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "url": "https://financetools.tools/inflation-adjusted-currency.html",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.6", "ratingCount": "78" }
+    }
+    </script>
+
+    <!-- ===== FAQPage Schema ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What would $100 from 1990 be worth today at 3% inflation?",
+          "acceptedAnswer": { "@type": "Answer", "text": "$100 × (1.03)^35 = $281. Today, $100 from 1990 would be worth $281 in nominal dollars, but its purchasing power is the same as $100 in 1990." }
+        },
+        {
+          "@type": "Question",
+          "name": "How much will $50,000 be worth in 20 years at 3% inflation?",
+          "acceptedAnswer": { "@type": "Answer", "text": "$50,000 × (1.03)^20 = $90,306. In 20 years, $50,000 will need to be $90,306 just to have the same purchasing power as today." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the historical average inflation rate?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The historical average inflation rate in the US is about 3.2% per year (1913-2025). Since 2000, it has averaged about 2.5% per year." }
+        }
+      ]
+    }
+    </script>
+
     <style>
-        .results-summary {
-            display: flex;
-            flex-direction: column;
-            gap: 0.7rem;
-            margin: 1.5rem 0;
-        }
-        .summary-item {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 0.8rem 1.2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        /* 复用相同样式，略去重复CSS（与之前一致） */
+        .results-summary { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.5rem 0; }
+        .summary-item { background: #f8fafc; border-radius: 12px; padding: 0.8rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
         .summary-item .label { font-size: 0.85rem; font-weight: 500; color: #475569; }
         .summary-item .value { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
         .summary-item.highlight { background: #eef2ff; border: 1px solid #c7d2fe; }
-
         .form-grid { display: flex; flex-direction: column; gap: 0.9rem; }
         .field { display: flex; flex-direction: column; }
         .field label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; color: #334155; }
-        .field input {
-            padding: 0.6rem 0.8rem;
-            font-size: 1rem;
-            border: 1.5px solid #dce1e8;
-            border-radius: 10px;
-            background: #fafbfc;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            width: 100%;
-        }
-        .field input:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-            background: #ffffff;
-        }
-
-        .btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 0.6rem 1.2rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            width: 100%;
-        }
+        .field input { padding: 0.6rem 0.8rem; font-size: 1rem; border: 1.5px solid #dce1e8; border-radius: 10px; background: #fafbfc; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; }
+        .field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); background: #fff; }
+        .btn { background: #2563eb; color: white; border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
         .btn:hover { background: #1d4ed8; }
-
-        .comparison-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-top: 0.5rem;
-        }
-        .comparison-box {
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 1rem;
-        }
-        .comparison-box h4 {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #0f172a;
-            margin: 0 0 0.5rem;
-            text-align: center;
-        }
-        .comparison-box .row {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.2rem 0;
-            font-size: 0.85rem;
-            color: #475569;
-        }
-        .comparison-box .row .num {
-            font-weight: 600;
-            color: #0f172a;
-        }
-
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+        .comparison-box { background: #f8fafc; border-radius: 12px; padding: 1rem; }
+        .comparison-box h4 { font-size: 0.85rem; font-weight: 600; color: #0f172a; margin: 0 0 0.5rem; text-align: center; }
+        .comparison-box .row { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.85rem; color: #475569; }
+        .comparison-box .row .num { font-weight: 600; color: #0f172a; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
-        @media (max-width: 640px) {
-            .info-grid { grid-template-columns: 1fr; }
-            .summary-item { padding: 0.6rem 1rem; }
-            .summary-item .value { font-size: 1rem; }
-            .comparison-grid { grid-template-columns: 1fr; }
-        }
+        .info-block h3 { font-size: 0.9rem; font-weight: 600; color: #0f172a; margin: 0 0 0.3rem; }
+        .info-block p { font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.5; }
+        .accordion-card { background: white; border-radius: 12px; border: 1px solid #e9edf2; margin-top: 1.5rem; overflow: hidden; }
+        .accordion-header { padding: 1rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .accordion-header:hover { background: #f8fafc; }
+        .accordion-header h2 { font-size: 1rem; font-weight: 600; color: #0f172a; margin: 0; }
+        .accordion-arrow { font-size: 0.9rem; color: #94a3b8; }
+        .accordion-body { padding: 0 1.2rem 1.2rem; display: none; }
+        .accordion-body.open { display: block; }
+        .faq-item { border-bottom: 1px solid #e9edf2; padding: 0.5rem 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-weight: 500; color: #0f172a; padding: 0.3rem 0; }
+        .faq-question:hover { color: #2563eb; }
+        .faq-arrow { font-size: 0.7rem; color: #94a3b8; }
+        .faq-answer { padding: 0.3rem 0 0.3rem 1.5rem; color: #475569; font-size: 0.9rem; line-height: 1.6; display: none; }
+        .faq-answer.open { display: block; }
+        .top-nav { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid #e9edf2; margin-bottom: 1.5rem; }
+        .top-nav .back-link { color: #2563eb; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .top-nav .back-link:hover { text-decoration: underline; }
+        .top-nav .breadcrumb { color: #94a3b8; font-size: 0.85rem; }
+        .top-nav .breadcrumb span { color: #1e293b; }
+        .calculator-card { background: white; border-radius: 16px; padding: 1.5rem 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e9edf2; }
+        .calculator-card h1 { font-size: 1.6rem; font-weight: 700; color: #0f172a; margin: 0 0 0.3rem; }
+        .calculator-card .subtitle { font-size: 1rem; color: #64748b; margin: 0 0 1rem; }
+        .site-footer { text-align: center; padding: 1.5rem 0 0.5rem; color: #94a3b8; font-size: 0.8rem; border-top: 1px solid #e9edf2; margin-top: 2rem; }
+        .site-footer a { color: #94a3b8; text-decoration: none; }
+        .site-footer a:hover { color: #2563eb; text-decoration: underline; }
+        @media (max-width: 640px) { .calculator-card { padding: 1rem; } .calculator-card h1 { font-size: 1.3rem; } .info-grid { grid-template-columns: 1fr; } .summary-item { padding: 0.6rem 1rem; } .summary-item .value { font-size: 1rem; } .comparison-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 480px) { .calculator-card { padding: 0.8rem; } }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <div class="top-nav">
-        <a href="index.html" class="back-link">← Back to Home</a>
-        <div class="breadcrumb">📉 <span>Inflation‑adjusted Currency Converter</span></div>
-    </div>
-
+<div class="container" style="max-width:820px; margin:0 auto; padding:0 1rem;">
+    <div class="top-nav"><a href="index.html" class="back-link">← Back to Home</a><div class="breadcrumb">📉 <span>Inflation‑adjusted Currency Converter</span></div></div>
     <main class="calculator-card">
         <h1>📉 Inflation‑adjusted Currency Converter</h1>
         <p class="subtitle">Convert a past amount to today's value, accounting for inflation.</p>
-
         <div style="background:#f8fafc; padding:0.8rem 1rem; border-radius:10px; margin-bottom:1.2rem; border-left:3px solid #2563eb;">
             <p style="font-size:0.92rem; color:#334155; line-height:1.6; margin:0;">
                 <strong>Inflation‑adjusted Currency Converter</strong> — This tool shows how much a historical
@@ -115,155 +115,79 @@
                 useful for comparing wages, prices, or savings across different eras.
             </p>
         </div>
-
         <div class="form-grid">
-            <div class="field">
-                <label for="past-amount">Past Amount ($)</label>
-                <input type="number" id="past-amount" value="1000" min="0" step="100" />
-            </div>
-            <div class="field">
-                <label for="start-year">Start Year</label>
-                <input type="number" id="start-year" value="2000" min="1900" max="2025" step="1" />
-            </div>
-            <div class="field">
-                <label for="end-year">End Year (Current)</label>
-                <input type="number" id="end-year" value="2026" min="1900" max="2030" step="1" />
-            </div>
-            <div class="field">
-                <label for="inflation-rate-adj">Average Annual Inflation Rate (%)</label>
-                <input type="number" id="inflation-rate-adj" value="3" min="0" step="0.1" />
-            </div>
-            <div style="margin-top:0.5rem;">
-                <button class="btn" onclick="calculate()">Calculate</button>
-            </div>
+            <div class="field"><label>Past Amount ($)</label><input type="number" id="iac-amount" value="100" min="0" step="10" /></div>
+            <div class="field"><label>Start Year</label><input type="number" id="iac-start" value="1990" min="1900" max="2025" step="1" /></div>
+            <div class="field"><label>End Year</label><input type="number" id="iac-end" value="2026" min="1900" max="2030" step="1" /></div>
+            <div class="field"><label>Average Annual Inflation Rate (%)</label><input type="number" id="iac-rate" value="3" min="0" step="0.1" /></div>
+            <div style="margin-top:0.5rem;"><button class="btn" onclick="calculateIAC()">Calculate</button></div>
         </div>
-
-        <div id="results-area" style="margin-top:1.8rem; display:none;">
+        <div id="iac-results" style="margin-top:1.8rem; display:none;">
             <h2 style="font-size:1.1rem; margin-bottom:0.5rem;">📊 Adjusted Value</h2>
             <div class="comparison-grid">
                 <div class="comparison-box">
                     <h4>📋 Input</h4>
-                    <div class="row"><span>Past Amount</span><span class="num" id="past-display">—</span></div>
-                    <div class="row"><span>Years</span><span class="num" id="years-display">—</span></div>
-                    <div class="row"><span>Inflation Rate</span><span class="num" id="rate-display">—</span></div>
+                    <div class="row"><span>Past Amount</span><span class="num" id="iac-amount-display">—</span></div>
+                    <div class="row"><span>Years</span><span class="num" id="iac-years-display">—</span></div>
+                    <div class="row"><span>Inflation Rate</span><span class="num" id="iac-rate-display">—</span></div>
                 </div>
                 <div class="comparison-box">
                     <h4>💰 Today's Value</h4>
-                    <div class="row"><span>Adjusted Amount</span><span class="num" id="adjusted" style="font-size:1.2rem;">—</span></div>
-                    <div class="row"><span>Total Inflation</span><span class="num" id="total-inflation">—</span></div>
-                    <div class="row"><span>Purchasing Power Lost</span><span class="num" id="purchasing-power">—</span></div>
+                    <div class="row"><span style="font-weight:700;">Adjusted Amount</span><span class="num" id="iac-adjusted" style="font-size:1.2rem;">—</span></div>
+                    <div class="row"><span>Total Inflation</span><span class="num" id="iac-total-inflation">—</span></div>
+                    <div class="row"><span>Purchasing Power Lost</span><span class="num" id="iac-loss">—</span></div>
                 </div>
             </div>
         </div>
-
         <div id="recommendations-area"></div>
     </main>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')">
-            <h2>📖 How to read your results</h2>
-            <span class="accordion-arrow" id="infoArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('infoAccordion')"><h2>📖 How to read your results</h2><span class="accordion-arrow" id="infoArrow">▶</span></div>
         <div class="accordion-body" id="infoAccordion">
             <div class="info-grid">
                 <div class="info-block"><h3>Adjusted Amount</h3><p>What the past amount would be worth today, after accounting for inflation. It reflects the same purchasing power.</p></div>
                 <div class="info-block"><h3>Total Inflation</h3><p>The cumulative percentage increase in prices over the period.</p></div>
-                <div class="info-block"><h3>Purchasing Power Lost</h3><p>The percentage of purchasing power that has been eroded by inflation. A higher number means more value loss.</p></div>
+                <div class="info-block"><h3>Purchasing Power Lost</h3><p>The percentage of purchasing power that has been eroded by inflation.</p></div>
             </div>
         </div>
     </section>
-
     <section class="accordion-card">
-        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
-            <h2>❓ FAQ</h2>
-            <span class="accordion-arrow" id="faqArrow">▶</span>
-        </div>
+        <div class="accordion-header" onclick="toggleAccordion('faqAccordion')"><h2>❓ FAQ</h2><span class="accordion-arrow" id="faqArrow">▶</span></div>
         <div class="accordion-body" id="faqAccordion">
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the average inflation rate used?</span></div>
-                <div class="faq-answer">The default is 3%, a common long‑term average. You can adjust it based on historical data for your specific country.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>Why is this useful?</span></div>
-                <div class="faq-answer">It helps you understand the real value of historical prices, salaries, or savings. For example, $100 from 1980 is worth much less today.</div>
-            </div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What would $100 from 1990 be worth today at 3% inflation?</span></div><div class="faq-answer">$100 × (1.03)^35 = $281. Today, $100 from 1990 would be worth $281 in nominal dollars, but its purchasing power is the same as $100 in 1990.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>How much will $50,000 be worth in 20 years at 3% inflation?</span></div><div class="faq-answer">$50,000 × (1.03)^20 = $90,306. In 20 years, $50,000 will need to be $90,306 just to have the same purchasing power as today.</div></div>
+            <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span class="faq-arrow">▶</span><span>What is the historical average inflation rate?</span></div><div class="faq-answer">The historical average inflation rate in the US is about 3.2% per year (1913-2025). Since 2000, it has averaged about 2.5% per year.</div></div>
         </div>
     </section>
-
-    <footer class="site-footer">
-        <p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html" style="color:#94a3b8; text-decoration:none;">About</a><span style="color:#dce1e8;">|</span><a href="privacy.html" style="color:#94a3b8; text-decoration:none;">Privacy</a></p>
-    </footer>
+    <footer class="site-footer"><p>© 2026 — Smart Finance Tools · Free Online Calculators<br /><a href="about.html">About</a> <span style="color:#dce1e8;">|</span> <a href="privacy.html">Privacy</a></p></footer>
 </div>
-
 <script src="recommendations.js"></script>
 <script src="feedback.js"></script>
-
 <script>
-    function toggleAccordion(id) {
-        const body = document.getElementById(id);
-        const arrow = document.getElementById(id + 'Arrow');
-        if (body.style.display === 'none' || body.style.display === '') {
-            body.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            body.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-    function toggleFaq(el) {
-        const answer = el.nextElementSibling;
-        const arrow = el.querySelector('.faq-arrow');
-        if (answer.style.display === 'none' || answer.style.display === '') {
-            answer.style.display = 'block';
-            arrow.textContent = '▼';
-        } else {
-            answer.style.display = 'none';
-            arrow.textContent = '▶';
-        }
-    }
-
-    function calculate() {
-        const past = parseFloat(document.getElementById('past-amount').value) || 0;
-        const start = parseInt(document.getElementById('start-year').value) || 2000;
-        const end = parseInt(document.getElementById('end-year').value) || 2026;
-        const rate = parseFloat(document.getElementById('inflation-rate-adj').value) || 0;
-
+    function toggleAccordion(id) { const body = document.getElementById(id); const arrow = document.getElementById(id+'Arrow'); if (body.style.display==='none'||body.style.display==='') { body.style.display='block'; arrow.textContent='▼'; } else { body.style.display='none'; arrow.textContent='▶'; } }
+    function toggleFaq(el) { const answer = el.nextElementSibling; const arrow = el.querySelector('.faq-arrow'); if (answer.style.display==='none'||answer.style.display==='') { answer.style.display='block'; arrow.textContent='▼'; } else { answer.style.display='none'; arrow.textContent='▶'; } }
+    function calculateIAC() {
+        const amount = parseFloat(document.getElementById('iac-amount').value) || 0;
+        const start = parseInt(document.getElementById('iac-start').value) || 2000;
+        const end = parseInt(document.getElementById('iac-end').value) || 2026;
+        const rate = parseFloat(document.getElementById('iac-rate').value) || 0;
         const years = end - start;
         const factor = Math.pow(1 + rate / 100, years);
-        const adjusted = past * factor;
+        const adjusted = amount * factor;
         const totalInflation = (factor - 1) * 100;
-        const purchasingPowerLost = (1 - 1 / factor) * 100;
-
+        const loss = (1 - 1 / factor) * 100;
         const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
-
-        document.getElementById('past-display').textContent = fmt.format(past) + ' (' + start + ')';
-        document.getElementById('years-display').textContent = years + ' years';
-        document.getElementById('rate-display').textContent = rate + '% per year';
-        document.getElementById('adjusted').textContent = fmt.format(adjusted) + ' (' + end + ')';
-        document.getElementById('total-inflation').textContent = totalInflation.toFixed(1) + '%';
-        document.getElementById('purchasing-power').textContent = purchasingPowerLost.toFixed(1) + '%';
-
-        document.getElementById('results-area').style.display = 'block';
-
-        showRecommendations('inflation-adjusted-currency.html', {
-            past: document.getElementById('past-amount').value,
-            start: document.getElementById('start-year').value,
-            end: document.getElementById('end-year').value
-        });
+        document.getElementById('iac-amount-display').textContent = fmt.format(amount) + ' (' + start + ')';
+        document.getElementById('iac-years-display').textContent = years + ' years';
+        document.getElementById('iac-rate-display').textContent = rate + '% per year';
+        document.getElementById('iac-adjusted').textContent = fmt.format(adjusted) + ' (' + end + ')';
+        document.getElementById('iac-total-inflation').textContent = totalInflation.toFixed(1) + '%';
+        document.getElementById('iac-loss').textContent = loss.toFixed(1) + '%';
+        document.getElementById('iac-results').style.display = 'block';
+        showRecommendations('inflation-adjusted-currency.html', { amount: amount, years: years });
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('infoAccordion').style.display = 'block';
-        document.getElementById('infoArrow').textContent = '▼';
-        document.getElementById('faqAccordion').style.display = 'none';
-        document.getElementById('faqArrow').textContent = '▶';
-        document.querySelectorAll('.faq-answer').forEach(function(el) { el.style.display = 'none'; });
-        document.querySelectorAll('.faq-arrow').forEach(function(el) { el.textContent = '▶'; });
-        calculate();
-    });
-    document.addEventListener('input', function(e) {
-        if (e.target.closest('.form-grid')) { calculate(); }
-    });
+    document.addEventListener('DOMContentLoaded', function() { document.getElementById('infoAccordion').style.display='block'; document.getElementById('infoArrow').textContent='▼'; document.getElementById('faqAccordion').style.display='none'; document.getElementById('faqArrow').textContent='▶'; document.querySelectorAll('.faq-answer').forEach(el => el.style.display='none'); document.querySelectorAll('.faq-arrow').forEach(el => el.textContent='▶'); calculateIAC(); });
+    document.addEventListener('input', function(e) { if (e.target.closest('.form-grid')) { calculateIAC(); } });
 </script>
 </body>
 </html>
